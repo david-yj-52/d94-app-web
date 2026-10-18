@@ -1,0 +1,49 @@
+{
+  "name": "tsh-web-plate",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "docs:check": "node scripts/check-docs.mjs"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
+    "@tanstack/react-query": "^5.100.14",
+    "@tiptap/pm": "^2.10.4",
+    "@tiptap/react": "^2.10.4",
+    "@tiptap/starter-kit": "^2.10.4",
+    "axios": "^1.7.9",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.460.0",
+    "next": "16.1.3",
+    "next-auth": "^5.0.0-beta.30",
+    "react": "19.0.1",
+    "react-dom": "19.0.1",
+    "react-hook-form": "^7.76.1",
+    "react-markdown": "^10.1.0",
+    "recharts": "^3.8.1",
+    "solclientjs": "^10.18.3",
+    "tailwind-merge": "^2.5.5",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "16.1.3",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.7.2"
+  },
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
