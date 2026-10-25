@@ -19,8 +19,15 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. Next.js 16 App Router �
    │  · auth()로 세션 조회 → Authorization: Bearer {accessToken} 주입
    │  · DEV_MOCK_API=true 이면 src/lib/mock/router.ts 로 응답
    ▼
-[Backend]  ${BACKEND_URL}/v1/...   →  { success, data }
+[UMD server]  ${BACKEND_URL}/v1/...  (AP-01 :8081, JWT 사전 확인)
+   │  Redis Stream ↔ UMD local (Home PC) — 경로·헤더·본문·상태를 그대로 전달
+   ▼
+[Backend]  /v1/...   →  { success, data }
 ```
+
+- **`BACKEND_URL`은 현재 UMD(server) 주소입니다.** UMD 는 투명 프록시라서 백엔드를 서버에 직접 올리면 `BACKEND_URL`만 백엔드 주소로 바꾸면 됩니다.
+- UMD 자체 오류는 HTTP 상태(401/413/502/503/504)와 진단용 `X-Umd-Error` 헤더로 옵니다. UI 는 상태코드로 처리하고 `X-Umd-Error`에 의존하지 않습니다.
+- 통신 규칙(상태코드별 처리, 재시도, 타임아웃, 프록시 라우트 정비 사항): [UMD ui-guide](https://github.com/david-yj-52/d94-app-umd/blob/main/docs/integration/ui-guide.md)
 
 - 401 응답을 받으면 axios 인터셉터가 `signOut({callbackUrl: "/login"})`을 호출합니다 (`src/lib/api/client.ts`).
 - QueryClient 기본값은 `staleTime` 30초, `retry` 1입니다 (`src/components/Providers.tsx`).
@@ -37,7 +44,7 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. Next.js 16 App Router �
 
 `src/middleware.ts` 규칙:
 - **보호 경로** (`PROTECTED_PREFIXES`): `/projects`, `/issues`, `/board`, `/dashboard`, `/search`, `/notifications`. 비로그인 상태면 `/login`으로 보냅니다.
-- **비로그인 전용** (`PUBLIC_ONLY`): `/login`, `/register`. 로그인 상태면 `/projects`로 보냅니다.
+- **비로그인 전용** (`PUBLIC_ONLY`): `/login`, `/register`. 로그인 상태면 `/home`으로 보냅니다.
 - 정적 확장자(png, svg, css, js 등)는 통과시킵니다. `public/` 이미지가 리다이렉트되지 않게 하기 위함입니다.
 - `/home`, `/mpms`, `/solace`, `/todo`는 보호되지 않습니다.
 
@@ -70,4 +77,4 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. Next.js 16 App Router �
 
 ## 배포
 
-Vercel 배포를 전제로 합니다(`vercel.json` 없음). HTTPS로 배포된 사이트에서 로컬 HTTP 에이전트를 호출할 때 생기는 mixed-content 문제는 [LOCAL_AGENT_HTTPS_GUIDE.md](../LOCAL_AGENT_HTTPS_GUIDE.md)를 참고하세요.
+Vercel 배포를 전제로 합니다. [vercel.json](../vercel.json)의 `git.deploymentEnabled`로 **`deploy` 브랜치만 자동 배포**하고, 다른 브랜치는 push해도 배포하지 않습니다. Production 브랜치는 Vercel 대시보드(Settings → Environments → Production → Branch Tracking)에서 `deploy`로 지정해야 합니다. HTTPS로 배포된 사이트에서 로컬 HTTP 에이전트를 호출할 때 생기는 mixed-content 문제는 [LOCAL_AGENT_HTTPS_GUIDE.md](../LOCAL_AGENT_HTTPS_GUIDE.md)를 참고하세요.

@@ -50,7 +50,6 @@
 | Providers | `Providers` | QueryClient + SessionProvider | `app/layout.tsx` | ✅ |
 | TshLogo | `TshLogo` | 브랜드 로고 | (auth) layout, ApHeader, `app/page.tsx` | 🔁 |
 | AddTodoForm / TodoItem | `AddTodoForm`, `TodoItem` | todo 입력·항목 | `/todo` | 🧪 |
-| AgentStatusButton | `AgentStatusButton` | 로컬 에이전트 상태 확인 | — | ⛔ 🧪 |
 | AuthCheck / LoginButton | `AuthCheck`, `LoginButton` | 초기 인증 데모 | — | ⛔ |
 
 ### Domain

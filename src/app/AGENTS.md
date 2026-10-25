@@ -7,13 +7,13 @@
 
 ```
 app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader → children → NotificationMount
-├── page.tsx             "/" (구 todo 홈, 로그인 시 /todo 로 redirect)       ⚠️ (main)/page.tsx 와 경로 중복
+├── page.tsx             "/" (로그인 시 /home, 아니면 /login 으로 redirect) ⚠️ (main)/page.tsx 와 경로 중복
 ├── (auth)/              비로그인 전용. layout: 가운데 정렬 + TshLogo + "CIRA"
 │   ├── login/                 → LoginForm
 │   ├── register/              → 소셜 회원가입 UI (버튼 비활성, 미구현)
 │   └── cira/register/         → RegisterForm (CIRA 회원가입)
 ├── (main)/              로그인 영역 (라우트 그룹 layout 없음, 헤더는 루트 layout)
-│   ├── page.tsx         "/" → 로그인 여부에 따라 /login 또는 /projects 로 redirect
+│   ├── page.tsx         "/" → 로그인 여부에 따라 /login 또는 /home 으로 redirect
 │   ├── home/ dashboard/ notifications/ search/ projects/      CIRA + 허브
 │   └── mpms/ solace/ todo/                                    실험 모듈
 └── api/
@@ -29,7 +29,7 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 
 | 화면 | URL | 모듈 | 한 줄 설명 | L3 문서 |
 |---|---|---|---|---|
-| 허브 | `/home` | 공통 | 실험 모듈 카드 메뉴 | [home](./(main)/home/AGENTS.md) |
+| 홈 | `/home` | 공통 | 첫 화면. 기능별 카드 대시보드 | [home](./(main)/home/AGENTS.md) |
 | 대시보드 | `/dashboard` | CIRA | 내 할당 이슈·오늘 마감·최근 활동·현재 스프린트 | [dashboard](./(main)/dashboard/AGENTS.md) |
 | 검색 | `/search`, `/search/advanced` | CIRA | 키워드·필터 검색, 저장 필터, CQL 고급 검색 | [search](./(main)/search/AGENTS.md) |
 | 프로젝트 | `/projects` (+ 하위 공통) | CIRA | 프로젝트 목록·생성, 하위 탭 구조 | [projects](./(main)/projects/AGENTS.md) |
@@ -61,7 +61,7 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
   1. 폴더에 `AGENTS.md`(L3 템플릿)와 `CLAUDE.md`를 만듭니다.
   2. 위 표와 L1 §0 지도에 등록합니다.
   3. 보호가 필요하면 `middleware.ts`에 경로를 추가합니다.
-  4. 헤더 메뉴에 노출하려면 `ApHeader`의 `NAV_ITEMS`에, 허브에 노출하려면 `home`의 `MENU_ITEMS`에 추가합니다.
+  4. 헤더 메뉴에 노출하려면 `ApHeader`의 `NAV_ITEMS`에, 홈 대시보드에 노출하려면 `home`의 `FEATURE_GROUPS`에 추가합니다.
   5. `npm run docs:check`로 누락이 없는지 확인합니다([L1 §10](../../AGENTS.md)).
 
 ### L3 화면 문서 템플릿

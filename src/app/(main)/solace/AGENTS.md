@@ -7,7 +7,7 @@
 - **URL:** `/solace` · **파일:** `page.tsx` (12줄), `solaceTestContent.tsx` (210줄)
 - **실험 주제:** Solace PubSub+ 브로커와 **WebSocket(solclientjs)** 으로 요청·응답 메시징을 합니다.
 - `page.tsx`는 `dynamic(() => import("./solaceTestContent"), {ssr: false})`로 클라이언트에서만 로드합니다. solclientjs는 브라우저 전용이고, `next.config.mjs`의 `serverExternalPackages`에도 등록되어 있습니다.
-- 인증 보호가 없습니다. 헤더나 허브 메뉴에도 없어 URL로 직접 접근합니다.
+- 인증 보호가 없습니다. 헤더 메뉴에는 없고 홈 대시보드 카드로 들어옵니다.
 
 ## 화면 구성
 ```

@@ -5,7 +5,7 @@
 ## 개요
 - **URL:** `/todo` · **파일:** `page.tsx` (서버 컴포넌트, 49줄)
 - **실험 주제:** TanStack Query 없이 **서버 컴포넌트 + Server Actions + `revalidatePath`** 로 데이터를 다룹니다. CIRA와 대비되는 방식입니다.
-- 진입: 헤더 "Tasks" 메뉴, 홈 허브 "Project Tasks" 카드, 로그인 시 `app/page.tsx`에서 redirect
+- 진입: 헤더 "Tasks" 메뉴, 홈 대시보드 "Tasks" 카드
 - 페이지에서 `auth()`를 확인해 세션이 없으면 `/login`으로 보냅니다.
 
 ## 화면 구성

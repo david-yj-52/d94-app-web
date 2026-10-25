@@ -8,7 +8,6 @@
 | `mock/` | 개발용 in-memory mock 백엔드 (`DEV_MOCK_API`) | ✅ 임시 |
 | `messaging/solace/` | Solace WebSocket 설정·훅 | 🧪 Solace 실험 전용 |
 | `api.ts` | 구 fetch 래퍼 (서버·클라이언트 겸용) | 🧪 todo 실험 전용, 새 코드에서 사용 금지 |
-| `agent-api-.ts` | 로컬 에이전트 헬스체크 (`NEXT_PUBLIC_LOCAL_URL`) | 🧪 local-agent 실험 |
 
 ## 1. API 함수 (`api/{domain}.ts`)
 
@@ -59,4 +58,6 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 
 ## 4. 백엔드 API 명세
 
-명세 위치는 아직 문서화되지 않았습니다. 명세 위치나 백엔드 레포가 정해지면 여기에 링크를 추가하세요.
+- 백엔드 요청은 `BACKEND_URL` → **UMD(server) → Redis → UMD(local) → 로컬 백엔드** 로 갑니다. UMD 는 경로·본문을 바꾸지 않습니다 → [docs/architecture.md](../../docs/architecture.md)
+- UI 쪽 통신 규칙(상태코드 처리, 재시도, 35초 타임아웃, 1MB 요청 / 5MB 응답 상한): [UMD ui-guide](https://github.com/david-yj-52/d94-app-umd/blob/main/docs/integration/ui-guide.md)
+- 엔드포인트별 명세 위치는 아직 문서화되지 않았습니다. 백엔드 레포가 정해지면 여기에 링크를 추가하세요.

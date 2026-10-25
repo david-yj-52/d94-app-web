@@ -1,7 +1,6 @@
 "use client";
 
 import {signOut} from "next-auth/react";
-import AgentStatusButton from "../AgentStatusButton";
 import TshLogo from "../TshLogo";
 import GlobalSearch from "./GlobalSearch";
 import NotificationBell from "./NotificationBell";
@@ -54,7 +53,6 @@ export default function ApHeader({user}: { user: any }) {
                 <GlobalSearch/>
                 <div className="h-5 w-px bg-gray-200"/>
                 <NotificationBell/>
-                <AgentStatusButton/>
                 <div className="h-5 w-px bg-gray-200"/>
                 <span className="text-sm text-gray-600">
           <strong className="font-semibold">{user?.name}</strong> 님

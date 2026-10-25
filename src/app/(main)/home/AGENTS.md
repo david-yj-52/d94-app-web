@@ -1,29 +1,30 @@
-# L3 · 화면: 홈 (실험 모듈 허브)
+# L3 · 화면: 홈 (기능 대시보드)
 
 > 계층: [L1](../../../../AGENTS.md) › [L2 app](../../AGENTS.md) › **L3 home**
 
 ## 개요
 - **URL:** `/home` · **파일:** `page.tsx` (서버 컴포넌트)
-- **목적:** 로그인 후 각 실험 모듈로 들어가는 허브입니다. 헤더 로고와 "홈" 메뉴가 이 화면으로 연결됩니다.
+- **목적:** 로그인 후 첫 화면입니다. 앱의 각 기능으로 들어가는 카드(박스) 대시보드입니다.
+- **진입:** 로그인 성공(`LoginForm`), `/` 접속, 로그인 상태에서 `/login`·`/register` 접속(middleware), 헤더 로고와 "홈" 메뉴.
 - **접근:** 페이지에서 `auth()`를 확인하고, 세션이 없으면 `/login`으로 보냅니다(middleware 보호 대상 아님).
 
 ## 화면 구성
 ```
 home/page.tsx
 ├── 인사말 (시간대별 문구 + session.user.name)
-├── 메뉴 카드 그리드 (MENU_ITEMS: Project Tasks → /todo, MPMS → /mpms, Analytics(#), Settings(#))
-└── 통계 카드 (하드코딩된 더미 값)
+└── FEATURE_GROUPS 섹션별 카드 그리드 (1 / sm:2 / lg:3 열)
+    ├── CIRA: 프로젝트 → /projects, 내 대시보드 → /dashboard, 검색 → /search, 알림 → /notifications
+    └── 실험 모듈: Tasks → /todo, MPMS → /mpms, Solace → /solace
 ```
-카탈로그 컴포넌트를 쓰지 않고 페이지 안에 마크업을 직접 작성했습니다.
+카드는 `Link` 하나로, 아이콘(`lucide-react`) · 이름 · 한 줄 설명으로 구성됩니다. 카탈로그 컴포넌트 없이 페이지 안에 마크업을 직접 작성했습니다.
 
 ## 데이터
-- API를 호출하지 않습니다. 메뉴와 통계는 모두 파일 안의 상수입니다.
+- API를 호출하지 않습니다. 카드 목록은 파일 안의 상수 `FEATURE_GROUPS`입니다.
 
 ## 기능 (L4)
-### 모듈 메뉴
-- 카드를 클릭하면 해당 모듈로 이동합니다. `disabled` 항목은 링크 없이 흐리게 표시됩니다.
-- **새 실험 모듈을 추가하면 `MENU_ITEMS`에 카드를 추가**하세요. 헤더 메뉴(`ApHeader`의 `NAV_ITEMS`)도 함께 고려하세요.
+### 기능 카드
+- 카드를 클릭하면 해당 기능 화면으로 이동합니다.
+- **새 기능 화면을 추가하면 `FEATURE_GROUPS`의 알맞은 그룹에 카드를 추가**하세요(`href`, `label`, `desc`, `icon`, `iconClass`). 헤더 메뉴(`ApHeader`의 `NAV_ITEMS`)도 함께 고려하세요.
 
 ## 주의·예외
-- `gray-*` 팔레트와 이모지 아이콘을 씁니다. 새 화면은 `slate-*`와 `lucide-react` 아이콘을 쓰세요.
-- CIRA(`/projects`)로 가는 카드가 없습니다. 허브에 넣을지는 결정이 필요합니다.
+- 프로젝트 하위 화면(이슈·보드·스프린트 등)은 `projectId`가 필요해 카드가 없습니다. "프로젝트" 카드에서 들어갑니다.

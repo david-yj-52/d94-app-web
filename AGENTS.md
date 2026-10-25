@@ -17,7 +17,7 @@
 ```
 AGENTS.md (L1)
 ├── src/app/AGENTS.md (L2 라우팅·화면 목록)
-│   ├── (main)/home/AGENTS.md ............ 실험 모듈 허브
+│   ├── (main)/home/AGENTS.md ............ 첫 화면 기능 대시보드
 │   ├── (main)/dashboard/AGENTS.md ....... 개인 대시보드
 │   ├── (main)/search/AGENTS.md .......... 통합 검색 + CQL 고급 검색
 │   ├── (main)/projects/AGENTS.md ........ 프로젝트 목록 + 프로젝트 공통 탭
@@ -52,9 +52,8 @@ AGENTS.md (L1)
 | **MPMS** | `/mpms` | 마스터-디테일 테이블 CRUD (로컬 상태) |
 | **Solace** | `/solace` | WebSocket 메시징 (solclientjs) |
 | **todo** | `/todo` | Server Actions + `revalidatePath` |
-| **local-agent** | (화면 미연결) | HTTPS 사이트에서 로컬 HTTP 에이전트 호출 (`AgentStatusButton`) |
 
-- `/home`은 모듈 허브 화면입니다. 새 실험은 언제든 추가할 수 있습니다. 다만 아래 공통 규칙은 지켜야 합니다.
+- `/home`은 로그인 후 첫 화면인 기능 대시보드입니다. 새 실험은 언제든 추가할 수 있습니다. 다만 아래 공통 규칙은 지켜야 합니다.
 - 백엔드는 별도 서버(`BACKEND_URL`)입니다. 백엔드 없이 개발할 때는 mock 모드를 씁니다 → [docs/dev-setup.md](docs/dev-setup.md)
 
 ## 2. 기술 스택

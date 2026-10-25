@@ -6,7 +6,7 @@
 ## 개요
 - **URL:** `/mpms` · **파일:** `page.tsx` (209줄, 클라이언트)
 - **실험 주제:** 마스터-디테일 테이블 UI, 검색 필터링, 추가 팝업. **백엔드 없이 로컬 상태로만** 동작합니다.
-- 진입: 헤더 "MPMS" 메뉴, 홈 허브 카드. middleware 보호 대상이 아니고 페이지에서 인증을 확인하지도 않습니다.
+- 진입: 헤더 "MPMS" 메뉴, 홈 대시보드 카드. middleware 보호 대상이 아니고 페이지에서 인증을 확인하지도 않습니다.
 - 관련 타입: `src/app/model/mpms_model.ts`, `src/app/model/common_model.ts`, `src/app/constant/types.ts`
 
 ## 화면 구성

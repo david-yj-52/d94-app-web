@@ -7,7 +7,7 @@ export default async function HomePage() {
     if (!session) {
         redirect("/login");
     } else {
-        redirect("/todo");
+        redirect("/home");
     }
 }
 
@@ -22,7 +22,6 @@ export default async function HomePage() {
 //       <main className="max-w-md mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
 //         <p> 환영합니다, {session.user?.name} 님!</p>
 //         <img src={session.user?.image || ""} alt="프로필" />
-//         <AgentStatusButton />
 //         <div className="p-6 bg-blue-600">
 //           <h1 className="text-2xl font-bold text-white">Project Tasks</h1>
 //           <p className="text-blue-100 text-sm">Learning Next js</p>

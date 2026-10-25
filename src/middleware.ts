@@ -19,7 +19,7 @@ export default auth((req) => {
     );
 
     if (isLoggedIn && isPublicOnly) {
-        return NextResponse.redirect(new URL("/projects", req.url));
+        return NextResponse.redirect(new URL("/home", req.url));
     }
 
     if (!isLoggedIn && isProtected) {

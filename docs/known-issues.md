@@ -16,10 +16,11 @@
 - **`src/lib/mock/`**와 **`.env.sample`**이 git에 추적되지 않습니다(untracked). 팀원과 공유하려면 커밋이 필요합니다.
 - **Solace 설정 하드코딩**: `src/lib/messaging/solace/solaceConfig.ts`에 `ws://localhost:8008`, admin/admin이 들어 있고 환경 변수를 무시합니다.
 - **프록시 로그**: `src/app/api/proxy/[...path]/route.ts`가 모든 요청 URL을 `console.log`로 출력합니다.
+- **프록시 라우트가 UMD 투명 통로 요건을 못 채움** (`src/app/api/proxy/[...path]/route.ts`): PATCH·HEAD 미지원, 응답을 항상 `res.json()`으로 다시 만들어 204·304·바이너리·응답 헤더(`X-Trace-Id` 포함)를 잃음, JSON·multipart 외 본문 버림, 타임아웃 없음(UMD 30초 → 권장 35초). 정비안: [UMD ui-guide §5](https://github.com/david-yj-52/d94-app-umd/blob/main/docs/integration/ui-guide.md#5-nextjs-프록시-라우트-정비-사항)
 - **API 레이어 이중화**: `src/lib/api/*`(axios)와 todo 실험용 `src/lib/api.ts`(fetch)가 공존합니다.
 - **보호 경로**: `/home`, `/todo`는 페이지에서 `auth()`로 직접 확인합니다. `/mpms`, `/solace`는 보호되지 않습니다. 의도한 것인지 확인이 필요합니다.
-- **`/` 경로 중복**: `src/app/page.tsx`(→ `/todo`)와 `src/app/(main)/page.tsx`(→ `/projects`)가 같은 URL `/`를 가집니다. `next build`는 오류 없이 통과하지만(2026-10-15 확인) 실제로는 둘 중 하나만 서빙됩니다. 의도를 정해 하나를 제거하세요.
+- **`/` 경로 중복**: `src/app/page.tsx`와 `src/app/(main)/page.tsx`가 같은 URL `/`를 가집니다(현재 둘 다 `/home`으로 redirect). `next build`는 오류 없이 통과하지만(2026-10-15 확인) 실제로는 둘 중 하나만 서빙됩니다. 의도를 정해 하나를 제거하세요.
 - **todo 목록 하드코딩**: `src/app/actions.ts`의 `getTodos`가 고정 배열을 반환합니다.
-- **미사용 컴포넌트**: `AuthCheck`, `LoginButton`, `AgentStatusButton`
+- **미사용 컴포넌트**: `AuthCheck`, `LoginButton`
 - **공통 UI primitive 부재**: 모달 21곳과 버튼 171곳을 직접 마크업합니다. 승격 계획은 [ui/AGENTS.md §4](../src/components/ui/AGENTS.md)에 있습니다.
 - **비대한 페이지**와 **규칙 예외 파일**: [conventions.md §7](conventions.md#7-알려진-예외-따라-하지-말-것), [src/app/AGENTS.md §4](../src/app/AGENTS.md)

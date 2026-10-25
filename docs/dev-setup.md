@@ -21,7 +21,6 @@
 | `DEV_MOCK_API` | `src/lib/mock/router.ts` | `true`면 `/api/proxy`가 mock으로 응답 (production에서는 무시) |
 | `BACKEND_URL` | 프록시, 로그인 | 서버 사이드에서 쓰는 백엔드 주소 |
 | `NEXT_PUBLIC_BACKEND_URL` | 알림 SSE | 브라우저가 직접 연결하는 백엔드 주소 |
-| `NEXT_PUBLIC_LOCAL_URL` | `src/lib/agent-api-.ts` | 로컬 에이전트 주소 (기본 `http://127.0.0.1:8080`) |
 | `SOLACE_USER_NAME`, `SOLACE_USER_PWD` | 미사용 | solaceConfig.ts가 값을 하드코딩하고 있어 실제로 쓰이지 않음 |
 
 `.env.local`은 커밋하지 않습니다(`.gitignore`에 포함됨). 새 변수를 추가하면 `.env.sample`과 이 표를 함께 갱신하세요.
