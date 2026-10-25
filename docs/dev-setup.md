@@ -17,7 +17,7 @@
 |---|---|---|
 | `AUTH_SECRET` | next-auth | JWT 서명 시크릿. `npx auth secret`으로 생성 |
 | `AUTH_TRUST_HOST` | next-auth | localhost 외 호스트에서 `next start`로 실행할 때 `true` |
-| `DEV_ADMIN_LOGIN` | `src/auth.ts` | `true`면 백엔드 없이 admin/admin 로그인 허용 (production에서는 무시) |
+| `DEV_ADMIN_LOGIN` | `src/auth.ts` | `true`면 백엔드 없이 admin/admin 로그인 허용 (production·Vercel 포함. 배포 환경에 설정하면 누구나 로그인 가능) |
 | `DEV_MOCK_API` | `src/lib/mock/router.ts` | `true`면 `/api/proxy`가 mock으로 응답 (production에서는 무시) |
 | `BACKEND_URL` | 프록시, 로그인 | 서버 사이드에서 쓰는 백엔드 주소 |
 | `NEXT_PUBLIC_BACKEND_URL` | 알림 SSE | 브라우저가 직접 연결하는 백엔드 주소 |

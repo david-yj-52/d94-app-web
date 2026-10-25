@@ -9,3 +9,5 @@ node_modules
 # TypeScript incremental build
 *.tsbuildinfo
 .idea
+.vercel
+.env*

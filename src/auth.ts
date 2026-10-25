@@ -12,9 +12,8 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
-                // TODO: 임시 - 백엔드 미기동 시 admin/admin 로그인 허용 (개발 환경 전용, 백엔드 복구 후 제거)
+                // TODO: 임시 - 백엔드 미기동 시 admin/admin 로그인 허용 (DEV_ADMIN_LOGIN=true 일 때만, Vercel 포함. 백엔드 복구 후 제거)
                 if (
-                    process.env.NODE_ENV !== "production" &&
                     process.env.DEV_ADMIN_LOGIN === "true" &&
                     credentials.email === "admin" &&
                     credentials.password === "admin"
