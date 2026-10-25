@@ -11,6 +11,7 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. 하나의 Next.js 앱 �
 | **MPMS** | `/mpms` | 마스터-디테일 테이블 CRUD | 로컬 상태 + 상수 mock | 동작 | [mpms](../src/app/(main)/mpms/AGENTS.md) |
 | **Solace** | `/solace` | WebSocket 메시징 (solclientjs) | Solace 브로커 직접 연결 | 브로커 필요 | [solace](../src/app/(main)/solace/AGENTS.md) |
 | **todo** | `/todo` | Server Actions + `revalidatePath` | 서버 컴포넌트 + fetch 래퍼 | 목록 하드코딩 | [todo](../src/app/(main)/todo/AGENTS.md) |
+| **인터페이스 테스트** | `/interface-test` | REST 메서드별 UI → UMD → 백엔드 → DB 통신 확인 | axios + TanStack Query + `/api/proxy` (+ mock) | 동작 (d94-query `/api/v1/interface-tests`) | [interface-test](../src/app/(main)/interface-test/AGENTS.md) |
 
 허브(첫 화면 대시보드): [/home](../src/app/(main)/home/AGENTS.md)
 
@@ -22,6 +23,7 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. 하나의 Next.js 앱 �
 | MPMS | `src/app/(main)/mpms/`, `src/components/mpns/`, `src/app/model/`, `src/app/constant/` |
 | Solace | `src/app/(main)/solace/`, `src/lib/messaging/solace/` |
 | todo | `src/app/(main)/todo/`, `src/app/page.tsx`, `src/app/actions.ts`, `src/lib/api.ts`, `src/components/{AddTodoForm,TodoItem}.tsx` |
+| 인터페이스 테스트 | `src/app/(main)/interface-test/`, `src/components/interfaceTest/`, `src/hooks/useInterfaceTests.ts`, `src/lib/api/interfaceTests.ts`, `src/types/interfaceTest.ts`, mock: `src/lib/mock/router.ts` 인터페이스 테스트 절 |
 | (초기 데모, 미사용) | `src/components/{AuthCheck,LoginButton}.tsx` |
 
 ## 새 실험 모듈 추가하기

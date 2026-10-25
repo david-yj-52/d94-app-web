@@ -64,8 +64,10 @@
 **`any` 사용**
 - `src/hooks/useIssues.ts`
 - `src/components/layout/ApHeader.tsx`
-- `src/app/api/proxy/[...path]/route.ts`
 - 실험 모듈: `src/app/page.tsx`, `src/app/(main)/todo/page.tsx`, `src/components/TodoItem.tsx`, `src/lib/api.ts`, `src/lib/messaging/solace/useSolace.ts`
+
+**API 함수가 `res.data.data` 대신 응답 전체를 반환** (의도된 예외)
+- `src/lib/api/interfaceTests.ts`의 `callInterfaceTest`: 통신 확인 화면이라 상태코드·소요시간·`X-Trace-Id`·본문을 `InterfaceCallResult`로 돌려주고 4xx·5xx 도 throw 하지 않습니다. 일반 도메인 API 는 따라 하지 마세요.
 
 **화면 단위 예외**(페이지에서 `lib/api` 직접 import, 비대한 페이지, `confirm()` 사용 등): [src/app/AGENTS.md §4](../src/app/AGENTS.md)
 

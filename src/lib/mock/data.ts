@@ -16,6 +16,7 @@ import type {GitActivityItem, GitRepoResponse} from "@/lib/api/git";
 import type {NotificationItem} from "@/lib/api/notifications";
 import type {SavedFilter} from "@/lib/api/search";
 import type {WikiPageResponse, WikiVersionResponse} from "@/lib/api/wiki";
+import type {InterfaceTestItemResponse} from "@/types/interfaceTest";
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -694,6 +695,7 @@ function buildStore() {
         projects, sprints, statuses, transitions, issues, boards, boardColumns, comments, attachments,
         members, versions, milestones, wikiPages, wikiVersions, automationRules, ruleExecutions,
         gitRepos, gitActivity, notifications, savedFilters,
+        interfaceTests: [] as InterfaceTestItemResponse[],
         seq: 1000,
     };
 }

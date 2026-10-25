@@ -60,6 +60,7 @@
 | board | CreateBoardModal, AddColumnModal | 보드 생성, 컬럼 추가·편집 | `boards`, KanbanBoard | [board](board/AGENTS.md) |
 | issue | IssueTable, IssueFilter, CreateIssueModal | 이슈 목록·필터·생성 | `issues` | [issue](issue/AGENTS.md) |
 | issue | CommentSection, AttachmentSection | 댓글(멘션·이모지·답글)·첨부(DnD 업로드) | `issues/[issueId]` | [issue](issue/AGENTS.md) |
+| interfaceTest | InterfaceRequestPanel, InterfaceCallLog, InterfaceItemTable, MethodBadge | REST 메서드별 통신 확인 (요청 폼·호출 기록·DB 목록) | `/interface-test` 🧪 | [interfaceTest](interfaceTest/AGENTS.md) |
 | milestone | MilestoneCard, MilestoneModal | 마일스톤 카드·생성/편집 | `versions` | §5 |
 | mpns | PlatformTable, ProductTable, DetailPanel, PlatformAddPopup, ProductAddPopup | MPMS 마스터-디테일 | `/mpms` 🧪 | [mpns](mpns/AGENTS.md) |
 | project | ProjectNav 🔁 | 프로젝트 탭 네비 | 프로젝트 하위 8개 화면 | [project](project/AGENTS.md) |

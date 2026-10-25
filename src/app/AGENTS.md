@@ -15,14 +15,14 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 ├── (main)/              로그인 영역 (라우트 그룹 layout 없음, 헤더는 루트 layout)
 │   ├── page.tsx         "/" → 로그인 여부에 따라 /login 또는 /home 으로 redirect
 │   ├── home/ dashboard/ notifications/ search/ projects/      CIRA + 허브
-│   └── mpms/ solace/ todo/                                    실험 모듈
+│   └── mpms/ solace/ todo/ interface-test/                    실험 모듈
 └── api/
     ├── auth/[...nextauth]/    next-auth 핸들러
-    └── proxy/[...path]/       백엔드 프록시 (Bearer 토큰 주입, DEV_MOCK_API 시 mock 응답)
+    └── proxy/[...path]/       백엔드 투명 프록시 (GET/HEAD/POST/PUT/PATCH/DELETE, Bearer 토큰 주입, 상태·헤더·본문 그대로, 35초 타임아웃, DEV_MOCK_API 시 mock 응답)
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.
-  - 보호 경로(비로그인 시 `/login`으로): `/projects`, `/issues`, `/board`, `/dashboard`, `/search`, `/notifications`
+  - 보호 경로(비로그인 시 `/login`으로): `/projects`, `/issues`, `/board`, `/dashboard`, `/search`, `/notifications`, `/interface-test`
   - `/home`, `/todo`는 페이지에서 직접 `auth()`를 확인해 redirect합니다. `/mpms`, `/solace`는 **보호되지 않습니다**.
 
 ## 2. 화면 목록 (L3)
@@ -43,6 +43,7 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 | MPMS | `/mpms` | 🧪 | 플랫폼·제품 마스터-디테일 | [mpms](./(main)/mpms/AGENTS.md) |
 | Solace | `/solace` | 🧪 | WebSocket 메시징 테스트 | [solace](./(main)/solace/AGENTS.md) |
 | Todo | `/todo` | 🧪 | Server Actions | [todo](./(main)/todo/AGENTS.md) |
+| 인터페이스 테스트 | `/interface-test` | 🧪 | REST 메서드별 UI→UMD→백엔드→DB 통신 확인 | [interface-test](./(main)/interface-test/AGENTS.md) |
 
 **L3 문서 없이 여기서만 설명하는 화면**
 - `/login`, `/cira/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)).

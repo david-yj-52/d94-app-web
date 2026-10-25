@@ -43,6 +43,7 @@ export function useCreateMilestone(projectId: string) {
 | useAutomation | useAutomationRules, useCreate/Update/DeleteAutomationRule, useRuleExecutions | `["automation-rules", projectId]`, `["rule-executions", ruleId]` |
 | useGitIntegration | useGitRepos, useRegister/DeleteGitRepo, useGitActivity | `["git-repos", projectId]`, `["git-activity", projectId]` |
 | useNotifications | useNotifications (SSE 구독, Query 아님) | — |
+| useInterfaceTests | useInterfaceTestItems, useInterfaceCall | `["interface-tests"]` (useInterfaceCall 은 변경 메서드 2xx 시 무효화) |
 
 **키 이름 표기:** 기존 키는 camelCase(`milestoneProgress`)와 kebab-case(`wiki-tree`)가 섞여 있습니다. 새 키는 **kebab-case**로 씁니다.
 

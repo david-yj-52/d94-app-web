@@ -32,6 +32,9 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 ```
 예시: `api/attachments.ts`(업로드 진행률 `onUploadProgress` 포함)
 
+### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
+통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 `signOut` 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
+
 ### 타입
 `src/types/{domain}.ts`에 `XxxResponse`, `CreateXxxRequest`, `UpdateXxxRequest`로 정의합니다. 페이지네이션은 `PageResponse<T>`(`types/issue.ts`)를 사용합니다.
 
@@ -48,7 +51,8 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 ```
 
 - **새 엔드포인트를 추가하면 mock 라우트도 함께 추가하세요.** 없으면 mock 모드에서 404가 납니다.
-- 응답 헬퍼: `ok(data)` → `{success: true, data}`, `notFound(what)` → 404
+- 응답 헬퍼: `ok(data)` → `{success: true, data}`, `notFound(what)` → 404. 본문 없는 상태(`{status: 204}`)도 반환할 수 있습니다(프록시가 본문 없이 응답).
+- 인터페이스 테스트 mock(`/v1/interface-tests`)은 백엔드와 같은 상태코드(201·204·400·404)를 돌려줍니다. 저장소는 `getStore().interfaceTests`.
 - multipart 업로드는 `handleMockRequest`의 attachments 분기에서 특수 처리합니다.
 
 ## 3. Solace (`messaging/solace/`) 🧪

@@ -15,8 +15,8 @@
 - **임시 우회 장치**(`TODO: 임시`): `DEV_ADMIN_LOGIN`(`src/auth.ts`), `DEV_MOCK_API`(`src/lib/mock/`). 백엔드가 안정되면 제거할지, 개발용 기능으로 정식화할지 결정해야 합니다. ⚠️ `DEV_ADMIN_LOGIN`은 production에서도 동작하므로, Vercel에 설정돼 있으면 배포 사이트에 누구나 admin/admin으로 로그인할 수 있습니다.
 - **`src/lib/mock/`**와 **`.env.sample`**이 git에 추적되지 않습니다(untracked). 팀원과 공유하려면 커밋이 필요합니다.
 - **Solace 설정 하드코딩**: `src/lib/messaging/solace/solaceConfig.ts`에 `ws://localhost:8008`, admin/admin이 들어 있고 환경 변수를 무시합니다.
-- **프록시 로그**: `src/app/api/proxy/[...path]/route.ts`가 모든 요청 URL을 `console.log`로 출력합니다.
-- **프록시 라우트가 UMD 투명 통로 요건을 못 채움** (`src/app/api/proxy/[...path]/route.ts`): PATCH·HEAD 미지원, 응답을 항상 `res.json()`으로 다시 만들어 204·304·바이너리·응답 헤더(`X-Trace-Id` 포함)를 잃음, JSON·multipart 외 본문 버림, 타임아웃 없음(UMD 30초 → 권장 35초). 정비안: [UMD ui-guide §5](https://github.com/david-yj-52/d94-app-umd/blob/main/docs/integration/ui-guide.md#5-nextjs-프록시-라우트-정비-사항)
+- **로그인 표시 이름 = 이메일** (`src/auth.ts`): d94-query 로그인 응답에 `user` 가 없어 `session.user.name` 에 이메일을 넣습니다. 이름이 필요하면 백엔드 응답에 사용자 정보를 추가하거나 `/v1/users/me` 를 조회해야 합니다. (2026-10-25 발견: 이전에는 `data.user.name` 접근이 실패해 실제 백엔드로 로그인이 항상 실패했음)
+- **토큰 없는 요청이 403** : d94-query 는 토큰 없이 보호 API 를 부르면 401 이 아니라 403 을 줍니다. `apiClient` 는 401 에서만 `signOut` 하므로, 세션 토큰이 만료돼도 로그인 화면으로 가지 않을 수 있습니다.
 - **API 레이어 이중화**: `src/lib/api/*`(axios)와 todo 실험용 `src/lib/api.ts`(fetch)가 공존합니다.
 - **보호 경로**: `/home`, `/todo`는 페이지에서 `auth()`로 직접 확인합니다. `/mpms`, `/solace`는 보호되지 않습니다. 의도한 것인지 확인이 필요합니다.
 - **`/` 경로 중복**: `src/app/page.tsx`와 `src/app/(main)/page.tsx`가 같은 URL `/`를 가집니다(현재 둘 다 `/home`으로 redirect). `next build`는 오류 없이 통과하지만(2026-10-15 확인) 실제로는 둘 중 하나만 서빙됩니다. 의도를 정해 하나를 제거하세요.

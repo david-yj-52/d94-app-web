@@ -2,7 +2,7 @@ import {auth} from "@/auth";
 import {NextResponse} from "next/server";
 
 const STATIC_EXT = /\.(png|jpg|jpeg|gif|svg|webp|ico|woff2?|css|js)$/i;
-const PROTECTED_PREFIXES = ["/projects", "/issues", "/board", "/dashboard", "/search", "/notifications"];
+const PROTECTED_PREFIXES = ["/projects", "/issues", "/board", "/dashboard", "/search", "/notifications", "/interface-test"];
 const PUBLIC_ONLY = ["/login", "/register"];
 
 export default auth((req) => {

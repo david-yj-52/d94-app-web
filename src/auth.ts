@@ -41,7 +41,8 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
                     return {
                         id: credentials.email as string,
                         email: credentials.email as string,
-                        name: data.user.name as string,
+                        // d94-query 로그인 응답에는 user 가 없다 (accessToken·tokenType·expiresIn 만) → 이메일로 대체
+                        name: (data.user?.name ?? credentials.email) as string,
                         accessToken: data.accessToken,
                     };
                 } catch {

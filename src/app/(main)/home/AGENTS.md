@@ -14,7 +14,7 @@ home/page.tsx
 ├── 인사말 (시간대별 문구 + session.user.name)
 └── FEATURE_GROUPS 섹션별 카드 그리드 (1 / sm:2 / lg:3 열)
     ├── CIRA: 프로젝트 → /projects, 내 대시보드 → /dashboard, 검색 → /search, 알림 → /notifications
-    └── 실험 모듈: Tasks → /todo, MPMS → /mpms, Solace → /solace
+    └── 실험 모듈: Tasks → /todo, MPMS → /mpms, Solace → /solace, 인터페이스 테스트 → /interface-test
 ```
 카드는 `Link` 하나로, 아이콘(`lucide-react`) · 이름 · 한 줄 설명으로 구성됩니다. 카탈로그 컴포넌트 없이 페이지 안에 마크업을 직접 작성했습니다.
 

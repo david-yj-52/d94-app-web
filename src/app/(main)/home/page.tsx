@@ -2,6 +2,7 @@ import {auth} from "@/auth";
 import {redirect} from "next/navigation";
 import Link from "next/link";
 import {
+    ArrowLeftRight,
     Bell,
     ChevronRight,
     FolderKanban,
@@ -80,6 +81,13 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
                 desc: "Solace WebSocket 메시지 송수신을 테스트합니다.",
                 icon: Radio,
                 iconClass: "bg-rose-50 text-rose-600",
+            },
+            {
+                href: "/interface-test",
+                label: "인터페이스 테스트",
+                desc: "GET · POST · PUT · PATCH · DELETE 로 UI → UMD → 백엔드 → DB 통신을 확인합니다.",
+                icon: ArrowLeftRight,
+                iconClass: "bg-teal-50 text-teal-600",
             },
         ],
     },

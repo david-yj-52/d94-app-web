@@ -5,6 +5,7 @@ import type {BoardDetailResponse} from "@/types/board";
 import type {CommentResponse} from "@/types/comment";
 import type {SprintResponse} from "@/types/sprint";
 import type {CfdResponse, DashboardIssue, DashboardResponse} from "@/types/reports";
+import type {InterfaceTestItemResponse} from "@/types/interfaceTest";
 import {dateFrom, findUser, getStore, ISSUE_TYPES, ME, nextId, summary, USERS} from "./data";
 
 type Params = Record<string, string>;
@@ -956,6 +957,65 @@ on("DELETE", "/v1/saved-filters/:id", ({params}) => {
     const s = getStore();
     s.savedFilters = s.savedFilters.filter((f) => f.id !== params.id);
     return ok(null);
+});
+
+// 인터페이스 테스트 — 백엔드와 같은 상태코드(201 / 204 / 400 / 404)로 응답
+const badRequest = (message: string): MockResult => ({status: 400, body: {success: false, code: "BAD_REQUEST", message}});
+const findIfItem = (id: string) => getStore().interfaceTests.find((x) => x.id === id);
+const hasName = (body: Body) => typeof body.name === "string" && body.name.trim() !== "";
+const touch = (item: InterfaceTestItemResponse, event: string) => {
+    item.lastEvent = event;
+    item.modifiedAt = new Date().toISOString();
+};
+
+on("GET", "/v1/interface-tests", () => ok(getStore().interfaceTests));
+on("GET", "/v1/interface-tests/:id", ({params}) => {
+    const item = findIfItem(params.id);
+    return item ? ok(item) : notFound("interface test item");
+});
+on("HEAD", "/v1/interface-tests/:id", ({params}) => ({status: findIfItem(params.id) ? 200 : 404}));
+on("POST", "/v1/interface-tests", ({body}) => {
+    if (!hasName(body)) return badRequest("name 은 필수입니다.");
+    const now = new Date().toISOString();
+    const item: InterfaceTestItemResponse = {
+        id: nextId("ift"),
+        name: String(body.name),
+        content: (body.content as string) ?? null,
+        status: (body.status as string) ?? "NEW",
+        lastEvent: "CreateIfTestItem",
+        createdAt: now,
+        modifiedAt: now,
+    };
+    getStore().interfaceTests.unshift(item);
+    return {status: 201, body: {success: true, code: "201", data: item}};
+});
+on("PUT", "/v1/interface-tests/:id", ({params, body}) => {
+    const item = findIfItem(params.id);
+    if (!item) return notFound("interface test item");
+    if (!hasName(body)) return badRequest("name 은 필수입니다.");
+    item.name = String(body.name);
+    item.content = (body.content as string) ?? null;
+    item.status = (body.status as string) ?? "NEW";
+    touch(item, "ReplaceIfTestItem");
+    return ok(item);
+});
+on("PATCH", "/v1/interface-tests/:id", ({params, body}) => {
+    const item = findIfItem(params.id);
+    if (!item) return notFound("interface test item");
+    if (typeof body.name === "string") {
+        if (!hasName(body)) return badRequest("name 은 비울 수 없습니다.");
+        item.name = body.name;
+    }
+    if (typeof body.content === "string") item.content = body.content;
+    if (typeof body.status === "string") item.status = body.status;
+    touch(item, "PatchIfTestItem");
+    return ok(item);
+});
+on("DELETE", "/v1/interface-tests/:id", ({params}) => {
+    const s = getStore();
+    if (!findIfItem(params.id)) return notFound("interface test item");
+    s.interfaceTests = s.interfaceTests.filter((x) => x.id !== params.id);
+    return {status: 204};
 });
 
 // ── 디스패처 ─────────────────────────────────────────────────────────
