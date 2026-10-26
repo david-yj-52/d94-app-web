@@ -55,7 +55,7 @@
 ### Domain
 | 폴더 | 컴포넌트 | 용도 | 사용처 | 카드 |
 |---|---|---|---|---|
-| auth | LoginForm, RegisterForm | 로그인·회원가입 폼 (react-hook-form + zod) | `/login`, `/cira/register` | §5 |
+| auth | LoginForm, RegisterForm | 로그인·회원가입 폼 (react-hook-form + zod) | `/login`, `/register` | §5 |
 | board | KanbanBoard › KanbanColumn › KanbanCard | 칸반 보드 (HTML5 DnD) | `boards/[boardId]` | [board](board/AGENTS.md) |
 | board | CreateBoardModal, AddColumnModal | 보드 생성, 컬럼 추가·편집 | `boards`, KanbanBoard | [board](board/AGENTS.md) |
 | issue | IssueTable, IssueFilter, CreateIssueModal | 이슈 목록·필터·생성 | `issues` | [issue](issue/AGENTS.md) |
@@ -75,10 +75,14 @@
 ## 5. 작은 폴더 카드 (auth · milestone · search)
 
 ### LoginForm / RegisterForm — `@/components/auth/LoginForm`, `@/components/auth/RegisterForm`
-- props가 없습니다. react-hook-form + zod로 검증합니다.
-- LoginForm은 `signIn("credentials")`을 호출합니다.
-- RegisterForm은 `fetch("/api/proxy/v1/auth/register")`를 직접 호출합니다. 이는 규칙 예외이며, 새 코드는 `lib/api` + 훅을 쓰세요.
-- 사용처: `(auth)/login/page.tsx`, `(auth)/cira/register/page.tsx`
+```ts
+LoginForm(props: { reason?: string })   // reason = /login?reason=… (LOGIN_NOTICES 키, 예 "expired")
+RegisterForm()                          // props 없음
+```
+- react-hook-form + zod로 검증합니다.
+- LoginForm은 `signIn("credentials")`을 호출합니다. `reason`이 `LOGIN_NOTICES`에 있으면 폼 위에 안내(amber)를 띄웁니다.
+- RegisterForm은 `useRegister`(`hooks/useAuth`)로 가입한 뒤 같은 계정으로 `signIn` 해서 `/home` 으로 보냅니다. 자동 로그인이 실패하면 `/login`으로 보냅니다. 오류 안내: 400 "이미 가입된 이메일", 401 "서버에서 거절"(UMD public-paths 누락), 502 이상·연결 실패 "일시적으로 연결할 수 없음".
+- 사용처: `(auth)/login/page.tsx`, `(auth)/register/page.tsx`
 
 ### MilestoneCard — `@/components/milestone/MilestoneCard`
 ```ts

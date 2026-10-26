@@ -13,7 +13,8 @@
 
 - `apiClient`(`./client`)만 사용합니다. 경로는 `/v1/...`이고, 실제 요청은 `/api/proxy/v1/...`로 나갑니다.
 - 반환값은 `res.data.data`이고, 반환 타입을 명시합니다. 함수 하나가 HTTP 호출 하나를 맡으며 캐싱이나 상태 관리는 하지 않습니다.
-- `apiClient`는 401 응답을 받으면 `signOut({callbackUrl: "/login"})`을 호출합니다.
+- `apiClient`는 401 응답을 받으면 `signOut({callbackUrl: "/login?reason=expired"})`을 **한 번만** 호출합니다(동시 401 여러 건 대비). `/login`은 `reason`을 보고 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다. `/v1/auth/*`(로그인·회원가입) 요청의 401 은 제외합니다.
+- `api/auth.ts`: `registerUser`(회원가입)만 있습니다. 로그인은 next-auth Credentials(`src/auth.ts`)가 서버에서 `${BACKEND_URL}/v1/auth/login`을 호출합니다.
 
 ```ts
 import apiClient from "./client";

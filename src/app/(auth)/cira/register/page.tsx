@@ -1,10 +1,6 @@
-import {auth} from "@/auth";
-import RegisterForm from "@/components/auth/RegisterForm";
 import {redirect} from "next/navigation";
 
-export default async function CiraRegisterPage() {
-    const session = await auth();
-    if (session) redirect("/home");
-
-    return <RegisterForm/>;
+/** 예전 회원가입 경로. 이메일 회원가입은 /register 로 옮겼다 */
+export default function CiraRegisterPage() {
+    redirect("/register");
 }

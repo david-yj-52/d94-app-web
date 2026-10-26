@@ -10,8 +10,8 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 ├── page.tsx             "/" (로그인 시 /home, 아니면 /login 으로 redirect) ⚠️ (main)/page.tsx 와 경로 중복
 ├── (auth)/              비로그인 전용. layout: 가운데 정렬 + TshLogo + "CIRA"
 │   ├── login/                 → LoginForm
-│   ├── register/              → 소셜 회원가입 UI (버튼 비활성, 미구현)
-│   └── cira/register/         → RegisterForm (CIRA 회원가입)
+│   ├── register/              → RegisterForm (이메일 회원가입 → 자동 로그인)
+│   └── cira/register/         → /register 로 redirect (예전 경로)
 ├── (main)/              로그인 영역 (라우트 그룹 layout 없음, 헤더는 루트 layout)
 │   ├── page.tsx         "/" → 로그인 여부에 따라 /login 또는 /home 으로 redirect
 │   ├── home/ dashboard/ notifications/ search/ projects/      CIRA + 허브
@@ -46,8 +46,8 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 | 인터페이스 테스트 | `/interface-test` | 🧪 | REST 메서드별 UI→UMD→백엔드→DB 통신 확인 | [interface-test](./(main)/interface-test/AGENTS.md) |
 
 **L3 문서 없이 여기서만 설명하는 화면**
-- `/login`, `/cira/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)).
-- `/register`: 소셜 가입 버튼 UI만 있습니다(비활성).
+- `/login`, `/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)). `/login?reason=expired` 면 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다(API 401 → `apiClient` 가 로그아웃시키며 붙임).
+- `/cira/register`: `/register` 로 redirect 합니다. 소셜(Google) 가입은 미구현입니다.
 - `/notifications`: 알림 목록(페이지네이션)입니다.
   - 클릭하면 읽음 처리한 뒤 `/search?q={issueKey}`로 이동합니다. "모두 읽음"도 있습니다.
   - ⚠️ 페이지 안에서 `useQuery`와 `lib/api/notifications`를 직접 사용합니다(규칙 예외).

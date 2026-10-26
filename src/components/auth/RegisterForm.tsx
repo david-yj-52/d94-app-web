@@ -1,11 +1,28 @@
 "use client";
 
+import {useRegister} from "@/hooks/useAuth";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {isAxiosError} from "axios";
+import {signIn} from "next-auth/react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+
+/** 가입 실패 응답 → 사용자 안내 문구 */
+function registerErrorMessage(error: unknown): string {
+    if (!isAxiosError(error) || !error.response) {
+        return "서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.";
+    }
+    const {status, data} = error.response;
+    const message: string | undefined = data?.message;
+    if (status === 400 && message?.includes("already exists")) return "이미 가입된 이메일입니다.";
+    // UMD(server) public-paths 에 /tsh/api/v1/auth/** 가 없으면 가입 요청이 토큰 없음으로 막힌다
+    if (status === 401) return "가입 요청이 서버에서 거절되었습니다. 관리자에게 문의해주세요.";
+    if (status >= 502) return "서버에 일시적으로 연결할 수 없습니다. 잠시 후 다시 시도해주세요.";
+    return message || "회원가입에 실패했습니다.";
+}
 
 const schema = z
     .object({
@@ -40,27 +57,23 @@ export default function RegisterForm() {
         formState: {errors, isSubmitting},
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
+    const {mutateAsync: registerUser} = useRegister();
+
     const onSubmit = async (data: FormData) => {
         setServerError(null);
         try {
-            const res = await fetch("/api/proxy/v1/auth/register", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    email: data.email,
-                    name: data.name,
-                    password: data.password,
-                }),
-            });
-            const json = await res.json();
-            if (!res.ok || !json.success) {
-                setServerError(json.message || "회원가입에 실패했습니다.");
-                return;
-            }
-            setSuccess(true);
+            await registerUser({email: data.email, name: data.name, password: data.password});
+        } catch (error) {
+            setServerError(registerErrorMessage(error));
+            return;
+        }
+        setSuccess(true);
+        // 가입한 계정으로 바로 로그인. 실패하면 로그인 화면으로 보낸다
+        const result = await signIn("credentials", {email: data.email, password: data.password, redirect: false});
+        if (result?.error) {
             setTimeout(() => router.push("/login"), 1500);
-        } catch {
-            setServerError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        } else {
+            window.location.href = "/home";
         }
     };
 
@@ -72,7 +85,7 @@ export default function RegisterForm() {
                 <p className="text-lg font-semibold text-slate-800">
                     회원가입이 완료되었습니다!
                 </p>
-                <p className="text-sm text-slate-500 mt-1">로그인 페이지로 이동합니다...</p>
+                <p className="text-sm text-slate-500 mt-1">로그인하는 중입니다...</p>
             </div>
         );
     }
@@ -80,7 +93,7 @@ export default function RegisterForm() {
     return (
         <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-200 px-8 py-10">
             <h1 className="text-2xl font-bold text-slate-900 mb-1">회원가입</h1>
-            <p className="text-sm text-slate-500 mb-8">CIRA 계정을 만드세요.</p>
+            <p className="text-sm text-slate-500 mb-8">이메일로 계정을 만드세요. 가입 후 바로 로그인됩니다.</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>

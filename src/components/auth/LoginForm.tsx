@@ -7,8 +7,15 @@ import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
-// TODO: 임시 - 백엔드 미기동 시 admin/admin 로그인 허용 (백엔드 복구 후 제거)
+import {SESSION_EXPIRED_REASON} from "@/lib/api/client";
+
+// 개발용 admin/admin 로그인 (DEV_ADMIN_LOGIN=true). 서버(src/auth.ts)가 실제 계정으로 바꿔 로그인한다
 const DEV_ADMIN = "admin";
+
+/** /login?reason=… 로 들어왔을 때 보여 줄 안내 */
+const LOGIN_NOTICES: Record<string, string> = {
+    [SESSION_EXPIRED_REASON]: "로그인 정보가 만료되었거나 유효하지 않습니다. 다시 로그인해 주세요.",
+};
 
 const schema = z.object({
     email: z.string().refine(
@@ -23,7 +30,8 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export default function LoginForm() {
+export default function LoginForm({reason}: { reason?: string }) {
+    const notice = reason ? LOGIN_NOTICES[reason] : undefined;
     const [showPassword, setShowPassword] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
 
@@ -53,6 +61,12 @@ export default function LoginForm() {
             <p className="text-sm text-slate-500 mb-8">
                 CIRA에 오신 것을 환영합니다.
             </p>
+
+            {notice && (
+                <p role="alert" className="-mt-4 mb-6 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-700">
+                    {notice}
+                </p>
+            )}
 
             <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
                 <div>
@@ -139,7 +153,7 @@ export default function LoginForm() {
             <p className="mt-6 text-center text-sm text-slate-500">
                 계정이 없으신가요?{" "}
                 <Link
-                    href="/cira/register"
+                    href="/register"
                     className="text-blue-600 font-medium hover:underline"
                 >
                     회원가입

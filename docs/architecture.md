@@ -46,7 +46,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 - 백엔드 오류 응답(4xx·5xx)도 상태와 본문을 바꾸지 않고 그대로 전달합니다.
 - **로그인도 `BACKEND_URL`(UMD) 을 거칩니다.** UMD(server)는 토큰 없는 요청을 401 로 막으므로, UMD 의 `umd.server.public-paths` 에 로그인 경로(예 `/tsh/api/v1/auth/**`)가 있어야 로그인할 수 있습니다.
 
-- 401 응답을 받으면 axios 인터셉터가 `signOut({callbackUrl: "/login"})`을 호출합니다 (`src/lib/api/client.ts`).
+- 401 응답을 받으면 axios 인터셉터가 `signOut({callbackUrl: "/login?reason=expired"})`을 한 번만 호출하고, 로그인 화면이 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다 (`src/lib/api/client.ts`, `LoginForm`). `/v1/auth/*` 요청의 401 은 제외(화면이 직접 처리).
 - QueryClient 기본값은 `staleTime` 30초, `retry` 1입니다 (`src/components/Providers.tsx`).
 - 알림은 브라우저가 `NEXT_PUBLIC_BACKEND_URL`에 SSE로 직접 연결합니다 (`src/hooks/useNotifications.ts`).
 
@@ -54,7 +54,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 | 파일 | 역할 |
 |---|---|
-| `src/auth.ts` | next-auth v5 설정. Credentials provider가 `POST ${BACKEND_URL}/v1/auth/login`을 호출하고, 받은 `accessToken`을 JWT에 저장. 응답에 `user` 가 없으면(d94-query) 표시 이름은 이메일 |
+| `src/auth.ts` | next-auth v5 설정. Credentials provider가 `POST ${BACKEND_URL}/v1/auth/login`을 호출하고, 받은 `accessToken`을 JWT에 저장. 응답에 `user` 가 없으면(d94-query) 표시 이름은 이메일. `DEV_ADMIN_LOGIN=true` 일 때 admin/admin 은 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD` 실제 계정으로 로그인(없으면 1회 가입 후 로그인), 둘 다 없으면 가짜 토큰(mock 전용) |
 | `src/next-auth.d.ts` | `session.user.accessToken` 타입 확장 |
 | `src/app/api/auth/[...nextauth]/` | next-auth 라우트 핸들러 |
 | `src/middleware.ts` | 로그인 여부에 따른 리다이렉트 |
@@ -67,7 +67,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 ## 라우트 구조
 
-- `src/app/(auth)/`: 로그인 화면 계열(`login`, `register`, `cira/register`)
+- `src/app/(auth)/`: 로그인 화면 계열(`login`, `register` 이메일 회원가입, `cira/register` → `/register` redirect)
 - `src/app/(main)/`: 공통 레이아웃(헤더·사이드바)이 적용되는 서비스 화면
   - `projects/[projectId]/` 아래:
     - `issues/[issueId]`
