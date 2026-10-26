@@ -54,7 +54,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 | 파일 | 역할 |
 |---|---|
-| `src/auth.ts` | next-auth v5 설정. Credentials provider가 `POST ${BACKEND_URL}/v1/auth/login`을 호출하고, 받은 `accessToken`을 JWT에 저장. 응답에 `user` 가 없으면(d94-query) 표시 이름은 이메일. `DEV_ADMIN_LOGIN=true` 일 때 admin/admin 은 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD` 실제 계정으로 로그인(없으면 1회 가입 후 로그인), 둘 다 없으면 가짜 토큰(mock 전용) |
+| `src/auth.ts` | next-auth v5 설정. Credentials provider가 `POST ${BACKEND_URL}/v1/auth/login`을 호출하고, 받은 `accessToken`을 JWT에 저장. 응답에 `user` 가 없으면(d94-query) 표시 이름은 이메일. `DEV_ADMIN_LOGIN=true` 일 때 admin/admin(또는 그 계정을 직접 입력)은 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD` 실제 계정으로 로그인(없으면 1회 가입 후 로그인), 둘 다 없으면 가짜 토큰(mock 전용). 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 (비밀번호 제외) |
 | `src/next-auth.d.ts` | `session.user.accessToken` 타입 확장 |
 | `src/app/api/auth/[...nextauth]/` | next-auth 라우트 핸들러 |
 | `src/middleware.ts` | 로그인 여부에 따른 리다이렉트 |
