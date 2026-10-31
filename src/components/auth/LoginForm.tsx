@@ -1,16 +1,14 @@
 "use client";
 
+import {useLogin} from "@/hooks/useAuth";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {signIn} from "next-auth/react";
 import Link from "next/link";
 import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
+import {DEV_ADMIN} from "@/lib/api/auth";
 import {SESSION_EXPIRED_REASON} from "@/lib/api/client";
-
-// 개발용 admin/admin 로그인 (DEV_ADMIN_LOGIN=true). 서버(src/auth.ts)가 실제 계정으로 바꿔 로그인한다
-const DEV_ADMIN = "admin";
 
 /** /login?reason=… 로 들어왔을 때 보여 줄 안내 */
 const LOGIN_NOTICES: Record<string, string> = {
@@ -41,14 +39,19 @@ export default function LoginForm({reason}: { reason?: string }) {
         formState: {errors, isSubmitting},
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
+    const {mutateAsync: login} = useLogin();
+
     const onSubmit = async (data: FormData) => {
         setServerError(null);
-        const result = await signIn("credentials", {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-        });
-        if (result?.error) {
+        let success: boolean;
+        try {
+            // 비밀번호는 브라우저에서 암호화한 뒤에만 전송된다 (ADR 0004)
+            success = await login({email: data.email, password: data.password});
+        } catch {
+            setServerError("서버에 연결할 수 없습니다. 잠시 후 다시 시도해주세요.");
+            return;
+        }
+        if (!success) {
             setServerError("이메일 또는 비밀번호가 올바르지 않습니다.");
         } else {
             window.location.href = "/home";

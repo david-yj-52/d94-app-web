@@ -47,6 +47,7 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 
 **L3 문서 없이 여기서만 설명하는 화면**
 - `/login`, `/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)). `/login?reason=expired` 면 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다(API 401 → `apiClient` 가 로그아웃시키며 붙임).
+- 로그인·회원가입 자격 증명은 브라우저에서 암호화되어 `{enc}` 봉투로만 나갑니다(`/api/auth/callback/credentials`·`/api/proxy/v1/auth/register` 모두). [ADR 0004](../../docs/decisions/0004-credential-encryption.md)
 - `/cira/register`: `/register` 로 redirect 합니다. 소셜(Google) 가입은 미구현입니다.
 - `/notifications`: 알림 목록(페이지네이션)입니다.
   - 클릭하면 읽음 처리한 뒤 `/search?q={issueKey}`로 이동합니다. "모두 읽음"도 있습니다.

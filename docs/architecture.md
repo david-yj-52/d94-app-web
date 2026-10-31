@@ -44,6 +44,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 | mock | `DEV_MOCK_API=true` 이면 mock 결과를 반환 (204 등 본문 없는 상태 지원) |
 
 - 백엔드 오류 응답(4xx·5xx)도 상태와 본문을 바꾸지 않고 그대로 전달합니다.
+- **로그인·회원가입 자격 증명은 브라우저에서 암호화됩니다** (RSA-OAEP-256 + AES-256-GCM, [ADR 0004](decisions/0004-credential-encryption.md)). 브라우저가 `GET /v1/auth/public-key`로 d94-query 공개키를 받아 `{enc}` 봉투만 보내고, 복호화는 d94-query 만 합니다. 따라서 DevTools·Next 서버·UMD·Redis 구간에 평문 비밀번호가 남지 않습니다. d94-query 는 평문 본문을 400 `AUTH_CREDENTIAL_INVALID`로 거절합니다(`AUTH_CREDENTIAL_ALLOW_PLAINTEXT=true` 일 때만 예외).
 - **로그인도 `BACKEND_URL`(UMD) 을 거칩니다.** UMD(server)는 토큰 없는 요청을 401 로 막으므로, UMD 의 `umd.server.public-paths` 에 로그인 경로(예 `/tsh/api/v1/auth/**`)가 있어야 로그인할 수 있습니다.
 
 - 401 응답을 받으면 axios 인터셉터가 `signOut({callbackUrl: "/login?reason=expired"})`을 한 번만 호출하고, 로그인 화면이 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다 (`src/lib/api/client.ts`, `LoginForm`). `/v1/auth/*` 요청의 401 은 제외(화면이 직접 처리).
@@ -54,7 +55,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 | 파일 | 역할 |
 |---|---|
-| `src/auth.ts` | next-auth v5 설정. Credentials provider가 `POST ${BACKEND_URL}/v1/auth/login`을 호출하고, 받은 `accessToken`을 JWT에 저장. 응답에 `user` 가 없으면(d94-query) 표시 이름은 이메일. `DEV_ADMIN_LOGIN=true` 일 때 admin/admin(또는 그 계정을 직접 입력)은 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD` 실제 계정으로 로그인(없으면 1회 가입 후 로그인), 둘 다 없으면 가짜 토큰(mock 전용). 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 (비밀번호 제외) |
+| `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`을 JWT에 저장. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). `DEV_ADMIN_LOGIN=true` 일 때 브라우저가 admin/admin 을 입력하면 비밀번호 없이 `devAdmin` 표시만 오고, 서버가 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD`를 **서버에서 암호화**해 그 실제 계정으로 로그인(없으면 1회 가입 후 로그인), 둘 다 없으면 가짜 토큰(mock 전용). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
 | `src/next-auth.d.ts` | `session.user.accessToken` 타입 확장 |
 | `src/app/api/auth/[...nextauth]/` | next-auth 라우트 핸들러 |
 | `src/middleware.ts` | 로그인 여부에 따른 리다이렉트 |

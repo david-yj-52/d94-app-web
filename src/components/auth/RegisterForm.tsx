@@ -1,9 +1,8 @@
 "use client";
 
-import {useRegister} from "@/hooks/useAuth";
+import {useLogin, useRegister} from "@/hooks/useAuth";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {isAxiosError} from "axios";
-import {signIn} from "next-auth/react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
@@ -58,6 +57,7 @@ export default function RegisterForm() {
     } = useForm<FormData>({resolver: zodResolver(schema)});
 
     const {mutateAsync: registerUser} = useRegister();
+    const {mutateAsync: login} = useLogin();
 
     const onSubmit = async (data: FormData) => {
         setServerError(null);
@@ -69,8 +69,8 @@ export default function RegisterForm() {
         }
         setSuccess(true);
         // 가입한 계정으로 바로 로그인. 실패하면 로그인 화면으로 보낸다
-        const result = await signIn("credentials", {email: data.email, password: data.password, redirect: false});
-        if (result?.error) {
+        const loggedIn = await login({email: data.email, password: data.password}).catch(() => false);
+        if (!loggedIn) {
             setTimeout(() => router.push("/login"), 1500);
         } else {
             window.location.href = "/home";

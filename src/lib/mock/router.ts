@@ -6,7 +6,9 @@ import type {CommentResponse} from "@/types/comment";
 import type {SprintResponse} from "@/types/sprint";
 import type {CfdResponse, DashboardIssue, DashboardResponse} from "@/types/reports";
 import type {InterfaceTestItemResponse} from "@/types/interfaceTest";
+import type {EncryptedCredential} from "@/types/auth";
 import {dateFrom, findUser, getStore, ISSUE_TYPES, ME, nextId, summary, USERS} from "./data";
+import {mockCredentialPublicKey, mockDecryptCredential} from "./credential";
 
 type Params = Record<string, string>;
 type Body = Record<string, unknown>;
@@ -185,18 +187,25 @@ function sprintPoints(sprintId: string) {
 }
 
 // ── 라우트 정의 ───────────────────────────────────────────────────────
-type Handler = (ctx: Ctx) => MockResult;
+type Handler = (ctx: Ctx) => MockResult | Promise<MockResult>;
 const routes: Array<[string, string, Handler]> = [];
 const on = (method: string, pattern: string, h: Handler) => routes.push([method, pattern, h]);
 
 // 인증
-on("POST", "/v1/auth/register", () => ok({id: nextId("u")}));
-on("POST", "/v1/auth/login", () => ok({
-    accessToken: "dev-admin-token",
-    tokenType: "Bearer",
-    expiresIn: 3600,
-    user: {name: ME.name}
-}));
+// 인증: 본문은 암호화 봉투 {enc} (ADR 0004). 풀리지 않으면 백엔드처럼 400 AUTH_CREDENTIAL_INVALID
+const credentialInvalid: MockResult = {
+    status: 400,
+    body: {success: false, code: "AUTH_CREDENTIAL_INVALID", message: "Invalid encrypted credential (mock)"},
+};
+on("GET", "/v1/auth/public-key", async () => ok(await mockCredentialPublicKey()));
+on("POST", "/v1/auth/register", async ({body}) =>
+    (await mockDecryptCredential(body.enc as EncryptedCredential, "register")) ? {status: 201, body: {success: true}} : credentialInvalid);
+on("POST", "/v1/auth/login", async ({body}) => {
+    const fields = await mockDecryptCredential(body.enc as EncryptedCredential, "login");
+    if (!fields) return credentialInvalid;
+    // mock 은 비밀번호를 검사하지 않는다 (어떤 계정이든 로그인)
+    return ok({accessToken: "dev-admin-token", tokenType: "Bearer", expiresIn: 3600, user: {name: fields.email ?? ME.name}});
+});
 
 // 사용자 / 대시보드
 on("GET", "/v1/users/search", ({query}) => {
@@ -1074,4 +1083,4 @@ export async function handleMockRequest(request: Request, path: string[]): Promi
     return {status: 404, body: {success: false, error: `Mock route not implemented: ${method} ${pathname}`}};
 }
 
-export const isMockEnabled = () => process.env.NODE_ENV !== "production" && process.env.DEV_MOCK_API === "true";
+export {isMockEnabled} from "./enabled";

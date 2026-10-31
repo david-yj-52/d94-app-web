@@ -80,8 +80,9 @@ LoginForm(props: { reason?: string })   // reason = /login?reason=… (LOGIN_NOT
 RegisterForm()                          // props 없음
 ```
 - react-hook-form + zod로 검증합니다.
-- LoginForm은 `signIn("credentials")`을 호출합니다. `reason`이 `LOGIN_NOTICES`에 있으면 폼 위에 안내(amber)를 띄웁니다.
-- RegisterForm은 `useRegister`(`hooks/useAuth`)로 가입한 뒤 같은 계정으로 `signIn` 해서 `/home` 으로 보냅니다. 자동 로그인이 실패하면 `/login`으로 보냅니다. 오류 안내: 400 "이미 가입된 이메일", 401 "서버에서 거절"(UMD public-paths 누락), 502 이상·연결 실패 "일시적으로 연결할 수 없음".
+- 두 폼 모두 비밀번호를 **암호화한 뒤에만** 전송합니다(ADR 0004). `signIn`을 직접 부르지 말고 `useLogin`을 쓰세요.
+- LoginForm은 `useLogin`(`hooks/useAuth`)을 호출합니다. 결과 false → "이메일 또는 비밀번호가 올바르지 않습니다", throw(공개키 조회 실패) → "서버에 연결할 수 없습니다". `reason`이 `LOGIN_NOTICES`에 있으면 폼 위에 안내(amber)를 띄웁니다.
+- RegisterForm은 `useRegister`로 가입한 뒤 같은 계정으로 `useLogin` 해서 `/home` 으로 보냅니다. 자동 로그인이 실패하면 `/login`으로 보냅니다. 오류 안내: 400 "이미 가입된 이메일", 401 "서버에서 거절"(UMD public-paths 누락), 502 이상·연결 실패 "일시적으로 연결할 수 없음".
 - 사용처: `(auth)/login/page.tsx`, `(auth)/register/page.tsx`
 
 ### MilestoneCard — `@/components/milestone/MilestoneCard`

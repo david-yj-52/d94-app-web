@@ -5,6 +5,7 @@
 | 폴더/파일 | 역할 | 상태 |
 |---|---|---|
 | `api/` | axios 기반 도메인별 HTTP 함수 (`client.ts` + 17개 도메인) | ✅ 표준 |
+| `crypto/` | 로그인·회원가입 자격 증명 암호화 (WebCrypto) | ✅ 표준 |
 | `mock/` | 개발용 in-memory mock 백엔드 (`DEV_MOCK_API`) | ✅ 임시 |
 | `messaging/solace/` | Solace WebSocket 설정·훅 | 🧪 Solace 실험 전용 |
 | `api.ts` | 구 fetch 래퍼 (서버·클라이언트 겸용) | 🧪 todo 실험 전용, 새 코드에서 사용 금지 |
@@ -14,7 +15,15 @@
 - `apiClient`(`./client`)만 사용합니다. 경로는 `/v1/...`이고, 실제 요청은 `/api/proxy/v1/...`로 나갑니다.
 - 반환값은 `res.data.data`이고, 반환 타입을 명시합니다. 함수 하나가 HTTP 호출 하나를 맡으며 캐싱이나 상태 관리는 하지 않습니다.
 - `apiClient`는 401 응답을 받으면 `signOut({callbackUrl: "/login?reason=expired"})`을 **한 번만** 호출합니다(동시 401 여러 건 대비). `/login`은 `reason`을 보고 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다. `/v1/auth/*`(로그인·회원가입) 요청의 401 은 제외합니다.
-- `api/auth.ts`: `registerUser`(회원가입)만 있습니다. 로그인은 next-auth Credentials(`src/auth.ts`)가 서버에서 `${BACKEND_URL}/v1/auth/login`을 호출합니다.
+- `api/auth.ts`: 자격 증명은 **암호화해서만** 보냅니다 ([ADR 0004](../../docs/decisions/0004-credential-encryption.md)).
+  - `getCredentialPublicKey()` → `GET /v1/auth/public-key` (`CredentialPublicKeyResponse`, 캐시하지 않음)
+  - `registerUser(data)` → 공개키로 암호화해 `POST /v1/auth/register` 에 `{enc}` 전송
+  - `loginWithCredentials({email, password})` → 암호화한 봉투를 `signIn("credentials", {enc})`로 보내고 성공 여부(boolean) 반환. admin/admin(`DEV_ADMIN`)이면 비밀번호 대신 `{devAdmin: "true"}`. 공개키 조회 실패는 throw. 백엔드 호출은 next-auth(`src/auth.ts`)가 서버에서 암호문 그대로 `${BACKEND_URL}/v1/auth/login`에 전달합니다.
+
+## 1-1. 자격 증명 암호화 (`crypto/credential.ts`)
+
+- 브라우저·Node·Edge 공용(WebCrypto만 사용). `encryptCredential(publicKey, purpose, fields)` → `EncryptedCredential` (`{v:1, alg:"RSA-OAEP-256+A256GCM", kid, key, iv, data}`).
+- 평문에 `ts`(epoch ms)·`nonce`를 붙이고, AAD `d94-auth:v1:{login|register}`로 용도를 묶습니다. 형식은 d94-query `CredentialCryptoService`와 짝입니다. 바꾸면 양쪽을 같이 바꿔야 합니다.
 
 ```ts
 import apiClient from "./client";
@@ -55,6 +64,8 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 - 응답 헬퍼: `ok(data)` → `{success: true, data}`, `notFound(what)` → 404. 본문 없는 상태(`{status: 204}`)도 반환할 수 있습니다(프록시가 본문 없이 응답).
 - 인터페이스 테스트 mock(`/v1/interface-tests`)은 백엔드와 같은 상태코드(201·204·400·404)를 돌려줍니다. 저장소는 `getStore().interfaceTests`.
 - multipart 업로드는 `handleMockRequest`의 attachments 분기에서 특수 처리합니다.
+- 인증 mock(`/v1/auth/public-key`·`login`·`register`)은 `credential.ts`의 실제 RSA 키(globalThis 보관, 재시작 시 새로 생성)로 봉투를 복호화합니다. 풀리지 않거나 평문이면 400 `AUTH_CREDENTIAL_INVALID`, 로그인은 비밀번호를 검사하지 않고 아무 계정이나 통과시킵니다. 핸들러는 `Promise<MockResult>`도 반환할 수 있습니다.
+- `enabled.ts`의 `isMockEnabled`는 `src/auth.ts`(미들웨어 번들)가 라우터 전체를 끌어오지 않도록 분리해 둔 것입니다. `router.ts`도 같은 함수를 다시 export 합니다.
 
 ## 3. Solace (`messaging/solace/`) 🧪
 
