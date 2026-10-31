@@ -18,7 +18,7 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 │   └── mpms/ solace/ todo/ interface-test/                    실험 모듈
 └── api/
     ├── auth/[...nextauth]/    next-auth 핸들러
-    └── proxy/[...path]/       백엔드 투명 프록시 (GET/HEAD/POST/PUT/PATCH/DELETE, Bearer 토큰 주입, 상태·헤더·본문 그대로, 35초 타임아웃, DEV_MOCK_API 시 mock 응답)
+    └── proxy/[...path]/       백엔드 투명 프록시 (GET/HEAD/POST/PUT/PATCH/DELETE, 서버에서 세션 쿠키의 토큰으로 Bearer 주입(ADR 0005), 상태·헤더·본문 그대로, 35초 타임아웃, DEV_MOCK_API 시 mock 응답)
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.

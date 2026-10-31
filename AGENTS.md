@@ -129,6 +129,8 @@ src/
 - `localStorage` / `sessionStorage` 직접 접근
 - 외부 CDN 스크립트 삽입
 - 실험 모듈끼리 서로 import (예: CIRA 코드에서 `components/mpns` 사용). 구 fetch 래퍼(`src/lib/api.ts`, `src/app/actions.ts`)는 todo 실험 전용입니다.
+- 백엔드 토큰(`accessToken`)을 브라우저로 내리기 (`session` 콜백·응답 본문·URL 쿼리 모두). 서버에서 `getBackendAccessToken`으로만 씁니다 → [ADR 0005](docs/decisions/0005-backend-token-server-only.md)
+- 브라우저에서 백엔드 직접 호출 (`EventSource`·`fetch` 모두 `/api/proxy` 경유)
 - multipart 업로드 시 `Content-Type` 직접 지정 (반드시 `undefined`로 제거 → [src/lib/AGENTS.md](src/lib/AGENTS.md))
 
 기존 코드에 이 규칙을 어기는 예외가 있습니다. **고치지 않은 예외를 따라 하지 마세요** → [docs/conventions.md](docs/conventions.md)

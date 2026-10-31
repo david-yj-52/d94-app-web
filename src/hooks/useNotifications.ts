@@ -1,93 +1,52 @@
 "use client";
 
 import {useToast} from "@/components/ui/Toast";
-import type {NotificationItem, NotificationPage} from "@/lib/api/notifications";
-import {useQueryClient} from "@tanstack/react-query";
+import {getNotifications} from "@/lib/api/notifications";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {useSession} from "next-auth/react";
 import {useEffect, useRef} from "react";
 
-const MAX_RETRIES = 5;
-const RETRY_DELAY_MS = 3000;
+/** 새 알림 확인 주기. 화면이 숨겨져 있으면 TanStack Query 가 폴링을 멈춘다 */
+const POLL_INTERVAL_MS = 30_000;
 
+/**
+ * 새 알림을 폴링해 토스트로 보여 준다 (`/api/proxy` 경유 — 토큰은 서버가 붙인다).
+ * SSE 를 쓰지 않는 이유: 브라우저에 백엔드 토큰을 내려야 하고, UMD 가 스트리밍을 지원하지 않는다 (ADR 0005).
+ * 첫 조회 결과는 기준선으로만 쓰고, 이후 조회에서 처음 보는 안 읽은 알림만 토스트로 띄운다.
+ */
 export function useNotifications() {
     const queryClient = useQueryClient();
-    const {data: session} = useSession();
+    const {status} = useSession();
     const {show, ToastComponent} = useToast();
 
-    const esRef = useRef<EventSource | null>(null);
-    const retriesRef = useRef(0);
-    const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-    // Keep latest session in a ref so connect() always uses the current token
-    const sessionRef = useRef(session);
-    sessionRef.current = session;
+    // NotificationBell 과 같은 키 → 드롭다운 목록도 함께 갱신된다
+    const {data} = useQuery({
+        queryKey: ["notifications", "recent"],
+        queryFn: () => getNotifications(0, 10),
+        enabled: status === "authenticated",
+        refetchInterval: POLL_INTERVAL_MS,
+    });
+
+    const seenRef = useRef<Set<string> | null>(null);
 
     useEffect(() => {
-        if (!session) return;
-
-        function connect() {
-            if (esRef.current) {
-                esRef.current.close();
-                esRef.current = null;
-            }
-
-            const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
-            const token = sessionRef.current?.user?.accessToken;
-            const qs = token ? `?token=${encodeURIComponent(token)}` : "";
-            const url = `${backendUrl}/api/v1/notifications/subscribe${qs}`;
-
-            const es = new EventSource(url);
-            esRef.current = es;
-
-            es.onmessage = (event) => {
-                retriesRef.current = 0;
-                try {
-                    const notification: NotificationItem = JSON.parse(event.data);
-                    queryClient.setQueryData<NotificationPage>(
-                        ["notifications", "recent"],
-                        (old) => ({
-                            ...(old ?? {content: [], totalElements: 0, totalPages: 1, number: 0, size: 10}),
-                            content: [notification, ...(old?.content ?? [])].slice(0, 10),
-                            totalElements: (old?.totalElements ?? 0) + 1,
-                        }),
-                    );
-                    queryClient.setQueryData<number>(
-                        ["notifications-unread-count"],
-                        (old) => (old ?? 0) + 1,
-                    );
-                    show(notification.title, "success");
-                } catch {
-                    // ignore malformed SSE payloads
-                }
-            };
-
-            es.onerror = () => {
-                es.close();
-                esRef.current = null;
-                if (retriesRef.current < MAX_RETRIES) {
-                    retriesRef.current += 1;
-                    retryTimerRef.current = setTimeout(connect, RETRY_DELAY_MS);
-                }
-            };
+        if (!data) return;
+        const ids = data.content.map((n) => n.id);
+        if (seenRef.current === null) {
+            seenRef.current = new Set(ids);
+            return;
         }
+        const fresh = data.content.filter((n) => !n.isRead && !seenRef.current!.has(n.id));
+        ids.forEach((id) => seenRef.current!.add(id));
+        if (fresh.length === 0) return;
+        show(fresh.length === 1 ? fresh[0].title : `새 알림 ${fresh.length}건`, "success");
+        queryClient.invalidateQueries({queryKey: ["notifications-unread-count"]});
+    }, [data, queryClient, show]);
 
-        connect();
-
-        function handleVisibilityChange() {
-            if (!document.hidden && !esRef.current) {
-                retriesRef.current = 0;
-                connect();
-            }
-        }
-
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-
-        return () => {
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
-            if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
-            esRef.current?.close();
-            esRef.current = null;
-        };
-    }, [session?.user?.id]);
+    // 로그아웃하면 기준선을 버린다 (다른 계정으로 로그인했을 때 이전 알림을 새 알림으로 보지 않도록)
+    useEffect(() => {
+        if (status === "unauthenticated") seenRef.current = null;
+    }, [status]);
 
     return {ToastComponent};
 }

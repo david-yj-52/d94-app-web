@@ -42,7 +42,7 @@ export function useCreateMilestone(projectId: string) {
 | useWiki | useWikiTree, useWikiPage, useWikiVersions, useCreate/Update/DeleteWikiPage | `["wiki-tree", projectId]`, `["wiki-page", pageId]`, `["wiki-versions", pageId]` |
 | useAutomation | useAutomationRules, useCreate/Update/DeleteAutomationRule, useRuleExecutions | `["automation-rules", projectId]`, `["rule-executions", ruleId]` |
 | useGitIntegration | useGitRepos, useRegister/DeleteGitRepo, useGitActivity | `["git-repos", projectId]`, `["git-activity", projectId]` |
-| useNotifications | useNotifications (SSE 구독, Query 아님) | — |
+| useNotifications | useNotifications (30초 폴링 + 새 알림 토스트) | `["notifications", "recent"]` (NotificationBell 과 공유) |
 | useInterfaceTests | useInterfaceTestItems, useInterfaceCall | `["interface-tests"]` (useInterfaceCall 은 변경 메서드 2xx 시 무효화) |
 | useAuth | useRegister, useLogin | — (mutation 만, 캐시 없음. 둘 다 자격 증명을 암호화해 보냄. `useLogin` 결과 boolean = 자격 증명 일치) |
 
@@ -52,6 +52,6 @@ export function useCreateMilestone(projectId: string) {
 
 ## 3. 특수 훅
 
-- **useNotifications**: `EventSource`로 `${NEXT_PUBLIC_BACKEND_URL}/api/v1/notifications/subscribe?token=…`을 구독합니다. 연결이 끊기면 다시 연결하고, 알림이 오면 토스트를 띄웁니다. `layout/NotificationMount`에서 한 번만 사용합니다.
+- **useNotifications**: `getNotifications(0, 10)`을 30초마다 폴링합니다(`refetchInterval`, 화면이 숨겨지면 멈춤). 첫 결과는 기준선으로만 쓰고, 이후 처음 보는 안 읽은 알림만 토스트로 띄우며 `["notifications-unread-count"]`를 무효화합니다. SSE 는 쓰지 않습니다(브라우저에 토큰을 내려야 하고 UMD 가 스트리밍 미지원, [ADR 0005](../../docs/decisions/0005-backend-token-server-only.md)). `layout/NotificationMount`에서 한 번만 사용합니다.
 - **useCqlValidate**: 입력값을 500ms debounce한 뒤 검증 API를 호출합니다.
-- useNotifications는 SSE 이벤트를 토스트로 바로 보여 주기 위해 예외적으로 훅 안에서 `useToast`를 씁니다. 일반 훅에서는 따라 하지 마세요.
+- useNotifications는 새 알림을 토스트로 바로 보여 주기 위해 예외적으로 훅 안에서 `useToast`를 씁니다. 일반 훅에서는 따라 하지 마세요.

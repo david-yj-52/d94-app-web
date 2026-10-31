@@ -17,7 +17,7 @@
 - **Solace 설정 하드코딩**: `src/lib/messaging/solace/solaceConfig.ts`에 `ws://localhost:8008`, admin/admin이 들어 있고 환경 변수를 무시합니다.
 - **로그인 표시 이름 = 이메일** (`src/auth.ts`): d94-query 로그인 응답에 `user` 가 없어 `session.user.name` 에 이메일을 넣습니다. 이름이 필요하면 백엔드 응답에 사용자 정보를 추가하거나 `/v1/users/me` 를 조회해야 합니다. (2026-10-25 발견: 이전에는 `data.user.name` 접근이 실패해 실제 백엔드로 로그인이 항상 실패했음)
 - **자격 증명 암호화 배포 순서** ([ADR 0004](decisions/0004-credential-encryption.md)): 웹이 `/v1/auth/public-key`가 없는 옛 d94-query 에 붙으면 로그인·가입이 "서버에 연결할 수 없습니다"로 실패합니다. 반대로 새 d94-query 는 옛 웹의 평문 요청을 400 으로 거절합니다. **d94-query 먼저 배포**하고, 필요하면 전환 기간에만 `AUTH_CREDENTIAL_ALLOW_PLAINTEXT=true`. UMD(server) `public-paths` 에 `/tsh/api/v1/auth/**`(GET 포함)가 있어야 공개키를 받을 수 있습니다. 재전송 방지 nonce 는 d94-query 인메모리라 다중 인스턴스면 Redis 로 옮겨야 합니다.
-- **토큰 없는 요청이 403** : d94-query 는 토큰 없이 보호 API 를 부르면 401 이 아니라 403 을 줍니다. `apiClient` 는 401 에서만 `signOut` 하므로, 세션 토큰이 만료돼도 로그인 화면으로 가지 않을 수 있습니다.
+- **토큰 없는 요청이 403** : d94-query 는 토큰 없이 보호 API 를 부르면 401 이 아니라 403 을 줍니다. `apiClient` 는 401 에서만 `signOut` 합니다. 백엔드 토큰 만료는 이제 `jwt` 콜백이 세션을 끝내 다음 요청에서 `/login`으로 보내지만(ADR 0005), 그 외 이유의 403 은 여전히 로그인 화면으로 가지 않습니다.
 - **API 레이어 이중화**: `src/lib/api/*`(axios)와 todo 실험용 `src/lib/api.ts`(fetch)가 공존합니다.
 - **보호 경로**: `/home`, `/todo`는 페이지에서 `auth()`로 직접 확인합니다. `/mpms`, `/solace`는 보호되지 않습니다. 의도한 것인지 확인이 필요합니다.
 - **`/` 경로 중복**: `src/app/page.tsx`와 `src/app/(main)/page.tsx`가 같은 URL `/`를 가집니다(현재 둘 다 `/home`으로 redirect). `next build`는 오류 없이 통과하지만(2026-10-15 확인) 실제로는 둘 중 하나만 서빙됩니다. 의도를 정해 하나를 제거하세요.

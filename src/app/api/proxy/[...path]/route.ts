@@ -1,4 +1,4 @@
-import {auth} from "@/auth";
+import {getBackendAccessToken} from "@/lib/auth/accessToken";
 import {NextResponse} from "next/server";
 import {handleMockRequest, isMockEnabled} from "@/lib/mock/router";
 
@@ -45,15 +45,16 @@ async function proxyHandler(
     const targetPath = `/${resolvedParams.path.join("/")}${url.search}`;
     const method = request.method;
 
-    const session = await auth();
+    // 백엔드 토큰은 서버에서만 세션 쿠키에서 꺼낸다 (브라우저 세션 응답에는 없음, ADR 0005)
+    const accessToken = await getBackendAccessToken(request);
 
     const headers = new Headers();
     for (const name of PASS_REQUEST_HEADERS) {
         const value = request.headers.get(name);
         if (value) headers.set(name, value);
     }
-    if (session?.user?.accessToken) {
-        headers.set("authorization", `Bearer ${session.user.accessToken}`);
+    if (accessToken) {
+        headers.set("authorization", `Bearer ${accessToken}`);
     }
     const clientIp = request.headers.get("x-forwarded-for");
     if (clientIp) headers.set("x-forwarded-for", clientIp);

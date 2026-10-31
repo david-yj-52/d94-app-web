@@ -22,7 +22,6 @@
 | `DEV_ADMIN_EMAIL`, `DEV_ADMIN_PASSWORD` | `src/auth.ts` | admin/admin 을 이 **실제 백엔드 계정**으로 로그인시켜 유효한 JWT 를 받음 (계정이 없으면 첫 로그인 때 가입). 서버가 백엔드 공개키로 암호화해 보낸다. 이 이메일·비밀번호를 직접 입력하면 일반 로그인(표시 이름은 이메일). 비우면 가짜 토큰 → mock 모드에서만 동작 |
 | `DEV_MOCK_API` | `src/lib/mock/router.ts` | `true`면 `/api/proxy`가 mock으로 응답 (production에서는 무시) |
 | `BACKEND_URL` | 프록시, 로그인 | 서버 사이드에서 쓰는 백엔드 주소 |
-| `NEXT_PUBLIC_BACKEND_URL` | 알림 SSE | 브라우저가 직접 연결하는 백엔드 주소 |
 | `SOLACE_USER_NAME`, `SOLACE_USER_PWD` | 미사용 | solaceConfig.ts가 값을 하드코딩하고 있어 실제로 쓰이지 않음 |
 
 `.env.local`은 커밋하지 않습니다(`.gitignore`에 포함됨). 새 변수를 추가하면 `.env.sample`과 이 표를 함께 갱신하세요.

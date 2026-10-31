@@ -5,6 +5,7 @@
 | 폴더/파일 | 역할 | 상태 |
 |---|---|---|
 | `api/` | axios 기반 도메인별 HTTP 함수 (`client.ts` + 17개 도메인) | ✅ 표준 |
+| `auth/` | **서버 전용** 인증 헬퍼. `accessToken.ts`의 `getBackendAccessToken(request)` — 세션 쿠키에서 백엔드 토큰을 꺼냄 ([ADR 0005](../../docs/decisions/0005-backend-token-server-only.md)). 클라이언트에서 import 금지 | ✅ 표준 |
 | `crypto/` | 로그인·회원가입 자격 증명 암호화 (WebCrypto) | ✅ 표준 |
 | `mock/` | 개발용 in-memory mock 백엔드 (`DEV_MOCK_API`) | ✅ 임시 |
 | `messaging/solace/` | Solace WebSocket 설정·훅 | 🧪 Solace 실험 전용 |

@@ -19,5 +19,5 @@
 - ⚠️ 컴포넌트 안에서 `useQuery`와 `lib/api/notifications`를 직접 사용합니다(규칙 예외).
 
 ### NotificationMount — `@/components/layout/NotificationMount`
-- props가 없습니다. `useNotifications()`로 SSE(`NEXT_PUBLIC_BACKEND_URL/api/v1/notifications/subscribe`)를 구독합니다. 알림이 오면 토스트를 띄웁니다.
+- props가 없습니다. `useNotifications()`로 최근 알림을 30초마다 폴링하고(`["notifications", "recent"]`, `/api/proxy` 경유), 처음 보는 안 읽은 알림이 있으면 토스트를 띄웁니다.
 - 화면을 그리지 않는 "마운트용" 컴포넌트입니다. 루트 layout에 한 번만 둡니다.

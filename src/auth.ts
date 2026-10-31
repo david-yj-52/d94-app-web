@@ -92,16 +92,26 @@ async function backendLogin(enc: EncryptedCredential): Promise<AuthUser | null> 
     }
 }
 
-/** JWT payload 의 sub (서명 검증은 백엔드 몫 — 여기서는 표시용 이메일만 읽는다) */
-function emailFromAccessToken(token: unknown): string | null {
+/** 백엔드 JWT payload (서명 검증은 백엔드 몫 — 여기서는 표시용 이메일·만료 시각만 읽는다). JWT 가 아니면 null (mock 토큰) */
+function accessTokenClaims(token: unknown): { sub?: unknown; exp?: unknown } | null {
     if (typeof token !== "string") return null;
     try {
         const payload = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-        const sub = JSON.parse(atob(payload)).sub;
-        return typeof sub === "string" ? sub : null;
+        return JSON.parse(atob(payload));
     } catch {
         return null;
     }
+}
+
+function emailFromAccessToken(token: unknown): string | null {
+    const sub = accessTokenClaims(token)?.sub;
+    return typeof sub === "string" ? sub : null;
+}
+
+/** 백엔드 토큰 만료 시각(ms). exp 가 없으면 undefined (mock 토큰 — 세션 만료에 맡긴다) */
+function accessTokenExpiresAt(token: unknown): number | undefined {
+    const exp = accessTokenClaims(token)?.exp;
+    return typeof exp === "number" ? exp * 1000 : undefined;
 }
 
 /** 백엔드 회원가입 (서버에서 암호화). 이미 있는 계정이면 false */
@@ -169,15 +179,18 @@ export const {handlers, auth, signIn, signOut} = NextAuth({
     ],
 
     callbacks: {
+        // 백엔드 토큰은 암호화된 세션 쿠키(JWE) 안에만 둔다. 서버 쪽에서는 lib/auth/accessToken 으로 꺼낸다
         async jwt({token, user}) {
             if (user) {
-                token.accessToken = (user as { accessToken?: string }).accessToken;
+                token.accessToken = user.accessToken;
+                token.accessTokenExpiresAt = accessTokenExpiresAt(user.accessToken);
             }
+            // 백엔드 토큰이 만료되면 세션도 끝낸다 (null → 세션 쿠키 삭제, 미들웨어가 /login 으로 보냄)
+            if (token.accessTokenExpiresAt && Date.now() >= token.accessTokenExpiresAt) return null;
             return token;
         },
-        async session({session, token}) {
-            (session.user as { accessToken?: string }).accessToken =
-                token.accessToken as string | undefined;
+        // 브라우저로 나가는 세션(/api/auth/session)에는 표시용 정보만 담는다. accessToken 은 절대 넣지 않는다 (ADR 0005)
+        async session({session}) {
             return session;
         },
     },
