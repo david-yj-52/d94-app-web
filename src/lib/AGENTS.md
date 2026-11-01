@@ -36,6 +36,9 @@ export async function getMilestones(projectId: string): Promise<MilestoneRespons
 }
 ```
 
+### 예외: `api/notifications.ts` 응답 변환
+d94-query 응답이 web 타입과 달라 `res.data.data`를 그대로 돌려주지 않습니다. `getNotifications`는 목록(`read`·`message`·`resourceType`/`resourceId`)을 `NotificationItem`으로 바꾸고 `page`·`size`로 잘라 `NotificationPage`를 만듭니다(`resourceType === "ISSUE"`면 `issueId`, `issueKey`는 백엔드 값 그대로). `getUnreadCount`는 `{count}`에서 숫자를 꺼냅니다. mock은 이미 web 모양이라 그대로 통과시킵니다 → [known-issues](../../docs/known-issues.md)
+
 ### 파일 업로드
 `apiClient`의 기본 헤더가 `application/json`이므로, `FormData`를 보낼 때는 헤더를 **명시적으로 제거**해야 합니다. 그래야 axios가 boundary를 포함해 헤더를 다시 설정합니다.
 ```ts
