@@ -111,7 +111,7 @@ function boardDetail(boardId: string): BoardDetailResponse | undefined {
     const s = getStore();
     const board = s.boards.find((b) => b.id === boardId);
     if (!board) return undefined;
-    const activeSprint = s.sprints.find((sp) => sp.projectId === board.projectId && sp.status === "ACTIVE");
+    const activeSprint = s.sprints.find((sp) => sp.projectId === board.projectId && sp.sprintStat === "Active");
     const project = s.projects.find((p) => p.id === board.projectId);
     // 스크럼 보드는 활성 스프린트 이슈만, 칸반은 전체
     let pool = s.issues.filter((i) => i.projectId === board.projectId);
@@ -156,10 +156,6 @@ function boardDetail(boardId: string): BoardDetailResponse | undefined {
         createdAt: board.createdAt,
         modifiedAt: board.modifiedAt
     };
-}
-
-function sprintWithCount(sp: SprintResponse): SprintResponse {
-    return {...sp, issueCount: getStore().issues.filter((i) => i.sprintId === sp.id).length};
 }
 
 function findComment(list: CommentResponse[], id: string): CommentResponse | undefined {
@@ -217,7 +213,7 @@ on("GET", "/v1/users/me/dashboard", () => {
     const mine = s.issues.filter((i) => i.assignee?.email === ME.email && statusOf(i.projectId, i.statusId)?.category !== "DONE");
     const open = s.issues.filter((i) => statusOf(i.projectId, i.statusId)?.category !== "DONE" && i.dueDt);
     const upcoming = open.filter((i) => i.dueDt! >= dateFrom(0) && i.dueDt! <= dateFrom(14)).sort((a, b) => a.dueDt!.localeCompare(b.dueDt!));
-    const active = s.sprints.find((sp) => sp.status === "ACTIVE");
+    const active = s.sprints.find((sp) => sp.sprintStat === "Active");
     const sprintIssues = s.issues.filter((i) => i.sprintId === active?.id);
     const data: DashboardResponse = {
         assignedIssues: mine.map(toDashboardIssue),
@@ -256,7 +252,7 @@ on("POST", "/v1/projects", ({body}) => {
     s.projects.push(p);
     s.statuses[p.id] = structuredClone(s.statuses["1"]);
     s.transitions[p.id] = structuredClone(s.transitions["1"]);
-    s.members[p.id] = [{userId: ME.userId, email: ME.email, name: ME.name, role: "ADMIN"}];
+    s.members[p.id] = [{userId: ME.userId, email: ME.email, userNm: ME.name, role: "ADMIN"}];
     return ok(p);
 });
 on("GET", "/v1/projects/:projectId", ({params}) => {
@@ -339,48 +335,42 @@ on("POST", "/v1/issues/:issueId/comments", ({params, body}) => {
         replies: [],
         reactions: []
     };
-    const parent = body.parentCommentId ? findComment(s.comments, String(body.parentCommentId)) : undefined;
+    const parent = body.parentId ? findComment(s.comments, String(body.parentId)) : undefined;
+    if (parent) c.parentId = parent.id;
     if (parent) (parent.replies ??= []).push(c);
     else s.comments.push(c);
     return ok(c);
 });
-on("PUT", "/v1/issues/:issueId/comments/:commentId", ({params, body}) => {
+on("PUT", "/v1/comments/:commentId", ({params, body}) => {
     const c = findComment(getStore().comments, params.commentId);
     if (!c) return notFound("comment");
     c.content = String(body.content ?? c.content);
     c.modifiedAt = new Date().toISOString();
     return ok(c);
 });
-on("DELETE", "/v1/issues/:issueId/comments/:commentId", ({params}) => {
+on("DELETE", "/v1/comments/:commentId", ({params}) => {
     const s = getStore();
     const strip = (list: CommentResponse[]): CommentResponse[] =>
         list.filter((c) => c.id !== params.commentId).map((c) => ({...c, replies: strip(c.replies ?? [])}));
     s.comments = strip(s.comments);
     return ok(null);
 });
+// d94-query 처럼 같은 POST 로 토글하고 바뀐 댓글을 돌려준다
 on("POST", "/v1/comments/:commentId/reactions", ({params, body}) => {
     const c = findComment(getStore().comments, params.commentId);
     if (!c) return notFound("comment");
-    const emoji = String(body.emoji);
-    const r = (c.reactions ??= []).find((x) => x.emoji === emoji);
-    if (r) {
-        if (!r.reacted) {
-            r.count += 1;
-            r.reacted = true;
-        }
-    } else c.reactions.push({emoji, count: 1, reacted: true});
-    return ok(null);
-});
-on("DELETE", "/v1/comments/:commentId/reactions/:emoji", ({params}) => {
-    const c = findComment(getStore().comments, params.commentId);
-    if (!c) return notFound("comment");
-    const r = c.reactions?.find((x) => x.emoji === params.emoji);
+    if (!body.reactionType) return {status: 400, body: {success: false, code: "VALIDATION_ERROR", message: "reactionType: must not be blank"}};
+    const reactionType = String(body.reactionType);
+    const r = (c.reactions ??= []).find((x) => x.reactionType === reactionType);
     if (r?.reacted) {
         r.count -= 1;
         r.reacted = false;
-    }
-    c.reactions = c.reactions?.filter((x) => x.count > 0);
-    return ok(null);
+    } else if (r) {
+        r.count += 1;
+        r.reacted = true;
+    } else c.reactions.push({reactionType, count: 1, reacted: true});
+    c.reactions = c.reactions.filter((x) => x.count > 0);
+    return ok(c);
 });
 
 // 첨부파일
@@ -478,7 +468,7 @@ on("PUT", "/v1/boards/:boardId/issues/:issueId/move", ({params, body}) => {
 });
 
 // 스프린트
-on("GET", "/v1/projects/:projectId/sprints", ({params}) => ok(getStore().sprints.filter((sp) => sp.projectId === params.projectId).map(sprintWithCount)));
+on("GET", "/v1/projects/:projectId/sprints", ({params}) => ok(getStore().sprints.filter((sp) => sp.projectId === params.projectId)));
 on("POST", "/v1/projects/:projectId/sprints", ({params, body}) => {
     const now = new Date().toISOString();
     const sp: SprintResponse = {
@@ -486,24 +476,24 @@ on("POST", "/v1/projects/:projectId/sprints", ({params, body}) => {
         projectId: params.projectId,
         sprintNm: String(body.sprintNm),
         goal: body.goal as string | undefined,
-        status: "CREATED",
+        sprintStat: "Planned",
         startDt: body.startDt as string | undefined,
         endDt: body.endDt as string | undefined,
         createdAt: now,
         modifiedAt: now
     };
     getStore().sprints.push(sp);
-    return ok(sprintWithCount(sp));
+    return ok(sp);
 });
 on("GET", "/v1/sprints/:sprintId", ({params}) => {
     const sp = getStore().sprints.find((x) => x.id === params.sprintId);
-    return sp ? ok(sprintWithCount(sp)) : notFound("sprint");
+    return sp ? ok(sp) : notFound("sprint");
 });
 on("PUT", "/v1/sprints/:sprintId", ({params, body}) => {
     const sp = getStore().sprints.find((x) => x.id === params.sprintId);
     if (!sp) return notFound("sprint");
     Object.assign(sp, body, {modifiedAt: new Date().toISOString()});
-    return ok(sprintWithCount(sp));
+    return ok(sp);
 });
 on("DELETE", "/v1/sprints/:sprintId", ({params}) => {
     const s = getStore();
@@ -514,21 +504,21 @@ on("DELETE", "/v1/sprints/:sprintId", ({params}) => {
 on("POST", "/v1/sprints/:sprintId/start", ({params}) => {
     const sp = getStore().sprints.find((x) => x.id === params.sprintId);
     if (!sp) return notFound("sprint");
-    sp.status = "ACTIVE";
+    sp.sprintStat = "Active";
     sp.startDt ??= dateFrom(0);
     sp.endDt ??= dateFrom(14);
-    return ok(sprintWithCount(sp));
+    return ok(sp);
 });
 on("POST", "/v1/sprints/:sprintId/complete", ({params, body}) => {
     const s = getStore();
     const sp = s.sprints.find((x) => x.id === params.sprintId);
     if (!sp) return notFound("sprint");
-    sp.status = "COMPLETED";
+    sp.sprintStat = "Completed";
     const target = body.incompleteIssueAction === "NEXT_SPRINT" ? (body.nextSprintId as string) : undefined;
     s.issues
         .filter((i) => i.sprintId === sp.id && statusOf(i.projectId, i.statusId)?.category !== "DONE")
         .forEach((i) => (i.sprintId = target));
-    return ok(sprintWithCount(sp));
+    return ok(sp);
 });
 on("POST", "/v1/sprints/:sprintId/issues/:issueId", ({params}) => {
     const i = getStore().issues.find((x) => x.id === params.issueId);
@@ -548,7 +538,7 @@ on("GET", "/v1/sprints/:sprintId/burndown", ({params}) => {
     const {total, done} = sprintPoints(sp.id);
     const start = new Date(sp.startDt).getTime();
     const days = Math.round((new Date(sp.endDt).getTime() - start) / 86_400_000);
-    const elapsed = sp.status === "COMPLETED" ? days : Math.min(days, Math.max(0, Math.round((Date.now() - start) / 86_400_000)));
+    const elapsed = sp.sprintStat === "Completed" ? days : Math.min(days, Math.max(0, Math.round((Date.now() - start) / 86_400_000)));
     const day = (n: number) => new Date(start + n * 86_400_000).toISOString().split("T")[0];
     const ideal = Array.from({length: days + 1}, (_, n) => ({
         date: day(n),
@@ -575,7 +565,7 @@ on("GET", "/v1/projects/:projectId/velocity", ({params, query}) => {
         {sprintName: "Pilot Sprint B", committed: 20, completed: 19},
     ];
     const real = getStore().sprints
-        .filter((sp) => sp.projectId === params.projectId && sp.status !== "CREATED")
+        .filter((sp) => sp.projectId === params.projectId && sp.sprintStat !== "Planned")
         .map((sp) => {
             const {total, done} = sprintPoints(sp.id);
             return {sprintName: sp.sprintNm, committed: total, completed: done};
@@ -613,13 +603,13 @@ on("POST", "/v1/projects/:projectId/members", ({params, body}) => {
     const m = {
         userId: u?.userId ?? nextId("u"),
         email,
-        name: u?.name ?? email.split("@")[0],
+        userNm: u?.name ?? email.split("@")[0],
         role: (body.role as "ADMIN" | "MEMBER") ?? "MEMBER"
     };
     (s.members[params.projectId] ??= []).push(m);
     return ok(m);
 });
-on("PUT", "/v1/projects/:projectId/members/:userId", ({params, body}) => {
+on("PUT", "/v1/projects/:projectId/members/:userId/role", ({params, body}) => {
     const m = getStore().members[params.projectId]?.find((x) => x.userId === params.userId);
     if (!m) return notFound("member");
     m.role = body.role as "ADMIN" | "MEMBER";

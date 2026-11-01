@@ -37,7 +37,8 @@ AGENTS.md (L1)
 │   ├── ui/AGENTS.md ..................... Primitive + 디자인 토큰
 │   └── {board,interfaceTest,issue,layout,mpns,project,sprint,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
 ├── src/hooks/AGENTS.md (L2 Query 훅·queryKey)
-└── src/lib/AGENTS.md (L2 API·mock·messaging)
+├── src/lib/AGENTS.md (L2 API·mock·messaging)
+└── src/test/AGENTS.md (L2 테스트 공용 설정·MSW 백엔드 모양 → docs/testing.md)
 ```
 
 **새 화면이나 폴더를 추가하면 이 지도에 등록하고, 같은 폴더에 `AGENTS.md`와 `CLAUDE.md`(`@AGENTS.md` 한 줄)를 함께 만드세요.**
@@ -69,6 +70,7 @@ AGENTS.md (L1)
 | 폼            | react-hook-form + zod                                              |
 | 스타일        | Tailwind CSS v3 + `clsx` / `tailwind-merge`, 아이콘 `lucide-react` |
 | 기타          | Recharts(차트), Tiptap(리치 텍스트), react-markdown                |
+| 테스트        | Vitest 4 + jsdom, React Testing Library, MSW 2, coverage-v8 → [docs/testing.md](docs/testing.md) |
 | 패키지 매니저 | npm (`package-lock.json`)                                          |
 
 ## 3. 명령어
@@ -76,11 +78,12 @@ AGENTS.md (L1)
 | 목적      | 명령               | 비고                                                                   |
 |-----------|--------------------|------------------------------------------------------------------------|
 | 개발 서버 | `npm run dev`      | `.env.local` 필요 → [docs/dev-setup.md](docs/dev-setup.md)             |
-| 타입 검사 | `npx tsc --noEmit` | **유일한 정적 검증 수단**. 작업 후 반드시 실행                         |
+| 타입 검사 | `npx tsc --noEmit` | **유일한 정적 검증 수단**. 작업 후 반드시 실행 (테스트 파일도 검사)    |
 | 빌드      | `npm run build`    | 큰 변경 후 실행                                                        |
 | 문서 검사 | `npm run docs:check` | 컨텍스트 문서와 코드의 동기화 검사. **작업 후 반드시 실행** → §10 |
 | 린트      | `npm run lint`     | ⚠️ 현재 동작하지 않음 (Next 16에서 `next lint` 제거, ESLint 설정 없음) |
-| 테스트    | 없음               | 테스트 프레임워크 미도입                                               |
+| 테스트    | `npm test`         | Vitest 1회 실행. API·훅·컴포넌트 로직 변경 후 실행 → [docs/testing.md](docs/testing.md) |
+| 커버리지  | `npm run test:coverage` | 결과는 `coverage/` (git 제외). 최근 결과: [docs/test-report.md](docs/test-report.md) |
 
 ## 4. 디렉터리 맵
 
@@ -91,7 +94,9 @@ src/
 ├── components/          UI 컴포넌트 (ui / layout / {domain}) → src/components/AGENTS.md
 ├── hooks/               TanStack Query 훅                    → src/hooks/AGENTS.md
 ├── lib/                 api / mock / messaging               → src/lib/AGENTS.md
+├── test/                테스트 setup·MSW(백엔드 모양)        → src/test/AGENTS.md
 └── types/{domain}.ts    도메인 타입 (Request/Response)
+테스트 파일은 소스 옆 *.test.ts(x)
 ```
 
 상세: [docs/architecture.md](docs/architecture.md)
@@ -151,8 +156,9 @@ src/
 ## 7. 작업 완료 전 체크리스트
 
 - [ ] `npx tsc --noEmit` 통과
+- [ ] `npm test` 통과 (`it.fails` 결함 테스트가 실패로 바뀌었다면 결함이 고쳐진 것 → `it` 으로 바꾸고 [test-report](docs/test-report.md) 갱신)
 - [ ] 구조 변경·라우트 추가 시 `npm run build` 통과
-- [ ] 새 엔드포인트의 mock 라우트 추가
+- [ ] 새 엔드포인트의 mock 라우트 추가 (d94-query 에 있는 엔드포인트면 `src/test/msw/handlers.ts` 에 **백엔드 모양**으로 핸들러 추가)
 - [ ] **§10 문서 동기화 수행 + `npm run docs:check` 오류 0개, 경고 전부 확인**
 - [ ] 작업 보고에 "갱신한 문서 목록" 포함
 
@@ -170,6 +176,8 @@ src/
 | [docs/dev-setup.md](docs/dev-setup.md)       | 로컬 실행, 환경 변수, 개발용 우회 설정          |
 | [docs/modules.md](docs/modules.md)           | 실험 모듈 목록과 상태, 새 실험 추가 방법        |
 | [docs/known-issues.md](docs/known-issues.md) | 알려진 문제, 기술 부채                          |
+| [docs/testing.md](docs/testing.md)           | 테스트 도구·위치·MSW 규칙, 테스트를 쓰거나 고칠 때 |
+| [docs/test-report.md](docs/test-report.md)   | 최근 테스트·커버리지 결과, 테스트가 찾은 결함 목록 |
 | [docs/decisions/](docs/decisions/)           | 주요 결정 기록 (ADR)                            |
 
 ## 10. 문서 동기화 (필수)
@@ -202,6 +210,8 @@ src/
 | 알려진 문제를 해결하거나 발견함 | `docs/known-issues.md` |
 | 규칙·구조에 대한 의사결정 | 이 파일의 해당 절 + `docs/decisions/` ADR |
 | 의존성·명령어 변경 | 이 파일 §2·§3 |
+| 테스트 설정·MSW 규칙 변경 | `docs/testing.md` (+ `src/test/AGENTS.md`) |
+| `it.fails` 결함 테스트 추가·해소 | `docs/test-report.md` 결함 목록, `docs/known-issues.md` |
 
 ### 작업 마무리 절차
 1. 위 표에 따라 문서를 갱신합니다.

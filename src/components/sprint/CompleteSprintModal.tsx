@@ -39,7 +39,7 @@ export default function CompleteSprintModal({
 
     const nextSprints =
         allSprints?.filter(
-            (s) => s.status === "CREATED" && s.id !== sprint.id,
+            (s) => s.sprintStat === "Planned" && s.id !== sprint.id,
         ) ?? [];
 
     const canConfirm =

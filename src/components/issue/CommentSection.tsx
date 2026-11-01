@@ -2,11 +2,10 @@
 
 import {useToast} from "@/components/ui/Toast";
 import {
-    useAddReaction,
     useComments,
     useCreateComment,
     useDeleteComment,
-    useRemoveReaction,
+    useToggleReaction,
     useUpdateComment,
 } from "@/hooks/useComments";
 import {searchUsers} from "@/lib/api/users";
@@ -270,8 +269,7 @@ function CommentItem({
         useDeleteComment(issueId);
     const {mutate: createComment, isPending: isReplying} =
         useCreateComment(issueId);
-    const {mutate: addReaction} = useAddReaction(issueId);
-    const {mutate: removeReaction} = useRemoveReaction(issueId);
+    const {mutate: toggleReaction} = useToggleReaction(issueId);
 
     const handleSave = () => {
         const trimmed = draft.trim();
@@ -305,7 +303,7 @@ function CommentItem({
         const trimmed = replyContent.trim();
         if (!trimmed) return;
         createComment(
-            {content: trimmed, parentCommentId: comment.id},
+            {content: trimmed, parentId: comment.id},
             {
                 onSuccess: () => {
                     setReplyContent("");
@@ -318,18 +316,11 @@ function CommentItem({
     };
 
     const handleReaction = (emoji: string) => {
-        const existing = comment.reactions?.find((r) => r.emoji === emoji);
-        if (existing?.reacted) {
-            removeReaction(
-                {commentId: comment.id, emoji},
-                {onError: () => show("반응 취소에 실패했습니다.", "error")},
-            );
-        } else {
-            addReaction(
-                {commentId: comment.id, emoji},
-                {onError: () => show("반응 추가에 실패했습니다.", "error")},
-            );
-        }
+        const existing = comment.reactions?.find((r) => r.reactionType === emoji);
+        toggleReaction(
+            {commentId: comment.id, reactionType: emoji},
+            {onError: () => show(existing?.reacted ? "반응 취소에 실패했습니다." : "반응 추가에 실패했습니다.", "error")},
+        );
     };
 
     return (
@@ -403,15 +394,15 @@ function CommentItem({
                                 ?.filter((r) => r.count > 0)
                                 .map((r) => (
                                     <button
-                                        key={r.emoji}
-                                        onClick={() => handleReaction(r.emoji)}
+                                        key={r.reactionType}
+                                        onClick={() => handleReaction(r.reactionType)}
                                         className={`flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs transition-colors ${
                                             r.reacted
                                                 ? "border-blue-300 bg-blue-50 text-blue-700"
                                                 : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                                         }`}
                                     >
-                                        <span>{r.emoji}</span>
+                                        <span>{r.reactionType}</span>
                                         <span>{r.count}</span>
                                     </button>
                                 ))}

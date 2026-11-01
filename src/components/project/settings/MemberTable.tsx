@@ -96,9 +96,9 @@ export default function MemberTable({
                         className="border-t border-slate-100 hover:bg-slate-50 transition-colors"
                     >
                         <td className="py-3 pl-4">
-                            <Avatar name={member.name} avatarUrl={member.avatarUrl}/>
+                            <Avatar name={member.userNm} avatarUrl={member.avatarUrl}/>
                         </td>
-                        <td className="py-3 font-medium text-slate-800">{member.name}</td>
+                        <td className="py-3 font-medium text-slate-800">{member.userNm}</td>
                         <td className="py-3 text-slate-500">{member.email}</td>
                         <td className="py-3">
                             {isAdmin ? (
@@ -129,7 +129,7 @@ export default function MemberTable({
                             <td className="py-3 pr-4 text-right">
                                 {member.email !== currentUserEmail && (
                                     <button
-                                        onClick={() => handleRemove(member.userId, member.name)}
+                                        onClick={() => handleRemove(member.userId, member.userNm)}
                                         disabled={isRemoving}
                                         className="text-xs text-red-400 hover:text-red-600 disabled:opacity-60"
                                     >

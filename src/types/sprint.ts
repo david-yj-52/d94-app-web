@@ -1,14 +1,14 @@
-export type SprintStatus = "CREATED" | "ACTIVE" | "COMPLETED";
+/** d94-query SprintService STAT_PLANNED / STAT_ACTIVE / STAT_COMPLETED 값 그대로 */
+export type SprintStatus = "Planned" | "Active" | "Completed";
 
 export interface SprintResponse {
     id: string;
     projectId: string;
     sprintNm: string;
     goal?: string;
-    status: SprintStatus;
+    sprintStat: SprintStatus;
     startDt?: string;
     endDt?: string;
-    issueCount?: number;
     createdAt: string;
     modifiedAt: string;
 }

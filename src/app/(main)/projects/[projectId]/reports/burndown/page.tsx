@@ -63,7 +63,7 @@ export default function BurndownPage({
     const {projectId} = use(params);
     const {data: sprints, isLoading: sprintsLoading} = useSprints(projectId);
 
-    const activeSprint = sprints?.find((s) => s.status === "ACTIVE") ?? sprints?.[0] ?? null;
+    const activeSprint = sprints?.find((s) => s.sprintStat === "Active") ?? sprints?.[0] ?? null;
     const [selectedSprintId, setSelectedSprintId] = useState<string | null>(null);
 
     const sprintId = selectedSprintId ?? activeSprint?.id ?? null;
@@ -107,7 +107,7 @@ export default function BurndownPage({
                     {sprints?.map((s) => (
                         <option key={s.id} value={s.id}>
                             {s.sprintNm}
-                            {s.status === "ACTIVE" ? " (진행 중)" : ""}
+                            {s.sprintStat === "Active" ? " (진행 중)" : ""}
                         </option>
                     ))}
                 </select>

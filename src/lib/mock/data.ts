@@ -155,7 +155,7 @@ function buildStore() {
             projectId: "1",
             sprintNm: "CIRA Sprint 1",
             goal: "인증 및 프로젝트 기본 기능",
-            status: "COMPLETED",
+            sprintStat: "Completed",
             startDt: dateFrom(-42),
             endDt: dateFrom(-29),
             createdAt: daysFrom(-45),
@@ -166,7 +166,7 @@ function buildStore() {
             projectId: "1",
             sprintNm: "CIRA Sprint 2",
             goal: "이슈 협업 기능",
-            status: "COMPLETED",
+            sprintStat: "Completed",
             startDt: dateFrom(-28),
             endDt: dateFrom(-15),
             createdAt: daysFrom(-30),
@@ -177,7 +177,7 @@ function buildStore() {
             projectId: "1",
             sprintNm: "CIRA Sprint 3",
             goal: "리포트 및 알림 기능 완성",
-            status: "ACTIVE",
+            sprintStat: "Active",
             startDt: dateFrom(-7),
             endDt: dateFrom(7),
             createdAt: daysFrom(-16),
@@ -188,7 +188,7 @@ function buildStore() {
             projectId: "1",
             sprintNm: "CIRA Sprint 4",
             goal: "검색 및 연동 고도화",
-            status: "CREATED",
+            sprintStat: "Planned",
             startDt: dateFrom(8),
             endDt: dateFrom(21),
             createdAt: daysFrom(-3),
@@ -304,10 +304,11 @@ function buildStore() {
             author: summary(USERS[2]),
             createdAt: daysFrom(-3, 9),
             modifiedAt: daysFrom(-3, 9),
-            reactions: [{emoji: "👍", count: 3, reacted: true}, {emoji: "🎉", count: 1, reacted: false}],
+            reactions: [{reactionType: "👍", count: 3, reacted: true}, {reactionType: "🎉", count: 1, reacted: false}],
             replies: [{
                 id: "c-2",
                 issueId: "i-11",
+                parentId: "c-1",
                 content: "<p>좋습니다. 색상은 디자인 가이드 따를게요.</p>",
                 author: summary(USERS[0]),
                 createdAt: daysFrom(-3, 11),
@@ -330,7 +331,7 @@ function buildStore() {
             author: summary(USERS[3]),
             createdAt: daysFrom(-2, 14),
             modifiedAt: daysFrom(-2, 14),
-            reactions: [{emoji: "👀", count: 2, reacted: false}]
+            reactions: [{reactionType: "👀", count: 2, reacted: false}]
         },
         {
             id: "c-5",
@@ -376,11 +377,11 @@ function buildStore() {
     ];
 
     const members: Record<string, ProjectMemberResponse[]> = {
-        "1": USERS.map((u, i) => ({userId: u.userId, email: u.email, name: u.name, role: i < 2 ? "ADMIN" : "MEMBER"})),
+        "1": USERS.map((u, i) => ({userId: u.userId, email: u.email, userNm: u.name, role: i < 2 ? "ADMIN" : "MEMBER"})),
         "2": [USERS[0], USERS[1], USERS[3]].map((u, i) => ({
             userId: u.userId,
             email: u.email,
-            name: u.name,
+            userNm: u.name,
             role: i < 2 ? "ADMIN" : "MEMBER"
         })),
     };

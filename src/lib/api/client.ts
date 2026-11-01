@@ -9,6 +9,8 @@ export const SESSION_EXPIRED_REASON = "expired";
 const apiClient = axios.create({
     baseURL: "/api/proxy",
     headers: {"Content-Type": "application/json"},
+    // 배열은 status=a&status=b — Spring List<String> 바인딩 형식 (axios 기본 status[]=a)
+    paramsSerializer: {indexes: null},
 });
 
 // 화면에서 동시에 나간 요청들이 모두 401 을 받아도 로그아웃은 한 번만

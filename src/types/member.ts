@@ -3,7 +3,7 @@ export type ProjectRole = "ADMIN" | "MEMBER";
 export interface ProjectMemberResponse {
     userId: string;
     email: string;
-    name: string;
+    userNm: string;
     avatarUrl?: string;
     role: ProjectRole;
 }

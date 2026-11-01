@@ -1,7 +1,8 @@
 import type {UserSummary} from "./issue";
 
+/** d94-query CommentReactionResponse. reactionType 에 이모지 문자가 들어 있다 */
 export interface CommentReaction {
-    emoji: string;
+    reactionType: string;
     count: number;
     reacted: boolean;
 }
@@ -9,6 +10,7 @@ export interface CommentReaction {
 export interface CommentResponse {
     id: string;
     issueId: string;
+    parentId?: string | null;
     content: string;
     author: UserSummary;
     createdAt: string;
@@ -19,7 +21,7 @@ export interface CommentResponse {
 
 export interface CreateCommentRequest {
     content: string;
-    parentCommentId?: string;
+    parentId?: string;
 }
 
 export interface UpdateCommentRequest {

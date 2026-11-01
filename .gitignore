@@ -11,3 +11,6 @@ node_modules
 .idea
 .vercel
 .env*
+
+# 테스트 커버리지 리포트 (npm run test:coverage)
+/coverage

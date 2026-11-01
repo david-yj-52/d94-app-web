@@ -1,13 +1,6 @@
 "use client";
 
-import {
-    addReaction,
-    createComment,
-    deleteComment,
-    getComments,
-    removeReaction,
-    updateComment,
-} from "@/lib/api/comments";
+import {createComment, deleteComment, getComments, toggleReaction, updateComment,} from "@/lib/api/comments";
 import type {CreateCommentRequest, UpdateCommentRequest,} from "@/types/comment";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
@@ -38,7 +31,7 @@ export function useUpdateComment(issueId: string) {
                      }: {
             commentId: string;
             data: UpdateCommentRequest;
-        }) => updateComment(issueId, commentId, data),
+        }) => updateComment(commentId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["comments", issueId]});
         },
@@ -48,29 +41,19 @@ export function useUpdateComment(issueId: string) {
 export function useDeleteComment(issueId: string) {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (commentId: string) => deleteComment(issueId, commentId),
+        mutationFn: (commentId: string) => deleteComment(commentId),
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["comments", issueId]});
         },
     });
 }
 
-export function useAddReaction(issueId: string) {
+/** 반응 추가·취소 (백엔드는 같은 POST 로 토글한다) */
+export function useToggleReaction(issueId: string) {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({commentId, emoji}: { commentId: string; emoji: string }) =>
-            addReaction(commentId, emoji),
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["comments", issueId]});
-        },
-    });
-}
-
-export function useRemoveReaction(issueId: string) {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: ({commentId, emoji}: { commentId: string; emoji: string }) =>
-            removeReaction(commentId, emoji),
+        mutationFn: ({commentId, reactionType}: { commentId: string; reactionType: string }) =>
+            toggleReaction(commentId, reactionType),
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["comments", issueId]});
         },

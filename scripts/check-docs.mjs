@@ -14,6 +14,8 @@ const errors = [];
 const warnings = [];
 const summary = [];
 
+// 테스트 파일(*.test.ts(x))은 컴포넌트·훅이 아니다 → docs/testing.md
+const isTest = (name) => /\.test\.tsx?$/.test(name);
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join("/");
 const read = (p) => fs.readFileSync(p, "utf8");
 
@@ -97,7 +99,7 @@ summary.push(`pairs ${agentsFiles.length}`);
 {
     const catalogPath = path.join(SRC, "components", "AGENTS.md");
     const catalog = read(catalogPath);
-    const components = walk(path.join(SRC, "components"), (name) => name.endsWith(".tsx"));
+    const components = walk(path.join(SRC, "components"), (name) => name.endsWith(".tsx") && !isTest(name));
     for (const c of components) {
         const name = path.basename(c, ".tsx");
         if (!new RegExp(`\\b${name}\\b`).test(catalog)) {
@@ -111,7 +113,7 @@ summary.push(`pairs ${agentsFiles.length}`);
 {
     const hooksDocPath = path.join(SRC, "hooks", "AGENTS.md");
     const hooksDoc = read(hooksDocPath);
-    const hooks = fs.readdirSync(path.join(SRC, "hooks")).filter((n) => /\.tsx?$/.test(n));
+    const hooks = fs.readdirSync(path.join(SRC, "hooks")).filter((n) => /\.tsx?$/.test(n) && !isTest(n));
     for (const h of hooks) {
         const name = h.replace(/\.tsx?$/, "");
         if (!new RegExp(`\\b${name}\\b`).test(hooksDoc)) {
@@ -185,7 +187,7 @@ summary.push(`pairs ${agentsFiles.length}`);
         warnings.push("git 정보를 읽지 못해 변경 추적을 건너뜀");
     }
     const changedSet = new Set(changed);
-    const codeFiles = changed.filter((f) => f.startsWith("src/") && /\.(ts|tsx|mjs|js)$/.test(f));
+    const codeFiles = changed.filter((f) => f.startsWith("src/") && /\.(ts|tsx|mjs|js)$/.test(f) && !isTest(f));
 
     const nearestAgents = (fileRel) => {
         let dir = path.dirname(path.join(ROOT, fileRel));

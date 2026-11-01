@@ -12,6 +12,8 @@
 - 보드 상세를 조회하고(`useBoardDetail`), 이슈 이동(`useMoveIssue`), 컬럼 삭제(`useDeleteColumn`), 보드 삭제(`useDeleteBoard`)를 처리합니다.
 - 드래그 상태(드래그 중인 이슈, 드롭 대상 컬럼, 삽입 위치)를 이 컴포넌트가 들고 있다가 하위 컬럼에 props로 내려 줍니다.
 - 컬럼 추가·편집 시 `AddColumnModal`을 엽니다.
+- 드롭 규칙: 카드 위 dragover → `beforeIssueId` = 그 카드, 컬럼 빈 곳 → 기준 없음(끝에 붙음). `afterIssueId` 는 보내지 않습니다. 순서 계산은 `useMoveIssue` 의 낙관적 갱신입니다(`KanbanBoard.test.tsx`, `useBoards.test.ts`).
+- 카드를 제자리에 놓으면(`beforeIssueId` 가 자기 자신) 이동 요청을 보내지 않습니다 → [test-report](../../../docs/test-report.md)
 ```tsx
 <KanbanBoard boardId={boardId} projectId={projectId}/>
 ```

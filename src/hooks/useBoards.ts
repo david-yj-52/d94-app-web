@@ -123,7 +123,8 @@ export function useMoveIssue(boardId: string) {
                 boardId,
             ]);
 
-            if (previous) {
+            // 자기 자신 앞에 넣기 = 제자리 → 화면 순서를 바꾸지 않는다
+            if (previous && data.beforeIssueId !== issueId) {
                 const movedIssue = previous.columns
                     .flatMap((c) => c.issues)
                     .find((i) => i.id === issueId);

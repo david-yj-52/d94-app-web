@@ -1,9 +1,10 @@
 "use client";
 
 import {useCreateIssue} from "@/hooks/useIssues";
+import {useProjectMembers, useWorkflowStatuses} from "@/hooks/useProjectSettings";
 import type {Priority} from "@/types/issue";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useEffect} from "react";
+import {useEffect, useMemo} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
@@ -35,6 +36,13 @@ export default function CreateIssueModal({
                                              onSuccess,
                                          }: Props) {
     const {mutate, isPending, isSuccess, isError} = useCreateIssue(projectId);
+    const {data: members = []} = useProjectMembers(projectId);
+    const {data: statuses = []} = useWorkflowStatuses(projectId);
+    // 새 이슈의 상태 = 워크플로우 첫 상태 (d94-query 는 statusId 가 없으면 500)
+    const initialStatusId = useMemo(
+        () => [...statuses].sort((a, b) => a.sortOrd - b.sortOrd)[0]?.id,
+        [statuses],
+    );
 
     const {
         register,
@@ -54,6 +62,7 @@ export default function CreateIssueModal({
             title: data.title,
             content: data.content || undefined,
             priority: data.priority,
+            statusId: initialStatusId,
             assigneeId: data.assigneeId || undefined,
             storyPnt: data.storyPnt,
             dueDt: data.dueDt || undefined,
@@ -105,7 +114,8 @@ export default function CreateIssueModal({
                                 우선순위
                             </label>
                             <select
-                                {...register("priority")}
+                                {...register("priority", {setValueAs: (v: string) => v || undefined})}
+                                aria-label="우선순위"
                                 className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             >
                                 <option value="">선택 안 함</option>
@@ -122,7 +132,10 @@ export default function CreateIssueModal({
                                 스토리 포인트
                             </label>
                             <input
-                                {...register("storyPnt", {valueAsNumber: true})}
+                                {...register("storyPnt", {
+                                    // 빈 칸이면 NaN 대신 undefined (z.number().optional() 은 NaN 을 거부한다)
+                                    setValueAs: (v: string) => (v === "" ? undefined : Number(v)),
+                                })}
                                 type="number"
                                 min={0}
                                 placeholder="0"
@@ -134,14 +147,21 @@ export default function CreateIssueModal({
                     <div className="grid grid-cols-2 gap-3">
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">
-                                담당자 이메일
+                                담당자
                             </label>
-                            <input
+                            {/* 값은 사용자 objId(userId). d94-query assigneeId 는 이메일이 아니다 */}
+                            <select
                                 {...register("assigneeId")}
-                                type="email"
-                                placeholder="담당자 이메일"
+                                aria-label="담당자"
                                 className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
+                            >
+                                <option value="">담당자 없음</option>
+                                {members.map((m) => (
+                                    <option key={m.userId} value={m.userId}>
+                                        {m.userNm || m.email}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div>

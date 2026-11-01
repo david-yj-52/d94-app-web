@@ -95,6 +95,9 @@ export default function KanbanBoard({boardId, projectId}: Props) {
         setDragging(null);
         setDragOver(null);
 
+        // 제자리 드롭: 끌던 카드 자신 위의 dragover 가 beforeIssueId 로 잡힌 경우
+        if (beforeIssueId === issueId) return;
+
         moveIssue(
             {
                 issueId,

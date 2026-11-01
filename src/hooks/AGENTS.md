@@ -10,6 +10,7 @@
 - queryKey는 `[도메인, id, ...필터]`입니다. id가 없을 수 있으면 `enabled: !!id`를 둡니다.
 - mutation `onSuccess`에서 영향받는 queryKey를 **모두** `invalidateQueries` 합니다. 예: 스프린트에 이슈를 추가하면 `["sprints", projectId]`와 `["issues", projectId]`를 함께 무효화합니다.
 - 토스트(UI)는 훅에 넣지 않습니다. 컴포넌트가 `mutate(data, {onSuccess, onError})`로 처리합니다.
+- 테스트: `useIssues`·`useBoards`·`useSprints`·`useComments`·`useProjects`·`useNotifications` 옆의 `*.test.ts(x)` 가 아래 표의 queryKey 와 mutation 별 invalidate 대상을 그대로 고정합니다. 키를 바꾸면 테스트와 이 표를 함께 고칩니다. `useMoveIssue` 의 칸반 순서 계산(낙관적 갱신·롤백, `beforeIssueId === issueId` 면 제자리)도 `useBoards.test.ts` 에 있습니다 → [docs/testing.md](../../docs/testing.md)
 
 ```ts
 export function useCreateMilestone(projectId: string) {
@@ -30,7 +31,7 @@ export function useCreateMilestone(projectId: string) {
 | useProjects | useProjects, useProject, useCreateProject, useUpdateProject | `["projects"]`, `["projects", projectId]` |
 | useProjectSettings | useProjectMembers, useAdd/UpdateRole/RemoveProjectMember, useWorkflowStatuses, useCreate/DeleteWorkflowStatus, useWorkflowTransitions, useUpdateWorkflowTransitions | `["projects", projectId, "members"]`, `[…, "workflow", "statuses"]`, `[…, "workflow", "transitions"]` |
 | useIssues | useIssues, useIssue, useAvailableTransitions, useCreate/Update/DeleteIssue, useUpdateIssueStatus | `["issues", projectId, filters]`, `["issue", issueId]`, `["issue-transitions", issueId]` |
-| useComments | useComments, useCreate/Update/DeleteComment, useAdd/RemoveReaction | `["comments", issueId]` |
+| useComments | useComments, useCreate/Update/DeleteComment, useToggleReaction | `["comments", issueId]` |
 | useAttachments | useAttachments, useUpload/DeleteAttachment | `["attachments", issueId]` |
 | useBoards | useBoards, useBoardDetail, useCreate/Update/DeleteBoard, useAdd/Update/DeleteColumn, useMoveIssue | `["boards", projectId]`, `["board", boardId]` |
 | useSprints | useSprints, useSprint, useCreate/Update/Delete/Start/CompleteSprint, useAdd/RemoveIssueFrom(To)Sprint | `["sprints", projectId]`, `["sprint", sprintId]` |

@@ -28,5 +28,6 @@
 { projectId: string; sprint: SprintResponse; onClose: () => void; onSuccess: () => void }   // onSuccess 필수
 ```
 - 미완료 이슈를 `BACKLOG`(백로그로 이동)로 보낼지 `NEXT_SPRINT`(다음 스프린트 선택)로 보낼지 고른 뒤 완료합니다(`useCompleteSprint`).
+- 미완료 판정은 이슈 `statusNm` 에 "done"·"완료"가 없는 것, 다음 스프린트 후보는 `s.sprintStat === "Planned"` 이고 현재 스프린트가 아닌 것입니다(`CompleteSprintModal.test.tsx`).
 
 **재사용 메모:** Create와 Edit의 폼 필드가 같습니다. 새 도메인에서는 처음부터 `editTarget?` 겸용 모달 한 개로 만드세요(예: [version/VersionModal](../version/AGENTS.md)).

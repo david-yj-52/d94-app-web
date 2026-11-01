@@ -51,6 +51,11 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 
 ### 타입
 `src/types/{domain}.ts`에 `XxxResponse`, `CreateXxxRequest`, `UpdateXxxRequest`로 정의합니다. 페이지네이션은 `PageResponse<T>`(`types/issue.ts`)를 사용합니다.
+CIRA 타입은 d94-query DTO 필드 이름·값 그대로입니다(스프린트 `sprintStat`, 댓글 반응 `reactionType`, 답글 `parentId`, 멤버 `userNm`). 예외는 알림(`api/notifications.ts` 변환)뿐입니다. `apiClient` 는 배열 파라미터를 반복 키(`status=a&status=b`, `paramsSerializer: {indexes: null}`)로 보냅니다 → [docs/test-report.md](../../docs/test-report.md)
+
+### 테스트
+- `api/{domain}.test.ts` 가 요청 경로·파라미터·본문과 응답 변환을 확인합니다(issues, projects, boards, sprints, comments, notifications, client). MSW 는 **d94-query 실제 응답 모양**(`src/test/msw/`)이고, d94-query 에 없는 경로는 500 을 줍니다 → [docs/testing.md](../../docs/testing.md)
+- 남은 결함은 `it.fails` 로 표시합니다(현재 이슈 생성 `issueTypeId` 1건, 백엔드 유형 API 대기).
 
 ## 2. Mock 백엔드 (`mock/`)
 
@@ -69,6 +74,7 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 - 인터페이스 테스트 mock(`/v1/interface-tests`)은 백엔드와 같은 상태코드(201·204·400·404)를 돌려줍니다. 저장소는 `getStore().interfaceTests`.
 - multipart 업로드는 `handleMockRequest`의 attachments 분기에서 특수 처리합니다.
 - 인증 mock(`/v1/auth/public-key`·`login`·`register`)은 `credential.ts`의 실제 RSA 키(globalThis 보관, 재시작 시 새로 생성)로 봉투를 복호화합니다. 풀리지 않거나 평문이면 400 `AUTH_CREDENTIAL_INVALID`, 로그인은 비밀번호를 검사하지 않고 아무 계정이나 통과시킵니다. 핸들러는 `Promise<MockResult>`도 반환할 수 있습니다.
+- mock 응답은 **web 타입 모양**이라 실제 d94-query 와 다른 곳이 있습니다. `mock/router.test.ts` 가 차이를 `KNOWN_DIFFS` 로 고정합니다(mock 이나 백엔드가 바뀌면 깨짐). 스프린트·댓글·멤버는 백엔드 모양·경로에 맞췄습니다. mock 은 `statusId`·`issueTypeId` 없는 이슈 생성과 255자 넘는 값을 받아 주므로, 그 경우 mock 에서 되고 실제 백엔드에서는 500 입니다.
 - `enabled.ts`의 `isMockEnabled`는 `src/auth.ts`(미들웨어 번들)가 라우터 전체를 끌어오지 않도록 분리해 둔 것입니다. `router.ts`도 같은 함수를 다시 export 합니다.
 
 ## 3. Solace (`messaging/solace/`) 🧪
@@ -80,4 +86,4 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 
 - 백엔드 요청은 `BACKEND_URL` → **UMD(server) → Redis → UMD(local) → 로컬 백엔드** 로 갑니다. UMD 는 경로·본문을 바꾸지 않습니다 → [docs/architecture.md](../../docs/architecture.md)
 - UI 쪽 통신 규칙(상태코드 처리, 재시도, 35초 타임아웃, 1MB 요청 / 5MB 응답 상한): [UMD ui-guide](https://github.com/david-yj-52/d94-app-umd/blob/main/docs/integration/ui-guide.md)
-- 엔드포인트별 명세 위치는 아직 문서화되지 않았습니다. 백엔드 레포가 정해지면 여기에 링크를 추가하세요.
+- 엔드포인트별 명세 문서는 없습니다. CIRA 엔드포인트의 경로·응답 모양은 [d94-query](https://github.com/david-yj-52/d94-app-query) `interfaces/controller/cira/` 와 `apService/cira/dto/` 가 원본이고, `src/test/msw/handlers.ts`·`backendTypes.ts` 가 그것을 옮겨 둔 것입니다(2026-10-31 기준).

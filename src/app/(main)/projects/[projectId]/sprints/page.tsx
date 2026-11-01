@@ -15,15 +15,15 @@ import Link from "next/link";
 import {use, useState} from "react";
 
 const STATUS_LABEL: Record<SprintStatus, string> = {
-    CREATED: "대기",
-    ACTIVE: "진행 중",
-    COMPLETED: "완료",
+    Planned: "대기",
+    Active: "진행 중",
+    Completed: "완료",
 };
 
 const STATUS_COLOR: Record<SprintStatus, string> = {
-    CREATED: "bg-slate-100 text-slate-600",
-    ACTIVE: "bg-green-100 text-green-700",
-    COMPLETED: "bg-blue-100 text-blue-700",
+    Planned: "bg-slate-100 text-slate-600",
+    Active: "bg-green-100 text-green-700",
+    Completed: "bg-blue-100 text-blue-700",
 };
 
 function formatDate(dt?: string) {
@@ -66,9 +66,9 @@ function SprintCard({
                     <div className="flex items-center gap-3 flex-wrap">
                         <h3 className="text-base font-semibold text-slate-900">{sprint.sprintNm}</h3>
                         <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[sprint.status]}`}
+                            className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[sprint.sprintStat]}`}
                         >
-              {STATUS_LABEL[sprint.status]}
+              {STATUS_LABEL[sprint.sprintStat]}
             </span>
                     </div>
 
@@ -90,7 +90,7 @@ function SprintCard({
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
-                    {sprint.status === "CREATED" && (
+                    {sprint.sprintStat === "Planned" && (
                         <button
                             onClick={() => onStart(sprint.id)}
                             disabled={isStarting}
@@ -99,7 +99,7 @@ function SprintCard({
                             {isStarting ? "시작 중..." : "시작"}
                         </button>
                     )}
-                    {sprint.status === "ACTIVE" && (
+                    {sprint.sprintStat === "Active" && (
                         <button
                             onClick={() => onComplete(sprint)}
                             className="h-8 px-3 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700"
@@ -107,7 +107,7 @@ function SprintCard({
                             완료
                         </button>
                     )}
-                    {sprint.status !== "COMPLETED" && (
+                    {sprint.sprintStat !== "Completed" && (
                         <button
                             onClick={() => onAssign(sprint)}
                             className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
@@ -115,7 +115,7 @@ function SprintCard({
                             이슈 할당
                         </button>
                     )}
-                    {sprint.status !== "ACTIVE" && (
+                    {sprint.sprintStat !== "Active" && (
                         <button
                             onClick={() => onEdit(sprint)}
                             className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
@@ -123,7 +123,7 @@ function SprintCard({
                             수정
                         </button>
                     )}
-                    {sprint.status === "CREATED" && (
+                    {sprint.sprintStat === "Planned" && (
                         <button
                             onClick={() => onDelete(sprint.id)}
                             disabled={isDeleting}
@@ -149,7 +149,7 @@ function SprintCard({
                                 <th className="py-2 font-medium text-slate-500 text-xs">제목</th>
                                 <th className="py-2 font-medium text-slate-500 text-xs w-24 text-center">상태</th>
                                 <th className="py-2 font-medium text-slate-500 text-xs w-24">담당자</th>
-                                {sprint.status !== "COMPLETED" && (
+                                {sprint.sprintStat !== "Completed" && (
                                     <th className="py-2 pr-4 font-medium text-slate-500 text-xs w-16"/>
                                 )}
                             </tr>
@@ -179,7 +179,7 @@ function SprintCard({
                                     <td className="py-2.5 text-xs text-slate-500">
                                         {issue.assignee?.name ?? "-"}
                                     </td>
-                                    {sprint.status !== "COMPLETED" && (
+                                    {sprint.sprintStat !== "Completed" && (
                                         <td className="py-2.5 pr-4 text-right">
                                             <button
                                                 onClick={() =>

@@ -4,7 +4,7 @@
 
 ## 도구 · 품질
 - **린트 미동작**: Next 16에서 `next lint`가 제거되었고 `eslint.config.*`도 없습니다. `eslint`와 `eslint-config-next`는 설치되어 있습니다. → flat config를 추가하고 `"lint": "eslint ."`로 바꿔야 합니다.
-- **테스트 없음**: 테스트 프레임워크, 테스트 파일, CI가 모두 없습니다. 지금은 `tsc --noEmit`과 `build`가 유일한 검증 수단입니다.
+- **테스트 범위·CI**: Vitest + RTL + MSW 를 도입했습니다(2026-10-31, [testing.md](testing.md)). 범위는 CIRA 의 API 함수·훅·일부 컴포넌트뿐이고 화면(`page.tsx`)·실험 모듈은 테스트가 없습니다. CI 에서 `npm test` 를 돌리지 않습니다.
 - **포맷터 설정 없음**: IDE 포맷에 의존합니다. Prettier나 `.editorconfig`를 도입하면 도구에 상관없이 같은 결과가 나옵니다.
 - **`tsconfig.json`**: `.next\\dev/types` include 항목이 중복되어 있습니다(Windows 경로 흔적).
 - **`.gitignore`**: `*.tsbuildinfo`가 빠져 있습니다.
@@ -19,6 +19,11 @@
 - **자격 증명 암호화 배포 순서** ([ADR 0004](decisions/0004-credential-encryption.md)): 웹이 `/v1/auth/public-key`가 없는 옛 d94-query 에 붙으면 로그인·가입이 "서버에 연결할 수 없습니다"로 실패합니다. 반대로 새 d94-query 는 옛 웹의 평문 요청을 400 으로 거절합니다. **d94-query 먼저 배포**하고, 필요하면 전환 기간에만 `AUTH_CREDENTIAL_ALLOW_PLAINTEXT=true`. UMD(server) `public-paths` 에 `/tsh/api/v1/auth/**`(GET 포함)가 있어야 공개키를 받을 수 있습니다. 재전송 방지 nonce 는 d94-query 인메모리라 다중 인스턴스면 Redis 로 옮겨야 합니다.
 - **토큰 없는 요청이 403** : d94-query 는 토큰 없이 보호 API 를 부르면 401 이 아니라 403 을 줍니다. `apiClient` 는 401 에서만 `signOut` 합니다. 백엔드 토큰 만료는 이제 `jwt` 콜백이 세션을 끝내 다음 요청에서 `/login`으로 보내지만(ADR 0005), 그 외 이유의 403 은 여전히 로그인 화면으로 가지 않습니다.
 - **알림 응답 모양 차이** (2026-10-31 발견): d94-query `/v1/notifications` 는 페이지 없이 목록 전체(최근 50건)를, `/unread-count` 는 `{count}` 를 줍니다. 필드도 `message`·`read`·`resourceType`/`resourceId`/`issueKey` 입니다. `src/lib/api/notifications.ts` 가 web 모양(`NotificationPage`·`NotificationItem`·숫자)으로 바꾸고 페이지는 브라우저에서 자릅니다. 이전에는 `data.content.map` 이 터져 로그인 직후 모든 화면이 "Application error" 로 하얗게 됐습니다. 알림 클릭 시 이슈 이동에 쓰는 `issueKey` 는 d94-query 가 `resourceType=ISSUE` 알림에 채워 줍니다(그 이전 d94-query 이미지에는 없음).
+- **CIRA web ↔ d94-query 불일치** (2026-10-31 테스트로 발견, 같은 날 웹 쪽 대부분 수정. 상세: [test-report.md](test-report.md#4-결함-목록)):
+  - 이슈 생성: **`issueTypeId` 를 보내지 않아 실제 백엔드에서 여전히 500**(`findByIdOptional(null)` → `UnexpectedRollbackException`). d94-query 에 이슈 유형 목록 API 가 없고 전역 유형 테이블도 비어 있어 백엔드 작업이 먼저 필요. (`statusId`·담당자·빈 우선순위/포인트는 수정됨)
+  - 멤버 역할 값: 백엔드 `ADMIN|DEVELOPER|REPORTER|VIEWER` ↔ web `ADMIN|MEMBER`. 역할 체계(설정 화면) 결정 필요.
+  - (백엔드) 운영 DB 텍스트 컬럼이 `varchar(255)`(이슈·댓글 content, 알림 msg, 프로젝트 descr) → 255자 초과 저장 실패(500). web 폼은 길이를 막지 않음.
+  - mock 라우터는 이슈 생성 필수값·255자 제한을 검사하지 않아 이 문제들이 mock 모드에서는 보이지 않습니다(`src/lib/mock/router.test.ts`).
 - **API 레이어 이중화**: `src/lib/api/*`(axios)와 todo 실험용 `src/lib/api.ts`(fetch)가 공존합니다.
 - **보호 경로**: `/home`, `/todo`는 페이지에서 `auth()`로 직접 확인합니다. `/mpms`, `/solace`는 보호되지 않습니다. 의도한 것인지 확인이 필요합니다.
 - **`/` 경로 중복**: `src/app/page.tsx`와 `src/app/(main)/page.tsx`가 같은 URL `/`를 가집니다(현재 둘 다 `/home`으로 redirect). `next build`는 오류 없이 통과하지만(2026-10-15 확인) 실제로는 둘 중 하나만 서빙됩니다. 의도를 정해 하나를 제거하세요.

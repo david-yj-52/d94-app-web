@@ -15,34 +15,22 @@ export async function createComment(
 }
 
 export async function updateComment(
-    issueId: string,
     commentId: string,
     data: UpdateCommentRequest,
 ): Promise<CommentResponse> {
-    const res = await apiClient.put(
-        `/v1/issues/${issueId}/comments/${commentId}`,
-        data,
-    );
+    const res = await apiClient.put(`/v1/comments/${commentId}`, data);
     return res.data.data;
 }
 
-export async function deleteComment(
-    issueId: string,
-    commentId: string,
-): Promise<void> {
-    await apiClient.delete(`/v1/issues/${issueId}/comments/${commentId}`);
+export async function deleteComment(commentId: string): Promise<void> {
+    await apiClient.delete(`/v1/comments/${commentId}`);
 }
 
-export async function addReaction(
+/** 반응 토글: 이미 눌렀으면 취소, 아니면 추가. 바뀐 댓글을 돌려준다 */
+export async function toggleReaction(
     commentId: string,
-    emoji: string,
-): Promise<void> {
-    await apiClient.post(`/v1/comments/${commentId}/reactions`, {emoji});
-}
-
-export async function removeReaction(
-    commentId: string,
-    emoji: string,
-): Promise<void> {
-    await apiClient.delete(`/v1/comments/${commentId}/reactions/${encodeURIComponent(emoji)}`);
+    reactionType: string,
+): Promise<CommentResponse> {
+    const res = await apiClient.post(`/v1/comments/${commentId}/reactions`, {reactionType});
+    return res.data.data;
 }

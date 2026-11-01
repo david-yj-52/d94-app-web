@@ -20,6 +20,8 @@
 { projectId: string; onClose: () => void; onSuccess?: () => void }
 ```
 - react-hook-form + zod 폼이며, 내부에서 `useCreateIssue`를 호출합니다.
+- 담당자는 `useProjectMembers` 목록에서 고르고 `userId` 를 `assigneeId` 로 보냅니다. `statusId` 는 `useWorkflowStatuses` 의 sortOrd 최솟값입니다. 우선순위·스토리 포인트는 비우면 보내지 않습니다.
+- ⚠️ 남은 결함(`it.fails`): `issueTypeId` 를 보내지 않아 실제 d94-query 에서는 **여전히 500** 입니다(백엔드에 이슈 유형 목록 API 가 없음). 설명(content)이 255자를 넘으면 백엔드 저장이 실패합니다(varchar(255)) → [test-report](../../../docs/test-report.md)
 ```tsx
 {showCreate && <CreateIssueModal projectId={projectId} onClose={() => setShowCreate(false)} onSuccess={() => show("이슈가 생성되었습니다.")}/>}
 ```
@@ -32,7 +34,7 @@
 - 기능:
   - 답글
   - `@멘션`: `useMention` + `searchUsers`로 사용자를 자동완성합니다.
-  - 이모지 반응: `EmojiPicker`, `useAddReaction` / `useRemoveReaction`
+  - 이모지 반응: `EmojiPicker`, `useToggleReaction` (같은 POST 로 추가·취소)
 - 파일 안에 내부 하위 컴포넌트가 있습니다: `CommentInput`, `CommentItem`, `EmojiPicker`, `useMention`.
 - ⚠️ 625줄로 매우 큽니다. 내부 컴포넌트(특히 `CommentInput`의 멘션 입력)를 재사용하려면 먼저 별도 파일로 분리하세요. 컴포넌트가 `lib/api/users`를 직접 import하는 것도 규칙 예외입니다.
 

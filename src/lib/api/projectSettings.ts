@@ -28,7 +28,7 @@ export async function updateProjectMemberRole(
     data: UpdateMemberRoleRequest,
 ): Promise<ProjectMemberResponse> {
     const res = await apiClient.put(
-        `/v1/projects/${projectId}/members/${userId}`,
+        `/v1/projects/${projectId}/members/${userId}/role`,
         data,
     );
     return res.data.data;

@@ -14,7 +14,7 @@ sprints/page.tsx
 ├── 헤더 "스프린트" + [+ 스프린트 생성]
 ├── 로딩 Skeleton / 빈 상태 "스프린트가 없습니다."
 ├── SprintCard × n  (페이지 내부 컴포넌트)
-│   ├── 상태 배지 (CREATED=대기 / ACTIVE=진행 중 / COMPLETED=완료)
+│   ├── 상태 배지 (`sprintStat`: Planned=대기 / Active=진행 중 / Completed=완료, 백엔드 값 그대로)
 │   ├── 액션 버튼 (상태별, 아래 표)
 │   └── "이슈 n개 ▼" 펼치기 → 스프린트 이슈 테이블 (키·제목·상태·담당자) + 이슈 제거
 ├── {showCreate && <CreateSprintModal/>}
@@ -33,11 +33,11 @@ sprints/page.tsx
 ### 상태별 액션
 | 상태 | 가능한 액션 |
 |---|---|
-| CREATED (대기) | 시작, 이슈 할당, 수정, 삭제 |
-| ACTIVE (진행 중) | 완료(CompleteSprintModal), 이슈 할당 |
-| COMPLETED (완료) | 수정 |
+| Planned (대기) | 시작, 이슈 할당, 수정, 삭제 |
+| Active (진행 중) | 완료(CompleteSprintModal), 이슈 할당 |
+| Completed (완료) | 수정 |
 
-이슈 제거 버튼은 COMPLETED가 아닐 때만 보입니다.
+이슈 제거 버튼은 Completed가 아닐 때만 보입니다.
 ### 스프린트 완료
 - 미완료 이슈를 `BACKLOG`나 `NEXT_SPRINT`(대상 스프린트 선택)로 옮긴 뒤 완료합니다.
 ### 이슈 할당·제거
