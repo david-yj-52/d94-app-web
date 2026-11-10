@@ -70,6 +70,7 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
     ok(getStore().milestones.filter((m) => m.projectId === params.projectId)));
 ```
 
+- 백로그 mock(`GET /v1/projects/:projectId/backlog`)은 `sprintId` 없는 이슈를 우선순위 높은 순으로 페이지네이션합니다(d94-query 와 같은 정렬). API 함수는 `api/sprints.ts` 의 `getBacklog`.
 - **새 엔드포인트를 추가하면 mock 라우트도 함께 추가하세요.** 없으면 mock 모드에서 404가 납니다.
 - 응답 헬퍼: `ok(data)` → `{success: true, data}`, `notFound(what)` → 404. 본문 없는 상태(`{status: 204}`)도 반환할 수 있습니다(프록시가 본문 없이 응답).
 - 인터페이스 테스트 mock(`/v1/interface-tests`)은 백엔드와 같은 상태코드(201·204·400·404)를 돌려줍니다. 저장소는 `getStore().interfaceTests`.

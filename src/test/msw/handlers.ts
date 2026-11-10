@@ -112,6 +112,10 @@ export const handlers = [
     }),
 
     // SprintController
+    http.get(`${API}/projects/:projectId/backlog`, ({request}) => {
+        const q = new URL(request.url).searchParams;
+        return json(fx.ok(fx.page([fx.issue2], Number(q.get("page") ?? 0), Number(q.get("size") ?? 20))));
+    }),
     http.get(`${API}/projects/:projectId/sprints`, () => json(fx.ok([fx.sprint, fx.sprintPlanned]))),
     http.post(`${API}/projects/:projectId/sprints`, async ({request}) =>
         json(fx.ok({...fx.sprint, sprintStat: "Planned", ...(await readBody(request))}))),

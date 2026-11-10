@@ -468,6 +468,13 @@ on("PUT", "/v1/boards/:boardId/issues/:issueId/move", ({params, body}) => {
 });
 
 // 스프린트
+on("GET", "/v1/projects/:projectId/backlog", ({params, query}) => {
+    const rank: Record<string, number> = {HIGHEST: 0, HIGH: 1, MEDIUM: 2, LOW: 3, LOWEST: 4};
+    const items = getStore().issues
+        .filter((i) => i.projectId === params.projectId && !i.sprintId)
+        .sort((a, b) => (rank[a.priority ?? ""] ?? 9) - (rank[b.priority ?? ""] ?? 9));
+    return ok(paginate(items, query));
+});
 on("GET", "/v1/projects/:projectId/sprints", ({params}) => ok(getStore().sprints.filter((sp) => sp.projectId === params.projectId)));
 on("POST", "/v1/projects/:projectId/sprints", ({params, body}) => {
     const now = new Date().toISOString();

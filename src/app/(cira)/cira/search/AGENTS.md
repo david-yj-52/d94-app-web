@@ -16,13 +16,13 @@ search/page.tsx  (SearchPageContent를 Suspense로 감쌈 — useSearchParams �
 ├── 검색 입력 + 정렬(관련도/최신/업데이트)
 ├── 필터: 상태·우선순위 다중 선택, ActiveFilterTag(페이지 내부 컴포넌트)
 ├── 저장 필터 목록 + SaveFilterModal(페이지 내부 컴포넌트)
-├── 결과 테이블 (키·제목·상태·우선순위·담당자) + 페이지네이션
+├── 결과: IssueTable (md 이상 표 / 모바일 카드) + 페이지네이션
 └── 빈 상태 "검색 결과가 없습니다."
 
 search/advanced/page.tsx
 ├── CqlEditor              → 카탈로그 §5
 ├── CqlSyntaxGuide         → 카탈로그 §5 (예제 클릭 시 삽입)
-└── 결과 테이블 + 페이지네이션 / 오류 메시지 "CQL 문법을 확인해주세요."
+└── 결과: IssueTable + 페이지네이션 / 오류 메시지 "CQL 문법을 확인해주세요."
 ```
 
 ## 데이터

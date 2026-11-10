@@ -25,14 +25,15 @@ describe("useSprints", () => {
 
     const sprints = ["sprints", "PRJ-1"];
     const issues = ["issues", "PRJ-1"];
+    const backlog = ["backlog", "PRJ-1"];
     it.each([
         ["useCreateSprint", () => useCreateSprint("PRJ-1"), {sprintNm: "S"}, [sprints]],
         ["useUpdateSprint", () => useUpdateSprint("PRJ-1"), {sprintId: "SPR-1", data: {goal: "g"}}, [sprints, ["sprint", "SPR-1"]]],
         ["useDeleteSprint", () => useDeleteSprint("PRJ-1"), "SPR-1", [sprints]],
         ["useStartSprint", () => useStartSprint("PRJ-1"), "SPR-1", [sprints]],
-        ["useCompleteSprint", () => useCompleteSprint("PRJ-1"), {sprintId: "SPR-1", data: {incompleteIssueAction: "BACKLOG"}}, [sprints, issues]],
-        ["useAddIssueToSprint", () => useAddIssueToSprint("PRJ-1"), {sprintId: "SPR-1", issueId: "ISS-1"}, [sprints, issues]],
-        ["useRemoveIssueFromSprint", () => useRemoveIssueFromSprint("PRJ-1"), {sprintId: "SPR-1", issueId: "ISS-1"}, [sprints, issues]],
+        ["useCompleteSprint", () => useCompleteSprint("PRJ-1"), {sprintId: "SPR-1", data: {incompleteIssueAction: "BACKLOG"}}, [sprints, issues, backlog]],
+        ["useAddIssueToSprint", () => useAddIssueToSprint("PRJ-1"), {sprintId: "SPR-1", issueId: "ISS-1"}, [sprints, issues, backlog]],
+        ["useRemoveIssueFromSprint", () => useRemoveIssueFromSprint("PRJ-1"), {sprintId: "SPR-1", issueId: "ISS-1"}, [sprints, issues, backlog]],
     ] as const)("%s invalidate", async (_n, hook, vars, keys) => {
         const {result, client} = renderHookWithClient(hook as AnyMutation);
         const spy = vi.spyOn(client, "invalidateQueries");

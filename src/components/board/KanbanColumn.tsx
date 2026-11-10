@@ -26,6 +26,8 @@ interface Props {
     onIssueDragOver: (e: React.DragEvent, issueId: string, columnId: string) => void;
     onEditColumn?: (column: BoardColumnResponse) => void;
     onDeleteColumn?: (columnId: string) => void;
+    moveTargets?: { id: string; columnNm: string }[];
+    onMoveTo?: (issueId: string, targetColumnId: string) => void;
 }
 
 export default function KanbanColumn({
@@ -41,6 +43,8 @@ export default function KanbanColumn({
                                          onIssueDragOver,
                                          onEditColumn,
                                          onDeleteColumn,
+                                         moveTargets,
+                                         onMoveTo,
                                      }: Props) {
     const topBorder = TOP_BORDER[column.statusCategory ?? ""] ?? "border-t-slate-300";
     const issueCount = column.issues.length;
@@ -49,7 +53,7 @@ export default function KanbanColumn({
     return (
         <div
             className={[
-                "group flex flex-col w-72 shrink-0 rounded-xl border border-t-4 transition-all",
+                "group flex w-[85vw] shrink-0 snap-start flex-col rounded-xl border border-t-4 transition-all md:w-72",
                 topBorder,
                 isDragOver
                     ? "border-blue-400 bg-blue-50/50 shadow-lg shadow-blue-100"
@@ -81,7 +85,7 @@ export default function KanbanColumn({
                 </div>
 
                 {(onEditColumn || onDeleteColumn) && (
-                    <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-0.5 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                         {onEditColumn && (
                             <button
                                 onClick={() => onEditColumn(column)}
@@ -115,6 +119,8 @@ export default function KanbanColumn({
                         showDropBefore={dropBeforeIssueId === issue.id}
                         onDragStart={(e) => onIssueDragStart(e, issue, column.id)}
                         onDragOver={(e) => onIssueDragOver(e, issue.id, column.id)}
+                        moveTargets={moveTargets}
+                        onMoveTo={onMoveTo ? (target) => onMoveTo(issue.id, target) : undefined}
                     />
                 ))}
 

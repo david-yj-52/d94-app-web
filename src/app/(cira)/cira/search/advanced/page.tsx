@@ -1,31 +1,14 @@
 "use client";
 
+import IssueTable from "@/components/issue/IssueTable";
 import CqlEditor from "@/components/search/CqlEditor";
 import CqlSyntaxGuide from "@/components/search/CqlSyntaxGuide";
 import {useCqlSearch} from "@/hooks/useCqlSearch";
 import {ArrowLeft, ChevronLeft, ChevronRight, Search,} from "lucide-react";
 import Link from "next/link";
-import {useRouter} from "next/navigation";
 import {useState} from "react";
 
-const PRIORITY_LABELS: Record<string, string> = {
-    HIGHEST: "최상",
-    HIGH: "높음",
-    MEDIUM: "보통",
-    LOW: "낮음",
-    LOWEST: "최하",
-};
-
-const PRIORITY_COLORS: Record<string, string> = {
-    HIGHEST: "text-red-600",
-    HIGH: "text-orange-500",
-    MEDIUM: "text-yellow-500",
-    LOW: "text-blue-400",
-    LOWEST: "text-gray-400",
-};
-
 export default function AdvancedSearchPage() {
-    const router = useRouter();
     const [cql, setCql] = useState("");
     const [searchCql, setSearchCql] = useState("");
     const [page, setPage] = useState(0);
@@ -159,71 +142,7 @@ export default function AdvancedSearchPage() {
                 {/* Result table */}
                 {!isLoading && !isError && issues.length > 0 && (
                     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                        <table className="w-full text-sm">
-                            <thead>
-                            <tr className="border-b border-gray-200 text-left">
-                                <th className="pb-3 pl-5 pt-3 font-medium text-gray-400 w-28">
-                                    키
-                                </th>
-                                <th className="pb-3 pt-3 font-medium text-gray-400">
-                                    제목
-                                </th>
-                                <th className="pb-3 pt-3 font-medium text-gray-400 w-32 text-center">
-                                    상태
-                                </th>
-                                <th className="pb-3 pt-3 font-medium text-gray-400 w-24 text-center">
-                                    우선순위
-                                </th>
-                                <th className="pb-3 pr-5 pt-3 font-medium text-gray-400 w-28">
-                                    담당자
-                                </th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {issues.map((issue) => (
-                                <tr
-                                    key={issue.id}
-                                    onClick={() =>
-                                        router.push(
-                                            `/cira/projects/${issue.projectId}/issues/${issue.id}`,
-                                        )
-                                    }
-                                    className="cursor-pointer border-b border-gray-100 hover:bg-gray-50 last:border-0 transition-colors"
-                                >
-                                    <td className="py-3 pl-5 font-mono text-xs text-gray-400">
-                                        {issue.issueKey}
-                                    </td>
-                                    <td className="py-3 font-medium text-gray-900 pr-3">
-                                        {issue.title}
-                                    </td>
-                                    <td className="py-3 text-center">
-                                        {issue.statusNm && (
-                                            <span
-                                                className="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-600">
-                          {issue.statusNm}
-                        </span>
-                                        )}
-                                    </td>
-                                    <td className="py-3 text-center">
-                                        {issue.priority ? (
-                                            <span
-                                                className={`text-xs font-semibold ${PRIORITY_COLORS[issue.priority] ?? "text-gray-500"}`}
-                                            >
-                          {PRIORITY_LABELS[issue.priority] ?? issue.priority}
-                        </span>
-                                        ) : (
-                                            <span className="text-xs text-gray-300">-</span>
-                                        )}
-                                    </td>
-                                    <td className="py-3 pr-5 text-xs text-gray-500">
-                                        {issue.assignee?.name ?? (
-                                            <span className="text-gray-300">-</span>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                            </tbody>
-                        </table>
+                        <IssueTable issues={issues}/>
                     </div>
                 )}
 

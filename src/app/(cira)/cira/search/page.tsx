@@ -1,5 +1,6 @@
 "use client";
 
+import IssueTable from "@/components/issue/IssueTable";
 import {useDeleteFilter, useSavedFilters, useSaveFilter, useSearchIssues} from "@/hooks/useSearch";
 import {useProjects} from "@/hooks/useProjects";
 import type {SavedFilter, SearchIssuesParams} from "@/lib/api/search";
@@ -473,47 +474,7 @@ function SearchPageContent() {
 
                     {!isLoading && issues.length > 0 && (
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                            <table className="w-full text-sm">
-                                <thead>
-                                <tr className="border-b border-gray-200 text-left">
-                                    <th className="pb-3 pl-5 pt-3 font-medium text-gray-500 w-28">키</th>
-                                    <th className="pb-3 pt-3 font-medium text-gray-500">제목</th>
-                                    <th className="pb-3 pt-3 font-medium text-gray-500 w-28 text-center">상태</th>
-                                    <th className="pb-3 pt-3 font-medium text-gray-500 w-24 text-center">우선순위</th>
-                                    <th className="pb-3 pr-5 pt-3 font-medium text-gray-500 w-28">담당자</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {issues.map((issue) => (
-                                    <tr
-                                        key={issue.id}
-                                        onClick={() =>
-                                            router.push(`/cira/projects/${issue.projectId}/issues/${issue.id}`)
-                                        }
-                                        className="cursor-pointer border-b border-gray-100 hover:bg-gray-50 last:border-0"
-                                    >
-                                        <td className="py-3 pl-5 font-mono text-xs text-gray-500">
-                                            {issue.issueKey}
-                                        </td>
-                                        <td className="py-3 font-medium text-gray-900">{issue.title}</td>
-                                        <td className="py-3 text-center">
-                                            {issue.statusNm && (
-                                                <span
-                                                    className="inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                            {issue.statusNm}
-                          </span>
-                                            )}
-                                        </td>
-                                        <td className="py-3 text-center text-xs font-medium text-gray-500">
-                                            {issue.priority ?? "-"}
-                                        </td>
-                                        <td className="py-3 pr-5 text-xs text-gray-500">
-                                            {issue.assignee?.name ?? "-"}
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                            <IssueTable issues={issues}/>
                         </div>
                     )}
 

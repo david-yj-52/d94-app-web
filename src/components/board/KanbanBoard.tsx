@@ -2,9 +2,11 @@
 
 import AddColumnModal from "@/components/board/AddColumnModal";
 import KanbanColumn from "@/components/board/KanbanColumn";
+import {filterColumns} from "@/components/board/boardFilters";
 import {useToast} from "@/components/ui/Toast";
 import {useBoardDetail, useDeleteBoard, useDeleteColumn, useMoveIssue,} from "@/hooks/useBoards";
 import type {BoardColumnResponse, BoardIssueResponse} from "@/types/board";
+import {useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 
@@ -41,6 +43,9 @@ export default function KanbanBoard({boardId, projectId}: Props) {
     const [showBoardMenu, setShowBoardMenu] = useState(false);
     const [showDeleteBoardConfirm, setShowDeleteBoardConfirm] = useState(false);
     const [deletingColumnId, setDeletingColumnId] = useState<string | null>(null);
+    const {data: session} = useSession();
+    const [mineOnly, setMineOnly] = useState(false);
+    const [keyword, setKeyword] = useState("");
 
     const handleIssueDragStart = (
         e: React.DragEvent,
@@ -111,6 +116,10 @@ export default function KanbanBoard({boardId, projectId}: Props) {
             },
         );
     };
+
+    // 모바일(터치)은 HTML5 DnD 가 안 되므로 카드 메뉴로 컬럼 이동
+    const handleMoveTo = (issueId: string, targetColumnId: string) =>
+        moveIssue({issueId, data: {targetColumnId}}, {onError: () => show("이슈 이동에 실패했습니다.", "error")});
 
     const handleDragEnd = () => {
         setDragging(null);
@@ -207,6 +216,28 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                 </div>
             </div>
 
+            {/* Quick filters */}
+            {board.columns.length > 0 && (
+                <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <input
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
+                        placeholder="보드 검색"
+                        aria-label="보드 검색"
+                        className="h-9 w-44 rounded-md border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                    <button
+                        onClick={() => setMineOnly((v) => !v)}
+                        aria-pressed={mineOnly}
+                        className={`h-9 rounded-md border px-3 text-sm transition-colors ${
+                            mineOnly ? "border-indigo-300 bg-indigo-50 font-semibold text-indigo-700" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                        }`}
+                    >
+                        내 이슈만
+                    </button>
+                </div>
+            )}
+
             {/* Columns */}
             {board.columns.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 text-slate-400">
@@ -220,8 +251,8 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                     </button>
                 </div>
             ) : (
-                <div className="flex gap-4 overflow-x-auto pb-6 pt-1 items-start">
-                    {board.columns.map((column) => (
+                <div className="flex snap-x snap-mandatory items-start gap-3 overflow-x-auto pb-6 pt-1 md:snap-none md:gap-4">
+                    {filterColumns(board.columns, {mineEmail: mineOnly ? session?.user?.email : undefined, keyword}).map((column) => (
                         <KanbanColumn
                             key={column.id}
                             column={column}
@@ -243,13 +274,15 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                                 setShowAddColumn(true);
                             }}
                             onDeleteColumn={(colId) => setDeletingColumnId(colId)}
+                            moveTargets={board.columns.filter((c) => c.id !== column.id).map((c) => ({id: c.id, columnNm: c.columnNm}))}
+                            onMoveTo={handleMoveTo}
                         />
                     ))}
 
                     {/* Add column ghost */}
                     <button
                         onClick={() => setShowAddColumn(true)}
-                        className="w-72 shrink-0 rounded-xl border-2 border-dashed border-slate-200 h-24 flex items-center justify-center text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50/30 transition-all text-sm font-medium"
+                        className="w-[85vw] shrink-0 snap-start rounded-xl border-2 border-dashed md:w-72 border-slate-200 h-24 flex items-center justify-center text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50/30 transition-all text-sm font-medium"
                     >
                         + 컬럼 추가
                     </button>

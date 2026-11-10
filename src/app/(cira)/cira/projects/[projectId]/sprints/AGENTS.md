@@ -10,12 +10,13 @@
 ## 화면 구성
 ```
 sprints/page.tsx
-├── 헤더 "스프린트" + [+ 스프린트 생성]
+├── PageHeader "백로그" + [+ 스프린트 생성]  (사이드바 메뉴 이름도 "백로그")
 ├── 로딩 Skeleton / 빈 상태 "스프린트가 없습니다."
 ├── SprintCard × n  (페이지 내부 컴포넌트)
 │   ├── 상태 배지 (`sprintStat`: Planned=대기 / Active=진행 중 / Completed=완료, 백엔드 값 그대로)
 │   ├── 액션 버튼 (상태별, 아래 표)
 │   └── "이슈 n개 ▼" 펼치기 → 스프린트 이슈 테이블 (키·제목·상태·담당자) + 이슈 제거
+├── BacklogSection (페이지 내부): 스프린트에 없는 이슈(useBacklog) · 행 메뉴 "스프린트로 ▾" → useAddIssueToSprint
 ├── {showCreate && <CreateSprintModal/>}
 ├── {editTarget && <EditSprintModal/>}
 ├── {assignTarget && <AssignIssueModal/>}
@@ -26,6 +27,7 @@ sprints/page.tsx
 ## 데이터
 - `useSprints(projectId)` → `["sprints", projectId]`
 - SprintCard 안: `useIssues(projectId, {sprintId, size: 100})`, `useRemoveIssueFromSprint`
+- BacklogSection: `useBacklog(projectId)` → `GET /v1/projects/:id/backlog` (`["backlog", projectId]`), `useAddIssueToSprint`
 - `useStartSprint`, `useDeleteSprint` (페이지), 나머지 mutation은 각 모달이 호출합니다.
 
 ## 기능 (L4)

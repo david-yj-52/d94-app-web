@@ -20,12 +20,12 @@ issues/page.tsx
 └── {showCreate && <CreateIssueModal/>} + {ToastComponent}
 
 issues/[issueId]/page.tsx
-├── 브레드크럼 (프로젝트 / 이슈 목록 / {issueKey}) + ··· 더보기 메뉴(삭제)
+├── PageHeader (프로젝트 / 이슈 › 제목 = issueKey) + ··· 더보기 Menu(삭제)
 ├── 좌측 본문
 │   ├── 제목·설명: InlineText (페이지 내부 컴포넌트)
 │   ├── AttachmentSection issueId                → issue 카드
 │   └── CommentSection issueId                   → issue 카드
-├── 우측 사이드바: 상태 전이 버튼 · 우선순위 select · 담당자/보고자 · 스토리 포인트 · 마감일 · 생성/수정 시각
+├── 우측 사이드바 (모바일은 본문 위): 상태 드롭다운(Menu, 모바일 sticky) · <details> "세부 정보"(우선순위 select · 담당자/보고자 · 스토리 포인트 · 마감일 · 생성/수정 시각)
 └── 삭제 확인 다이얼로그 (표준 삭제 다이얼로그의 원본)
 ```
 
@@ -46,7 +46,7 @@ issues/[issueId]/page.tsx
 - 제목, 설명, 스토리 포인트는 `InlineText`로 편집합니다. 클릭하면 편집 모드가 되고, blur나 Enter로 저장합니다(`update({field})`).
 - 우선순위는 select를 바꾸면 바로 저장되고, 마감일은 date input에서 blur할 때 저장됩니다. 결과는 "저장되었습니다." 또는 "저장에 실패했습니다." 토스트로 알립니다.
 ### 상태 전이 (워크플로우)
-- `useAvailableTransitions`로 **현재 상태에서 갈 수 있는 상태**만 버튼으로 보여 줍니다. 전이 규칙은 [settings/workflow](../settings/AGENTS.md)에서 정의합니다.
+- `useAvailableTransitions`로 **현재 상태에서 갈 수 있는 상태**만 상태 드롭다운 항목으로 보여 줍니다. 버튼 색은 현재 상태의 `category`(`cira/ui/tones`)입니다. 전이 규칙은 [settings/workflow](../settings/AGENTS.md)에서 정의합니다.
 ### 삭제
 - 더보기(···) → 삭제 → 확인 다이얼로그 → 삭제 성공 시 목록으로 이동합니다.
 ### 댓글 · 첨부

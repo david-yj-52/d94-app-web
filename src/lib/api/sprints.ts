@@ -1,5 +1,6 @@
 import apiClient from "./client";
 import type {CompleteSprintRequest, CreateSprintRequest, SprintResponse, UpdateSprintRequest,} from "@/types/sprint";
+import type {IssueResponse, PageResponse} from "@/types/issue";
 
 export async function getSprints(projectId: string): Promise<SprintResponse[]> {
     const res = await apiClient.get(`/v1/projects/${projectId}/sprints`);
@@ -56,4 +57,10 @@ export async function removeIssueFromSprint(
     issueId: string,
 ): Promise<void> {
     await apiClient.delete(`/v1/sprints/${sprintId}/issues/${issueId}`);
+}
+
+// 스프린트에 없는 이슈 (d94-query 는 우선순위 내림차순)
+export async function getBacklog(projectId: string, page = 0, size = 100): Promise<PageResponse<IssueResponse>> {
+    const res = await apiClient.get(`/v1/projects/${projectId}/backlog`, {params: {page, size}});
+    return res.data.data;
 }
