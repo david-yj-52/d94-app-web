@@ -14,7 +14,7 @@
 ## 화면 구성
 ```
 issues/page.tsx
-├── 브레드크럼 + "이슈 목록" + [+ 이슈 생성]
+├── PageHeader (프로젝트 / {이름} · "이슈" · [+ 이슈 생성])  → cira 카드
 ├── IssueFilter (filters 상태는 페이지가 보유)       → issue 카드
 ├── 로딩: SkeletonRow × n / 결과: IssueTable        → ui · issue 카드
 └── {showCreate && <CreateIssueModal/>} + {ToastComponent}

@@ -13,7 +13,7 @@
 ## 화면 구성
 ```
 reports/layout.tsx
-├── 제목 "리포트" + 서브탭 (번다운 차트 / Velocity / CFD 차트) — usePathname으로 활성 표시
+├── PageHeader (프로젝트 / {이름} · "리포트") + 서브탭 (번다운 차트 / Velocity / CFD 차트) — usePathname으로 활성 표시
 └── {children}
     ├── burndown: 스프린트 select → LineChart (이상선 vs 실제 잔여) · 요약 카드 3개(모바일 1열)
     ├── velocity: 최근 N개 select(6/10/12) → 스프린트별 계획 대비 완료 Bar

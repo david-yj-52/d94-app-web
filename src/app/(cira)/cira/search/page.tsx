@@ -6,7 +6,6 @@ import {useProjects} from "@/hooks/useProjects";
 import type {SavedFilter, SearchIssuesParams} from "@/lib/api/search";
 import type {Priority} from "@/types/issue";
 import {ChevronLeft, ChevronRight, Filter, Save, Search, X,} from "lucide-react";
-import Link from "next/link";
 import {useRouter, useSearchParams} from "next/navigation";
 import {Suspense, useCallback, useMemo, useState} from "react";
 
@@ -225,13 +224,6 @@ function SearchPageContent() {
                 >
                     검색
                 </button>
-                <Link
-                    href="/cira/search/advanced"
-                    className="flex h-10 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-gray-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                    title="CQL 고급 검색"
-                >
-                    고급 검색 (CQL)
-                </Link>
             </div>
 
             {/* Active filters + controls */}

@@ -1,5 +1,6 @@
 "use client";
 
+import PageHeader from "@/components/cira/ui/PageHeader";
 import CreateProjectModal from "@/components/project/CreateProjectModal";
 import ProjectCard from "@/components/project/ProjectCard";
 import {SkeletonCard} from "@/components/ui/Skeleton";
@@ -14,20 +15,7 @@ export default function ProjectsPage() {
 
     return (
         <div className="max-w-5xl mx-auto px-4">
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">프로젝트</h1>
-                    <p className="text-sm text-slate-500 mt-0.5">
-                        팀 프로젝트를 관리하세요.
-                    </p>
-                </div>
-                <button
-                    onClick={() => setShowCreate(true)}
-                    className="h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
-                >
-                    + 프로젝트 생성
-                </button>
-            </div>
+            <PageHeader title="프로젝트" actions={<button onClick={() => setShowCreate(true)} className="h-9 px-4 rounded bg-cira-brand text-white text-sm font-semibold hover:opacity-90">+ 프로젝트 생성</button>}/>
 
             {isLoading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

@@ -1,7 +1,7 @@
 "use client";
 
+import PageHeader from "@/components/cira/ui/PageHeader";
 import {useProject} from "@/hooks/useProjects";
-import Link from "next/link";
 import {use} from "react";
 
 export default function SettingsLayout({
@@ -16,17 +16,7 @@ export default function SettingsLayout({
 
     return (
         <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-                <Link href="/cira/projects" className="hover:text-slate-600">
-                    프로젝트
-                </Link>
-                <span>/</span>
-                <span className="text-slate-700 font-medium">
-          {project?.name ?? "..."}
-        </span>
-            </div>
-
-
+            <PageHeader breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]} title="프로젝트 설정"/>
             <div className="min-w-0">{children}</div>
         </div>
     );

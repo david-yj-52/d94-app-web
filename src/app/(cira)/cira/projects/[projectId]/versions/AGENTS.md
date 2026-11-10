@@ -9,7 +9,7 @@
 
 ## 화면 구성
 ```
-versions/layout.tsx → {children} (프로젝트 메뉴는 셸 사이드바)
+versions/layout.tsx → PageHeader (프로젝트 / {이름} · "릴리스") + {children} (프로젝트 메뉴는 셸 사이드바)
 versions/page.tsx
 ├── 탭: [버전] [마일스톤]   (activeTab 상태)
 ├── 버전 탭

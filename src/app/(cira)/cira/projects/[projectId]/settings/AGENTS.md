@@ -17,6 +17,7 @@
 ## 화면 구성
 ```
 settings/layout.tsx
+├── PageHeader (프로젝트 / {이름} · "프로젝트 설정")
 ├── (설정 메뉴는 CIRA 셸 사이드바: 기본 정보 / 멤버 / 워크플로우 / Git 연동 / 자동화)
 └── {children}
     ├── (기본)     폼: 이름·설명 + [저장]  (react-hook-form)

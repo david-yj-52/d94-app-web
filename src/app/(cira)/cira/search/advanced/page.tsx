@@ -4,8 +4,7 @@ import IssueTable from "@/components/issue/IssueTable";
 import CqlEditor from "@/components/search/CqlEditor";
 import CqlSyntaxGuide from "@/components/search/CqlSyntaxGuide";
 import {useCqlSearch} from "@/hooks/useCqlSearch";
-import {ArrowLeft, ChevronLeft, ChevronRight, Search,} from "lucide-react";
-import Link from "next/link";
+import {ChevronLeft, ChevronRight, Search,} from "lucide-react";
 import {useState} from "react";
 
 export default function AdvancedSearchPage() {
@@ -37,22 +36,7 @@ export default function AdvancedSearchPage() {
     }
 
     return (
-        <div className="mx-auto max-w-5xl px-4 py-6">
-            {/* Header */}
-            <div className="mb-6 flex items-center gap-3">
-                <Link
-                    href="/cira/search"
-                    className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-                >
-                    <ArrowLeft className="h-4 w-4"/>
-                    일반 검색으로 돌아가기
-                </Link>
-                <span className="text-gray-300">/</span>
-                <h1 className="text-lg font-semibold text-gray-900">
-                    고급 검색 (CQL)
-                </h1>
-            </div>
-
+        <div className="mx-auto max-w-6xl px-4">
             {/* CQL Editor */}
             <div className="mb-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
                 <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-400">

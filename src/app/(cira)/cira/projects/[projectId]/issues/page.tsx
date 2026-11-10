@@ -1,5 +1,6 @@
 "use client";
 
+import PageHeader from "@/components/cira/ui/PageHeader";
 import CreateIssueModal from "@/components/issue/CreateIssueModal";
 import IssueFilter from "@/components/issue/IssueFilter";
 import IssueTable from "@/components/issue/IssueTable";
@@ -8,7 +9,6 @@ import {useToast} from "@/components/ui/Toast";
 import {useIssues} from "@/hooks/useIssues";
 import {useProject} from "@/hooks/useProjects";
 import type {IssueFilterParams} from "@/types/issue";
-import Link from "next/link";
 import {use, useState} from "react";
 
 const PAGE_SIZE = 20;
@@ -39,35 +39,7 @@ export default function IssueListPage({
 
     return (
         <div className="max-w-6xl mx-auto px-4">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-                <Link href="/cira/projects" className="hover:text-slate-600">
-                    프로젝트
-                </Link>
-                <span>/</span>
-                <span className="text-slate-700 font-medium">
-          {project?.name ?? "..."}
-        </span>
-            </div>
-
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">이슈 목록</h1>
-                    {page && (
-                        <p className="text-sm text-slate-500 mt-0.5">
-                            총 {page.totalElements}개
-                        </p>
-                    )}
-                </div>
-                <button
-                    onClick={() => setShowCreate(true)}
-                    className="h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 shrink-0"
-                >
-                    + 이슈 생성
-                </button>
-            </div>
-
+            <PageHeader breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]} title="이슈" actions={<button onClick={() => setShowCreate(true)} className="h-9 px-4 rounded bg-cira-brand text-white text-sm font-semibold hover:opacity-90 shrink-0">+ 이슈 생성</button>}/>
             <div className="mb-4">
                 <IssueFilter filters={filters} onChange={setFilters}/>
             </div>

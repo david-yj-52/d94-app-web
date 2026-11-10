@@ -6,12 +6,15 @@
 | URL | 파일 | 설명 |
 |---|---|---|
 | `/cira/search` | `page.tsx` (567줄) | 키워드 + 필터 검색, 저장 필터 |
-| `/cira/search/advanced` | `advanced/page.tsx` (255줄) | CQL(쿼리 언어) 고급 검색 |
+| `/cira/search/advanced` | `advanced/page.tsx` | CQL(쿼리 언어) 고급 검색 |
+| (공통) | `layout.tsx` | PageHeader "검색" + 기본 ↔ CQL 토글 (Jira Basic/JQL 전환) |
 
-- 진입 경로: 헤더 GlobalSearch, 알림 클릭(`/cira/search?q={issueKey}`), 검색 화면의 "CQL 고급 검색" 링크
+- 진입 경로: 헤더 GlobalSearch, 알림 클릭(`/cira/search?q={issueKey}`), 검색 머리의 기본/CQL 토글
 
 ## 화면 구성
 ```
+search/layout.tsx → PageHeader "검색" + 토글 [기본 | CQL] (usePathname 으로 활성 표시)
+
 search/page.tsx  (SearchPageContent를 Suspense로 감쌈 — useSearchParams 사용)
 (반응형: 모바일은 필터 패널이 결과 위, md 이상 왼쪽 224px)
 ├── 검색 입력 + 정렬(관련도/최신/업데이트)
