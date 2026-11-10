@@ -9,6 +9,7 @@ import type {InterfaceTestItemResponse} from "@/types/interfaceTest";
 import type {EncryptedCredential} from "@/types/auth";
 import {dateFrom, findUser, getStore, ISSUE_TYPES, ME, nextId, summary, USERS} from "./data";
 import {mockCredentialPublicKey, mockDecryptCredential} from "./credential";
+import {registerStudyMock} from "./study";
 
 type Params = Record<string, string>;
 type Body = Record<string, unknown>;
@@ -186,6 +187,9 @@ function sprintPoints(sprintId: string) {
 type Handler = (ctx: Ctx) => MockResult | Promise<MockResult>;
 const routes: Array<[string, string, Handler]> = [];
 const on = (method: string, pattern: string, h: Handler) => routes.push([method, pattern, h]);
+
+// Study(PDF 학습 뷰어) → ./study.ts
+registerStudyMock(on);
 
 // 인증
 // 인증: 본문은 암호화 봉투 {enc} (ADR 0004). 풀리지 않으면 백엔드처럼 400 AUTH_CREDENTIAL_INVALID

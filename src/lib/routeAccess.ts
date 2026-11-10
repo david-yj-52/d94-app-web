@@ -2,7 +2,7 @@
 
 export type PathAccess = "protected" | "publicOnly" | "open";
 
-const PROTECTED_PREFIXES = ["/cira", "/interface-test"];
+const PROTECTED_PREFIXES = ["/cira", "/interface-test", "/study"];
 const PUBLIC_ONLY = ["/login", "/register"];
 // 예전 가입 경로(/register 로 redirect). 비로그인 사용자도 들어와야 한다
 const PROTECTED_EXCEPTIONS = ["/cira/register"];
