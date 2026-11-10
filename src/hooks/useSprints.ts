@@ -5,6 +5,7 @@ import {
     completeSprint,
     createSprint,
     deleteSprint,
+    getBacklog,
     getSprint,
     getSprints,
     removeIssueFromSprint,
@@ -18,6 +19,14 @@ export function useSprints(projectId: string) {
     return useQuery({
         queryKey: ["sprints", projectId],
         queryFn: () => getSprints(projectId),
+        enabled: !!projectId,
+    });
+}
+
+export function useBacklog(projectId: string) {
+    return useQuery({
+        queryKey: ["backlog", projectId],
+        queryFn: () => getBacklog(projectId),
         enabled: !!projectId,
     });
 }
@@ -85,6 +94,7 @@ export function useCompleteSprint(projectId: string) {
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["sprints", projectId]});
             queryClient.invalidateQueries({queryKey: ["issues", projectId]});
+            queryClient.invalidateQueries({queryKey: ["backlog", projectId]});
         },
     });
 }
@@ -97,6 +107,7 @@ export function useAddIssueToSprint(projectId: string) {
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["sprints", projectId]});
             queryClient.invalidateQueries({queryKey: ["issues", projectId]});
+            queryClient.invalidateQueries({queryKey: ["backlog", projectId]});
         },
     });
 }
@@ -109,6 +120,7 @@ export function useRemoveIssueFromSprint(projectId: string) {
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ["sprints", projectId]});
             queryClient.invalidateQueries({queryKey: ["issues", projectId]});
+            queryClient.invalidateQueries({queryKey: ["backlog", projectId]});
         },
     });
 }

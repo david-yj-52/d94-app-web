@@ -2,6 +2,9 @@
 
 import {AttachmentSection} from "@/components/issue/AttachmentSection";
 import {CommentSection} from "@/components/issue/CommentSection";
+import Menu from "@/components/cira/ui/Menu";
+import PageHeader from "@/components/cira/ui/PageHeader";
+import {STATUS_TONE_CLASS, statusTone} from "@/components/cira/ui/tones";
 import {useToast} from "@/components/ui/Toast";
 import {
     useAvailableTransitions,
@@ -11,7 +14,6 @@ import {
     useUpdateIssueStatus,
 } from "@/hooks/useIssues";
 import type {Priority, UpdateIssueRequest} from "@/types/issue";
-import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {use, useEffect, useRef, useState} from "react";
 
@@ -108,7 +110,6 @@ export default function IssueDetailPage({
         useDeleteIssue(projectId);
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [showMoreMenu, setShowMoreMenu] = useState(false);
 
     const update = (data: UpdateIssueRequest) => {
         updateIssue(
@@ -149,58 +150,24 @@ export default function IssueDetailPage({
 
     return (
         <div className="max-w-5xl mx-auto px-4">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-                <Link href="/cira/projects" className="hover:text-slate-600">
-                    프로젝트
-                </Link>
-                <span>/</span>
-                <Link
-                    href={`/cira/projects/${projectId}/issues`}
-                    className="hover:text-slate-600"
-                >
-                    이슈 목록
-                </Link>
-                <span>/</span>
-                <span className="text-slate-700 font-mono text-xs">
-          {issue.issueKey}
-        </span>
-            </div>
-
-            {/* Header */}
-            <div className="flex items-start justify-between mb-6">
-        <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-widest">
-          {issue.issueKey}
-        </span>
-                <div className="relative">
-                    <button
-                        onClick={() => setShowMoreMenu((v) => !v)}
-                        className="h-8 w-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50"
-                    >
-                        ···
-                    </button>
-                    {showMoreMenu && (
-                        <>
-                            <div
-                                className="fixed inset-0 z-10"
-                                onClick={() => setShowMoreMenu(false)}
-                            />
-                            <div
-                                className="absolute right-0 mt-1 z-20 bg-white rounded-xl shadow-lg border border-slate-200 py-1 w-36">
-                                <button
-                                    onClick={() => {
-                                        setShowMoreMenu(false);
-                                        setShowDeleteConfirm(true);
-                                    }}
-                                    className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
-                                >
-                                    삭제
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </div>
-            </div>
+            <PageHeader
+                breadcrumbs={[
+                    {label: "프로젝트", href: "/cira/projects"},
+                    {label: "이슈", href: `/cira/projects/${projectId}/issues`},
+                ]}
+                title={issue.issueKey}
+                actions={
+                    <Menu
+                        trigger={
+                            <button aria-label="더보기"
+                                    className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50">
+                                ···
+                            </button>
+                        }
+                        items={[{label: "삭제", onSelect: () => setShowDeleteConfirm(true), danger: true}]}
+                    />
+                }
+            />
 
             <div className="flex flex-col lg:flex-row gap-6">
                 {/* Left: main content */}
@@ -242,43 +209,35 @@ export default function IssueDetailPage({
                 </div>
 
                 {/* Right: sidebar */}
-                <aside className="w-full lg:w-64 shrink-0 space-y-0 bg-white rounded-xl border border-slate-200 p-4">
-                    {/* Status */}
-                    <div className="mb-4">
-                        <p className="text-xs font-medium text-slate-500 mb-2">상태</p>
-                        <div className="flex flex-wrap gap-2">
-                            {transitions && transitions.length > 0 ? (
-                                transitions.map((t) => (
-                                    <button
-                                        key={t.id}
-                                        onClick={() =>
-                                            changeStatus(
-                                                {issueId, statusId: t.id},
-                                                {
-                                                    onSuccess: () => show("상태가 변경되었습니다."),
-                                                    onError: () =>
-                                                        show("상태 변경에 실패했습니다.", "error"),
-                                                },
-                                            )
-                                        }
-                                        className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                                            issue.statusId === t.id
-                                                ? "bg-blue-600 text-white border-blue-600"
-                                                : "bg-white text-slate-600 border-slate-200 hover:border-blue-300"
-                                        }`}
-                                    >
-                                        {t.statusNm}
-                                    </button>
-                                ))
-                            ) : (
-                                <span className="text-sm text-slate-500">
-                  {issue.statusNm ?? "-"}
-                </span>
-                            )}
-                        </div>
+                <aside className="order-first w-full shrink-0 rounded-md border border-slate-200 bg-white p-4 lg:order-none lg:w-72">
+                    {/* Status (모바일은 상단 바 아래 고정) */}
+                    <div className="sticky top-12 z-10 -mx-4 -mt-4 mb-4 bg-white px-4 pb-2 pt-4 lg:static">
+                        <p className="mb-2 text-xs font-medium text-slate-500">상태</p>
+                        <Menu
+                            align="start"
+                            trigger={
+                                <button
+                                    className={`flex h-10 items-center gap-1 rounded-md px-3 text-sm font-semibold ${STATUS_TONE_CLASS[statusTone(transitions?.find((t) => t.id === issue.statusId)?.category)]}`}>
+                                    {issue.statusNm ?? "-"} ▾
+                                </button>
+                            }
+                            items={(transitions ?? []).filter((t) => t.id !== issue.statusId).map((t) => ({
+                                label: t.statusNm,
+                                onSelect: () =>
+                                    changeStatus(
+                                        {issueId, statusId: t.id},
+                                        {
+                                            onSuccess: () => show("상태가 변경되었습니다."),
+                                            onError: () => show("상태 변경에 실패했습니다.", "error"),
+                                        },
+                                    ),
+                            }))}
+                        />
                     </div>
 
-                    <div className="border-t border-slate-100 pt-4 space-y-3">
+                    <details open className="group border-t border-slate-100 pt-3">
+                        <summary className="mb-3 cursor-pointer list-none text-xs font-semibold text-slate-600">세부 정보 ▾</summary>
+                    <div className="space-y-3">
                         {/* Priority */}
                         <div>
                             <p className="text-xs font-medium text-slate-500 mb-1">
@@ -358,6 +317,7 @@ export default function IssueDetailPage({
                             </p>
                         </div>
                     </div>
+                    </details>
                 </aside>
             </div>
 

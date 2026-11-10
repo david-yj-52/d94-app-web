@@ -12,6 +12,7 @@
 ```
 wiki/layout.tsx → {children} (프로젝트 메뉴는 셸 사이드바)
 wiki/page.tsx  (WikiPageContent를 Suspense로 감쌈 — useSearchParams 사용)
+(반응형: 모바일은 트리 위 · 본문 아래 세로 배치, md 이상 가로 배치)
 ├── 좌측: WikiTree (선택·하위 추가·삭제)                       → wiki 카드
 ├── 중앙: renderContent() — mode 에 따라
 │   ├── "view"            WikiViewer (편집·이력 버튼)

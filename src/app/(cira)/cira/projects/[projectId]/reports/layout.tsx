@@ -1,5 +1,6 @@
 "use client";
 
+import PageHeader from "@/components/cira/ui/PageHeader";
 import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
@@ -24,22 +25,7 @@ export default function ReportsLayout({
 
     return (
         <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-                <Link href="/cira/projects" className="hover:text-slate-600">
-                    프로젝트
-                </Link>
-                <span>/</span>
-                <span className="text-slate-700 font-medium">{project?.name ?? "..."}</span>
-            </div>
-
-
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">리포트</h1>
-                    <p className="text-sm text-slate-500 mt-0.5">스프린트 및 프로젝트 현황을 분석합니다.</p>
-                </div>
-            </div>
-
+            <PageHeader breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]} title="리포트"/>
             <div className="flex gap-0 border-b border-slate-200 mb-6">
                 {REPORT_TABS.map(({key, label}) => {
                     const href = `/cira/projects/${projectId}/reports/${key}`;

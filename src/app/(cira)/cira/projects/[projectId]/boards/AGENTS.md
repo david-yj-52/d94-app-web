@@ -18,6 +18,7 @@ boards/page.tsx
 boards/[boardId]/page.tsx
 ├── 브레드크럼 + 보드 선택 <select> (useBoards 목록) + [+ 보드 생성]
 ├── KanbanBoard boardId projectId          → board 카드 (Column · Card · AddColumnModal 포함)
+│   └── 빠른 필터: 보드 검색 · 내 이슈만 (filterColumns)
 └── {showCreate && <CreateBoardModal/>}
 ```
 
@@ -36,4 +37,4 @@ boards/[boardId]/page.tsx
 - select로 다른 보드를 고르면 URL이 바뀝니다. 새 보드를 만들면 생성된 보드로 이동합니다.
 
 ## 주의·예외
-- DnD를 라이브러리 없이 HTML5 API로 구현했습니다. 학습 목적에 맞는 선택이며, 모바일 터치는 지원하지 않습니다.
+- DnD를 라이브러리 없이 HTML5 API로 구현했습니다. 모바일 터치는 DnD 대신 카드 "이동" 메뉴로 컬럼을 옮깁니다.

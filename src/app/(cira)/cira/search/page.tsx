@@ -1,11 +1,11 @@
 "use client";
 
+import IssueTable from "@/components/issue/IssueTable";
 import {useDeleteFilter, useSavedFilters, useSaveFilter, useSearchIssues} from "@/hooks/useSearch";
 import {useProjects} from "@/hooks/useProjects";
 import type {SavedFilter, SearchIssuesParams} from "@/lib/api/search";
 import type {Priority} from "@/types/issue";
 import {ChevronLeft, ChevronRight, Filter, Save, Search, X,} from "lucide-react";
-import Link from "next/link";
 import {useRouter, useSearchParams} from "next/navigation";
 import {Suspense, useCallback, useMemo, useState} from "react";
 
@@ -82,7 +82,7 @@ function SaveFilterModal({
     const [name, setName] = useState("");
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="w-80 rounded-2xl bg-white p-6 shadow-xl">
+            <div className="w-full max-w-xs rounded-2xl bg-white p-6 shadow-xl">
                 <h3 className="mb-4 text-base font-semibold text-gray-900">필터 저장</h3>
                 <input
                     autoFocus
@@ -224,13 +224,6 @@ function SearchPageContent() {
                 >
                     검색
                 </button>
-                <Link
-                    href="/cira/search/advanced"
-                    className="flex h-10 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-4 text-sm font-medium text-gray-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                    title="CQL 고급 검색"
-                >
-                    고급 검색 (CQL)
-                </Link>
             </div>
 
             {/* Active filters + controls */}
@@ -262,9 +255,9 @@ function SearchPageContent() {
                 </div>
             )}
 
-            <div className="flex gap-6">
+            <div className="flex flex-col gap-6 md:flex-row">
                 {/* Filter panel */}
-                <aside className="w-56 shrink-0 space-y-5">
+                <aside className="w-full shrink-0 space-y-5 md:w-56">
                     {/* Saved filters */}
                     {savedFilters && savedFilters.length > 0 && (
                         <div>
@@ -473,47 +466,7 @@ function SearchPageContent() {
 
                     {!isLoading && issues.length > 0 && (
                         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                            <table className="w-full text-sm">
-                                <thead>
-                                <tr className="border-b border-gray-200 text-left">
-                                    <th className="pb-3 pl-5 pt-3 font-medium text-gray-500 w-28">키</th>
-                                    <th className="pb-3 pt-3 font-medium text-gray-500">제목</th>
-                                    <th className="pb-3 pt-3 font-medium text-gray-500 w-28 text-center">상태</th>
-                                    <th className="pb-3 pt-3 font-medium text-gray-500 w-24 text-center">우선순위</th>
-                                    <th className="pb-3 pr-5 pt-3 font-medium text-gray-500 w-28">담당자</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {issues.map((issue) => (
-                                    <tr
-                                        key={issue.id}
-                                        onClick={() =>
-                                            router.push(`/cira/projects/${issue.projectId}/issues/${issue.id}`)
-                                        }
-                                        className="cursor-pointer border-b border-gray-100 hover:bg-gray-50 last:border-0"
-                                    >
-                                        <td className="py-3 pl-5 font-mono text-xs text-gray-500">
-                                            {issue.issueKey}
-                                        </td>
-                                        <td className="py-3 font-medium text-gray-900">{issue.title}</td>
-                                        <td className="py-3 text-center">
-                                            {issue.statusNm && (
-                                                <span
-                                                    className="inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
-                            {issue.statusNm}
-                          </span>
-                                            )}
-                                        </td>
-                                        <td className="py-3 text-center text-xs font-medium text-gray-500">
-                                            {issue.priority ?? "-"}
-                                        </td>
-                                        <td className="py-3 pr-5 text-xs text-gray-500">
-                                            {issue.assignee?.name ?? "-"}
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                            <IssueTable issues={issues}/>
                         </div>
                     )}
 

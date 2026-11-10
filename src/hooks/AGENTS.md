@@ -34,7 +34,7 @@ export function useCreateMilestone(projectId: string) {
 | useComments | useComments, useCreate/Update/DeleteComment, useToggleReaction | `["comments", issueId]` |
 | useAttachments | useAttachments, useUpload/DeleteAttachment | `["attachments", issueId]` |
 | useBoards | useBoards, useBoardDetail, useCreate/Update/DeleteBoard, useAdd/Update/DeleteColumn, useMoveIssue | `["boards", projectId]`, `["board", boardId]` |
-| useSprints | useSprints, useSprint, useCreate/Update/Delete/Start/CompleteSprint, useAdd/RemoveIssueFrom(To)Sprint | `["sprints", projectId]`, `["sprint", sprintId]` |
+| useSprints | useSprints, useSprint, useBacklog, useCreate/Update/Delete/Start/CompleteSprint, useAdd/RemoveIssueFrom(To)Sprint | `["sprints", projectId]`, `["sprint", sprintId]`, `["backlog", projectId]` (완료·이슈 추가/제거 시 무효화) |
 | useVersions | useVersions, useCreate/Update/Delete/Release/ArchiveVersion, useReleaseNotes | `["versions", projectId]`, `["releaseNotes", versionId]` |
 | useMilestones | useMilestones, useCreate/Update/DeleteMilestone, useMilestoneProgress | `["milestones", projectId]`, `["milestoneProgress", milestoneId]` |
 | useReports | useBurndown, useVelocity, useCfd, useDashboard | `["burndown", sprintId]`, `["velocity", projectId, lastN]`, `["cfd", projectId, start, end]`, `["dashboard"]` |

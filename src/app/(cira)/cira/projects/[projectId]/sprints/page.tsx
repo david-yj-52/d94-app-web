@@ -6,7 +6,17 @@ import CreateSprintModal from "@/components/sprint/CreateSprintModal";
 import EditSprintModal from "@/components/sprint/EditSprintModal";
 import {useToast} from "@/components/ui/Toast";
 import {SkeletonCard} from "@/components/ui/Skeleton";
-import {useDeleteSprint, useRemoveIssueFromSprint, useSprints, useStartSprint,} from "@/hooks/useSprints";
+import {Avatar, IssueTypeIcon, PriorityIcon, StatusLozenge} from "@/components/cira/ui/Badges";
+import Menu from "@/components/cira/ui/Menu";
+import PageHeader from "@/components/cira/ui/PageHeader";
+import {
+    useAddIssueToSprint,
+    useBacklog,
+    useDeleteSprint,
+    useRemoveIssueFromSprint,
+    useSprints,
+    useStartSprint,
+} from "@/hooks/useSprints";
 import {useIssues} from "@/hooks/useIssues";
 import {useProject} from "@/hooks/useProjects";
 import type {SprintResponse, SprintStatus} from "@/types/sprint";
@@ -28,6 +38,64 @@ const STATUS_COLOR: Record<SprintStatus, string> = {
 function formatDate(dt?: string) {
     if (!dt) return "-";
     return new Date(dt).toLocaleDateString("ko-KR");
+}
+
+// 스프린트에 없는 이슈. 행 메뉴로 스프린트에 넣는다 (터치에서도 동작)
+function BacklogSection({projectId, sprints, onMoved}: {
+    projectId: string;
+    sprints: SprintResponse[];
+    onMoved: (ok: boolean) => void;
+}) {
+    const {data: page, isLoading} = useBacklog(projectId);
+    const {mutate: addIssue} = useAddIssueToSprint(projectId);
+    const issues = page?.content ?? [];
+    const targets = sprints.filter((s) => s.sprintStat !== "Completed");
+
+    return (
+        <section className="mt-6 rounded-md border border-slate-200 bg-white">
+            <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
+                <h2 className="text-sm font-semibold text-slate-800">백로그</h2>
+                <span className="text-xs text-slate-500">이슈 {page?.totalElements ?? issues.length}개</span>
+            </div>
+            {isLoading && <p className="px-4 py-6 text-sm text-slate-400">불러오는 중...</p>}
+            {!isLoading && issues.length === 0 && (
+                <p className="px-4 py-6 text-sm text-slate-400">백로그가 비어 있습니다.</p>
+            )}
+            <ul>
+                {issues.map((issue) => (
+                    <li key={issue.id}
+                        className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-slate-100 px-4 py-2 first:border-t-0 md:flex-nowrap">
+                        <IssueTypeIcon typeName={issue.issueTypeNm}/>
+                        <span className="font-mono text-xs text-slate-500">{issue.issueKey}</span>
+                        <Link href={`/cira/projects/${projectId}/issues/${issue.id}`}
+                              className="min-w-0 flex-1 basis-full truncate text-sm text-slate-800 hover:underline md:basis-auto">
+                            {issue.title}
+                        </Link>
+                        <PriorityIcon priority={issue.priority}/>
+                        <StatusLozenge label={issue.statusNm}/>
+                        <Avatar name={issue.assignee?.name}/>
+                        {targets.length > 0 && (
+                            <Menu
+                                trigger={
+                                    <button aria-label={`${issue.issueKey} 스프린트로 이동`}
+                                            className="h-8 rounded border border-slate-200 px-2 text-xs text-slate-600 hover:bg-slate-50">
+                                        스프린트로 ▾
+                                    </button>
+                                }
+                                items={targets.map((s) => ({
+                                    label: s.sprintNm,
+                                    onSelect: () => addIssue({sprintId: s.id, issueId: issue.id}, {
+                                        onSuccess: () => onMoved(true),
+                                        onError: () => onMoved(false),
+                                    }),
+                                }))}
+                            />
+                        )}
+                    </li>
+                ))}
+            </ul>
+        </section>
+    );
 }
 
 interface SprintCardProps {
@@ -135,13 +203,13 @@ function SprintCard({
             </div>
 
             {expanded && (
-                <div className="border-t border-slate-100">
+                <div className="overflow-x-auto border-t border-slate-100">
                     {issues.length === 0 ? (
                         <p className="text-sm text-slate-400 text-center py-4">
                             할당된 이슈가 없습니다.
                         </p>
                     ) : (
-                        <table className="w-full text-sm">
+                        <table className="w-full min-w-[520px] text-sm">
                             <thead>
                             <tr className="bg-slate-50 text-left">
                                 <th className="py-2 pl-5 font-medium text-slate-500 text-xs w-24">키</th>
@@ -242,29 +310,18 @@ export default function SprintsPage({
 
     return (
         <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center gap-2 text-sm text-slate-400 mb-4">
-                <Link href="/cira/projects" className="hover:text-slate-600">
-                    프로젝트
-                </Link>
-                <span>/</span>
-                <span className="text-slate-700 font-medium">{project?.name ?? "..."}</span>
-            </div>
-
-
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">스프린트</h1>
-                    {sprints && (
-                        <p className="text-sm text-slate-500 mt-0.5">총 {sprints.length}개</p>
-                    )}
-                </div>
-                <button
-                    onClick={() => setShowCreate(true)}
-                    className="h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
-                >
-                    + 스프린트 생성
-                </button>
-            </div>
+            <PageHeader
+                breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]}
+                title="백로그"
+                actions={
+                    <button
+                        onClick={() => setShowCreate(true)}
+                        className="h-10 rounded-md bg-cira-brand px-4 text-sm font-semibold text-white hover:opacity-90"
+                    >
+                        + 스프린트 생성
+                    </button>
+                }
+            />
 
             {isLoading && (
                 <div className="space-y-4">
@@ -310,6 +367,14 @@ export default function SprintsPage({
                         />
                     ))}
                 </div>
+            )}
+
+            {!isLoading && !isError && (
+                <BacklogSection
+                    projectId={projectId}
+                    sprints={sprints ?? []}
+                    onMoved={(ok) => ok ? show("스프린트로 옮겼습니다.") : show("이동에 실패했습니다.", "error")}
+                />
             )}
 
             {showCreate && (

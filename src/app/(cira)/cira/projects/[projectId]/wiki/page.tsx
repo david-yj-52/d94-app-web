@@ -181,7 +181,7 @@ function WikiPageContent({projectId}: { projectId: string }) {
 
     return (
         <div
-            className="flex border border-slate-200 rounded-xl overflow-hidden bg-white"
+            className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white md:flex-row"
             style={{height: "calc(100vh - 140px)"}}
         >
             {/* Sidebar tree */}

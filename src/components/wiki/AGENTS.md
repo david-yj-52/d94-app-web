@@ -10,6 +10,7 @@
 { pages: WikiPageSummary[]; selectedId: string | null; onSelect: (id: string) => void;
   onAddPage: (parentId?: string) => void; onDeletePage: (id: string, title: string) => void }
 ```
+- 반응형: md 이상은 왼쪽 240px 세로 트리, 모바일은 본문 위에 최대 224px(`max-h-56`) 높이로 스크롤됩니다.
 - 평평한 목록(`parentId`)을 `buildTree`로 트리로 바꿔 재귀 렌더링합니다(내부 `TreeNode`). 노드마다 하위 페이지 추가와 삭제 버튼이 있습니다.
 - ⚠️ 들여쓰기 깊이에 인라인 style을 씁니다.
 

@@ -18,12 +18,6 @@
 
 ## settings/
 
-### SettingsSideNav — `@/components/project/settings/SettingsSideNav`
-```ts
-{ projectId: string }
-```
-- 설정 좌측 메뉴입니다(기본 정보, 멤버, 워크플로우, Git 연동, 자동화). `settings/layout.tsx`에서 사용합니다.
-
 ### MemberTable — `@/components/project/settings/MemberTable`
 ```ts
 { projectId: string; members: ProjectMemberResponse[]; isAdmin: boolean; currentUserEmail?: string | null;

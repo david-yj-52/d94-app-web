@@ -166,7 +166,7 @@ export default function WikiTree({
     const tree = buildTree(pages);
 
     return (
-        <div className="w-60 shrink-0 border-r border-slate-200 flex flex-col h-full">
+        <div className="flex max-h-56 w-full shrink-0 flex-col border-b border-slate-200 md:h-full md:max-h-none md:w-60 md:border-b-0 md:border-r">
             {/* Header */}
             <div className="flex items-center justify-between px-3 py-3 border-b border-slate-200">
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Wiki</span>

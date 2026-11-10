@@ -29,5 +29,6 @@
 - **`/` 경로 중복**: `src/app/page.tsx`와 `src/app/(main)/page.tsx`가 같은 URL `/`를 가집니다(현재 둘 다 `/home`으로 redirect). `next build`는 오류 없이 통과하지만(2026-10-15 확인) 실제로는 둘 중 하나만 서빙됩니다. 의도를 정해 하나를 제거하세요.
 - **todo 목록 하드코딩**: `src/app/actions.ts`의 `getTodos`가 고정 배열을 반환합니다.
 - **미사용 컴포넌트**: `AuthCheck`, `LoginButton`
-- **공통 UI primitive 부재**: 모달 21곳과 버튼 171곳을 직접 마크업합니다. 승격 계획은 [ui/AGENTS.md §4](../src/components/ui/AGENTS.md)에 있습니다.
+- **공통 UI primitive 부재**: 모달 21곳과 버튼 171곳을 직접 마크업합니다. 승격 계획은 [ui/AGENTS.md §4](../src/components/ui/AGENTS.md)에 있습니다. CIRA 는 셸·이슈 상세·백로그·보드 카드부터 `components/cira/ui`(Radix `Dialog`·`Menu`, 배지)로 옮겼고([ADR 0006](decisions/0006-cira-design-layer.md)), 나머지 CIRA 모달(스프린트·버전·설정 등)은 아직 직접 마크업입니다.
+- **CIRA 재디자인 남은 일 (2026-11-09)**: 이슈 유형 색은 유형 API 가 없어 이름(`버그`/`Bug` 등)으로 추정합니다(`cira/ui/tones.ts`).
 - **비대한 페이지**와 **규칙 예외 파일**: [conventions.md §7](conventions.md#7-알려진-예외-따라-하지-말-것), [src/app/AGENTS.md §4](../src/app/AGENTS.md)
