@@ -4,13 +4,13 @@
 > 컴포넌트 카드: [wiki](../../../../../../components/wiki/AGENTS.md)
 
 ## 개요
-- **URL:** `/cira/projects/:projectId/wiki?pageId={id}` · **파일:** `layout.tsx`(ProjectNav), `page.tsx` (235줄)
+- **URL:** `/cira/projects/:projectId/wiki?pageId={id}` · **파일:** `layout.tsx`, `page.tsx` (235줄)
 - **목적:** 계층형 문서(트리)를 Tiptap 리치 텍스트로 작성하고, 버전 이력을 관리합니다.
 - 선택한 페이지는 **URL 쿼리 `pageId`**로 관리합니다. 링크를 공유하거나 뒤로 가기를 해도 유지됩니다.
 
 ## 화면 구성
 ```
-wiki/layout.tsx → ProjectNav + {children}
+wiki/layout.tsx → {children} (프로젝트 메뉴는 셸 사이드바)
 wiki/page.tsx  (WikiPageContent를 Suspense로 감쌈 — useSearchParams 사용)
 ├── 좌측: WikiTree (선택·하위 추가·삭제)                       → wiki 카드
 ├── 중앙: renderContent() — mode 에 따라

@@ -1,6 +1,5 @@
 "use client";
 
-import ProjectNav from "@/components/project/ProjectNav";
 import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
 import {use} from "react";
@@ -25,7 +24,6 @@ export default function WikiLayout({
                     <span>/</span>
                     <span className="text-slate-700 font-medium">{project?.name ?? "..."}</span>
                 </div>
-                <ProjectNav projectId={projectId}/>
             </div>
             {children}
         </div>

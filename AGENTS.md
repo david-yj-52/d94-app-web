@@ -35,6 +35,7 @@ AGENTS.md (L1)
 │   └── (main)/interface-test/AGENTS.md .. [실험] REST 메서드별 통신 확인
 ├── src/components/AGENTS.md (L2 ★컴포넌트 카탈로그)
 │   ├── ui/AGENTS.md ..................... Primitive + 디자인 토큰
+│   ├── cira/AGENTS.md ................... CIRA 전용 토큰·primitive(ui)·셸(shell) → ADR 0006
 │   └── {board,interfaceTest,issue,layout,mpns,project,sprint,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
 ├── src/hooks/AGENTS.md (L2 Query 훅·queryKey)
 ├── src/lib/AGENTS.md (L2 API·mock·messaging)
@@ -71,6 +72,7 @@ AGENTS.md (L1)
 | 스타일        | Tailwind CSS v3 + `clsx` / `tailwind-merge`, 아이콘 `lucide-react` |
 | 기타          | Recharts(차트), Tiptap(리치 텍스트), react-markdown                |
 | 테스트        | Vitest 4 + jsdom, React Testing Library, MSW 2, coverage-v8 → [docs/testing.md](docs/testing.md) |
+| UI(CIRA)      | Radix UI (`@radix-ui/react-dialog`, `react-dropdown-menu`) — CIRA 화면 전용 → [ADR 0006](docs/decisions/0006-cira-design-layer.md) |
 | 패키지 매니저 | npm (`package-lock.json`)                                          |
 
 ## 3. 명령어

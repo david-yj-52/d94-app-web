@@ -61,7 +61,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 
 - `page.tsx`는 **조립만** 담당합니다. 라우트 파라미터를 해석하고, 훅으로 데이터를 가져와 컴포넌트에 넘기고, 모달 열림 상태를 관리합니다.
 - 클라이언트 페이지는 `params: Promise<{…}>`를 `use(params)`로 풉니다. 서버 페이지는 `await params`를 씁니다.
-- 프로젝트 하위 탭에 공통 헤더가 필요하면 `layout.tsx`에서 `ProjectNav`를 렌더링합니다(reports, settings, versions, wiki 방식).
+- 프로젝트 하위 메뉴는 CIRA 셸 사이드바(`components/cira/shell/CiraSidebar`)가 그립니다. 화면 상단 공통 헤더(제목·서브탭)가 필요하면 `layout.tsx`에 둡니다(reports, settings, versions, wiki 방식).
 - 새 화면을 추가할 때:
   1. 폴더에 `AGENTS.md`(L3 템플릿)와 `CLAUDE.md`를 만듭니다.
   2. 위 표와 L1 §0 지도에 등록합니다.

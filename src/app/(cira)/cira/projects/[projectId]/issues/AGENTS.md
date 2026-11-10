@@ -9,12 +9,11 @@
 | `/cira/projects/:projectId/issues` | `page.tsx` (135줄) | 이슈 목록·필터·생성 |
 | `/cira/projects/:projectId/issues/:issueId` | `[issueId]/page.tsx` (398줄) | 이슈 상세·인라인 편집·댓글·첨부·삭제 |
 
-- 진입: ProjectCard 클릭(프로젝트의 기본 탭), ProjectNav "이슈", 칸반 카드 클릭
+- 진입: ProjectCard 클릭(프로젝트의 기본 탭), 셸 사이드바 "이슈", 칸반 카드 클릭
 
 ## 화면 구성
 ```
 issues/page.tsx
-├── ProjectNav                                   → project 카드
 ├── 브레드크럼 + "이슈 목록" + [+ 이슈 생성]
 ├── IssueFilter (filters 상태는 페이지가 보유)       → issue 카드
 ├── 로딩: SkeletonRow × n / 결과: IssueTable        → ui · issue 카드

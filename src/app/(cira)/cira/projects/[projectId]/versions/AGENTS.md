@@ -4,12 +4,12 @@
 > 컴포넌트 카드: [version](../../../../../../components/version/AGENTS.md) · [milestone (카탈로그 §5)](../../../../../../components/AGENTS.md)
 
 ## 개요
-- **URL:** `/cira/projects/:projectId/versions` · **파일:** `layout.tsx`(ProjectNav), `page.tsx` (252줄)
+- **URL:** `/cira/projects/:projectId/versions` · **파일:** `layout.tsx`, `page.tsx` (252줄)
 - **목적:** 릴리즈 단위(버전)와 목표 단위(마일스톤)를 탭 두 개로 관리합니다.
 
 ## 화면 구성
 ```
-versions/layout.tsx → ProjectNav + {children}
+versions/layout.tsx → {children} (프로젝트 메뉴는 셸 사이드바)
 versions/page.tsx
 ├── 탭: [버전] [마일스톤]   (activeTab 상태)
 ├── 버전 탭

@@ -13,7 +13,6 @@
 ## 화면 구성
 ```
 reports/layout.tsx
-├── ProjectNav
 ├── 제목 "리포트" + 서브탭 (번다운 차트 / Velocity / CFD 차트) — usePathname으로 활성 표시
 └── {children}
     ├── burndown: 스프린트 select → LineChart (이상선 vs 실제 잔여)

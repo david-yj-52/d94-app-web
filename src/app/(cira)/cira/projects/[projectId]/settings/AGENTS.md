@@ -12,12 +12,11 @@
 | `…/settings/git` | `git/page.tsx` (329줄) | Git 저장소 연동·Webhook 정보·최근 활동 |
 | `…/settings/automation` | `automation/page.tsx` | 자동화 규칙 목록·생성·편집 |
 
-- 진입: ProjectNav의 "설정" 탭. **ADMIN 멤버에게만 탭이 보입니다.** 다만 URL로 직접 들어오는 것은 막지 않습니다.
+- 진입: 셸 사이드바의 "프로젝트 설정". **ADMIN 멤버에게만 탭이 보입니다.** 다만 URL로 직접 들어오는 것은 막지 않습니다.
 
 ## 화면 구성
 ```
 settings/layout.tsx
-├── ProjectNav
 ├── SettingsSideNav (기본 정보 / 멤버 / 워크플로우 / Git 연동 / 자동화)   → project 카드
 └── {children}
     ├── (기본)     폼: 이름·설명 + [저장]  (react-hook-form)

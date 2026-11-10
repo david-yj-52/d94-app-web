@@ -12,12 +12,10 @@
 ## 화면 구성
 ```
 boards/page.tsx
-├── ProjectNav
 ├── 빈 상태 "보드가 없습니다." + [+ 보드 생성]
 └── {showCreate && <CreateBoardModal onSuccess={(id) => router.push(…/boards/id)}/>}
 
 boards/[boardId]/page.tsx
-├── ProjectNav
 ├── 브레드크럼 + 보드 선택 <select> (useBoards 목록) + [+ 보드 생성]
 ├── KanbanBoard boardId projectId          → board 카드 (Column · Card · AddColumnModal 포함)
 └── {showCreate && <CreateBoardModal/>}

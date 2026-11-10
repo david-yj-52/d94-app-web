@@ -4,7 +4,6 @@ import AssignIssueModal from "@/components/sprint/AssignIssueModal";
 import CompleteSprintModal from "@/components/sprint/CompleteSprintModal";
 import CreateSprintModal from "@/components/sprint/CreateSprintModal";
 import EditSprintModal from "@/components/sprint/EditSprintModal";
-import ProjectNav from "@/components/project/ProjectNav";
 import {useToast} from "@/components/ui/Toast";
 import {SkeletonCard} from "@/components/ui/Skeleton";
 import {useDeleteSprint, useRemoveIssueFromSprint, useSprints, useStartSprint,} from "@/hooks/useSprints";
@@ -251,7 +250,6 @@ export default function SprintsPage({
                 <span className="text-slate-700 font-medium">{project?.name ?? "..."}</span>
             </div>
 
-            <ProjectNav projectId={projectId}/>
 
             <div className="flex items-center justify-between mb-6">
                 <div>

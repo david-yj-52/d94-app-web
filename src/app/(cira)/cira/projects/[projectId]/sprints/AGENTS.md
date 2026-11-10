@@ -10,7 +10,6 @@
 ## 화면 구성
 ```
 sprints/page.tsx
-├── ProjectNav
 ├── 헤더 "스프린트" + [+ 스프린트 생성]
 ├── 로딩 Skeleton / 빈 상태 "스프린트가 없습니다."
 ├── SprintCard × n  (페이지 내부 컴포넌트)

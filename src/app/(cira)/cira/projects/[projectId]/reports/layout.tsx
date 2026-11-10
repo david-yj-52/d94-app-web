@@ -1,6 +1,5 @@
 "use client";
 
-import ProjectNav from "@/components/project/ProjectNav";
 import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
@@ -33,7 +32,6 @@ export default function ReportsLayout({
                 <span className="text-slate-700 font-medium">{project?.name ?? "..."}</span>
             </div>
 
-            <ProjectNav projectId={projectId}/>
 
             <div className="flex items-center justify-between mb-6">
                 <div>

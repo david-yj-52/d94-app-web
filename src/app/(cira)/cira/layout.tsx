@@ -1,19 +1,21 @@
 import {auth} from "@/auth";
-import ApHeader from "@/components/layout/ApHeader";
+import CiraShell from "@/components/cira/shell/CiraShell";
+import {SIDEBAR_COOKIE} from "@/components/cira/shell/navContext";
 import NotificationMount from "@/components/layout/NotificationMount";
+import {cookies} from "next/headers";
 
-// ponytail: 임시 — CiraShell 이 들어오면 교체
+// CIRA 전용 셸. 세션은 루트 Providers 와 공유 → ADR 0006
 export default async function CiraLayout({
                                              children,
                                          }: {
     children: React.ReactNode;
 }) {
     const session = await auth();
+    const collapsed = (await cookies()).get(SIDEBAR_COOKIE)?.value === "1";
     return (
-        <div className="cira-root bg-gray-50 min-h-screen">
-            {session && <ApHeader user={session.user}/>}
+        <CiraShell user={session?.user} initialCollapsed={collapsed}>
             {session && <NotificationMount/>}
-            <main className="py-6">{children}</main>
-        </div>
+            {children}
+        </CiraShell>
     );
 }

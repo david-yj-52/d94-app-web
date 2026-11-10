@@ -2,7 +2,6 @@
 
 import CreateBoardModal from "@/components/board/CreateBoardModal";
 import KanbanBoard from "@/components/board/KanbanBoard";
-import ProjectNav from "@/components/project/ProjectNav";
 import {useToast} from "@/components/ui/Toast";
 import {useBoards} from "@/hooks/useBoards";
 import {useProject} from "@/hooks/useProjects";
@@ -38,7 +37,6 @@ export default function BoardDetailPage({
             </div>
 
             <div className="flex items-center justify-between mb-0">
-                <ProjectNav projectId={projectId}/>
 
                 <div className="flex items-center gap-2 pb-1.5">
                     {/* Board selector */}

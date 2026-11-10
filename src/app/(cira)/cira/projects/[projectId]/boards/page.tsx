@@ -1,7 +1,6 @@
 "use client";
 
 import CreateBoardModal from "@/components/board/CreateBoardModal";
-import ProjectNav from "@/components/project/ProjectNav";
 import {useToast} from "@/components/ui/Toast";
 import {useBoards} from "@/hooks/useBoards";
 import {useProject} from "@/hooks/useProjects";
@@ -42,7 +41,6 @@ export default function BoardsPage({
         </span>
             </div>
 
-            <ProjectNav projectId={projectId}/>
 
             {isLoading && (
                 <div className="flex gap-4">

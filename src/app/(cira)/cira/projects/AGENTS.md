@@ -20,15 +20,15 @@ projects/page.tsx
 ## 프로젝트 하위 공통 구조 (`[projectId]/`)
 ```
 [projectId]/
-├── issues/   boards/   sprints/        page에서 직접 <ProjectNav/>
-└── reports/  settings/ versions/ wiki/  layout.tsx에서 <ProjectNav/> (+ 제목/서브탭)
+├── issues/   boards/   sprints/        page 만
+└── reports/  settings/ versions/ wiki/  layout.tsx 에서 제목/서브탭
 ```
-- `ProjectNav` 탭 순서: 이슈 · 보드 · 스프린트 · 버전 · 리포트 · Wiki · 설정(ADMIN만) → [project 카드](../../../../components/project/AGENTS.md)
+- 프로젝트 하위 메뉴는 CIRA 셸 사이드바(`cira/shell/CiraSidebar`)가 그립니다: 백로그(sprints) · 보드 · 이슈 · 리포트 · 릴리스(versions) · 위키 · 프로젝트 설정(ADMIN만). 설정 화면 안에서는 설정 하위 메뉴로 바뀝니다 → [shell 카드](../../../../components/cira/AGENTS.md)
 - 화면 상단에 `프로젝트 / 화면명` 형태의 브레드크럼을 직접 마크업합니다(공통 컴포넌트 없음, `ui/Breadcrumb` 승격 후보).
 - `/cira/projects/:id`(index) 페이지는 없습니다. ProjectCard를 클릭하면 `/issues`로 이동합니다.
 - **새 하위 탭을 추가할 때:**
   1. `[projectId]/{탭}/` 폴더를 만듭니다.
-  2. `ProjectNav`의 `tabs` 배열에 탭을 추가합니다.
+  2. `CiraSidebar`의 `projectMenu` 배열에 메뉴를 추가합니다.
   3. 필요하면 `layout.tsx`에서 공통 헤더를 렌더링합니다.
   4. L3 문서를 작성합니다.
 

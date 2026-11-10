@@ -3,22 +3,6 @@
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **project**
 > 사용 화면: [projects](../../app/(cira)/cira/projects/AGENTS.md), [settings](../../app/(cira)/cira/projects/[projectId]/settings/AGENTS.md)
 
-## 공유 컴포넌트
-
-### ProjectNav 🔁 — `@/components/project/ProjectNav`
-```ts
-{ projectId: string }
-```
-- 프로젝트 하위 탭 네비게이션입니다. 탭은 이슈, 보드, 스프린트, 버전, 리포트, Wiki, 설정이고, **설정 탭은 ADMIN 멤버에게만** 보입니다.
-- 현재 경로(`usePathname`)로 활성 탭을 표시합니다. 멤버 권한은 `useProjectMembers`로 조회합니다.
-- 사용처:
-  - 페이지에서 직접: issues, boards, boards/[boardId], sprints
-  - layout에서: reports, settings, versions, wiki
-- **새 프로젝트 하위 탭을 추가하면 이 파일의 `tabs` 배열에 항목을 추가하세요.**
-```tsx
-<ProjectNav projectId={projectId}/>
-```
-
 ## 프로젝트 목록
 
 ### ProjectCard — `@/components/project/ProjectCard`

@@ -3,7 +3,6 @@
 import CreateIssueModal from "@/components/issue/CreateIssueModal";
 import IssueFilter from "@/components/issue/IssueFilter";
 import IssueTable from "@/components/issue/IssueTable";
-import ProjectNav from "@/components/project/ProjectNav";
 import {SkeletonRow} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {useIssues} from "@/hooks/useIssues";
@@ -51,7 +50,6 @@ export default function IssueListPage({
         </span>
             </div>
 
-            <ProjectNav projectId={projectId}/>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>

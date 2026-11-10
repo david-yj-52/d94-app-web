@@ -9,6 +9,21 @@ body {
     box-sizing: border-box;
 }
 
+/* CIRA 전용 디자인 토큰 → docs/decisions/0006-cira-design-layer.md (tailwind `cira.*` 로 사용) */
+.cira-root {
+    --cira-brand: #4F46E5;
+    --cira-brand-soft: #EEF2FF;
+    --cira-bg: #F4F5F7;
+    --cira-surface: #FFFFFF;
+    --cira-sidebar: #FAFAFA;
+    --cira-border: #E5E7EB;
+    --cira-text: #1F2937;
+    --cira-muted: #6B7280;
+    font-size: 14px;
+    color: var(--cira-text);
+    background: var(--cira-bg);
+}
+
 /* Wiki prose styles */
 .wiki-prose {
     color: #1e293b;

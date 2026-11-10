@@ -1,6 +1,5 @@
 "use client";
 
-import ProjectNav from "@/components/project/ProjectNav";
 import SettingsSideNav from "@/components/project/settings/SettingsSideNav";
 import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
@@ -28,7 +27,6 @@ export default function SettingsLayout({
         </span>
             </div>
 
-            <ProjectNav projectId={projectId}/>
 
             <div className="flex gap-8">
                 <SettingsSideNav projectId={projectId}/>

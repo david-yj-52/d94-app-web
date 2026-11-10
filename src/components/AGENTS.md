@@ -12,7 +12,7 @@
 | **Domain** | `{domain}/` | 특정 도메인 데이터·훅에 의존하는 조립품 | ui, hooks, 같은 도메인 |
 | **Screen** | `src/app/**/page.tsx` | 위 계층을 조립만 함 | 전부 |
 
-- **공유 Domain 예외:** `project/ProjectNav`는 프로젝트 하위 모든 탭에서 쓰는 공유 컴포넌트입니다.
+- **CIRA 모듈 계층:** `cira/ui`(CIRA 전용 primitive)와 `cira/shell`(CIRA 셸)은 CIRA 화면·도메인 컴포넌트만 씁니다. 다른 모듈은 import 하지 않습니다 → [ADR 0006](../../docs/decisions/0006-cira-design-layer.md)
 - **루트에 흩어진 파일**(`Providers`, `TshLogo`, todo/데모 컴포넌트)은 이 모델 밖의 기존 파일입니다. 새 컴포넌트는 루트에 두지 마세요.
 
 ## 2. 재사용 판단 순서
@@ -27,7 +27,7 @@
 
 ## 3. 현재 상태 요약 (2026-10-15 기준)
 
-- 파일은 53개입니다. 그중 여러 화면에서 재사용되는 것은 **Toast(15곳)·Skeleton(9곳)·ProjectNav(8곳)** 뿐입니다.
+- 파일은 53개입니다. 그중 여러 화면에서 재사용되는 것은 **Toast(15곳)·Skeleton(9곳)** 뿐입니다.
 - **Modal, Button, Input 같은 primitive가 아직 없습니다.**
   - 모달 overlay(`fixed inset-0`)는 21개 파일에서 각자 구현합니다.
   - `<button>` 171개와 `<input|select|textarea>` 94개를 Tailwind 클래스로 직접 작성합니다.
@@ -43,14 +43,19 @@
 |---|---|---|---|---|
 | Toast / `useToast` | `ui/Toast` | 하단 알림 메시지 | 15개 화면·컴포넌트 | 🔁 |
 | Skeleton / SkeletonCard / SkeletonRow | `ui/Skeleton` | 로딩 자리표시 | 9개 화면 | 🔁 |
-| ApHeader | `layout/ApHeader` | 상단 헤더 (로고·검색·알림·사용자) | `app/layout.tsx` | ✅ |
-| GlobalSearch | `layout/GlobalSearch` | 헤더 빠른 이슈 검색 | ApHeader 내부 | ✅ |
-| NotificationBell | `layout/NotificationBell` | 헤더 알림 드롭다운 | ApHeader 내부 | ✅ |
-| NotificationMount | `layout/NotificationMount` | SSE 알림 구독 마운트 | `app/layout.tsx` | ✅ |
+| ApHeader | `layout/ApHeader` | 상단 헤더 (로고·검색·알림·사용자) | `(main)/layout.tsx` | ✅ |
+| GlobalSearch | `layout/GlobalSearch` | 헤더 빠른 이슈 검색 | ApHeader, CiraShell | ✅ |
+| NotificationBell | `layout/NotificationBell` | 헤더 알림 드롭다운 | ApHeader, CiraShell | ✅ |
+| NotificationMount | `layout/NotificationMount` | 알림 폴링 마운트 | `(main)`·`(cira)` layout | ✅ |
 | Providers | `Providers` | QueryClient + SessionProvider | `app/layout.tsx` | ✅ |
 | TshLogo | `TshLogo` | 브랜드 로고 | (auth) layout, ApHeader, `app/page.tsx` | 🔁 |
 | AddTodoForm / TodoItem | `AddTodoForm`, `TodoItem` | todo 입력·항목 | `/todo` | 🧪 |
 | AuthCheck / LoginButton | `AuthCheck`, `LoginButton` | 초기 인증 데모 | — | ⛔ |
+| StatusLozenge, IssueTypeIcon, PriorityIcon, Avatar | `cira/ui/Badges` | CIRA 상태 배지·유형·우선순위 아이콘·아바타 | CIRA 셸·화면 | ✅ |
+| PageHeader | `cira/ui/PageHeader` | CIRA 화면 머리(경로·제목·버튼) | CIRA 화면 | ✅ |
+| Dialog | `cira/ui/Dialog` | Radix 모달 (모바일 전체 화면·왼쪽 서랍) | CIRA 셸·화면 | ✅ |
+| Menu | `cira/ui/Menu` | Radix 드롭다운 메뉴 | CIRA 셸·화면 | ✅ |
+| CiraShell › CiraSidebar, CreateIssueButton | `cira/shell/*` | CIRA 셸 (상단 바·통합 사이드바·모바일 서랍·이슈 만들기) | `(cira)/cira/layout.tsx` | ✅ |
 
 ### Domain
 | 폴더 | 컴포넌트 | 용도 | 사용처 | 카드 |
@@ -63,7 +68,6 @@
 | interfaceTest | InterfaceRequestPanel, InterfaceCallLog, InterfaceItemTable, MethodBadge | REST 메서드별 통신 확인 (요청 폼·호출 기록·DB 목록) | `/interface-test` 🧪 | [interfaceTest](interfaceTest/AGENTS.md) |
 | milestone | MilestoneCard, MilestoneModal | 마일스톤 카드·생성/편집 | `versions` | §5 |
 | mpns | PlatformTable, ProductTable, DetailPanel, PlatformAddPopup, ProductAddPopup | MPMS 마스터-디테일 | `/mpms` 🧪 | [mpns](mpns/AGENTS.md) |
-| project | ProjectNav 🔁 | 프로젝트 탭 네비 | 프로젝트 하위 8개 화면 | [project](project/AGENTS.md) |
 | project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성 | `/cira/projects` | [project](project/AGENTS.md) |
 | project/settings | SettingsSideNav, MemberTable, AddMemberModal | 설정 사이드 메뉴, 멤버 관리 | `settings/*` | [project](project/AGENTS.md) |
 | project/settings/automation | AutomationRuleCard, AutomationRuleModal | 자동화 규칙 | `settings/automation` | [project](project/AGENTS.md) |
