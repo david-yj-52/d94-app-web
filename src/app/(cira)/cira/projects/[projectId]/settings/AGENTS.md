@@ -17,7 +17,7 @@
 ## 화면 구성
 ```
 settings/layout.tsx
-├── SettingsSideNav (기본 정보 / 멤버 / 워크플로우 / Git 연동 / 자동화)   → project 카드
+├── (설정 메뉴는 CIRA 셸 사이드바: 기본 정보 / 멤버 / 워크플로우 / Git 연동 / 자동화)
 └── {children}
     ├── (기본)     폼: 이름·설명 + [저장]  (react-hook-form)
     ├── members    MemberTable + {showAdd && <AddMemberModal/>}           → project 카드

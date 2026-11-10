@@ -1,6 +1,5 @@
 "use client";
 
-import SettingsSideNav from "@/components/project/settings/SettingsSideNav";
 import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
 import {use} from "react";
@@ -28,10 +27,7 @@ export default function SettingsLayout({
             </div>
 
 
-            <div className="flex gap-8">
-                <SettingsSideNav projectId={projectId}/>
-                <div className="flex-1 min-w-0">{children}</div>
-            </div>
+            <div className="min-w-0">{children}</div>
         </div>
     );
 }

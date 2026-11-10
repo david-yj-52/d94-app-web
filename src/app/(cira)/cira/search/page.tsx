@@ -83,7 +83,7 @@ function SaveFilterModal({
     const [name, setName] = useState("");
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="w-80 rounded-2xl bg-white p-6 shadow-xl">
+            <div className="w-full max-w-xs rounded-2xl bg-white p-6 shadow-xl">
                 <h3 className="mb-4 text-base font-semibold text-gray-900">필터 저장</h3>
                 <input
                     autoFocus
@@ -263,9 +263,9 @@ function SearchPageContent() {
                 </div>
             )}
 
-            <div className="flex gap-6">
+            <div className="flex flex-col gap-6 md:flex-row">
                 {/* Filter panel */}
-                <aside className="w-56 shrink-0 space-y-5">
+                <aside className="w-full shrink-0 space-y-5 md:w-56">
                     {/* Saved filters */}
                     {savedFilters && savedFilters.length > 0 && (
                         <div>

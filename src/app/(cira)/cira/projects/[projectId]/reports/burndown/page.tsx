@@ -141,7 +141,7 @@ export default function BurndownPage({
 
             {!isLoading && burndown && (
                 <>
-                    <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <div className="bg-white rounded-xl border border-slate-200 p-4">
                             <p className="text-xs text-slate-500 mb-1">총 포인트</p>
                             <p className="text-2xl font-bold text-slate-900">{burndown.totalPoints}pt</p>

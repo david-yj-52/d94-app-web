@@ -13,6 +13,7 @@
 ## 화면 구성
 ```
 search/page.tsx  (SearchPageContent를 Suspense로 감쌈 — useSearchParams 사용)
+(반응형: 모바일은 필터 패널이 결과 위, md 이상 왼쪽 224px)
 ├── 검색 입력 + 정렬(관련도/최신/업데이트)
 ├── 필터: 상태·우선순위 다중 선택, ActiveFilterTag(페이지 내부 컴포넌트)
 ├── 저장 필터 목록 + SaveFilterModal(페이지 내부 컴포넌트)

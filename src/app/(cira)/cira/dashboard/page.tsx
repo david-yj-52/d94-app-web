@@ -126,7 +126,7 @@ export default function DashboardPage() {
     if (isLoading) {
         return (
             <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     {[1, 2, 3].map((i) => (
                         <Skeleton key={i} className="h-24 rounded-xl"/>
                     ))}
@@ -145,7 +145,7 @@ export default function DashboardPage() {
             </div>
 
             {/* 상단 요약 카드 */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="bg-white rounded-xl border border-slate-200 p-5">
                     <p className="text-xs font-medium text-slate-500 mb-1">내 할당 이슈</p>
                     <p className="text-3xl font-bold text-slate-900">
@@ -167,11 +167,11 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 {/* 좌측: 할당 이슈 + 마감 임박 */}
-                <div className="col-span-2 space-y-6">
+                <div className="space-y-6 lg:col-span-2">
                     {/* 내 할당 이슈 */}
-                    <div className="bg-white rounded-xl border border-slate-200">
+                    <div className="overflow-x-auto bg-white rounded-xl border border-slate-200">
                         <div className="px-5 py-4 border-b border-slate-100">
                             <h2 className="text-sm font-semibold text-slate-800">나에게 할당된 이슈</h2>
                         </div>
@@ -180,7 +180,7 @@ export default function DashboardPage() {
                                 할당된 이슈가 없습니다.
                             </div>
                         ) : (
-                            <table className="w-full text-sm">
+                            <table className="w-full min-w-[560px] text-sm">
                                 <thead>
                                 <tr className="bg-slate-50">
                                     <th className="py-2 pl-4 text-left text-xs font-medium text-slate-500 w-24">키</th>
@@ -200,7 +200,7 @@ export default function DashboardPage() {
                     </div>
 
                     {/* 마감 임박 이슈 */}
-                    <div className="bg-white rounded-xl border border-slate-200">
+                    <div className="overflow-x-auto bg-white rounded-xl border border-slate-200">
                         <div className="px-5 py-4 border-b border-slate-100">
                             <h2 className="text-sm font-semibold text-slate-800">
                                 마감 임박 이슈
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                                 마감 임박 이슈가 없습니다.
                             </div>
                         ) : (
-                            <table className="w-full text-sm">
+                            <table className="w-full min-w-[560px] text-sm">
                                 <thead>
                                 <tr className="bg-slate-50">
                                     <th className="py-2 pl-4 text-left text-xs font-medium text-slate-500 w-24">키</th>
@@ -234,7 +234,7 @@ export default function DashboardPage() {
 
                 {/* 우측: 최근 활동 */}
                 <div className="col-span-1">
-                    <div className="bg-white rounded-xl border border-slate-200">
+                    <div className="overflow-x-auto bg-white rounded-xl border border-slate-200">
                         <div className="px-5 py-4 border-b border-slate-100">
                             <h2 className="text-sm font-semibold text-slate-800">최근 활동</h2>
                         </div>
