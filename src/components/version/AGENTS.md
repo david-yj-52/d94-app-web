@@ -1,7 +1,7 @@
 # L2 · version 컴포넌트
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **version**
-> 사용 화면: [versions](../../app/(main)/projects/[projectId]/versions/AGENTS.md). 같은 화면의 마일스톤 컴포넌트는 [카탈로그 §5](../AGENTS.md)에 있습니다.
+> 사용 화면: [versions](../../app/(cira)/cira/projects/[projectId]/versions/AGENTS.md). 같은 화면의 마일스톤 컴포넌트는 [카탈로그 §5](../AGENTS.md)에 있습니다.
 
 ### VersionCard — `@/components/version/VersionCard`
 ```ts

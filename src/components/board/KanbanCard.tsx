@@ -56,7 +56,7 @@ export default function KanbanCard({
             >
                 <div className="flex items-center justify-between gap-1 mb-1.5">
                     <Link
-                        href={`/projects/${projectId}/issues/${issue.id}`}
+                        href={`/cira/projects/${projectId}/issues/${issue.id}`}
                         className="text-[11px] font-mono text-slate-400 hover:text-blue-600 transition-colors"
                         onClick={(e) => e.stopPropagation()}
                     >

@@ -9,7 +9,7 @@ import {usePathname} from "next/navigation";
 
 const NAV_ITEMS = [
     {href: "/home", label: "홈"},
-    {href: "/projects", label: "프로젝트"},
+    {href: "/cira/projects", label: "프로젝트"},
     {href: "/todo", label: "Tasks"},
     {href: "/mpms", label: "MPMS"},
 ];

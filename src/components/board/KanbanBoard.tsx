@@ -129,7 +129,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
         deleteBoard(boardId, {
             onSuccess: () => {
                 show("보드가 삭제되었습니다.");
-                router.push(`/projects/${projectId}/boards`);
+                router.push(`/cira/projects/${projectId}/boards`);
             },
             onError: () => show("보드 삭제에 실패했습니다.", "error"),
         });

@@ -12,7 +12,7 @@ const TYPE_COLORS: Record<string, string> = {
 
 export default function ProjectCard({project}: Props) {
     return (
-        <Link href={`/projects/${project.id}/issues`}>
+        <Link href={`/cira/projects/${project.id}/issues`}>
             <div
                 className="bg-white rounded-xl border border-slate-200 p-6 hover:border-blue-300 hover:shadow-sm transition-all cursor-pointer group">
                 <div className="flex items-start justify-between mb-3">

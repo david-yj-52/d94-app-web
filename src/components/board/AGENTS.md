@@ -1,7 +1,7 @@
 # L2 · board 컴포넌트
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **board**
-> 사용 화면: [boards](../../app/(main)/projects/[projectId]/boards/AGENTS.md)
+> 사용 화면: [boards](../../app/(cira)/cira/projects/[projectId]/boards/AGENTS.md)
 
 구성: `KanbanBoard` → `KanbanColumn` → `KanbanCard`. 드래그 앤 드롭은 라이브러리 없이 **HTML5 Drag and Drop API**로 직접 구현했습니다.
 

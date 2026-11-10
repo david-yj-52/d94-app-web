@@ -64,7 +64,7 @@
 | milestone | MilestoneCard, MilestoneModal | 마일스톤 카드·생성/편집 | `versions` | §5 |
 | mpns | PlatformTable, ProductTable, DetailPanel, PlatformAddPopup, ProductAddPopup | MPMS 마스터-디테일 | `/mpms` 🧪 | [mpns](mpns/AGENTS.md) |
 | project | ProjectNav 🔁 | 프로젝트 탭 네비 | 프로젝트 하위 8개 화면 | [project](project/AGENTS.md) |
-| project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성 | `/projects` | [project](project/AGENTS.md) |
+| project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성 | `/cira/projects` | [project](project/AGENTS.md) |
 | project/settings | SettingsSideNav, MemberTable, AddMemberModal | 설정 사이드 메뉴, 멤버 관리 | `settings/*` | [project](project/AGENTS.md) |
 | project/settings/automation | AutomationRuleCard, AutomationRuleModal | 자동화 규칙 | `settings/automation` | [project](project/AGENTS.md) |
 | search | CqlEditor, CqlSyntaxGuide | CQL 입력기(자동완성·검증)·문법 가이드 | `search/advanced` | §5 |

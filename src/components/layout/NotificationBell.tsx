@@ -76,7 +76,7 @@ export default function NotificationBell() {
     function handleNotificationClick(n: NotificationItem) {
         if (!n.isRead) markReadMut.mutate(n.id);
         if (n.issueKey) {
-            router.push(`/search?q=${encodeURIComponent(n.issueKey)}`);
+            router.push(`/cira/search?q=${encodeURIComponent(n.issueKey)}`);
         }
         setOpen(false);
     }
@@ -159,7 +159,7 @@ export default function NotificationBell() {
 
                     <div className="border-t border-gray-100 px-4 py-2.5">
                         <Link
-                            href="/notifications"
+                            href="/cira/notifications"
                             className="block text-center text-xs text-blue-600 hover:underline"
                             onClick={() => setOpen(false)}
                         >

@@ -1,7 +1,7 @@
 # L2 · wiki 컴포넌트
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **wiki**
-> 사용 화면: [wiki](../../app/(main)/projects/[projectId]/wiki/AGENTS.md)
+> 사용 화면: [wiki](../../app/(cira)/cira/projects/[projectId]/wiki/AGENTS.md)
 
 모두 표현 컴포넌트입니다. 데이터와 mutation은 `wiki/page.tsx`가 `useWiki` 계열 훅으로 처리하고 콜백을 내려 줍니다.
 

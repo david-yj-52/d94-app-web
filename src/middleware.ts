@@ -1,9 +1,8 @@
 import {auth} from "@/auth";
+import {classifyPath} from "@/lib/routeAccess";
 import {NextResponse} from "next/server";
 
 const STATIC_EXT = /\.(png|jpg|jpeg|gif|svg|webp|ico|woff2?|css|js)$/i;
-const PROTECTED_PREFIXES = ["/projects", "/issues", "/board", "/dashboard", "/search", "/notifications", "/interface-test"];
-const PUBLIC_ONLY = ["/login", "/register"];
 
 export default auth((req) => {
     const pathname = req.nextUrl.pathname;
@@ -13,16 +12,13 @@ export default auth((req) => {
     }
 
     const isLoggedIn = !!req.auth;
-    const isPublicOnly = PUBLIC_ONLY.includes(pathname);
-    const isProtected = PROTECTED_PREFIXES.some(
-        (p) => pathname === p || pathname.startsWith(p + "/"),
-    );
+    const access = classifyPath(pathname);
 
-    if (isLoggedIn && isPublicOnly) {
+    if (isLoggedIn && access === "publicOnly") {
         return NextResponse.redirect(new URL("/home", req.url));
     }
 
-    if (!isLoggedIn && isProtected) {
+    if (!isLoggedIn && access === "protected") {
         return NextResponse.redirect(new URL("/login", req.url));
     }
 

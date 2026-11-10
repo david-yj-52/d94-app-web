@@ -17,7 +17,7 @@
 ### NotificationBell — `@/components/layout/NotificationBell` (ApHeader 내부)
 - props가 없습니다. 읽지 않은 알림 수를 60초마다 폴링합니다(`["notifications-unread-count"]`). 드롭다운을 열면 최근 10건을 조회하고, 클릭하면 해당 이슈로 이동합니다.
 - ⚠️ 컴포넌트 안에서 `useQuery`와 `lib/api/notifications`를 직접 사용합니다(규칙 예외).
-- 배지는 99 초과면 `99+`, 0 이면 숨김. 안 읽은 알림을 누르면 읽음 처리 후 `issueKey` 가 있을 때 `/search?q={issueKey}` 로 갑니다. "모두 읽음"은 `["notifications"]`·`["notifications-unread-count"]` 를 무효화합니다(`NotificationBell.test.tsx`, 백엔드 응답 모양으로 검증).
+- 배지는 99 초과면 `99+`, 0 이면 숨김. 안 읽은 알림을 누르면 읽음 처리 후 `issueKey` 가 있을 때 `/cira/search?q={issueKey}` 로 갑니다. "모두 읽음"은 `["notifications"]`·`["notifications-unread-count"]` 를 무효화합니다(`NotificationBell.test.tsx`, 백엔드 응답 모양으로 검증).
 
 ### NotificationMount — `@/components/layout/NotificationMount`
 - props가 없습니다. `useNotifications()`로 최근 알림을 30초마다 폴링하고(`["notifications", "recent"]`, `/api/proxy` 경유), 처음 보는 안 읽은 알림이 있으면 토스트를 띄웁니다.

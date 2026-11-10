@@ -1,7 +1,7 @@
 # L2 · project 컴포넌트 (+ settings, settings/automation)
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **project**
-> 사용 화면: [projects](../../app/(main)/projects/AGENTS.md), [settings](../../app/(main)/projects/[projectId]/settings/AGENTS.md)
+> 사용 화면: [projects](../../app/(cira)/cira/projects/AGENTS.md), [settings](../../app/(cira)/cira/projects/[projectId]/settings/AGENTS.md)
 
 ## 공유 컴포넌트
 
@@ -25,7 +25,7 @@
 ```ts
 { project: ProjectResponse }
 ```
-- 프로젝트 카드입니다. 클릭하면 `/projects/{id}/issues`로 이동합니다.
+- 프로젝트 카드입니다. 클릭하면 `/cira/projects/{id}/issues`로 이동합니다.
 
 ### CreateProjectModal — `@/components/project/CreateProjectModal`
 ```ts

@@ -158,7 +158,7 @@ mock 이 백엔드보다 너그러운 점 (일부러 둠 — mock 모드 화면 
 | 파일 | 변경 | 결함 |
 |---|---|---|
 | `src/types/sprint.ts` | `status` → `sprintStat`, `SprintStatus = "Planned" \| "Active" \| "Completed"`, `issueCount` 삭제 | D4 |
-| `src/app/(main)/projects/[projectId]/sprints/page.tsx`, `reports/burndown/page.tsx`, `components/sprint/CompleteSprintModal.tsx` | 상태 비교를 새 값으로 | D4·D14 |
+| `src/app/(cira)/cira/projects/[projectId]/sprints/page.tsx`, `reports/burndown/page.tsx`, `components/sprint/CompleteSprintModal.tsx` | 상태 비교를 새 값으로 | D4·D14 |
 | `src/types/comment.ts` | `CommentReaction.reactionType`, `CommentResponse.parentId`, `CreateCommentRequest.parentId` | D9·D10 |
 | `src/lib/api/comments.ts` | `updateComment(commentId, data)`, `deleteComment(commentId)` → `/v1/comments/{id}`; `addReaction`·`removeReaction` → `toggleReaction(commentId, reactionType)` | D5–D8 |
 | `src/hooks/useComments.ts` | `useAddReaction`·`useRemoveReaction` → `useToggleReaction` | D8 |

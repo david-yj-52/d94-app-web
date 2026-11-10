@@ -11,16 +11,16 @@
 |---|---|---|
 | **L1 프로젝트** | 성격, 전역 규칙, 명령어 | 이 파일 + [docs/](docs/) |
 | **L2 폴더** | 폴더의 역할·규칙·목록 (컴포넌트 카탈로그 포함) | `src/{폴더}/AGENTS.md` |
-| **L3 화면** | 화면 조립도, 데이터, 진입 경로 | `src/app/(main)/**/AGENTS.md` |
+| **L3 화면** | 화면 조립도, 데이터, 진입 경로 | `src/app/(main)/**/AGENTS.md`, CIRA는 `src/app/(cira)/cira/**/AGENTS.md` |
 | **L4 기능** | 화면 안 기능의 동작·흐름 | L3 문서의 `## 기능` 섹션 |
 
 ```
 AGENTS.md (L1)
 ├── src/app/AGENTS.md (L2 라우팅·화면 목록)
 │   ├── (main)/home/AGENTS.md ............ 첫 화면 기능 대시보드
-│   ├── (main)/dashboard/AGENTS.md ....... 개인 대시보드
-│   ├── (main)/search/AGENTS.md .......... 통합 검색 + CQL 고급 검색
-│   ├── (main)/projects/AGENTS.md ........ 프로젝트 목록 + 프로젝트 공통 탭
+│   ├── (cira)/cira/dashboard/AGENTS.md ....... 개인 대시보드
+│   ├── (cira)/cira/search/AGENTS.md .......... 통합 검색 + CQL 고급 검색
+│   ├── (cira)/cira/projects/AGENTS.md ........ 프로젝트 목록 + 프로젝트 공통 탭
 │   │   └── [projectId]/
 │   │       ├── issues/AGENTS.md ......... 이슈 목록·상세
 │   │       ├── boards/AGENTS.md ......... 칸반 보드
@@ -50,7 +50,7 @@ AGENTS.md (L1)
 
 | 모듈 | 경로 | 실험 주제 |
 |---|---|---|
-| **CIRA** | `/projects`, `/dashboard`, `/search` | 가장 큰 모듈. Jira 유사 협업 도구 (TanStack Query, 칸반 DnD, 차트, 리치 에디터) |
+| **CIRA** | `/cira/projects`, `/cira/dashboard`, `/cira/search` | 가장 큰 모듈. Jira 유사 협업 도구 (TanStack Query, 칸반 DnD, 차트, 리치 에디터) |
 | **MPMS** | `/mpms` | 마스터-디테일 테이블 CRUD (로컬 상태) |
 | **Solace** | `/solace` | WebSocket 메시징 (solclientjs) |
 | **todo** | `/todo` | Server Actions + `revalidatePath` |

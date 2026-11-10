@@ -85,12 +85,12 @@ export default function GlobalSearch() {
     }
 
     function goToIssue(issue: IssueResponse) {
-        router.push(`/projects/${issue.projectId}/issues/${issue.id}`);
+        router.push(`/cira/projects/${issue.projectId}/issues/${issue.id}`);
         close();
     }
 
     function goToFullResults() {
-        router.push(`/search?q=${encodeURIComponent(query)}`);
+        router.push(`/cira/search?q=${encodeURIComponent(query)}`);
         close();
     }
 

@@ -7,7 +7,7 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. 하나의 Next.js 앱 �
 
 | 모듈 | 경로 | 실험 주제 | 데이터 방식 | 상태 | L3 문서 |
 |---|---|---|---|---|---|
-| **CIRA** | `/projects/**`, `/dashboard`, `/search`, `/notifications` | Jira 유사 협업 도구 | axios + TanStack Query + `/api/proxy` (+ mock) | 주력 | [projects](../src/app/(main)/projects/AGENTS.md) 외 |
+| **CIRA** | `/cira/projects/**`, `/cira/dashboard`, `/cira/search`, `/cira/notifications` | Jira 유사 협업 도구 | axios + TanStack Query + `/api/proxy` (+ mock) | 주력 | [projects](../src/app/(cira)/cira/projects/AGENTS.md) 외 |
 | **MPMS** | `/mpms` | 마스터-디테일 테이블 CRUD | 로컬 상태 + 상수 mock | 동작 | [mpms](../src/app/(main)/mpms/AGENTS.md) |
 | **Solace** | `/solace` | WebSocket 메시징 (solclientjs) | Solace 브로커 직접 연결 | 브로커 필요 | [solace](../src/app/(main)/solace/AGENTS.md) |
 | **todo** | `/todo` | Server Actions + `revalidatePath` | 서버 컴포넌트 + fetch 래퍼 | 목록 하드코딩 | [todo](../src/app/(main)/todo/AGENTS.md) |

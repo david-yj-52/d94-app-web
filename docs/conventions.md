@@ -53,9 +53,9 @@
 아래 파일은 규칙을 어기고 있습니다. 수정할 때 함께 고치면 좋지만, **새 코드의 참고 예시로 쓰지 마세요.**
 
 **인라인 `style={{}}`** (차트 크기·진행률 등 동적 수치 때문에 일부는 정당한 예외일 수 있음)
-- `src/app/(main)/dashboard/page.tsx`
-- `src/app/(main)/projects/[projectId]/reports/{burndown,cfd,velocity}/page.tsx`
-- `src/app/(main)/projects/[projectId]/wiki/page.tsx`
+- `src/app/(cira)/cira/dashboard/page.tsx`
+- `src/app/(cira)/cira/projects/[projectId]/reports/{burndown,cfd,velocity}/page.tsx`
+- `src/app/(cira)/cira/projects/[projectId]/wiki/page.tsx`
 - `src/components/issue/AttachmentSection.tsx`
 - `src/components/milestone/MilestoneCard.tsx`
 - `src/components/search/CqlEditor.tsx`

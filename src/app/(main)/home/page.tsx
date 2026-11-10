@@ -28,28 +28,28 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
         desc: "이슈 · 프로젝트 관리",
         items: [
             {
-                href: "/projects",
+                href: "/cira/projects",
                 label: "프로젝트",
                 desc: "프로젝트 목록과 생성. 이슈 · 보드 · 스프린트 · 리포트 · 위키로 들어갑니다.",
                 icon: FolderKanban,
                 iconClass: "bg-blue-50 text-blue-600",
             },
             {
-                href: "/dashboard",
+                href: "/cira/dashboard",
                 label: "내 대시보드",
                 desc: "나에게 할당된 이슈, 오늘 마감, 최근 활동, 현재 스프린트를 한눈에 봅니다.",
                 icon: LayoutDashboard,
                 iconClass: "bg-indigo-50 text-indigo-600",
             },
             {
-                href: "/search",
+                href: "/cira/search",
                 label: "검색",
                 desc: "키워드 · 필터로 이슈를 찾고, 고급 검색(CQL)과 저장 필터를 씁니다.",
                 icon: Search,
                 iconClass: "bg-sky-50 text-sky-600",
             },
             {
-                href: "/notifications",
+                href: "/cira/notifications",
                 label: "알림",
                 desc: "받은 알림 목록을 확인하고 읽음 처리합니다.",
                 icon: Bell,

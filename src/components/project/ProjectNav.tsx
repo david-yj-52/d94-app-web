@@ -22,14 +22,14 @@ export default function ProjectNav({projectId}: Props) {
         ) === true;
 
     const tabs = [
-        {href: `/projects/${projectId}/issues`, label: "이슈"},
-        {href: `/projects/${projectId}/boards`, label: "보드"},
-        {href: `/projects/${projectId}/sprints`, label: "스프린트"},
-        {href: `/projects/${projectId}/versions`, label: "버전"},
-        {href: `/projects/${projectId}/reports`, label: "리포트"},
-        {href: `/projects/${projectId}/wiki`, label: "Wiki"},
+        {href: `/cira/projects/${projectId}/issues`, label: "이슈"},
+        {href: `/cira/projects/${projectId}/boards`, label: "보드"},
+        {href: `/cira/projects/${projectId}/sprints`, label: "스프린트"},
+        {href: `/cira/projects/${projectId}/versions`, label: "버전"},
+        {href: `/cira/projects/${projectId}/reports`, label: "리포트"},
+        {href: `/cira/projects/${projectId}/wiki`, label: "Wiki"},
         ...(isAdmin
-            ? [{href: `/projects/${projectId}/settings`, label: "설정"}]
+            ? [{href: `/cira/projects/${projectId}/settings`, label: "설정"}]
             : []),
     ];
 

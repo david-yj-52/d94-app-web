@@ -50,7 +50,7 @@ describe("NotificationBell", () => {
         await user.click(await screen.findByText("CIRA-1 담당자로 지정됨"));
 
         await waitFor(() => expect(lastRequest("PUT")).toMatchObject({path: "/v1/notifications/NTF-2/read"}));
-        expect(push).toHaveBeenCalledWith("/search?q=CIRA-1");
+        expect(push).toHaveBeenCalledWith("/cira/search?q=CIRA-1");
         expect(screen.queryByText("CIRA-1 담당자로 지정됨")).not.toBeInTheDocument();
     });
 

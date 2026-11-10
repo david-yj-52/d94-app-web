@@ -17,7 +17,7 @@ const TABS = [
 
 export default function SettingsSideNav({projectId}: Props) {
     const pathname = usePathname();
-    const base = `/projects/${projectId}/settings`;
+    const base = `/cira/projects/${projectId}/settings`;
 
     return (
         <nav className="w-44 shrink-0">

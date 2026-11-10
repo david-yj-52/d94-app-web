@@ -5,7 +5,7 @@ UI 기술을 배우고 다양한 웹 기능을 직접 만들어 보는 연습장
 
 | 모듈 | 경로 | 실험 주제 |
 |---|---|---|
-| CIRA | `/projects` | Jira 유사 협업 도구 (Query, 칸반 DnD, 차트, 리치 에디터) |
+| CIRA | `/cira/projects` | Jira 유사 협업 도구 (Query, 칸반 DnD, 차트, 리치 에디터) |
 | MPMS | `/mpms` | 마스터-디테일 테이블 |
 | Solace | `/solace` | WebSocket 메시징 |
 | todo | `/todo` | Server Actions |

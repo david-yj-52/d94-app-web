@@ -6,23 +6,26 @@
 ## 1. 라우팅 구조
 
 ```
-app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader → children → NotificationMount
+app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 ├── page.tsx             "/" (로그인 시 /home, 아니면 /login 으로 redirect) ⚠️ (main)/page.tsx 와 경로 중복
 ├── (auth)/              비로그인 전용. layout: 가운데 정렬 + TshLogo + "CIRA"
 │   ├── login/                 → LoginForm
 │   ├── register/              → RegisterForm (이메일 회원가입 → 자동 로그인)
 │   └── cira/register/         → /register 로 redirect (예전 경로)
-├── (main)/              로그인 영역 (라우트 그룹 layout 없음, 헤더는 루트 layout)
+├── (main)/              허브·실험 모듈. layout: 로그인 시 ApHeader + NotificationMount + <main py-6>
 │   ├── page.tsx         "/" → 로그인 여부에 따라 /login 또는 /home 으로 redirect
-│   ├── home/ dashboard/ notifications/ search/ projects/      CIRA + 허브
-│   └── mpms/ solace/ todo/ interface-test/                    실험 모듈
+│   ├── home/                                       허브
+│   └── mpms/ solace/ todo/ interface-test/         실험 모듈
+├── (cira)/cira/         CIRA 전용 영역 (URL /cira/**). layout: CIRA 셸 (세션은 루트 Providers 공유)
+│   └── projects/ dashboard/ search/ notifications/
 └── api/
     ├── auth/[...nextauth]/    next-auth 핸들러
     └── proxy/[...path]/       백엔드 투명 프록시 (GET/HEAD/POST/PUT/PATCH/DELETE, 서버에서 세션 쿠키의 토큰으로 Bearer 주입(ADR 0005), 상태·헤더·본문 그대로, 35초 타임아웃, DEV_MOCK_API 시 mock 응답)
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.
-  - 보호 경로(비로그인 시 `/login`으로): `/projects`, `/issues`, `/board`, `/dashboard`, `/search`, `/notifications`, `/interface-test`
+  - 보호 경로(비로그인 시 `/login`으로): `/cira/**`(단 `/cira/register` 제외), `/interface-test`. 판정은 `src/lib/routeAccess.ts`
+  - 예전 CIRA 경로(`/projects/**` 등)는 `next.config.mjs` redirect 로 `/cira/...` 에 갑니다 → [architecture](../../docs/architecture.md)
   - `/home`, `/todo`는 페이지에서 직접 `auth()`를 확인해 redirect합니다. `/mpms`, `/solace`는 **보호되지 않습니다**.
 
 ## 2. 화면 목록 (L3)
@@ -30,16 +33,16 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 | 화면 | URL | 모듈 | 한 줄 설명 | L3 문서 |
 |---|---|---|---|---|
 | 홈 | `/home` | 공통 | 첫 화면. 기능별 카드 대시보드 | [home](./(main)/home/AGENTS.md) |
-| 대시보드 | `/dashboard` | CIRA | 내 할당 이슈·오늘 마감·최근 활동·현재 스프린트 | [dashboard](./(main)/dashboard/AGENTS.md) |
-| 검색 | `/search`, `/search/advanced` | CIRA | 키워드·필터 검색, 저장 필터, CQL 고급 검색 | [search](./(main)/search/AGENTS.md) |
-| 프로젝트 | `/projects` (+ 하위 공통) | CIRA | 프로젝트 목록·생성, 하위 탭 구조 | [projects](./(main)/projects/AGENTS.md) |
-| 이슈 | `/projects/:id/issues[/:issueId]` | CIRA | 목록·필터·생성, 상세(인라인 편집·댓글·첨부) | [issues](./(main)/projects/[projectId]/issues/AGENTS.md) |
-| 보드 | `/projects/:id/boards[/:boardId]` | CIRA | 칸반 보드 DnD | [boards](./(main)/projects/[projectId]/boards/AGENTS.md) |
-| 스프린트 | `/projects/:id/sprints` | CIRA | 스프린트 CRUD·시작·완료·이슈 할당 | [sprints](./(main)/projects/[projectId]/sprints/AGENTS.md) |
-| 리포트 | `/projects/:id/reports/*` | CIRA | 번다운·CFD·Velocity 차트 | [reports](./(main)/projects/[projectId]/reports/AGENTS.md) |
-| 설정 | `/projects/:id/settings/*` | CIRA | 기본정보·멤버·워크플로우·Git·자동화 | [settings](./(main)/projects/[projectId]/settings/AGENTS.md) |
-| 버전 | `/projects/:id/versions` | CIRA | 버전·마일스톤 탭 | [versions](./(main)/projects/[projectId]/versions/AGENTS.md) |
-| 위키 | `/projects/:id/wiki` | CIRA | 트리·뷰어·Tiptap 편집·이력 | [wiki](./(main)/projects/[projectId]/wiki/AGENTS.md) |
+| 대시보드 | `/cira/dashboard` | CIRA | 내 할당 이슈·오늘 마감·최근 활동·현재 스프린트 | [dashboard](./(cira)/cira/dashboard/AGENTS.md) |
+| 검색 | `/cira/search`, `/cira/search/advanced` | CIRA | 키워드·필터 검색, 저장 필터, CQL 고급 검색 | [search](./(cira)/cira/search/AGENTS.md) |
+| 프로젝트 | `/cira/projects` (+ 하위 공통) | CIRA | 프로젝트 목록·생성, 하위 탭 구조 | [projects](./(cira)/cira/projects/AGENTS.md) |
+| 이슈 | `/cira/projects/:id/issues[/:issueId]` | CIRA | 목록·필터·생성, 상세(인라인 편집·댓글·첨부) | [issues](./(cira)/cira/projects/[projectId]/issues/AGENTS.md) |
+| 보드 | `/cira/projects/:id/boards[/:boardId]` | CIRA | 칸반 보드 DnD | [boards](./(cira)/cira/projects/[projectId]/boards/AGENTS.md) |
+| 스프린트 | `/cira/projects/:id/sprints` | CIRA | 스프린트 CRUD·시작·완료·이슈 할당 | [sprints](./(cira)/cira/projects/[projectId]/sprints/AGENTS.md) |
+| 리포트 | `/cira/projects/:id/reports/*` | CIRA | 번다운·CFD·Velocity 차트 | [reports](./(cira)/cira/projects/[projectId]/reports/AGENTS.md) |
+| 설정 | `/cira/projects/:id/settings/*` | CIRA | 기본정보·멤버·워크플로우·Git·자동화 | [settings](./(cira)/cira/projects/[projectId]/settings/AGENTS.md) |
+| 버전 | `/cira/projects/:id/versions` | CIRA | 버전·마일스톤 탭 | [versions](./(cira)/cira/projects/[projectId]/versions/AGENTS.md) |
+| 위키 | `/cira/projects/:id/wiki` | CIRA | 트리·뷰어·Tiptap 편집·이력 | [wiki](./(cira)/cira/projects/[projectId]/wiki/AGENTS.md) |
 | MPMS | `/mpms` | 🧪 | 플랫폼·제품 마스터-디테일 | [mpms](./(main)/mpms/AGENTS.md) |
 | Solace | `/solace` | 🧪 | WebSocket 메시징 테스트 | [solace](./(main)/solace/AGENTS.md) |
 | Todo | `/todo` | 🧪 | Server Actions | [todo](./(main)/todo/AGENTS.md) |
@@ -49,10 +52,10 @@ app/layout.tsx           Providers(Query+Session) → 로그인 시 ApHeader →
 - `/login`, `/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)). `/login?reason=expired` 면 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다(API 401 → `apiClient` 가 로그아웃시키며 붙임).
 - 로그인·회원가입 자격 증명은 브라우저에서 암호화되어 `{enc}` 봉투로만 나갑니다(`/api/auth/callback/credentials`·`/api/proxy/v1/auth/register` 모두). [ADR 0004](../../docs/decisions/0004-credential-encryption.md)
 - `/cira/register`: `/register` 로 redirect 합니다. 소셜(Google) 가입은 미구현입니다.
-- `/notifications`: 알림 목록(페이지네이션)입니다.
-  - 클릭하면 읽음 처리한 뒤 `/search?q={issueKey}`로 이동합니다. "모두 읽음"도 있습니다.
+- `/cira/notifications`: 알림 목록(페이지네이션)입니다.
+  - 클릭하면 읽음 처리한 뒤 `/cira/search?q={issueKey}`로 이동합니다. "모두 읽음"도 있습니다.
   - ⚠️ 페이지 안에서 `useQuery`와 `lib/api/notifications`를 직접 사용합니다(규칙 예외).
-- `/projects/:id/reports`: `/reports/burndown`으로 redirect합니다.
+- `/cira/projects/:id/reports`: `/reports/burndown`으로 redirect합니다.
 
 ## 3. 이 폴더의 규칙
 

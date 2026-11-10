@@ -57,7 +57,7 @@ export default function IssueTable({issues, projectId}: Props) {
                             key={issue.id}
                             onClick={() =>
                                 router.push(
-                                    `/projects/${projectId}/issues/${issue.id}`,
+                                    `/cira/projects/${projectId}/issues/${issue.id}`,
                                 )
                             }
                             className="border-b border-slate-100 hover:bg-slate-50 cursor-pointer"

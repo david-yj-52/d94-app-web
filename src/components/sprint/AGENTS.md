@@ -1,7 +1,7 @@
 # L2 · sprint 컴포넌트
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **sprint**
-> 사용 화면: [sprints](../../app/(main)/projects/[projectId]/sprints/AGENTS.md)
+> 사용 화면: [sprints](../../app/(cira)/cira/projects/[projectId]/sprints/AGENTS.md)
 
 모두 모달입니다. 부모가 `{target && <XxxModal …/>}`로 조건부 렌더링하고, 각 모달이 내부에서 `useSprints` 계열의 mutation을 호출합니다.
 

@@ -1,13 +1,13 @@
 # L2 · issue 컴포넌트
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **issue**
-> 사용 화면: [issues](../../app/(main)/projects/[projectId]/issues/AGENTS.md)
+> 사용 화면: [issues](../../app/(cira)/cira/projects/[projectId]/issues/AGENTS.md)
 
 ### IssueTable — `@/components/issue/IssueTable`
 ```ts
 { issues: IssueResponse[]; projectId: string }
 ```
-- 이슈 목록 테이블(키, 제목, 상태·우선순위 배지, 담당자, 날짜)입니다. 행을 클릭하면 `/projects/{projectId}/issues/{id}`로 이동합니다. 표현 컴포넌트이며 데이터 조회는 하지 않습니다.
+- 이슈 목록 테이블(키, 제목, 상태·우선순위 배지, 담당자, 날짜)입니다. 행을 클릭하면 `/cira/projects/{projectId}/issues/{id}`로 이동합니다. 표현 컴포넌트이며 데이터 조회는 하지 않습니다.
 
 ### IssueFilter — `@/components/issue/IssueFilter`
 ```ts
