@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
     ArrowLeftRight,
     Bell,
+    BookOpen,
     ChevronRight,
     FolderKanban,
     LayoutDashboard,
@@ -81,6 +82,13 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
                 desc: "Solace WebSocket 메시지 송수신을 테스트합니다.",
                 icon: Radio,
                 iconClass: "bg-rose-50 text-rose-600",
+            },
+            {
+                href: "/study",
+                label: "PDF 학습",
+                desc: "PDF를 올려 목차 · 본문 뷰어로 읽고, 단어장 · 마킹 · 노트로 공부합니다.",
+                icon: BookOpen,
+                iconClass: "bg-orange-50 text-orange-600",
             },
             {
                 href: "/interface-test",

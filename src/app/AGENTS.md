@@ -15,7 +15,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 ├── (main)/              허브·실험 모듈. layout: 로그인 시 ApHeader + NotificationMount + <main py-6>
 │   ├── page.tsx         "/" → 로그인 여부에 따라 /login 또는 /home 으로 redirect
 │   ├── home/                                       허브
-│   └── mpms/ solace/ todo/ interface-test/         실험 모듈
+│   └── mpms/ solace/ todo/ interface-test/ study/  실험 모듈
 ├── (cira)/cira/         CIRA 전용 영역 (URL /cira/**). layout: CIRA 셸 (세션은 루트 Providers 공유)
 │   └── projects/ dashboard/ search/ notifications/
 └── api/
@@ -24,7 +24,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.
-  - 보호 경로(비로그인 시 `/login`으로): `/cira/**`(단 `/cira/register` 제외), `/interface-test`. 판정은 `src/lib/routeAccess.ts`
+  - 보호 경로(비로그인 시 `/login`으로): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`. 판정은 `src/lib/routeAccess.ts`
   - 예전 CIRA 경로(`/projects/**` 등)는 `next.config.mjs` redirect 로 `/cira/...` 에 갑니다 → [architecture](../../docs/architecture.md)
   - `/home`, `/todo`는 페이지에서 직접 `auth()`를 확인해 redirect합니다. `/mpms`, `/solace`는 **보호되지 않습니다**.
 
@@ -47,6 +47,9 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 | Solace | `/solace` | 🧪 | WebSocket 메시징 테스트 | [solace](./(main)/solace/AGENTS.md) |
 | Todo | `/todo` | 🧪 | Server Actions | [todo](./(main)/todo/AGENTS.md) |
 | 인터페이스 테스트 | `/interface-test` | 🧪 | REST 메서드별 UI→UMD→백엔드→DB 통신 확인 | [interface-test](./(main)/interface-test/AGENTS.md) |
+| PDF 학습 | `/study` | 🧪 | 문서 목록·PDF 분할 업로드 | [study](./(main)/study/AGENTS.md) |
+| PDF 학습 뷰어 | `/study/[documentId]` | 🧪 | 목차·본문·이 페이지 내용 3단 뷰어, 마킹·단어장 | [viewer](./(main)/study/[documentId]/AGENTS.md) |
+| 노트 모아보기 | `/study/notes` | 🧪 | 모든 문서의 마킹·노트, 클릭하면 해당 문장으로 | [notes](./(main)/study/notes/AGENTS.md) |
 
 **L3 문서 없이 여기서만 설명하는 화면**
 - `/login`, `/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)). `/login?reason=expired` 면 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다(API 401 → `apiClient` 가 로그아웃시키며 붙임).

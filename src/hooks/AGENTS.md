@@ -44,6 +44,7 @@ export function useCreateMilestone(projectId: string) {
 | useAutomation | useAutomationRules, useCreate/Update/DeleteAutomationRule, useRuleExecutions | `["automation-rules", projectId]`, `["rule-executions", ruleId]` |
 | useGitIntegration | useGitRepos, useRegister/DeleteGitRepo, useGitActivity | `["git-repos", projectId]`, `["git-activity", projectId]` |
 | useNotifications | useNotifications (30초 폴링 + 새 알림 토스트) | `["notifications", "recent"]` (NotificationBell 과 공유) |
+| useStudy | useStudyDocuments, useStudyDocument, useDeleteStudyDocument, useUploadStudyDocument, useStudyToc, useStudyPage, useStudyTerms, useCreateStudyTerm, useUpdateStudyTerm, useDeleteStudyTerm, useStudyAnnotations, useCreateStudyAnnotation, useUpdateStudyAnnotation, useDeleteStudyAnnotation | `["studyDocuments"]`(PARSING 있으면 3초 재조회), `["studyDocument", id]`, `["studyToc", id]`, `["studyPage", id, pageSectionId]`, `["studyTerms", documentId ?? "global"]`, `["studyAnnotations", documentId ?? "all"]`. 단어 변경 → studyTerms·studyPage, 마킹 변경 → studyPage·studyAnnotations 무효화 |
 | useInterfaceTests | useInterfaceTestItems, useInterfaceCall | `["interface-tests"]` (useInterfaceCall 은 변경 메서드 2xx 시 무효화) |
 | useAuth | useRegister, useLogin | — (mutation 만, 캐시 없음. 둘 다 자격 증명을 암호화해 보냄. `useLogin` 결과 boolean = 자격 증명 일치) |
 

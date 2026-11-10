@@ -65,7 +65,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 | `src/middleware.ts` | 로그인 여부에 따른 리다이렉트 |
 
 `src/middleware.ts` 규칙 (판정은 `src/lib/routeAccess.ts`의 `classifyPath`, 테스트 `routeAccess.test.ts`):
-- **보호 경로**: `/cira/**`, `/interface-test`. 비로그인 상태면 `/login`으로 보냅니다. 단 `/cira/register`(예전 가입 경로)는 열어 둡니다.
+- **보호 경로**: `/cira/**`, `/interface-test`, `/study/**`. 비로그인 상태면 `/login`으로 보냅니다. 단 `/cira/register`(예전 가입 경로)는 열어 둡니다.
 - **비로그인 전용**: `/login`, `/register`. 로그인 상태면 `/home`으로 보냅니다.
 - **예전 CIRA 경로**(`/projects/**`, `/dashboard`, `/search/**`, `/notifications`)는 `next.config.mjs`의 `redirects()`가 미들웨어보다 먼저 `/cira/...`로 영구 redirect합니다(쿼리 유지). d94-query 위키가 만드는 `/issues/{key}` 링크는 `/cira/search?q={key}`로 보냅니다.
 - 정적 확장자(png, svg, css, js 등)는 통과시킵니다. `public/` 이미지가 리다이렉트되지 않게 하기 위함입니다.
@@ -85,6 +85,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
     - `wiki`
   - `dashboard`, `home`, `notifications`, `search`, `search/advanced`(CQL)
   - `interface-test` (통신 확인용 실험 화면)
+  - `study`, `study/[documentId]`, `study/notes` (PDF 학습 뷰어 실험 화면)
 - `src/app/page.tsx`, `src/app/actions.ts`: todo 실험 모듈 ([modules.md](modules.md))
 - 화면별 상세는 [src/app/AGENTS.md](../src/app/AGENTS.md)의 화면 목록(L3)을 보세요.
 

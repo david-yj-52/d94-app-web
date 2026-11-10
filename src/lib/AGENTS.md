@@ -47,6 +47,12 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 ```
 예시: `api/attachments.ts`(업로드 진행률 `onUploadProgress` 포함)
 
+### Study: `api/study.ts` · `study/`
+- 조각 업로드 `putStudyUploadPart`는 `Blob`을 `Content-Type: application/octet-stream`으로 보냅니다(UMD 본문 1MB 제한 → 서버가 정한 `partSize` 768KB). 조립·재시도는 `useUploadStudyDocument`.
+- `study/segments.ts` `buildSegments` — 블록 텍스트를 단어 hit·마킹 경계로 자른다. `study/selection.ts` `rangeToAnchor` — 브라우저 선택 → `{start,end}BlockKey/Offset`(블록 요소 시작부터 `Range.toString().length`, 표 컨테이너 제외). 테스트 `study/study.test.ts`.
+- `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
+- mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
+
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
 통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 `signOut` 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
 

@@ -32,11 +32,14 @@ AGENTS.md (L1)
 │   ├── (main)/mpms/AGENTS.md ............ [실험] 플랫폼·제품 관리
 │   ├── (main)/solace/AGENTS.md .......... [실험] Solace 메시징
 │   ├── (main)/todo/AGENTS.md ............ [실험] Server Actions
-│   └── (main)/interface-test/AGENTS.md .. [실험] REST 메서드별 통신 확인
+│   ├── (main)/interface-test/AGENTS.md .. [실험] REST 메서드별 통신 확인
+│   └── (main)/study/AGENTS.md ........... [실험] PDF 학습 뷰어 (문서 목록·업로드)
+│       ├── [documentId]/AGENTS.md ....... 3단 뷰어 (목차·본문·이 페이지 내용)
+│       └── notes/AGENTS.md .............. 노트 모아보기
 ├── src/components/AGENTS.md (L2 ★컴포넌트 카탈로그)
 │   ├── ui/AGENTS.md ..................... Primitive + 디자인 토큰
 │   ├── cira/AGENTS.md ................... CIRA 전용 토큰·primitive(ui)·셸(shell) → ADR 0006
-│   └── {board,interfaceTest,issue,layout,mpns,project,sprint,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
+│   └── {board,interfaceTest,issue,layout,mpns,project,sprint,study,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
 ├── src/hooks/AGENTS.md (L2 Query 훅·queryKey)
 ├── src/lib/AGENTS.md (L2 API·mock·messaging)
 └── src/test/AGENTS.md (L2 테스트 공용 설정·MSW 백엔드 모양 → docs/testing.md)
@@ -56,6 +59,7 @@ AGENTS.md (L1)
 | **Solace** | `/solace` | WebSocket 메시징 (solclientjs) |
 | **todo** | `/todo` | Server Actions + `revalidatePath` |
 | **인터페이스 테스트** | `/interface-test` | REST 메서드별 UI → UMD → 백엔드 → DB 통신 확인 |
+| **PDF 학습(Study)** | `/study` | PDF 분할 업로드, 구조화 뷰어, 단어장 툴팁, 마킹·노트 (d94-query `/api/v1/study` + d94-app-pdf 파서) |
 
 - `/home`은 로그인 후 첫 화면인 기능 대시보드입니다. 새 실험은 언제든 추가할 수 있습니다. 다만 아래 공통 규칙은 지켜야 합니다.
 - 백엔드는 별도 서버(`BACKEND_URL`)입니다. 백엔드 없이 개발할 때는 mock 모드를 씁니다 → [docs/dev-setup.md](docs/dev-setup.md)
