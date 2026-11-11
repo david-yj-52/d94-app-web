@@ -10,6 +10,7 @@ import type {EncryptedCredential} from "@/types/auth";
 import {dateFrom, findUser, getStore, ISSUE_TYPES, ME, nextId, summary, USERS} from "./data";
 import {mockCredentialPublicKey, mockDecryptCredential} from "./credential";
 import {registerStudyMock} from "./study";
+import {registerAyaanMock} from "./ayaan";
 
 type Params = Record<string, string>;
 type Body = Record<string, unknown>;
@@ -190,6 +191,9 @@ const on = (method: string, pattern: string, h: Handler) => routes.push([method,
 
 // Study(PDF 학습 뷰어) → ./study.ts
 registerStudyMock(on);
+
+// Ayaan(AI Tool 작업·토큰 관리) → ./ayaan.ts
+registerAyaanMock(on);
 
 // 인증
 // 인증: 본문은 암호화 봉투 {enc} (ADR 0004). 풀리지 않으면 백엔드처럼 400 AUTH_CREDENTIAL_INVALID

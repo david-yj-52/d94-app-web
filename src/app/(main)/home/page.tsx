@@ -4,6 +4,7 @@ import Link from "next/link";
 import {
     ArrowLeftRight,
     Bell,
+    Bot,
     BookOpen,
     ChevronRight,
     FolderKanban,
@@ -89,6 +90,13 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
                 desc: "PDF를 올려 목차 · 본문 뷰어로 읽고, 단어장 · 마킹 · 노트로 공부합니다.",
                 icon: BookOpen,
                 iconClass: "bg-orange-50 text-orange-600",
+            },
+            {
+                href: "/ayaan",
+                label: "Ayaan",
+                desc: "AI CLI 도구의 한도를 보고, 한도가 풀리면 중단된 작업을 자동으로 이어 갑니다.",
+                icon: Bot,
+                iconClass: "bg-fuchsia-50 text-fuchsia-600",
             },
             {
                 href: "/interface-test",

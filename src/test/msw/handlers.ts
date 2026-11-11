@@ -160,6 +160,9 @@ export const handlers = [
     // UserController
     http.get(`${API}/users/search`, () => json(fx.ok(fx.userSearch))),
 
+    // d94-app-ayaan (게이트웨이 경유)
+    http.get(`${API}/ayaan/tasks`, () => json(fx.ok([]))),
+
     // d94-query 에 없는 경로 → 500
     http.all(`${API}/*`, () => internalError()),
 ];
