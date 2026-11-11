@@ -1,12 +1,14 @@
 "use client";
 
+import Dialog from "@/components/cira/ui/Dialog";
 import {useToast} from "@/components/ui/Toast";
 import {useAttachments, useDeleteAttachment, useUploadAttachment,} from "@/hooks/useAttachments";
 import {formatFileSize, getDownloadUrl} from "@/lib/api/attachments";
 import {Download, File, FileImage, FileText, Paperclip, Trash2, Upload,} from "lucide-react";
 import {useCallback, useRef, useState} from "react";
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+// ponytail: UMD 응답 상한(5MB) — 더 큰 파일은 올라가도 다운로드가 실패한다. UMD 상한을 올리면 같이 올릴 것
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
 const ACCEPTED_TYPES = [
     "image/*",
     "application/pdf",
@@ -41,18 +43,14 @@ export function AttachmentSection({issueId}: { issueId: string }) {
     const [uploading, setUploading] = useState<UploadProgress[]>([]);
     const [dragging, setDragging] = useState(false);
     const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+    const [oversized, setOversized] = useState<File[]>([]);
 
     const handleFiles = useCallback(
         (files: FileList | File[]) => {
-            const list = Array.from(files);
-            const oversized = list.filter((f) => f.size > MAX_FILE_SIZE);
-            if (oversized.length > 0) {
-                show(
-                    `${oversized.map((f) => f.name).join(", ")} 파일이 50 MB를 초과합니다.`,
-                    "error",
-                );
-                return;
-            }
+            const all = Array.from(files);
+            const tooBig = all.filter((f) => f.size > MAX_FILE_SIZE);
+            if (tooBig.length > 0) setOversized(tooBig);
+            const list = all.filter((f) => f.size <= MAX_FILE_SIZE);
 
             list.forEach((file) => {
                 const entry: UploadProgress = {file, percent: 0};
@@ -182,7 +180,7 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                         <p className="text-xs text-slate-400">
                             드래그 앤 드롭 또는 클릭하여 파일 첨부
                         </p>
-                        <p className="text-xs text-slate-300 mt-0.5">최대 50 MB</p>
+                        <p className="text-xs text-slate-300 mt-0.5">최대 5 MB</p>
                     </div>
                 )}
             </div>
@@ -282,6 +280,27 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                     </div>
                 </div>
             )}
+
+            {/* 5MB 초과 안내 — 나머지 파일은 그대로 업로드 */}
+            <Dialog open={oversized.length > 0} onOpenChange={(o) => !o && setOversized([])} title="파일 크기 제한">
+                <p className="text-sm text-slate-600 mb-3">
+                    첨부 파일은 <b>5 MB</b>까지 올릴 수 있습니다. 아래 파일은 업로드하지 않았습니다.
+                </p>
+                <ul className="mb-5 space-y-1 text-sm">
+                    {oversized.map((f) => (
+                        <li key={f.name} className="flex justify-between gap-3 rounded bg-slate-50 px-3 py-1.5">
+                            <span className="truncate text-slate-700">{f.name}</span>
+                            <span className="shrink-0 text-red-500">{formatFileSize(f.size)}</span>
+                        </li>
+                    ))}
+                </ul>
+                <button
+                    onClick={() => setOversized([])}
+                    className="h-9 w-full rounded bg-cira-brand text-sm font-semibold text-white hover:opacity-90"
+                >
+                    확인
+                </button>
+            </Dialog>
 
             {ToastComponent}
         </div>

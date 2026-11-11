@@ -45,7 +45,7 @@
 ```
 - 자기 완결형 섹션입니다. 첨부 목록, 드래그 앤 드롭 업로드(진행률 표시), 보기·다운로드, 삭제를 처리합니다.
 - 파일명을 누르면 새 탭에서 바로 봅니다(`/api/proxy/v1/attachments/{id}/download`, 백엔드가 `Content-Disposition: inline` + UTF-8 파일명으로 내려 줌 — 이미지·PDF·텍스트는 브라우저가 표시, 그 외 형식은 저장). 다운로드 아이콘은 `<a download>`로 항상 저장합니다.
-- 파일당 최대 50MB(`MAX_FILE_SIZE`)입니다. 업로드는 `useUploadAttachment`를 씁니다.
+- 파일당 최대 5MB(`MAX_FILE_SIZE`, UMD 응답 상한에 맞춤)입니다. 넘는 파일은 올리지 않고 `cira/ui/Dialog` "파일 크기 제한" 창에 이름·크기를 보여 주며, 나머지 파일은 그대로 올립니다. 테스트 `AttachmentSection.test.tsx`. 업로드는 `useUploadAttachment`를 씁니다.
 - ⚠️ 진행률 바에 인라인 style을 씁니다. `lib/api/attachments`를 직접 import하는 것도 규칙 예외입니다.
 
 **재사용 메모:** 파일 드롭존과 업로드 진행률 UI는 위키 등 다른 곳에서도 쓸 수 있습니다. `ui/FileDropzone` 승격 후보입니다.
