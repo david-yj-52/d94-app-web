@@ -20,6 +20,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 │   └── projects/ dashboard/ search/ notifications/
 └── api/
     ├── auth/[...nextauth]/    next-auth 핸들러
+    ├── attachments/[id]/      CIRA 첨부 보기·다운로드. 백엔드에 Range 로 4MB씩 요청해 이어 보냄(UMD 응답 5MB 상한 우회)
     └── proxy/[...path]/       백엔드 투명 프록시 (GET/HEAD/POST/PUT/PATCH/DELETE, 서버에서 세션 쿠키의 토큰으로 Bearer 주입(ADR 0005), 상태·헤더·본문 그대로, 35초 타임아웃, DEV_MOCK_API 시 mock 응답)
 ```
 

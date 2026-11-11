@@ -384,6 +384,29 @@ on("DELETE", "/v1/attachments/:id", ({params}) => {
     s.attachments = s.attachments.filter((a) => a.id !== params.id);
     return ok(null);
 });
+// 조각 업로드: 바이트는 저장하지 않고 complete 에서 메타만 만든다 (다운로드는 샘플 텍스트)
+const MOCK_PART_SIZE = 786_432;
+on("POST", "/v1/issues/:issueId/attachments/uploads", ({body}) => {
+    const fileSize = Number(body.fileSize);
+    if (!(fileSize > 0) || fileSize > 52_428_800) return badRequest("파일 크기는 50MB 이하여야 합니다.");
+    return ok({uploadId: nextId("up"), partSize: MOCK_PART_SIZE, partCount: Math.ceil(fileSize / MOCK_PART_SIZE)});
+});
+on("PUT", "/v1/issues/:issueId/attachments/uploads/:uploadId/parts/:n", () => ok(null));
+on("POST", "/v1/issues/:issueId/attachments/uploads/:uploadId/complete", ({params, body}) => {
+    const id = nextId("a");
+    const a = {
+        id,
+        issueId: params.issueId,
+        fileName: String(body.fileName),
+        fileSize: Number(body.fileSize),
+        mimeType: String(body.mimeType || "application/octet-stream"),
+        uploadedBy: ME.name,
+        uploadedAt: new Date().toISOString(),
+        downloadUrl: `/api/proxy/v1/attachments/${id}/download`
+    };
+    getStore().attachments.push(a);
+    return ok(a);
+});
 on("GET", "/v1/attachments/:id/download", ({params}) => {
     const a = getStore().attachments.find((x) => x.id === params.id);
     if (!a) return notFound("attachment");
@@ -1052,27 +1075,6 @@ export async function handleMockRequest(request: Request, path: string[]): Promi
     if (method !== "GET" && method !== "HEAD") {
         const ct = request.headers.get("content-type") ?? "";
         if (ct.includes("application/json")) body = (await request.json().catch(() => ({}))) as Body;
-        else if (ct.includes("multipart/form-data")) {
-            // 첨부파일 업로드
-            const form = await request.formData();
-            const file = form.get("file");
-            const issueId = match("/v1/issues/:issueId/attachments", pathname)?.issueId;
-            if (file instanceof File && issueId) {
-                const id = nextId("a");
-                const a = {
-                    id,
-                    issueId,
-                    fileName: file.name,
-                    fileSize: file.size,
-                    mimeType: file.type || "application/octet-stream",
-                    uploadedBy: ME.name,
-                    uploadedAt: new Date().toISOString(),
-                    downloadUrl: `/api/proxy/v1/attachments/${id}/download`
-                };
-                getStore().attachments.push(a);
-                return ok(a);
-            }
-        }
     }
 
     for (const [m, pattern, handler] of routes) {

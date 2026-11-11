@@ -9,14 +9,15 @@ vi.mock("@/hooks/useAttachments", () => ({
     useDeleteAttachment: () => ({mutate: vi.fn(), isPending: false}),
 }));
 
+/** 실제로 큰 배열을 만들지 않고 size 만 흉내 */
 const file = (name: string, mb: number) =>
-    new File([new Uint8Array(mb * 1024 * 1024)], name, {type: "image/png"});
+    Object.defineProperty(new File(["x"], name, {type: "image/png"}), "size", {value: mb * 1024 * 1024});
 
-describe("AttachmentSection 5MB 제한", () => {
-    it("5MB 초과 파일은 안내 창에 띄우고 올리지 않음, 나머지는 업로드", async () => {
+describe("AttachmentSection 50MB 제한", () => {
+    it("50MB 초과 파일은 안내 창에 띄우고 올리지 않음, 나머지는 업로드", async () => {
         const {container} = render(<AttachmentSection issueId="i-1"/>);
         const input = container.querySelector('input[type="file"]')!;
-        fireEvent.change(input, {target: {files: [file("big.png", 6), file("small.png", 1)]}});
+        fireEvent.change(input, {target: {files: [file("big.png", 51), file("small.png", 1)]}});
 
         expect(await screen.findByText("파일 크기 제한")).toBeTruthy();
         expect(screen.getByText("big.png")).toBeTruthy();

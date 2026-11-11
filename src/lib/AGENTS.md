@@ -45,7 +45,9 @@ d94-query 응답이 web 타입과 달라 `res.data.data`를 그대로 돌려주�
 ```ts
 await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unknown as string}});
 ```
-예시: `api/attachments.ts`(업로드 진행률 `onUploadProgress` 포함)
+현재 multipart 를 쓰는 곳은 없습니다. UMD 요청 본문 상한(1MB) 때문에 파일은 **조각으로** 보냅니다.
+- 첨부: `api/attachments.ts` `startAttachmentUpload` → `putAttachmentUploadPart`(Blob, `application/octet-stream`) → `completeAttachmentUpload`(파일명·크기·MIME). 반복·재시도는 `useUploadAttachment`.
+- 첨부 다운로드는 `/api/proxy` 가 아니라 `app/api/attachments/[id]/route.ts` 입니다. 백엔드에 `Range` 로 4MB씩 요청해 하나의 200 응답으로 잇습니다(UMD 응답 상한 5MB 우회, `maxDuration` 60초). `getDownloadUrl(id)` 가 이 경로를 줍니다.
 
 ### Study: `api/study.ts` · `study/`
 - 조각 업로드 `putStudyUploadPart`는 `Blob`을 `Content-Type: application/octet-stream`으로 보냅니다(UMD 본문 1MB 제한 → 서버가 정한 `partSize` 768KB). 조립·재시도는 `useUploadStudyDocument`.
@@ -80,7 +82,7 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 - **새 엔드포인트를 추가하면 mock 라우트도 함께 추가하세요.** 없으면 mock 모드에서 404가 납니다.
 - 응답 헬퍼: `ok(data)` → `{success: true, data}`, `notFound(what)` → 404. 본문 없는 상태(`{status: 204}`)도 반환할 수 있습니다(프록시가 본문 없이 응답).
 - 인터페이스 테스트 mock(`/v1/interface-tests`)은 백엔드와 같은 상태코드(201·204·400·404)를 돌려줍니다. 저장소는 `getStore().interfaceTests`.
-- multipart 업로드는 `handleMockRequest`의 attachments 분기에서 특수 처리합니다.
+- 첨부 조각 업로드 mock 은 바이트를 저장하지 않고 complete 에서 메타만 만듭니다. mock 모드의 `/api/attachments/[id]` 는 프록시 mock 다운로드(샘플 텍스트)로 redirect 합니다.
 - 인증 mock(`/v1/auth/public-key`·`login`·`register`)은 `credential.ts`의 실제 RSA 키(globalThis 보관, 재시작 시 새로 생성)로 봉투를 복호화합니다. 풀리지 않거나 평문이면 400 `AUTH_CREDENTIAL_INVALID`, 로그인은 비밀번호를 검사하지 않고 아무 계정이나 통과시킵니다. 핸들러는 `Promise<MockResult>`도 반환할 수 있습니다.
 - mock 응답은 **web 타입 모양**이라 실제 d94-query 와 다른 곳이 있습니다. `mock/router.test.ts` 가 차이를 `KNOWN_DIFFS` 로 고정합니다(mock 이나 백엔드가 바뀌면 깨짐). 스프린트·댓글·멤버는 백엔드 모양·경로에 맞췄습니다. mock 은 `statusId`·`issueTypeId` 없는 이슈 생성과 255자 넘는 값을 받아 주므로, 그 경우 mock 에서 되고 실제 백엔드에서는 500 입니다.
 - `enabled.ts`의 `isMockEnabled`는 `src/auth.ts`(미들웨어 번들)가 라우터 전체를 끌어오지 않도록 분리해 둔 것입니다. `router.ts`도 같은 함수를 다시 export 합니다.

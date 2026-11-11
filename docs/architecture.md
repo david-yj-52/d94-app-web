@@ -49,6 +49,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 - 401 응답을 받으면 axios 인터셉터가 `signOut({callbackUrl: "/login?reason=expired"})`을 한 번만 호출하고, 로그인 화면이 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다 (`src/lib/api/client.ts`, `LoginForm`). `/v1/auth/*` 요청의 401 은 제외(화면이 직접 처리).
 - QueryClient 기본값은 `staleTime` 30초, `retry` 1입니다 (`src/components/Providers.tsx`).
+- **큰 파일(UMD 상한 요청 1MB·응답 5MB)**: 업로드는 768KB 조각으로 나눠 보내고(Study·CIRA 첨부), CIRA 첨부 다운로드는 `src/app/api/attachments/[id]/route.ts` 가 백엔드에 `Range` 로 4MB씩 요청해 하나의 응답으로 잇습니다. 이 라우트도 `getBackendAccessToken` 으로 토큰을 붙입니다.
 - 알림은 SSE 가 아니라 `/api/proxy/v1/notifications`를 30초마다 폴링합니다 (`src/hooks/useNotifications.ts`). 백엔드 토큰을 브라우저에 내리지 않기 위해서이고, UMD 도 스트리밍을 지원하지 않습니다 ([ADR 0005](decisions/0005-backend-token-server-only.md)).
 
 ## 인증
@@ -57,7 +58,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 |---|---|
 | `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`을 JWT에 저장. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). `DEV_ADMIN_LOGIN=true` 일 때 브라우저가 admin/admin 을 입력하면 비밀번호 없이 `devAdmin` 표시만 오고, 서버가 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD`를 **서버에서 암호화**해 그 실제 계정으로 로그인(없으면 1회 가입 후 로그인), 둘 다 없으면 가짜 토큰(mock 전용). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
 | `src/next-auth.d.ts` | 세션·JWT 타입 확장. `Session`에는 표시용 `user`만, `JWT`(암호화된 쿠키)에 `accessToken`·`accessTokenExpiresAt` |
-| `src/lib/auth/accessToken.ts` | **서버 전용** `getBackendAccessToken(request)`: 세션 쿠키(JWE)를 풀어 백엔드 토큰 반환. https·http 쿠키 이름 둘 다 시도, 만료면 undefined. `/api/proxy`가 사용 |
+| `src/lib/auth/accessToken.ts` | **서버 전용** `getBackendAccessToken(request)`: 세션 쿠키(JWE)를 풀어 백엔드 토큰 반환. https·http 쿠키 이름 둘 다 시도, 만료면 undefined. `/api/proxy`·`/api/attachments/[id]`가 사용 |
 
 - **백엔드 토큰은 브라우저에 내리지 않습니다** ([ADR 0005](decisions/0005-backend-token-server-only.md)). `GET /api/auth/session` 응답에는 `user.name`·`user.email`·`expires`만 있습니다.
 - **백엔드 토큰이 만료되면 세션도 끝납니다.** `jwt` 콜백이 토큰 `exp`를 `accessTokenExpiresAt`에 저장하고, 지나면 `null`을 돌려 세션 쿠키를 지웁니다(미들웨어가 `/login`으로 보냄). `exp`가 없는 mock 토큰은 세션 만료(30일)를 따릅니다.

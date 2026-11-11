@@ -32,7 +32,7 @@ export function useCreateMilestone(projectId: string) {
 | useProjectSettings | useProjectMembers, useAdd/UpdateRole/RemoveProjectMember, useWorkflowStatuses, useCreate/DeleteWorkflowStatus, useWorkflowTransitions, useUpdateWorkflowTransitions | `["projects", projectId, "members"]`, `[…, "workflow", "statuses"]`, `[…, "workflow", "transitions"]` |
 | useIssues | useIssues, useIssue, useAvailableTransitions, useCreate/Update/DeleteIssue, useUpdateIssueStatus | `["issues", projectId, filters]`, `["issue", issueId]`, `["issue-transitions", issueId]` |
 | useComments | useComments, useCreate/Update/DeleteComment, useToggleReaction | `["comments", issueId]` |
-| useAttachments | useAttachments, useUpload/DeleteAttachment | `["attachments", issueId]` |
+| useAttachments | useAttachments, useUpload/DeleteAttachment (업로드는 start → 768KB 조각 PUT(1회 재시도) → complete, 진행률 = 조각 비율) | `["attachments", issueId]` |
 | useBoards | useBoards, useBoardDetail, useCreate/Update/DeleteBoard, useAdd/Update/DeleteColumn, useMoveIssue | `["boards", projectId]`, `["board", boardId]` |
 | useSprints | useSprints, useSprint, useBacklog, useCreate/Update/Delete/Start/CompleteSprint, useAdd/RemoveIssueFrom(To)Sprint | `["sprints", projectId]`, `["sprint", sprintId]`, `["backlog", projectId]` (완료·이슈 추가/제거 시 무효화) |
 | useVersions | useVersions, useCreate/Update/Delete/Release/ArchiveVersion, useReleaseNotes | `["versions", projectId]`, `["releaseNotes", versionId]` |

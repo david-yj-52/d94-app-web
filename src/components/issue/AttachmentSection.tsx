@@ -7,8 +7,8 @@ import {formatFileSize, getDownloadUrl} from "@/lib/api/attachments";
 import {Download, File, FileImage, FileText, Paperclip, Trash2, Upload,} from "lucide-react";
 import {useCallback, useRef, useState} from "react";
 
-// ponytail: UMD 응답 상한(5MB) — 더 큰 파일은 올라가도 다운로드가 실패한다. UMD 상한을 올리면 같이 올릴 것
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+// 업로드는 768KB 조각, 다운로드는 4MB Range 로 나눠 UMD 상한(요청 1MB·응답 5MB)을 넘긴다. 백엔드 상한과 같음
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 const ACCEPTED_TYPES = [
     "image/*",
     "application/pdf",
@@ -180,7 +180,7 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                         <p className="text-xs text-slate-400">
                             드래그 앤 드롭 또는 클릭하여 파일 첨부
                         </p>
-                        <p className="text-xs text-slate-300 mt-0.5">최대 5 MB</p>
+                        <p className="text-xs text-slate-300 mt-0.5">최대 50 MB</p>
                     </div>
                 )}
             </div>
@@ -281,10 +281,10 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                 </div>
             )}
 
-            {/* 5MB 초과 안내 — 나머지 파일은 그대로 업로드 */}
+            {/* 50MB 초과 안내 — 나머지 파일은 그대로 업로드 */}
             <Dialog open={oversized.length > 0} onOpenChange={(o) => !o && setOversized([])} title="파일 크기 제한">
                 <p className="text-sm text-slate-600 mb-3">
-                    첨부 파일은 <b>5 MB</b>까지 올릴 수 있습니다. 아래 파일은 업로드하지 않았습니다.
+                    첨부 파일은 <b>50 MB</b>까지 올릴 수 있습니다. 아래 파일은 업로드하지 않았습니다.
                 </p>
                 <ul className="mb-5 space-y-1 text-sm">
                     {oversized.map((f) => (

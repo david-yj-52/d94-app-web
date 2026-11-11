@@ -16,20 +16,26 @@ export async function getAttachments(issueId: string): Promise<AttachmentRespons
     return res.data.data;
 }
 
-export async function uploadAttachment(
+/** 조각 업로드 시작. UMD 요청 본문 상한(1MB) 때문에 서버가 정한 partSize(768KB)로 나눠 보낸다 */
+export async function startAttachmentUpload(
     issueId: string,
-    file: File,
-    onUploadProgress?: (percent: number) => void,
-): Promise<AttachmentResponse> {
-    const formData = new FormData();
-    formData.append("file", file);
-    const res = await apiClient.post(`/v1/issues/${issueId}/attachments`, formData, {
-        headers: {"Content-Type": undefined as unknown as string},
-        onUploadProgress: (e) => {
-            if (onUploadProgress && e.total) {
-                onUploadProgress(Math.round((e.loaded * 100) / e.total));
-            }
-        },
+    fileSize: number,
+): Promise<{uploadId: string; partSize: number; partCount: number}> {
+    const res = await apiClient.post(`/v1/issues/${issueId}/attachments/uploads`, {fileSize});
+    return res.data.data;
+}
+
+export async function putAttachmentUploadPart(issueId: string, uploadId: string, n: number, blob: Blob): Promise<void> {
+    await apiClient.put(`/v1/issues/${issueId}/attachments/uploads/${uploadId}/parts/${n}`, blob, {
+        headers: {"Content-Type": "application/octet-stream"},
+    });
+}
+
+export async function completeAttachmentUpload(issueId: string, uploadId: string, file: File): Promise<AttachmentResponse> {
+    const res = await apiClient.post(`/v1/issues/${issueId}/attachments/uploads/${uploadId}/complete`, {
+        fileName: file.name,
+        fileSize: file.size,
+        mimeType: file.type || "application/octet-stream",
     });
     return res.data.data;
 }
@@ -38,8 +44,9 @@ export async function deleteAttachment(attachmentId: string): Promise<void> {
     await apiClient.delete(`/v1/attachments/${attachmentId}`);
 }
 
+/** 보기·다운로드 URL. 5MB 넘는 파일도 되도록 `/api/attachments/[id]` 가 Range 로 나눠 받아 잇는다 */
 export function getDownloadUrl(attachmentId: string): string {
-    return `/api/proxy/v1/attachments/${attachmentId}/download`;
+    return `/api/attachments/${attachmentId}`;
 }
 
 export function formatFileSize(bytes: number): string {
