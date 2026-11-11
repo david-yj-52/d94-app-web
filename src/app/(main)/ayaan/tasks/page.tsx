@@ -15,6 +15,7 @@ export default function AyaanTasksPage() {
     const [status, setStatus] = useState("");
     const [tool, setTool] = useState("");
     const [showForm, setShowForm] = useState(false);
+    const [existingId, setExistingId] = useState<string | null>(null);
     const [issueKey, setIssueKey] = useState("");
     const [prompt, setPrompt] = useState("");
     const [newTool, setNewTool] = useState("");
@@ -27,13 +28,18 @@ export default function AyaanTasksPage() {
     const create = useMutation({
         mutationFn: (b: CreateTaskRequest) => createTask(b),
         onSuccess: () => {
+            setExistingId(null);
             show("작업을 등록했습니다.");
             setShowForm(false);
             setIssueKey("");
             setPrompt("");
             qc.invalidateQueries({queryKey: ["ayaanTasks"]});
         },
-        onError: (e: any) => show(e?.response?.status === 409 ? "이미 등록된 작업입니다." : "등록에 실패했습니다.", "error"),
+        onError: (e: any) => {
+            const dup = e?.response?.status === 409;
+            setExistingId(dup ? (e.response.data?.data?.id ?? null) : null);
+            show(dup ? "이미 등록된 작업입니다." : "등록에 실패했습니다.", "error");
+        },
     });
     const submit = () => {
         if (!issueKey.trim() && !prompt.trim()) return show("이슈 키 또는 프롬프트를 입력하세요.", "error");
@@ -74,6 +80,11 @@ export default function AyaanTasksPage() {
                         </label>
                     </div>
                     <button className={btnPrimary} disabled={create.isPending} onClick={submit}>등록</button>
+                    {existingId && (
+                        <p role="status" className="text-sm text-slate-700">
+                            이미 등록된 작업입니다. <Link href={`/ayaan/tasks/${existingId}`} className="text-blue-600 hover:underline">기존 작업 보기</Link>
+                        </p>
+                    )}
                 </div>
             )}
             <div className="flex gap-3">

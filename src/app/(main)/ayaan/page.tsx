@@ -3,17 +3,20 @@
 import Link from "next/link";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {SkeletonCard} from "@/components/ui/Skeleton";
+import {useToast} from "@/components/ui/Toast";
 import {getQuotas, getTasks, refreshQuotas} from "@/lib/api/ayaan";
 import {TOOLS} from "@/types/ayaan";
 import {btnPrimary, ESTIMATED_SOURCES, fmtTime, remaining, STATUS_CLASS} from "./format";
 
 export default function AyaanDashboardPage() {
     const qc = useQueryClient();
+    const {show, ToastComponent} = useToast();
     const quotas = useQuery({queryKey: ["ayaanQuotas"], queryFn: getQuotas, refetchInterval: 30_000});
     const tasks = useQuery({queryKey: ["ayaanTasks", "summary"], queryFn: () => getTasks(), refetchInterval: 30_000});
     const refresh = useMutation({
         mutationFn: refreshQuotas,
         onSuccess: (d) => qc.setQueryData(["ayaanQuotas"], d),
+        onError: () => show("한도 수집에 실패했습니다.", "error"),
     });
     const active = (tasks.data ?? []).filter((t) => t.status === "RUNNING" || t.status === "PAUSED");
 
@@ -48,7 +51,7 @@ export default function AyaanDashboardPage() {
                                     const est = ESTIMATED_SOURCES.includes(q.source);
                                     const pct = Math.min(100, Math.max(0, q.usedPct ?? 0));
                                     return (
-                                        <div key={q.windowCd} className={`mb-3 ${est ? "text-slate-400" : "text-slate-700"}`}>
+                                        <div key={q.windowCd} className={`mb-3 ${est ? "text-slate-500" : "text-slate-700"}`}>
                                             <div className="flex items-center justify-between text-sm">
                                                 <span>{q.windowCd} · {q.usedPct == null ? "-" : `${pct}%`}</span>
                                                 <span className="flex items-center gap-1">
@@ -81,6 +84,7 @@ export default function AyaanDashboardPage() {
                     ))}
                 </ul>
             </section>
+            {ToastComponent}
         </div>
     );
 }
