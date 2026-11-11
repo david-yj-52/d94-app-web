@@ -206,9 +206,16 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                         >
                             <FileIcon mimeType={att.mimeType}/>
                             <div className="flex-1 min-w-0">
-                                <p className="text-xs font-medium text-slate-700 truncate">
+                                {/* 클릭 → 새 탭에서 바로 보기 (백엔드가 inline 으로 내려 줌, 브라우저가 못 여는 형식은 저장됨) */}
+                                <a
+                                    href={getDownloadUrl(att.id)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block text-xs font-medium text-slate-700 truncate hover:text-blue-600 hover:underline"
+                                    title="새 탭에서 보기"
+                                >
                                     {att.fileName}
-                                </p>
+                                </a>
                                 <p className="text-xs text-slate-400">
                                     {formatFileSize(att.fileSize)} ·{" "}
                                     {new Date(att.uploadedAt).toLocaleDateString("ko-KR")}
@@ -218,8 +225,7 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                                 className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <a
                                     href={getDownloadUrl(att.id)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                    download={att.fileName}
                                     className="flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                                     title="다운로드"
                                 >

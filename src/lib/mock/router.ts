@@ -392,7 +392,7 @@ on("GET", "/v1/attachments/:id/download", ({params}) => {
         raw: new Response(`Mock file: ${a.fileName}\n(백엔드 미기동 상태의 샘플 파일입니다)`, {
             headers: {
                 "Content-Type": "text/plain; charset=utf-8",
-                "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(a.fileName)}.txt`
+                "Content-Disposition": `inline; filename*=UTF-8''${encodeURIComponent(a.fileName)}.txt`
             },
         }),
     };
