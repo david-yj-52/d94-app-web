@@ -15,7 +15,7 @@ export const SETUP_STEPS: SetupStepGuide[] = [
         "why": "ayaan은 delAp의 컨테이너 안에서 CLI를 실행합니다. MacBook에서 쓰는 것과 같은 계정으로 한 번 로그인하면 됩니다. 로그인 정보는 볼륨에 저장돼 재배포해도 유지됩니다.",
         "todo": "사용할 Tool마다 delAp에서 실행. 화면에 나오는 URL을 MacBook 브라우저에서 열어 승인합니다. 그다음 기준정보 > Tool에서 해당 Tool의 `ENABLED`를 켭니다.",
         "commands": [
-            "docker exec -it d94-app-ayaan claude login\ndocker exec -it d94-app-ayaan codex login --device-auth\ndocker exec -it d94-app-ayaan gemini\ndocker exec -it d94-app-ayaan cursor-agent login\n"
+            "docker exec -u ayaan -it d94-app-ayaan claude login\ndocker exec -u ayaan -it d94-app-ayaan codex login --device-auth\ndocker exec -u ayaan -it d94-app-ayaan gemini\ndocker exec -u ayaan -it d94-app-ayaan cursor-agent login\n"
         ],
         "check": "CLI 설치 버전(테스트한 버전과 비교), 로그인 여부"
     },
@@ -33,7 +33,7 @@ export const SETUP_STEPS: SetupStepGuide[] = [
         "why": "CLI가 코드를 고치고 커밋·push·배포하려면 저장소와 권한이 컨테이너 안에 있어야 합니다.",
         "todo": "배포까지 맡길 저장소만 push 권한을 줍니다.",
         "commands": [
-            "cd <WORKSPACE_HOST_PATH> && git clone <저장소 URL>\ndocker exec -it d94-app-ayaan gh auth login\ndocker exec -it d94-app-ayaan gh auth setup-git\ndocker exec -it d94-app-ayaan git config --global user.name \"<이름>\"\ndocker exec -it d94-app-ayaan git config --global user.email \"<이메일>\"\n"
+            "cd <WORKSPACE_HOST_PATH> && git clone <저장소 URL>\ndocker exec -u ayaan -it d94-app-ayaan gh auth login\ndocker exec -u ayaan -it d94-app-ayaan gh auth setup-git\ndocker exec -u ayaan -it d94-app-ayaan git config --global user.name \"<이름>\"\ndocker exec -u ayaan -it d94-app-ayaan git config --global user.email \"<이메일>\"\n"
         ],
         "check": "작업공간 매핑 경로 존재, `git ls-remote` 성공"
     },
