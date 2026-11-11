@@ -7,7 +7,7 @@ import {SkeletonRow} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {createTask, getTasks} from "@/lib/api/ayaan";
 import {TASK_STATUSES, TOOLS, type CreateTaskRequest, type ToolCd} from "@/types/ayaan";
-import {btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
+import {ayaanError, btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
 
 export default function AyaanTasksPage() {
     const qc = useQueryClient();
@@ -38,7 +38,7 @@ export default function AyaanTasksPage() {
         onError: (e: any) => {
             const dup = e?.response?.status === 409;
             setExistingId(dup ? (e.response.data?.data?.id ?? null) : null);
-            show(dup ? "이미 등록된 작업입니다." : "등록에 실패했습니다.", "error");
+            show(dup ? "이미 등록된 작업입니다." : ayaanError(e, "등록에 실패했습니다."), "error");
         },
     });
     const submit = () => {

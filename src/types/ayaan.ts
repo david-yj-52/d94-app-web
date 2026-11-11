@@ -17,8 +17,8 @@ export interface QuotaResponse {
     warnings: string[];
 }
 
-export type TaskStatus = "QUEUED" | "RUNNING" | "PAUSED" | "DONE" | "FAILED" | "CANCELED";
-export const TASK_STATUSES: TaskStatus[] = ["QUEUED", "RUNNING", "PAUSED", "DONE", "FAILED", "CANCELED"];
+export type TaskStatus = "QUEUED" | "RUNNING" | "PAUSED" | "DONE" | "FAILED" | "CANCELLED";
+export const TASK_STATUSES: TaskStatus[] = ["QUEUED", "RUNNING", "PAUSED", "DONE", "FAILED", "CANCELLED"];
 
 export interface AyaanTask {
     id: string;

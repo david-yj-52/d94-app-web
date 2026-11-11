@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {toToolBody, toToolForm} from "./toolBody";
+import {toToolBody, toToolForm, toWorkspaceBody} from "./toolBody";
 import type {AyaanTool} from "@/types/ayaan";
 
 const tool: AyaanTool = {
@@ -23,5 +23,15 @@ describe("toToolBody", () => {
         }
         expect(toToolBody({...toToolForm(tool), budgetTokens: "0"}).errors.budgetTokens).toBeTruthy();
         expect(toToolBody({...toToolForm(tool), budgetTokens: "x"}).body).toBeNull();
+    });
+});
+
+describe("빈 값 지우기 (PUT 이 null 로 덮어씀)", () => {
+    it("비운 model 은 null 로 보낸다", () => {
+        expect(toToolBody({...toToolForm({...tool, model: "opus"}), model: " "}).body?.model).toBeNull();
+    });
+    it("비운 promptTemplate 은 null 로 보낸다", () => {
+        const w = {projectKey: " CIRA ", workspacePath: "/workspace/a ", defaultTool: "CLAUDE" as const, promptTemplate: "  "};
+        expect(toWorkspaceBody(w)).toEqual({projectKey: "CIRA", workspacePath: "/workspace/a", defaultTool: "CLAUDE", promptTemplate: null});
     });
 });

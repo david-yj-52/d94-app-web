@@ -58,7 +58,7 @@ export function registerAyaanMock(on: On) {
     });
     on("POST", `${B}/tasks/:id/cancel`, ({params}) => {
         const t = tasks.find((x) => x.id === params.id);
-        if (t) t.status = "CANCELED";
+        if (t) t.status = "CANCELLED";
         return ok(t);
     });
     on("GET", `${B}/config`, () => ok(config));

@@ -33,7 +33,7 @@ export const SETUP_STEPS: SetupStepGuide[] = [
         "why": "CLI가 코드를 고치고 커밋·push·배포하려면 저장소와 권한이 컨테이너 안에 있어야 합니다.",
         "todo": "배포까지 맡길 저장소만 push 권한을 줍니다.",
         "commands": [
-            "cd <WORKSPACE_HOST_PATH> && git clone <저장소 URL>\ndocker exec -it d94-app-ayaan gh auth login\n"
+            "cd <WORKSPACE_HOST_PATH> && git clone <저장소 URL>\ndocker exec -it d94-app-ayaan gh auth login\ndocker exec -it d94-app-ayaan gh auth setup-git\ndocker exec -it d94-app-ayaan git config --global user.name \"<이름>\"\ndocker exec -it d94-app-ayaan git config --global user.email \"<이메일>\"\n"
         ],
         "check": "작업공간 매핑 경로 존재, `git ls-remote` 성공"
     },
@@ -51,7 +51,7 @@ export const SETUP_STEPS: SetupStepGuide[] = [
         "why": "웹과 ECC가 Gateway를 거쳐 ayaan을 호출합니다.",
         "todo": "게이트웨이 저장소 설정에 추가 후 재기동",
         "commands": [
-            "spring:\n  cloud:\n    gateway:\n      routes:\n        - id: d94-app-ayaan          # 기존 /tsh/** 라우트보다 위에 둔다\n          uri: lb://d94-app-ayaan\n          order: -1\n          predicates: [Path=/tsh/api/v1/ayaan/**]\n        - id: d94-ecc\n          uri: lb://d94-ecc\n          predicates: [Path=/ecc/**]\n          filters: [StripPrefix=1]\n"
+            "jwt:\n  skip-path-prefixes: /tsh/,/pdf/,/ecc/   # ECC 는 X-ECC-Token 으로 직접 인증\nspring:\n  cloud:\n    gateway:\n      routes:\n        - id: d94-app-ayaan          # 기존 /tsh/** 라우트보다 위에 둔다\n          uri: lb://d94-app-ayaan\n          order: -1\n          predicates: [Path=/tsh/api/v1/ayaan/**]\n        - id: d94-ecc\n          uri: lb://d94-ecc\n          predicates: [Path=/ecc/**]\n          filters: [StripPrefix=1]\n"
         ],
         "check": "Gateway를 거친 ayaan·ECC health"
     },
