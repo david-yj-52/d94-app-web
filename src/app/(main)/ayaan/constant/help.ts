@@ -109,6 +109,15 @@ export const CONFIG_HELP: Record<string, HelpEntry> = {
         "example": "`CIRA`",
         "caution": "비워 두면 `/task`는 거절됩니다."
     },
+    "CLAUDE_PLUGINS": {
+        "label": "Claude 플러그인",
+        "tooltip": "서버 Claude에 자동 설치할 플러그인 목록입니다. ayaan 시작 시와 셋업 화면의 [플러그인 설치] 버튼으로 설치합니다.",
+        "what": "서버 컨테이너의 Claude CLI에 설치할 플러그인(skill 묶음) 목록입니다. 각 항목은 `플러그인@마켓플레이스|마켓플레이스 git URL` 형식이고 쉼표로 구분합니다.",
+        "defaultRange": "`ponytail@ponytail|https://github.com/JCAO98/PonyTaill_AgentSkill.git,superpowers@superpowers-marketplace|https://github.com/obra/superpowers-marketplace.git`",
+        "whenToChange": "작업 프롬프트에서 새 skill(예: `/brainstorming`)을 쓰고 싶을 때 해당 플러그인을 추가합니다.",
+        "example": "`superpowers@superpowers-marketplace|https://github.com/obra/superpowers-marketplace.git`",
+        "caution": "목록에서 빼도 이미 설치된 플러그인은 지워지지 않습니다. 저장 후 셋업 화면에서 [플러그인 설치]를 누르면 바로 반영됩니다."
+    },
     "ENABLED": {
         "label": "사용 여부",
         "tooltip": "이 Tool로 작업을 실행할지 정합니다.",

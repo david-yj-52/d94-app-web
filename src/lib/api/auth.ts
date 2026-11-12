@@ -4,9 +4,6 @@ import apiClient from "./client";
 import {encryptCredential} from "@/lib/crypto/credential";
 import type {CredentialPublicKeyResponse, LoginRequest, RegisterRequest} from "@/types/auth";
 
-/** 개발용 admin/admin 로그인 (DEV_ADMIN_LOGIN=true). 비밀번호 대신 표시만 보내고 서버(src/auth.ts)가 실제 계정으로 바꾼다 */
-export const DEV_ADMIN = "admin";
-
 /** 자격 증명 암호화용 공개키. 키가 바뀔 수 있어 캐시하지 않는다 */
 export async function getCredentialPublicKey(): Promise<CredentialPublicKeyResponse> {
     const res = await apiClient.get("/v1/auth/public-key");
@@ -24,9 +21,7 @@ export async function registerUser(data: RegisterRequest): Promise<void> {
  * 자격 증명이 틀리면 false, 공개키를 못 받으면(서버 연결 실패) throw.
  */
 export async function loginWithCredentials({email, password}: LoginRequest): Promise<boolean> {
-    const credentials = email === DEV_ADMIN && password === DEV_ADMIN
-        ? {devAdmin: "true"}
-        : {enc: JSON.stringify(await encryptCredential(await getCredentialPublicKey(), "login", {email, password}))};
-    const result = await signIn("credentials", {...credentials, redirect: false});
+    const enc = JSON.stringify(await encryptCredential(await getCredentialPublicKey(), "login", {email, password}));
+    const result = await signIn("credentials", {enc, redirect: false});
     return !result?.error;
 }

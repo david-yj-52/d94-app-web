@@ -60,3 +60,14 @@ export async function getSetupCheck(): Promise<SetupStep[]> {
 export async function sendTestNotify(): Promise<boolean> {
     return (await apiClient.post(`${BASE}/setup/test-notify`)).data.data;
 }
+export interface PluginResult {
+    plugin: string;
+    ok: boolean;
+    detail: string;
+}
+export async function syncPlugins(): Promise<PluginResult[]> {
+    return (await apiClient.post(`${BASE}/plugins/sync`)).data.data;
+}
+export async function getPlugins(): Promise<string> {
+    return (await apiClient.get(`${BASE}/plugins`)).data.data.output;
+}

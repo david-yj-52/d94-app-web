@@ -55,14 +55,6 @@ function parseEnvelope(raw: unknown): EncryptedCredential | null {
     }
 }
 
-/** 서버에서 직접 암호화할 때 (개발용 admin) 쓰는 백엔드 공개키 */
-async function encryptOnServer(purpose: CredentialPurpose, fields: Record<string, string>): Promise<EncryptedCredential> {
-    const res = await authFetch("/v1/auth/public-key");
-    if (!res.ok) throw new Error(`공개키 조회 실패 ${await describeFailure(res)}`);
-    const publicKey = (await res.json()).data as CredentialPublicKeyResponse;
-    return encryptCredential(publicKey, purpose, fields);
-}
-
 /** 백엔드 로그인 (암호문 그대로 전달). 실패(자격 증명 오류·연결 실패)면 null — 이유는 Vercel 런타임 로그에 남긴다 */
 async function backendLogin(enc: EncryptedCredential): Promise<AuthUser | null> {
     try {
@@ -114,60 +106,14 @@ function accessTokenExpiresAt(token: unknown): number | undefined {
     return typeof exp === "number" ? exp * 1000 : undefined;
 }
 
-/** 백엔드 회원가입 (서버에서 암호화). 이미 있는 계정이면 false */
-async function backendRegister(email: string, name: string, password: string): Promise<boolean> {
-    try {
-        const res = await authFetch("/v1/auth/register", {enc: await encryptOnServer("register", {email, name, password})});
-        if (!res.ok) console.warn(`[auth] 회원가입 실패 ${await describeFailure(res)}`);
-        return res.ok;
-    } catch (error) {
-        console.error(`[auth] 회원가입 요청 실패 (BACKEND_URL=${API_BASE_URL}):`, error);
-        return false;
-    }
-}
-
-/**
- * 개발용 admin/admin 로그인 (DEV_ADMIN_LOGIN=true). 브라우저는 비밀번호 없이 `devAdmin` 표시만 보낸다.
- * - DEV_ADMIN_EMAIL·DEV_ADMIN_PASSWORD 가 있으면 그 **실제 계정**으로 백엔드에 로그인해 유효한 JWT 를 받는다
- *   (서버에서 암호화해 보낸다). 계정이 없으면 한 번 가입시킨 뒤 다시 로그인한다.
- * - 없으면 가짜 토큰을 준다 → mock 모드(DEV_MOCK_API) 에서만 쓸 수 있고, 실제 백엔드는 401 로 거절한다.
- */
-async function devAdminLogin(): Promise<AuthUser | null> {
-    const email = process.env.DEV_ADMIN_EMAIL;
-    const password = process.env.DEV_ADMIN_PASSWORD;
-    if (!email || !password) {
-        console.warn("[auth] DEV_ADMIN_EMAIL/DEV_ADMIN_PASSWORD 없음 → 가짜 토큰 (mock 모드 전용, 실제 백엔드는 401)");
-        return {id: "admin", email: "admin", name: "Admin", accessToken: "dev-admin-token"};
-    }
-    const login = async () => {
-        try {
-            return await backendLogin(await encryptOnServer("login", {email, password}));
-        } catch (error) {
-            console.error("[auth] 개발용 admin 암호화 실패:", error);
-            return null;
-        }
-    };
-    const user = await login();
-    if (user) return {...user, name: "Admin"};
-    console.info("[auth] 개발용 admin 계정 로그인 실패 → 가입 시도");
-    if (!(await backendRegister(email, "Admin", password))) return null;
-    const registered = await login();
-    return registered && {...registered, name: "Admin"};
-}
-
 export const {handlers, auth, signIn, signOut} = NextAuth({
     providers: [
         Credentials({
-            // 브라우저가 보내는 값: enc(암호화 봉투 JSON) 또는 devAdmin. 평문 email·password 는 받지 않는다 (ADR 0004)
+            // 브라우저가 보내는 값: enc(암호화 봉투 JSON) 뿐. 평문 email·password 는 받지 않는다 (ADR 0004)
             credentials: {
                 enc: {type: "text"},
-                devAdmin: {type: "text"},
             },
             async authorize(credentials) {
-                // TODO: 임시 - 개발용 admin/admin (DEV_ADMIN_LOGIN=true 일 때만, Vercel 포함). 정식 운영 전 제거
-                if (credentials?.devAdmin === "true") {
-                    return process.env.DEV_ADMIN_LOGIN === "true" ? devAdminLogin() : null;
-                }
                 const enc = parseEnvelope(credentials?.enc);
                 if (!enc) {
                     console.warn("[auth] 로그인 거절: 암호화 봉투가 없거나 형식이 아님");

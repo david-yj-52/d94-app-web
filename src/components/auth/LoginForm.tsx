@@ -7,7 +7,6 @@ import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
-import {DEV_ADMIN} from "@/lib/api/auth";
 import {SESSION_EXPIRED_REASON} from "@/lib/api/client";
 
 /** /login?reason=… 로 들어왔을 때 보여 줄 안내 */
@@ -16,14 +15,8 @@ const LOGIN_NOTICES: Record<string, string> = {
 };
 
 const schema = z.object({
-    email: z.string().refine(
-        (v) => v === DEV_ADMIN || z.string().email().safeParse(v).success,
-        "올바른 이메일 형식을 입력해주세요."
-    ),
-    password: z.string().refine(
-        (v) => v === DEV_ADMIN || v.length >= 8,
-        "비밀번호는 최소 8자 이상이어야 합니다."
-    ),
+    email: z.string().email("올바른 이메일 형식을 입력해주세요."),
+    password: z.string().min(8, "비밀번호는 최소 8자 이상이어야 합니다."),
 });
 
 type FormData = z.infer<typeof schema>;

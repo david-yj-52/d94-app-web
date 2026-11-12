@@ -27,6 +27,7 @@ const config: ConfigValues = {
     EXHAUST_POLICY: "WAIT_SAME_TOOL", FALLBACK_TOOL_ORDER: "CLAUDE,CODEX,GEMINI,CURSOR", RESUME_CHECK_INTERVAL_SEC: "60",
     RESUME_GRACE_SEC: "120", MAX_RESUME_COUNT: "10", TASK_TIMEOUT_SEC: "1800", QUOTA_POLL_INTERVAL_SEC: "300",
     CLAUDE_USAGE_POLL: "true", REPORT_CRON: "0 9,18 * * *", NOTIFY_EVENTS: "PAUSED,RESUMED,DONE,FAILED,QUOTA_EXHAUSTED,QUOTA_RESTORED",
+    CLAUDE_PLUGINS: "ponytail@ponytail|https://github.com/JCAO98/PonyTaill_AgentSkill.git",
     DEFAULT_PROJECT_KEY: "CIRA",
 };
 const tools: AyaanTool[] = (["CLAUDE", "CODEX", "GEMINI", "CURSOR"] as const).map((toolCd) => ({
@@ -88,4 +89,9 @@ export function registerAyaanMock(on: On) {
         step, ok: step !== 2, items: [{name: `step${step} 점검`, ok: step !== 2, detail: step === 2 ? "변수 없음 (mock)" : ""}],
     }))));
     on("POST", `${B}/setup/test-notify`, () => ok(true));
+    on("POST", `${B}/plugins/sync`, () => ok([
+        {plugin: "ponytail@ponytail", ok: true, detail: "설치됨"},
+        {plugin: "superpowers@superpowers-marketplace", ok: true, detail: "설치됨"},
+    ]));
+    on("GET", `${B}/plugins`, () => ok({output: "ponytail@ponytail (mock)\nsuperpowers@superpowers-marketplace (mock)"}));
 }
