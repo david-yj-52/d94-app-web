@@ -5,8 +5,11 @@ import Link from "next/link";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {SkeletonRow} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
-import {createTask, getTasks} from "@/lib/api/ayaan";
-import {TASK_STATUSES, TOOLS, type CreateTaskRequest, type ToolCd} from "@/types/ayaan";
+import {useIssues} from "@/hooks/useIssues";
+import {useProjects} from "@/hooks/useProjects";
+import {createTask, getTasks, getWorkspaces} from "@/lib/api/ayaan";
+import {TASK_STATUSES, TOOLS, type CreateTaskRequest} from "@/types/ayaan";
+import {toCreateBody} from "./taskBody";
 import {ayaanError, btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
 
 export default function AyaanTasksPage() {
@@ -16,6 +19,7 @@ export default function AyaanTasksPage() {
     const [tool, setTool] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [existingId, setExistingId] = useState<string | null>(null);
+    const [projectKey, setProjectKey] = useState("");
     const [issueKey, setIssueKey] = useState("");
     const [prompt, setPrompt] = useState("");
     const [newTool, setNewTool] = useState("");
@@ -25,6 +29,12 @@ export default function AyaanTasksPage() {
         queryFn: () => getTasks({status: status || undefined, tool: tool || undefined}),
         refetchInterval: 30_000,
     });
+    const projects = useProjects();
+    const workspaces = useQuery({queryKey: ["ayaanWorkspaces"], queryFn: getWorkspaces, enabled: showForm});
+    const mapped = new Map((workspaces.data ?? []).map((w) => [w.projectKey, w.workspacePath]));
+    const project = projects.data?.find((p) => p.key === projectKey);
+    // ponytail: 이슈 100건까지만 드롭다운에 표시, 넘으면 검색 입력 추가
+    const issues = useIssues(project?.id ?? "", {size: 100});
     const create = useMutation({
         mutationFn: (b: CreateTaskRequest) => createTask(b),
         onSuccess: () => {
@@ -42,13 +52,9 @@ export default function AyaanTasksPage() {
         },
     });
     const submit = () => {
-        if (!issueKey.trim() && !prompt.trim()) return show("이슈 키 또는 프롬프트를 입력하세요.", "error");
-        create.mutate({
-            ...(issueKey.trim() ? {issueKey: issueKey.trim()} : {prompt: prompt.trim()}),
-            ...(newTool ? {tool: newTool as ToolCd} : {}),
-            ...(policy ? {exhaustPolicy: policy} : {}),
-            source: "WEB",
-        });
+        const body = toCreateBody({projectKey, issueKey, prompt, tool: newTool, policy});
+        if (typeof body === "string") return show(body, "error");
+        create.mutate(body);
     };
     return (
         <div className="mx-auto max-w-6xl space-y-4 px-4">
@@ -58,12 +64,30 @@ export default function AyaanTasksPage() {
             </div>
             {showForm && (
                 <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
-                    <label className="block text-xs font-medium text-slate-600">이슈 키
-                        <input className={inputCls} value={issueKey} onChange={(e) => setIssueKey(e.target.value)} placeholder="CIRA-12"/>
+                    <label className="block text-xs font-medium text-slate-600">CIRA 프로젝트
+                        <select className={inputCls} value={projectKey} onChange={(e) => { setProjectKey(e.target.value); setIssueKey(""); }}>
+                            <option value="">선택하세요</option>
+                            {projects.data?.map((p) => (
+                                <option key={p.id} value={p.key} disabled={!mapped.has(p.key)}>
+                                    {p.key} — {p.name} {mapped.has(p.key) ? `(${mapped.get(p.key)})` : "(작업공간 매핑 필요)"}
+                                </option>
+                            ))}
+                        </select>
                     </label>
-                    <label className="block text-xs font-medium text-slate-600">프롬프트 (이슈 키가 없을 때)
-                        <textarea className={`${inputCls} h-24 py-2`} value={prompt} onChange={(e) => setPrompt(e.target.value)}/>
+                    {projects.data?.some((p) => !mapped.has(p.key)) && (
+                        <p className="text-xs text-slate-500">매핑이 없는 프로젝트는 <Link href="/ayaan/settings" className="text-blue-600 hover:underline">기준정보 › 작업공간</Link>에서 연결하면 선택할 수 있습니다.</p>
+                    )}
+                    <label className="block text-xs font-medium text-slate-600">이슈 (비우면 프롬프트로 실행)
+                        <select className={inputCls} value={issueKey} disabled={!project} onChange={(e) => setIssueKey(e.target.value)}>
+                            <option value="">이슈 없이 프롬프트로</option>
+                            {issues.data?.content.map((i) => <option key={i.id} value={i.issueKey}>{i.issueKey} — {i.title}</option>)}
+                        </select>
                     </label>
+                    {!issueKey && (
+                        <label className="block text-xs font-medium text-slate-600">프롬프트
+                            <textarea className={`${inputCls} h-24 py-2`} value={prompt} onChange={(e) => setPrompt(e.target.value)}/>
+                        </label>
+                    )}
                     <div className="flex gap-3">
                         <label className="block flex-1 text-xs font-medium text-slate-600">Tool
                             <select className={inputCls} value={newTool} onChange={(e) => setNewTool(e.target.value)}>

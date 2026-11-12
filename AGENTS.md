@@ -33,6 +33,7 @@ AGENTS.md (L1)
 │   ├── (main)/solace/AGENTS.md .......... [실험] Solace 메시징
 │   ├── (main)/todo/AGENTS.md ............ [실험] Server Actions
 │   ├── (main)/interface-test/AGENTS.md .. [실험] REST 메서드별 통신 확인
+│   ├── (main)/ayaan/AGENTS.md ........... [실험] AI CLI 작업·토큰 관리 (대시보드·작업·기준정보·셋업)
 │   └── (main)/study/AGENTS.md ........... [실험] PDF 학습 뷰어 (문서 목록·업로드)
 │       ├── [documentId]/AGENTS.md ....... 3단 뷰어 (목차·본문·이 페이지 내용)
 │       └── notes/AGENTS.md .............. 노트 모아보기
