@@ -56,7 +56,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 | 파일 | 역할 |
 |---|---|
-| `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`을 JWT에 저장. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). `DEV_ADMIN_LOGIN=true` 일 때 브라우저가 admin/admin 을 입력하면 비밀번호 없이 `devAdmin` 표시만 오고, 서버가 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD`를 **서버에서 암호화**해 그 실제 계정으로 로그인(없으면 1회 가입 후 로그인), 둘 다 없으면 가짜 토큰(mock 전용). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
+| `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`을 JWT에 저장. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
 | `src/next-auth.d.ts` | 세션·JWT 타입 확장. `Session`에는 표시용 `user`만, `JWT`(암호화된 쿠키)에 `accessToken`·`accessTokenExpiresAt` |
 | `src/lib/auth/accessToken.ts` | **서버 전용** `getBackendAccessToken(request)`: 세션 쿠키(JWE)를 풀어 백엔드 토큰 반환. https·http 쿠키 이름 둘 다 시도, 만료면 undefined. `/api/proxy`·`/api/attachments/[id]`가 사용 |
 

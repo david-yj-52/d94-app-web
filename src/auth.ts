@@ -1,9 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-import {type CredentialPurpose, encryptCredential} from "@/lib/crypto/credential";
 import {isMockEnabled} from "@/lib/mock/enabled";
-import type {CredentialPublicKeyResponse, EncryptedCredential} from "@/types/auth";
+import type {EncryptedCredential} from "@/types/auth";
 
 const API_BASE_URL = process.env.BACKEND_URL;
 

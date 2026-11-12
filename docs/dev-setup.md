@@ -9,8 +9,8 @@
 2. `.env.sample`을 `.env.local`로 복사하고 값을 채웁니다.
 3. `npm run dev`를 실행하고 http://localhost:3000 에 접속합니다.
 
-백엔드 없이 UI만 개발할 때는 `DEV_ADMIN_LOGIN=true`, `DEV_MOCK_API=true`로 두고 **admin / admin**으로 로그인합니다.
-실제 백엔드에 붙일 때는 `/register`에서 가입한 계정으로 로그인하거나, `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD`를 설정해 admin/admin이 그 계정으로 로그인되게 합니다.
+백엔드 없이 UI만 개발할 때는 `DEV_MOCK_API=true`로 두고 아무 이메일·비밀번호(8자 이상)로 로그인합니다 (mock 은 비밀번호를 검사하지 않음).
+실제 백엔드에 붙일 때는 `/register`에서 가입한 계정으로 로그인합니다.
 
 ## 환경 변수
 
@@ -18,8 +18,6 @@
 |---|---|---|
 | `AUTH_SECRET` | next-auth | JWT 서명 시크릿. `npx auth secret`으로 생성 |
 | `AUTH_TRUST_HOST` | next-auth | localhost 외 호스트에서 `next start`로 실행할 때 `true` |
-| `DEV_ADMIN_LOGIN` | `src/auth.ts` | `true`면 admin/admin 로그인 허용 (production·Vercel 포함. 배포 환경에 설정하면 누구나 로그인 가능) |
-| `DEV_ADMIN_EMAIL`, `DEV_ADMIN_PASSWORD` | `src/auth.ts` | admin/admin 을 이 **실제 백엔드 계정**으로 로그인시켜 유효한 JWT 를 받음 (계정이 없으면 첫 로그인 때 가입). 서버가 백엔드 공개키로 암호화해 보낸다. 이 이메일·비밀번호를 직접 입력하면 일반 로그인(표시 이름은 이메일). 비우면 가짜 토큰 → mock 모드에서만 동작 |
 | `DEV_MOCK_API` | `src/lib/mock/router.ts` | `true`면 `/api/proxy`가 mock으로 응답 (production에서는 무시) |
 | `BACKEND_URL` | 프록시, 로그인 | 서버 사이드에서 쓰는 백엔드 주소 |
 | `SOLACE_USER_NAME`, `SOLACE_USER_PWD` | 미사용 | solaceConfig.ts가 값을 하드코딩하고 있어 실제로 쓰이지 않음 |

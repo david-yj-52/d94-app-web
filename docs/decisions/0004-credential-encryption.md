@@ -27,7 +27,7 @@
 4. **재전송 방지**: `ts`가 ±5분(`max-age-seconds`)을 벗어나거나 이미 쓴 `nonce`면 400 `AUTH_CREDENTIAL_INVALID`.
 5. **키는 환경 변수**: `AUTH_CREDENTIAL_PRIVATE_KEY`(PKCS#8, PEM 또는 base64 DER). 비어 있으면 기동 시 임시 키를 만들고 경고를 남깁니다(재기동하면 바뀜 — 브라우저가 매번 공개키를 받으므로 동작은 함). 운영은 반드시 설정합니다.
 6. **평문 허용 스위치**: `AUTH_CREDENTIAL_ALLOW_PLAINTEXT`(기본 `false`). 웹·백엔드 배포 순서가 어긋날 때만 잠깐 켭니다.
-7. **개발용 admin**: 브라우저는 `admin/admin` 입력 시 비밀번호 대신 `devAdmin` 표시만 보냅니다. 서버(`src/auth.ts`)가 `DEV_ADMIN_EMAIL`·`DEV_ADMIN_PASSWORD`를 **서버에서** 같은 방식으로 암호화해 백엔드에 보냅니다.
+7. ~~**개발용 admin**~~: `admin/admin` 단축 로그인(`DEV_ADMIN_LOGIN`)은 2026-11-11 제거. 모든 로그인은 브라우저 암호화 봉투만 거친다.
 
 ## 기존 계정 처리
 

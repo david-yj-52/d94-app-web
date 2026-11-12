@@ -20,7 +20,7 @@
 - `api/auth.ts`: 자격 증명은 **암호화해서만** 보냅니다 ([ADR 0004](../../docs/decisions/0004-credential-encryption.md)).
   - `getCredentialPublicKey()` → `GET /v1/auth/public-key` (`CredentialPublicKeyResponse`, 캐시하지 않음)
   - `registerUser(data)` → 공개키로 암호화해 `POST /v1/auth/register` 에 `{enc}` 전송
-  - `loginWithCredentials({email, password})` → 암호화한 봉투를 `signIn("credentials", {enc})`로 보내고 성공 여부(boolean) 반환. admin/admin(`DEV_ADMIN`)이면 비밀번호 대신 `{devAdmin: "true"}`. 공개키 조회 실패는 throw. 백엔드 호출은 next-auth(`src/auth.ts`)가 서버에서 암호문 그대로 `${BACKEND_URL}/v1/auth/login`에 전달합니다.
+  - `loginWithCredentials({email, password})` → 암호화한 봉투를 `signIn("credentials", {enc})`로 보내고 성공 여부(boolean) 반환. 공개키 조회 실패는 throw. 백엔드 호출은 next-auth(`src/auth.ts`)가 서버에서 암호문 그대로 `${BACKEND_URL}/v1/auth/login`에 전달합니다.
 
 ## 1-1. 자격 증명 암호화 (`crypto/credential.ts`)
 

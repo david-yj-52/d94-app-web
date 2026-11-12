@@ -20,7 +20,7 @@ cp .env.sample .env.local   # 값 채우기
 npm run dev                 # http://localhost:3000
 ```
 
-백엔드 없이 실행하려면 `.env.local`에서 `DEV_ADMIN_LOGIN=true`, `DEV_MOCK_API=true`로 설정하고 **admin / admin**으로 로그인하세요.
+백엔드 없이 실행하려면 `.env.local`에서 `DEV_MOCK_API=true`로 설정하고 아무 이메일·비밀번호(8자 이상)로 로그인하세요.
 
 ## 문서 계층 (사람·AI 도구 공통)
 
