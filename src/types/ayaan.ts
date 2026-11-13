@@ -17,8 +17,9 @@ export interface QuotaResponse {
     warnings: string[];
 }
 
-export type TaskStatus = "QUEUED" | "RUNNING" | "PAUSED" | "DONE" | "FAILED" | "CANCELLED";
-export const TASK_STATUSES: TaskStatus[] = ["QUEUED", "RUNNING", "PAUSED", "DONE", "FAILED", "CANCELLED"];
+export type TaskStatus = "QUEUED" | "RUNNING" | "PAUSED" | "WAITING" | "DONE" | "FAILED" | "CANCELLED";
+export const TASK_STATUSES: TaskStatus[] = ["QUEUED", "RUNNING", "PAUSED", "WAITING", "DONE", "FAILED", "CANCELLED"];
+export type Phase = "PLAN" | "DEV";
 
 export interface AyaanTask {
     id: string;
@@ -39,6 +40,26 @@ export interface AyaanTask {
     failReason: string | null;
     startedAt: string | null;
     finishedAt: string | null;
+    createdAt: string;
+    phase: Phase;
+    skillCd: string | null;
+    parentTaskId: string | null;
+    planDocPath: string | null;
+}
+/** 사람 응답 요청 (QUESTION: AI 질문, PERMISSION: 권한 승인, START: 기획 후 개발 시작) */
+export interface AyaanRequest {
+    id: string;
+    taskId: string;
+    kind: "QUESTION" | "PERMISSION" | "START";
+    status: "OPEN" | "ANSWERED" | "CONSUMED" | "CANCELLED";
+    question: string | null;
+    options: string[];
+    recommend: number | null;
+    context: string | null;
+    answer: string | null;
+    decision: string | null;
+    answeredBy: string | null;
+    answeredAt: string | null;
     createdAt: string;
 }
 export interface TaskRun {
@@ -66,6 +87,7 @@ export interface AyaanTaskDetail extends AyaanTask {
     runs: TaskRun[];
     tokenTotals: TokenTotals;
     logTail: string | null;
+    requests: AyaanRequest[];
 }
 export interface CreateTaskRequest {
     issueKey?: string;
@@ -74,7 +96,32 @@ export interface CreateTaskRequest {
     tool?: ToolCd;
     exhaustPolicy?: string;
     fallbackTools?: string;
+    phase?: Phase;
+    skillCd?: string;
     source: "WEB";
+}
+
+export interface AyaanSkill {
+    skillCd: string;
+    skillNm: string;
+    toolCd: ToolCd;
+    phase: Phase | "ANY";
+    invokeText: string;
+    pluginRef: string | null;
+    description: string | null;
+    enabled: boolean;
+    sortNo: number;
+}
+export type Decision = "ALLOW" | "ASK" | "DENY";
+export const CATEGORIES = ["FILE_WRITE", "SHELL", "GIT_PUSH", "DEPLOY", "NETWORK", "MCP"] as const;
+export interface AyaanPermission {
+    id?: string;
+    toolCd: ToolCd | "*";
+    category: (typeof CATEGORIES)[number];
+    matcher: string;
+    decision: Decision;
+    priority: number;
+    description: string | null;
 }
 
 export type ConfigValues = Record<string, string>;
@@ -90,6 +137,8 @@ export interface AyaanTool {
     fallbackResetRule: string | null;
     budgetTokens: number | null;
     budgetPeriod: string | null;
+    planSkillCd: string | null;
+    devSkillCd: string | null;
 }
 export interface AyaanWorkspace {
     projectKey: string;

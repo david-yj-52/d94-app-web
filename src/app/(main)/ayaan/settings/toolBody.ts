@@ -12,6 +12,8 @@ export interface ToolForm {
     fallbackResetRule: string;
     budgetTokens: string;
     budgetPeriod: string;
+    planSkillCd: string;
+    devSkillCd: string;
 }
 
 export const toToolForm = (t: AyaanTool): ToolForm => ({
@@ -25,6 +27,8 @@ export const toToolForm = (t: AyaanTool): ToolForm => ({
     fallbackResetRule: t.fallbackResetRule ?? "",
     budgetTokens: t.budgetTokens == null ? "" : String(t.budgetTokens),
     budgetPeriod: t.budgetPeriod ?? "",
+    planSkillCd: t.planSkillCd ?? "",
+    devSkillCd: t.devSkillCd ?? "",
 });
 
 const isInt = (v: string) => /^\d+$/.test(v.trim());
@@ -54,6 +58,8 @@ export function toToolBody(f: ToolForm): { body: AyaanTool | null; errors: Recor
             fallbackResetRule: orNull(f.fallbackResetRule),
             budgetTokens,
             budgetPeriod: orNull(f.budgetPeriod),
+            planSkillCd: orNull(f.planSkillCd),
+            devSkillCd: orNull(f.devSkillCd),
         },
     };
 }

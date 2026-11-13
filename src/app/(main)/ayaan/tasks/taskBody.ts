@@ -6,6 +6,10 @@ export interface TaskForm {
     prompt: string;
     tool: string;
     policy: string;
+    /** "" = 기본(기획부터) */
+    phase?: "" | "PLAN" | "DEV";
+    /** "" = Tool 기본값, "NONE" = 사용 안 함 */
+    skillCd?: string;
 }
 
 /** 폼 → 작업 등록 본문. 이슈를 고르면 이슈로, 아니면 고른 프로젝트 작업공간에서 프롬프트로 실행. */
@@ -16,6 +20,8 @@ export function toCreateBody(f: TaskForm): CreateTaskRequest | string {
         ...(f.issueKey ? {issueKey: f.issueKey} : {prompt: f.prompt.trim(), projectKey: f.projectKey}),
         ...(f.tool ? {tool: f.tool as ToolCd} : {}),
         ...(f.policy ? {exhaustPolicy: f.policy} : {}),
+        ...(f.phase ? {phase: f.phase} : {}),
+        ...(f.skillCd ? {skillCd: f.skillCd} : {}),
         source: "WEB",
     };
 }

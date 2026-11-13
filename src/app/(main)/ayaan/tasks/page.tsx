@@ -7,10 +7,11 @@ import {SkeletonRow} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {useIssues} from "@/hooks/useIssues";
 import {useProjects} from "@/hooks/useProjects";
-import {createTask, getTasks, getWorkspaces} from "@/lib/api/ayaan";
+import {createTask, getSkills, getTasks, getTools, getWorkspaces} from "@/lib/api/ayaan";
 import {TASK_STATUSES, TOOLS, type CreateTaskRequest} from "@/types/ayaan";
 import {toCreateBody} from "./taskBody";
-import {ayaanError, btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
+import {skillOptions} from "../settings/skillPermission";
+import {ayaanError, btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS, statusLabel} from "../format";
 
 export default function AyaanTasksPage() {
     const qc = useQueryClient();
@@ -24,6 +25,8 @@ export default function AyaanTasksPage() {
     const [prompt, setPrompt] = useState("");
     const [newTool, setNewTool] = useState("");
     const [policy, setPolicy] = useState("");
+    const [phase, setPhase] = useState<"PLAN" | "DEV">("PLAN");
+    const [skillCd, setSkillCd] = useState("");
     const list = useQuery({
         queryKey: ["ayaanTasks", status, tool],
         queryFn: () => getTasks({status: status || undefined, tool: tool || undefined}),
@@ -32,6 +35,13 @@ export default function AyaanTasksPage() {
     const projects = useProjects();
     const workspaces = useQuery({queryKey: ["ayaanWorkspaces"], queryFn: getWorkspaces, enabled: showForm});
     const mapped = new Map((workspaces.data ?? []).map((w) => [w.projectKey, w.workspacePath]));
+    const skills = useQuery({queryKey: ["ayaanSkills"], queryFn: getSkills, enabled: showForm});
+    const tools = useQuery({queryKey: ["ayaanTools"], queryFn: getTools, enabled: showForm});
+    // Tool 을 비우면 작업공간 기본 Tool 을 기준으로 skill 을 고른다
+    const ws = workspaces.data?.find((w) => w.projectKey === projectKey);
+    const effTool = newTool || ws?.defaultTool || "CLAUDE";
+    const toolRow = tools.data?.find((t) => t.toolCd === effTool);
+    const defaultSkill = phase === "PLAN" ? toolRow?.planSkillCd : toolRow?.devSkillCd;
     const project = projects.data?.find((p) => p.key === projectKey);
     // ponytail: 이슈 100건까지만 드롭다운에 표시, 넘으면 검색 입력 추가
     const issues = useIssues(project?.id ?? "", {size: 100});
@@ -52,7 +62,7 @@ export default function AyaanTasksPage() {
         },
     });
     const submit = () => {
-        const body = toCreateBody({projectKey, issueKey, prompt, tool: newTool, policy});
+        const body = toCreateBody({projectKey, issueKey, prompt, tool: newTool, policy, phase, skillCd});
         if (typeof body === "string") return show(body, "error");
         create.mutate(body);
     };
@@ -90,7 +100,7 @@ export default function AyaanTasksPage() {
                     )}
                     <div className="flex gap-3">
                         <label className="block flex-1 text-xs font-medium text-slate-600">Tool
-                            <select className={inputCls} value={newTool} onChange={(e) => setNewTool(e.target.value)}>
+                            <select className={inputCls} value={newTool} onChange={(e) => { setNewTool(e.target.value); setSkillCd(""); }}>
                                 <option value="">기본</option>
                                 {TOOLS.map((t) => <option key={t}>{t}</option>)}
                             </select>
@@ -103,6 +113,18 @@ export default function AyaanTasksPage() {
                             </select>
                         </label>
                     </div>
+                    <fieldset className="flex gap-4 text-sm text-slate-700">
+                        <legend className="mb-1 text-xs font-medium text-slate-600">단계</legend>
+                        <label><input type="radio" name="phase" checked={phase === "PLAN"} onChange={() => { setPhase("PLAN"); setSkillCd(""); }}/> 기획부터 (기획서 확인 후 [실행])</label>
+                        <label><input type="radio" name="phase" checked={phase === "DEV"} onChange={() => { setPhase("DEV"); setSkillCd(""); }}/> 바로 개발</label>
+                    </fieldset>
+                    <label className="block text-xs font-medium text-slate-600">Skill
+                        <select className={inputCls} value={skillCd} onChange={(e) => setSkillCd(e.target.value)}>
+                            <option value="">Tool 기본값 ({defaultSkill ?? "없음"})</option>
+                            {skillOptions(skills.data ?? [], effTool, phase).map((s) => <option key={s.skillCd} value={s.skillCd}>{s.skillNm} ({s.skillCd})</option>)}
+                            <option value="NONE">사용 안 함</option>
+                        </select>
+                    </label>
                     <button className={btnPrimary} disabled={create.isPending} onClick={submit}>등록</button>
                     {existingId && (
                         <p role="status" className="text-sm text-slate-700">
@@ -131,7 +153,7 @@ export default function AyaanTasksPage() {
                     {(list.data ?? []).map((t) => (
                         <tr key={t.id} className="border-t border-slate-100">
                             <td className="p-2"><Link href={`/ayaan/tasks/${t.id}`} className="text-blue-600 hover:underline">{t.issueKey ?? t.id}</Link></td>
-                            <td><span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span></td>
+                            <td><span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{statusLabel(t.status)}</span></td>
                             <td>{t.toolCd}</td>
                             <td>{fmtTime(t.resumeAt)}</td>
                             <td>{fmtTime(t.createdAt)}</td>

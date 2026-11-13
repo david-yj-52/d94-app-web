@@ -3,13 +3,18 @@
 import {useEffect, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {useToast} from "@/components/ui/Toast";
-import {deleteWorkspace, getConfig, getTools, getWorkspaces, putConfig, putTool, putWorkspace} from "@/lib/api/ayaan";
+import {
+    deleteSkill, deleteWorkspace, getConfig, getPermissions, getSkills, getTools, getWorkspaces, putConfig, putPermissions,
+    putSkill, putTool, putWorkspace,
+} from "@/lib/api/ayaan";
 import {CONFIG_HELP} from "../constant/help";
 import HelpCard from "../components/HelpCard";
 import {btnPrimary, btnSecondary, inputCls} from "../format";
 import {validateConfigField} from "./validate";
 import {toToolBody, toToolForm, toWorkspaceBody, type ToolForm} from "./toolBody";
-import {TOOLS, type AyaanTool, type AyaanWorkspace, type ToolCd} from "@/types/ayaan";
+import {CATEGORIES, TOOLS, type AyaanPermission, type AyaanSkill, type AyaanTool, type AyaanWorkspace, type ToolCd} from "@/types/ayaan";
+import {askWarning, EMPTY_SKILL, pluginRefs, toSkillBody} from "./skillPermission";
+import {ayaanError} from "../format";
 
 type Errors = Record<string, string>;
 
@@ -94,7 +99,7 @@ const TOOL_FIELDS: [keyof ToolForm, string, Kind, string[]?][] = [
     ["budgetPeriod", "BUDGET_PERIOD", "select", ["", "DAILY", "MONTHLY"]],
 ];
 
-function ToolCard({tool}: { tool: AyaanTool }) {
+function ToolCard({tool, skills}: { tool: AyaanTool; skills: AyaanSkill[] }) {
     const qc = useQueryClient();
     const {show, ToastComponent} = useToast();
     const [t, setT] = useState<ToolForm>(toToolForm(tool));
@@ -120,6 +125,11 @@ function ToolCard({tool}: { tool: AyaanTool }) {
                        value={String(t[f] ?? "")} error={errors[f] ?? errors[helpKey]}
                        onChange={(v) => setT({...t, [f]: kind === "checkbox" ? v === "true" : v})}/>
             ))}
+            {([["planSkillCd", "PLAN_SKILL_CD", "PLAN"], ["devSkillCd", "DEV_SKILL_CD", "DEV"]] as const).map(([f, helpKey, phase]) => (
+                <Field key={f} id={`tool-${t.toolCd}-${f}`} helpKey={helpKey} kind="select" value={t[f]} error={errors[f]}
+                       options={["", ...skills.filter((s) => s.toolCd === t.toolCd && (s.phase === phase || s.phase === "ANY")).map((s) => s.skillCd)]}
+                       onChange={(v) => setT({...t, [f]: v})}/>
+            ))}
             <button className={btnPrimary} disabled={save.isPending} onClick={onSave}>{t.toolCd} 저장</button>
             {ToastComponent}
         </section>
@@ -128,8 +138,10 @@ function ToolCard({tool}: { tool: AyaanTool }) {
 
 function ToolsTab() {
     const q = useQuery({queryKey: ["ayaanTools"], queryFn: getTools});
+    const skills = useQuery({queryKey: ["ayaanSkills"], queryFn: getSkills});
     const order = (q.data ?? []).slice().sort((a, b) => TOOLS.indexOf(a.toolCd) - TOOLS.indexOf(b.toolCd));
-    return <div className="space-y-4">{order.map((t) => <ToolCard key={t.toolCd} tool={t}/>)}</div>;
+    if (!skills.data) return null;  // 기본 skill 드롭다운 옵션이 준비된 뒤 폼 초기화
+    return <div className="space-y-4">{order.map((t) => <ToolCard key={t.toolCd} tool={t} skills={skills.data}/>)}</div>;
 }
 
 const EMPTY_WS: AyaanWorkspace = {projectKey: "", workspacePath: "", defaultTool: "CLAUDE", promptTemplate: ""};
@@ -186,7 +198,140 @@ function WorkspacesTab() {
     );
 }
 
-const TABS = [["global", "전역 정책"], ["tool", "Tool"], ["workspace", "작업공간"]] as const;
+function SkillsTab() {
+    const qc = useQueryClient();
+    const {show, ToastComponent} = useToast();
+    const q = useQuery({queryKey: ["ayaanSkills"], queryFn: getSkills});
+    const cfg = useQuery({queryKey: ["ayaanConfig"], queryFn: getConfig});
+    const [form, setForm] = useState<AyaanSkill | null>(null);
+    const [isNew, setIsNew] = useState(false);
+    const done = () => qc.invalidateQueries({queryKey: ["ayaanSkills"]});
+    const save = useMutation({
+        mutationFn: (s: AyaanSkill) => putSkill(s.skillCd, s),
+        onSuccess: (r) => {
+            setForm(null);
+            show(r.warnings.length ? `저장됨 — ${r.warnings.join(", ")}: 전역 정책 CLAUDE_PLUGINS에 추가하세요.` : "저장되었습니다.", r.warnings.length ? "error" : undefined);
+            done();
+        },
+        onError: (e) => show(ayaanError(e, "저장에 실패했습니다."), "error"),
+    });
+    const remove = useMutation({mutationFn: deleteSkill, onSuccess: () => { show("삭제했습니다. 이 skill을 기본값으로 쓰던 Tool은 기본값이 비워집니다."); done(); }});
+    const submit = () => {
+        const body = form && toSkillBody(form);
+        if (typeof body === "string") return show(body, "error");
+        if (body) save.mutate(body);
+    };
+    const set = (patch: Partial<AyaanSkill>) => setForm({...form!, ...patch});
+    return (
+        <div className="space-y-4">
+            <p className="text-sm text-slate-600">skill은 작업 프롬프트 맨 앞에 붙는 호출 문자열입니다(Claude는 <code>/plugin:skill</code>). 작업에서 고른 skill이 Tool 기본값보다 우선합니다.</p>
+            <button className={btnSecondary} onClick={() => { setForm(EMPTY_SKILL); setIsNew(true); }}>Skill 추가</button>
+            <table className="w-full rounded-xl border border-slate-200 bg-white text-sm">
+                <thead className="text-left text-xs text-slate-500">
+                <tr><th className="p-2">코드</th><th>이름</th><th>Tool</th><th>단계</th><th>호출</th><th>플러그인</th><th>사용</th><th/></tr>
+                </thead>
+                <tbody>
+                {(q.data ?? []).map((s) => (
+                    <tr key={s.skillCd} className="border-t border-slate-100" title={s.description ?? ""}>
+                        <td className="p-2 font-mono">{s.skillCd}</td><td>{s.skillNm}</td><td>{s.toolCd}</td><td>{s.phase}</td>
+                        <td className="font-mono text-xs">{s.invokeText}</td><td className="text-xs">{s.pluginRef ?? "-"}</td><td>{s.enabled ? "✔" : "-"}</td>
+                        <td className="flex gap-1 py-1">
+                            <button className={btnSecondary} onClick={() => { setForm({...s}); setIsNew(false); }}>편집</button>
+                            <button className={btnSecondary} onClick={() => window.confirm(`${s.skillCd}을 삭제할까요?`) && remove.mutate(s.skillCd)}>삭제</button>
+                        </td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
+            {form && (
+                <section aria-label="Skill 편집" className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-200 bg-white p-5 text-xs font-medium text-slate-600">
+                    <label>코드<input className={inputCls} value={form.skillCd} disabled={!isNew} onChange={(e) => set({skillCd: e.target.value})}/></label>
+                    <label>이름<input className={inputCls} value={form.skillNm} onChange={(e) => set({skillNm: e.target.value})}/></label>
+                    <label>Tool<select className={inputCls} value={form.toolCd} onChange={(e) => set({toolCd: e.target.value as ToolCd})}>{TOOLS.map((t) => <option key={t}>{t}</option>)}</select></label>
+                    <label>단계<select className={inputCls} value={form.phase} onChange={(e) => set({phase: e.target.value as AyaanSkill["phase"]})}>
+                        <option value="PLAN">PLAN (기획)</option><option value="DEV">DEV (개발)</option><option value="ANY">ANY</option></select></label>
+                    <label className="col-span-2">호출 문자열<input className={inputCls} value={form.invokeText} placeholder="/superpowers:brainstorming" onChange={(e) => set({invokeText: e.target.value})}/></label>
+                    <label className="col-span-2">플러그인 (Claude 전용, plugin@marketplace)
+                        <input className={inputCls} list="ayaan-plugin-refs" value={form.pluginRef ?? ""} disabled={form.toolCd !== "CLAUDE"} onChange={(e) => set({pluginRef: e.target.value})}/>
+                        <datalist id="ayaan-plugin-refs">{pluginRefs(cfg.data?.CLAUDE_PLUGINS).map((r) => <option key={r} value={r}/>)}</datalist>
+                    </label>
+                    <label className="col-span-2">설명<textarea className={`${inputCls} h-20 py-2`} value={form.description ?? ""} onChange={(e) => set({description: e.target.value})}/></label>
+                    <label>정렬<input type="number" className={inputCls} value={form.sortNo} onChange={(e) => set({sortNo: Number(e.target.value) || 0})}/></label>
+                    <label className="flex items-center gap-2 pt-5"><input type="checkbox" checked={form.enabled} onChange={(e) => set({enabled: e.target.checked})}/> 사용</label>
+                    <div className="col-span-2 flex gap-2">
+                        <button className={btnPrimary} disabled={save.isPending} onClick={submit}>저장</button>
+                        <button className={btnSecondary} onClick={() => setForm(null)}>취소</button>
+                    </div>
+                </section>
+            )}
+            {ToastComponent}
+        </div>
+    );
+}
+
+const EMPTY_PERM: AyaanPermission = {toolCd: "*", category: "SHELL", matcher: "*", decision: "ASK", priority: 0, description: null};
+
+function PermissionsTab() {
+    const qc = useQueryClient();
+    const {show, ToastComponent} = useToast();
+    const q = useQuery({queryKey: ["ayaanPermissions"], queryFn: getPermissions});
+    const [rows, setRows] = useState<AyaanPermission[]>([]);
+    const [errors, setErrors] = useState<Errors>({});
+    useEffect(() => { if (q.data) setRows(q.data); }, [q.data]);
+    const save = useMutation({
+        mutationFn: () => putPermissions(rows),
+        onSuccess: () => { setErrors({}); show("저장되었습니다."); qc.invalidateQueries({queryKey: ["ayaanPermissions"]}); },
+        onError: (e: any) => {
+            if (e?.response?.status === 422) setErrors(e.response.data?.data ?? {});
+            show(ayaanError(e, "저장에 실패했습니다."), "error");
+        },
+    });
+    const set = (i: number, patch: Partial<AyaanPermission>) => setRows(rows.map((r, j) => (j === i ? {...r, ...patch} : r)));
+    return (
+        <div className="space-y-4">
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+                <p>AI가 파일 쓰기·셸·push·배포·네트워크·MCP 도구를 쓰기 전에 이 표로 판단합니다. <b>ASK</b>는 Telegram/웹으로 승인을 받고, 승인은 바로 그 호출 1회에만 유효합니다.</p>
+                <p>Tool별 행이 전체(*) 행보다 우선하고, 다음으로 우선순위가 높은 행, 같으면 DENY &gt; ASK &gt; ALLOW 순입니다. 실행 중 승인은 현재 Claude만 지원합니다.</p>
+                <p>명령 접두어 매칭은 우회할 수 있습니다(<code>sh -c &quot;git push&quot;</code>). push·배포를 확실히 막으려면 서버에 그 자격증명을 두지 마세요.</p>
+            </div>
+            <table className="w-full rounded-xl border border-slate-200 bg-white text-sm">
+                <thead className="text-left text-xs text-slate-500">
+                <tr><th className="p-2">Tool</th><th>범주</th><th>매처</th><th>결정</th><th>우선순위</th><th>설명</th><th/></tr>
+                </thead>
+                <tbody>
+                {rows.map((r, i) => {
+                    const warn = askWarning(r);
+                    const err = Object.entries(errors).filter(([k]) => k.startsWith(`${i}.`)).map(([k, v]) => `${k.split(".")[1]}: ${v}`).join(", ");
+                    return (
+                        <tr key={i} className="border-t border-slate-100 align-top">
+                            <td className="p-1"><select aria-label={`${i + 1}행 Tool`} className={inputCls} value={r.toolCd} onChange={(e) => set(i, {toolCd: e.target.value as AyaanPermission["toolCd"]})}>
+                                <option value="*">전체(*)</option>{TOOLS.map((t) => <option key={t}>{t}</option>)}</select></td>
+                            <td className="p-1"><select aria-label={`${i + 1}행 범주`} className={inputCls} value={r.category} onChange={(e) => set(i, {category: e.target.value as AyaanPermission["category"]})}>
+                                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></td>
+                            <td className="p-1"><input aria-label={`${i + 1}행 매처`} className={inputCls} value={r.matcher} onChange={(e) => set(i, {matcher: e.target.value})}/></td>
+                            <td className="p-1"><select aria-label={`${i + 1}행 결정`} className={inputCls} value={r.decision} onChange={(e) => set(i, {decision: e.target.value as AyaanPermission["decision"]})}>
+                                <option>ALLOW</option><option>ASK</option><option>DENY</option></select>
+                                {warn && <p role="alert" className="text-xs text-amber-700">{warn}</p>}
+                                {err && <p role="alert" className="text-xs text-red-500">{err}</p>}</td>
+                            <td className="w-20 p-1"><input aria-label={`${i + 1}행 우선순위`} type="number" className={inputCls} value={r.priority} onChange={(e) => set(i, {priority: Number(e.target.value) || 0})}/></td>
+                            <td className="p-1"><input aria-label={`${i + 1}행 설명`} className={inputCls} value={r.description ?? ""} onChange={(e) => set(i, {description: e.target.value || null})}/></td>
+                            <td className="p-1"><button className={btnSecondary} onClick={() => setRows(rows.filter((_, j) => j !== i))}>삭제</button></td>
+                        </tr>
+                    );
+                })}
+                </tbody>
+            </table>
+            <p className="text-xs text-slate-500">매처: SHELL·GIT_PUSH·DEPLOY는 명령 앞부분(<code>git push</code>), FILE_WRITE는 경로 glob(<code>**/.env*</code>), NETWORK는 도메인, MCP는 <code>server:tool</code>, <code>*</code>는 범주 전체.</p>
+            <div className="flex gap-2">
+                <button className={btnSecondary} onClick={() => setRows([...rows, EMPTY_PERM])}>행 추가</button>
+                <button className={btnPrimary} disabled={save.isPending} onClick={() => save.mutate()}>전체 저장</button>
+            </div>
+            {ToastComponent}
+        </div>
+    );
+}
+
+const TABS = [["global", "전역 정책"], ["tool", "Tool"], ["workspace", "작업공간"], ["skill", "Skill"], ["permission", "권한"]] as const;
 
 export default function AyaanSettingsPage() {
     const [tab, setTab] = useState<(typeof TABS)[number][0]>("global");
@@ -203,6 +348,8 @@ export default function AyaanSettingsPage() {
                 {tab === "global" && <GlobalTab/>}
                 {tab === "tool" && <ToolsTab/>}
                 {tab === "workspace" && <WorkspacesTab/>}
+                {tab === "skill" && <SkillsTab/>}
+                {tab === "permission" && <PermissionsTab/>}
             </div>
         </div>
     );

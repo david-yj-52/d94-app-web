@@ -8,14 +8,14 @@ const CONFIG_KEYS = [
 ];
 const TOOL_KEYS = [
     "ENABLED", "AUTH_MODE", "PLAN_NAME", "API_KEY_REF", "MODEL", "MAX_CONCURRENCY", "FALLBACK_RESET_RULE",
-    "BUDGET_TOKENS", "BUDGET_PERIOD",
+    "BUDGET_TOKENS", "BUDGET_PERIOD", "PLAN_SKILL_CD", "DEV_SKILL_CD",
 ];
 const WORKSPACE_KEYS = ["PROJECT_KEY", "WORKSPACE_PATH", "DEFAULT_TOOL", "PROMPT_TEMPLATE"];
 
 describe("CONFIG_HELP", () => {
-    it("전역 12 + Tool 9 + 작업공간 4 = 25개 키와 정확히 일치한다", () => {
+    it("전역 12 + Tool 11 + 작업공간 4 = 27개 키와 정확히 일치한다", () => {
         expect(Object.keys(CONFIG_HELP).sort()).toEqual([...CONFIG_KEYS, ...TOOL_KEYS, ...WORKSPACE_KEYS].sort());
-        expect(Object.keys(CONFIG_HELP)).toHaveLength(25);
+        expect(Object.keys(CONFIG_HELP)).toHaveLength(27);
     });
     it("모든 항목에 비어 있지 않은 설명이 있다", () => {
         for (const [k, v] of Object.entries(CONFIG_HELP)) {
