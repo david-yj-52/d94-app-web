@@ -24,7 +24,11 @@ export function ayaanError(e: unknown, fallback: string): string {
 export const STATUS_CLASS: Record<string, string> = {
     RUNNING: "bg-blue-50 text-blue-700", PAUSED: "bg-amber-50 text-amber-700", DONE: "bg-emerald-50 text-emerald-700",
     FAILED: "bg-red-50 text-red-600", QUEUED: "bg-slate-100 text-slate-600", CANCELLED: "bg-slate-100 text-slate-500",
+    WAITING: "bg-violet-50 text-violet-700",
 };
+/** 배지 문구: PAUSED(기계가 시각에 맞춰 재개)와 WAITING(사람 응답 필요)을 구분해 보여준다 */
+export const STATUS_LABEL: Record<string, string> = {PAUSED: "한도 대기", WAITING: "응답 대기"};
+export const statusLabel = (s: string) => STATUS_LABEL[s] ?? s;
 export const btnPrimary = "h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60";
 export const btnSecondary = "h-10 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-60";
 export const inputCls = "h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";

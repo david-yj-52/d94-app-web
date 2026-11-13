@@ -5,6 +5,7 @@ import type {AyaanTool} from "@/types/ayaan";
 const tool: AyaanTool = {
     toolCd: "CLAUDE", enabled: true, authMode: "ACCOUNT", planName: null, apiKeyRef: null, model: null,
     maxConcurrency: 1, fallbackResetRule: "INTERVAL 30m", budgetTokens: null, budgetPeriod: null,
+    planSkillCd: "BRAINSTORM", devSkillCd: null,
 };
 
 describe("toToolBody", () => {

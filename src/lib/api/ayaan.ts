@@ -1,5 +1,8 @@
 import apiClient from "./client";
 import type {
+    AyaanPermission,
+    AyaanRequest,
+    AyaanSkill,
     AyaanTask,
     AyaanTaskDetail,
     AyaanTool,
@@ -70,4 +73,31 @@ export async function syncPlugins(): Promise<PluginResult[]> {
 }
 export async function getPlugins(): Promise<string> {
     return (await apiClient.get(`${BASE}/plugins`)).data.data.output;
+}
+export async function getSkills(): Promise<AyaanSkill[]> {
+    return (await apiClient.get(`${BASE}/skills`)).data.data;
+}
+/** warnings: 예) "CLAUDE_PLUGINS에 없음" (저장은 됨) */
+export async function putSkill(cd: string, body: AyaanSkill): Promise<{ skill: AyaanSkill; warnings: string[] }> {
+    return (await apiClient.put(`${BASE}/skills/${cd}`, body)).data.data;
+}
+export async function deleteSkill(cd: string): Promise<void> {
+    await apiClient.delete(`${BASE}/skills/${cd}`);
+}
+export async function getPermissions(): Promise<AyaanPermission[]> {
+    return (await apiClient.get(`${BASE}/permissions`)).data.data;
+}
+/** 전체 교체 */
+export async function putPermissions(rows: AyaanPermission[]): Promise<AyaanPermission[]> {
+    return (await apiClient.put(`${BASE}/permissions`, rows)).data.data;
+}
+export async function getRequests(params: { status?: string; taskId?: string } = {}): Promise<AyaanRequest[]> {
+    return (await apiClient.get(`${BASE}/requests`, {params})).data.data;
+}
+/** choice(선택지 번호) 또는 answer(자유 답변, QUESTION 만). 이미 처리됐으면 409 */
+export async function answerRequest(id: string, body: { choice?: number; answer?: string }): Promise<AyaanRequest> {
+    return (await apiClient.post(`${BASE}/requests/${id}/answer`, body)).data.data;
+}
+export async function createDevTask(planTaskId: string): Promise<AyaanTask> {
+    return (await apiClient.post(`${BASE}/tasks/${planTaskId}/dev-task`)).data.data;
 }

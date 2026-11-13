@@ -1,4 +1,4 @@
-// 부록 A 원문 (phase1 설계). 키: 전역 11개 + Tool 필드 9개 + 작업공간 필드 4개 = 24. 도움말은 DB가 아니라 코드에 둔다.
+// 부록 A 원문 (phase1 설계) + TSTA-1 Tool 기본 skill 2개. 키: 전역 12개 + Tool 필드 11개 + 작업공간 필드 4개 = 27. 도움말은 DB가 아니라 코드에 둔다.
 export interface HelpEntry {
     label: string;
     tooltip: string;
@@ -10,6 +10,24 @@ export interface HelpEntry {
 }
 
 export const CONFIG_HELP: Record<string, HelpEntry> = {
+    "PLAN_SKILL_CD": {
+        "label": "기획 기본 skill",
+        "tooltip": "이 Tool로 기획(PLAN) 작업을 실행할 때 프롬프트 맨 앞에 붙일 skill입니다.",
+        "what": "이 Tool로 기획(PLAN) 작업을 실행할 때 프롬프트 맨 앞에 붙일 skill입니다. 작업 등록 시 skill을 따로 고르면 그 값이 우선합니다.",
+        "defaultRange": "CLAUDE: `BRAINSTORM`. 비우면 skill 없이 실행.",
+        "whenToChange": "기획 방식을 바꾸고 싶을 때 Skill 탭에 등록한 다른 skill로.",
+        "example": "`BRAINSTORM`",
+        "caution": "Claude skill의 플러그인이 설치되어 있지 않으면 작업이 실패(SKILL_PLUGIN_MISSING)로 끝납니다. 셋업 화면에서 플러그인을 설치하세요."
+    },
+    "DEV_SKILL_CD": {
+        "label": "개발 기본 skill",
+        "tooltip": "이 Tool로 개발(DEV) 작업을 실행할 때 프롬프트 맨 앞에 붙일 skill입니다.",
+        "what": "이 Tool로 개발(DEV) 작업을 실행할 때 프롬프트 맨 앞에 붙일 skill입니다. 기획이 끝나 자동으로 생긴 개발 작업도 이 값을 씁니다.",
+        "defaultRange": "CLAUDE: `PONYTAIL`. 비우면 skill 없이 실행.",
+        "whenToChange": "계획서를 단계별로 따라가게 하고 싶으면 `EXEC_PLAN`.",
+        "example": "`PONYTAIL`",
+        "caution": "재개(같은 세션 이어가기) 때는 skill을 다시 붙이지 않습니다."
+    },
     "EXHAUST_POLICY": {
         "label": "한도 소진 시 동작",
         "tooltip": "작업 중 Tool 한도가 다 떨어졌을 때 기다릴지, 다른 Tool로 넘길지 정합니다.",

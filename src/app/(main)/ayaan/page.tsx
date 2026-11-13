@@ -6,7 +6,7 @@ import {SkeletonCard} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {getQuotas, getTasks, refreshQuotas} from "@/lib/api/ayaan";
 import {TOOLS} from "@/types/ayaan";
-import {btnPrimary, ESTIMATED_SOURCES, fmtTime, remaining, STATUS_CLASS} from "./format";
+import {btnPrimary, ESTIMATED_SOURCES, fmtTime, remaining, STATUS_CLASS, statusLabel} from "./format";
 
 export default function AyaanDashboardPage() {
     const qc = useQueryClient();
@@ -19,6 +19,7 @@ export default function AyaanDashboardPage() {
         onError: () => show("한도 수집에 실패했습니다.", "error"),
     });
     const active = (tasks.data ?? []).filter((t) => t.status === "RUNNING" || t.status === "PAUSED");
+    const waiting = (tasks.data ?? []).filter((t) => t.status === "WAITING");
 
     return (
         <div className="mx-auto max-w-6xl space-y-6 px-4">
@@ -71,13 +72,26 @@ export default function AyaanDashboardPage() {
                     })}
                 </div>
             )}
+            {waiting.length > 0 && (
+                <section className="rounded-2xl border border-violet-200 bg-white p-5 shadow-sm">
+                    <h2 className="mb-3 font-bold text-violet-700">응답 대기 ({waiting.length})</h2>
+                    <ul className="space-y-2">
+                        {waiting.map((t) => (
+                            <li key={t.id} className="text-sm">
+                                <Link href={`/ayaan/tasks/${t.id}`} className="text-blue-600 hover:underline">{t.issueKey ?? t.id}</Link>
+                                <span className="ml-2 text-slate-500">{t.toolCd} · {t.phase === "PLAN" ? "기획" : "개발"} · 답변하면 이어서 진행합니다</span>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <h2 className="mb-3 font-bold text-slate-900">진행 중·중단 작업</h2>
                 {active.length === 0 && <p className="text-sm text-slate-400">없음</p>}
                 <ul className="space-y-2">
                     {active.map((t) => (
                         <li key={t.id} className="flex items-center gap-3 text-sm">
-                            <span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span>
+                            <span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{statusLabel(t.status)}</span>
                             <Link href={`/ayaan/tasks/${t.id}`} className="text-blue-600 hover:underline">{t.issueKey ?? t.id}</Link>
                             <span className="text-slate-500">{t.toolCd}{t.resumeAt ? ` · 재개 ${fmtTime(t.resumeAt)}` : ""}</span>
                         </li>

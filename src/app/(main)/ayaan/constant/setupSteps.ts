@@ -1,4 +1,4 @@
-// 부록 B 원문 (phase1 설계). 1단계 명령은 구현 0단계 확인 후 확정.
+// 부록 B 원문 (phase1 설계) + 7단계(TSTA-1 세션 보존). 1단계 명령은 구현 0단계 확인 후 확정.
 export interface SetupStepGuide {
     step: number;
     title: string;
@@ -62,5 +62,15 @@ export const SETUP_STEPS: SetupStepGuide[] = [
         "todo": "기준정보 > 작업공간에 매핑 1건 이상 등록, Tool 탭에서 사용할 Tool 확인, 필요하면 전역 정책 조정(설명 카드 참고).",
         "commands": [],
         "check": "`ENABLED` Tool 1개 이상, 작업공간 매핑 1건 이상, 매핑의 `DEFAULT_TOOL`이 활성 상태"
+    },
+    {
+        "step": 7,
+        "title": "CLI 세션 보존 기간 (선택)",
+        "why": "사람 응답을 기다리는 작업(응답 대기)은 답이 오면 같은 CLI 세션을 이어서 씁니다. 대기는 무기한인데 CLI는 기본적으로 오래된 세션을 지웁니다.",
+        "todo": "컨테이너 HOME의 설정 파일에 보존 기간을 365일 이상으로 적습니다. ayaan은 확인만 하고 파일을 고치지 않습니다. 세션이 지워져도 새로 실행하며 이전 질문·답변을 덧붙입니다.",
+        "commands": [
+            "# ~/.claude/settings.json\n{ \"cleanupPeriodDays\": 365 }\n# ~/.gemini/settings.json\n{ \"general\": { \"sessionRetention\": { \"maxAge\": \"365d\" } } }\n"
+        ],
+        "check": "활성 Tool 중 CLAUDE·GEMINI의 세션 보존 설정이 365일 이상인지"
     }
 ];
