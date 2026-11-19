@@ -1,10 +1,8 @@
 "use client";
 
-import axios from "axios";
-import {signOut} from "next-auth/react";
+import axios, {type InternalAxiosRequestConfig} from "axios";
 
-/** 401 로 로그아웃될 때 /login 이 사용자에게 보여 줄 안내 (LoginForm 의 LOGIN_NOTICES 키) */
-export const SESSION_EXPIRED_REASON = "expired";
+import {refreshSession, requestReauth} from "./session";
 
 const apiClient = axios.create({
     baseURL: "/api/proxy",
@@ -13,18 +11,19 @@ const apiClient = axios.create({
     paramsSerializer: {indexes: null},
 });
 
-// 화면에서 동시에 나간 요청들이 모두 401 을 받아도 로그아웃은 한 번만
-let signingOut = false;
+type RetriableConfig = InternalAxiosRequestConfig & { _sessionRetried?: boolean };
 
+// 401 → 세션 refresh 후 한 번 재시도 → 그래도 안 되면(유휴·절대 만료) 화면을 떠나지 않고 재로그인 모달.
+// 로그인하면 기다리던 요청을 다시 보낸다 → 작성 중이던 화면 상태가 그대로 남는다 (ADR 0007)
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const url: string = error.config?.url ?? "";
+        const config = error.config as RetriableConfig | undefined;
         // 로그인·회원가입 자체의 401 은 "토큰 만료"가 아니므로 화면이 직접 처리한다
-        const isAuthEndpoint = url.startsWith("/v1/auth/");
-        if (error.response?.status === 401 && !isAuthEndpoint && !signingOut) {
-            signingOut = true;
-            await signOut({callbackUrl: `/login?reason=${SESSION_EXPIRED_REASON}`});
+        const isAuthEndpoint = (config?.url ?? "").startsWith("/v1/auth/");
+        if (error.response?.status === 401 && config && !isAuthEndpoint && !config._sessionRetried) {
+            config._sessionRetried = true;
+            if ((await refreshSession()) || (await requestReauth())) return apiClient(config);
         }
         return Promise.reject(error);
     },

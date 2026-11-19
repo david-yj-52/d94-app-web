@@ -47,7 +47,7 @@
 | GlobalSearch | `layout/GlobalSearch` | 헤더 빠른 이슈 검색 | ApHeader, CiraShell | ✅ |
 | NotificationBell | `layout/NotificationBell` | 헤더 알림 드롭다운 | ApHeader, CiraShell | ✅ |
 | NotificationMount | `layout/NotificationMount` | 알림 폴링 마운트 | `(main)`·`(cira)` layout | ✅ |
-| Providers | `Providers` | QueryClient + SessionProvider | `app/layout.tsx` | ✅ |
+| Providers | `Providers` | QueryClient + SessionProvider(`refetchOnWindowFocus={false}`) + SessionActivity + ReauthModal | `app/layout.tsx` | ✅ |
 | TshLogo | `TshLogo` | 브랜드 로고 | (auth) layout, ApHeader, `app/page.tsx` | 🔁 |
 | AddTodoForm / TodoItem | `AddTodoForm`, `TodoItem` | todo 입력·항목 | `/todo` | 🧪 |
 | AuthCheck / LoginButton | `AuthCheck`, `LoginButton` | 초기 인증 데모 | — | ⛔ |
@@ -60,7 +60,8 @@
 ### Domain
 | 폴더 | 컴포넌트 | 용도 | 사용처 | 카드 |
 |---|---|---|---|---|
-| auth | LoginForm, RegisterForm | 로그인·회원가입 폼 (react-hook-form + zod) | `/login`, `/register` | §5 |
+| auth | LoginForm, RegisterForm | 로그인·회원가입 폼 (react-hook-form + zod) | `/login`, `/register`, ReauthModal | §5 |
+| auth | ReauthModal, SessionActivity | 세션 만료 시 그 자리 재로그인 모달 · 사용자 입력 시 세션 활동 신호 | `Providers` | §5 |
 | board | KanbanBoard › KanbanColumn › KanbanCard | 칸반 보드 (HTML5 DnD) | `boards/[boardId]` | [board](board/AGENTS.md) |
 | board | CreateBoardModal, AddColumnModal | 보드 생성, 컬럼 추가·편집 | `boards`, KanbanBoard | [board](board/AGENTS.md) |
 | issue | IssueTable, IssueFilter, CreateIssueModal | 이슈 목록·필터·생성 | `issues` | [issue](issue/AGENTS.md) |
@@ -81,14 +82,25 @@
 
 ### LoginForm / RegisterForm — `@/components/auth/LoginForm`, `@/components/auth/RegisterForm`
 ```ts
-LoginForm(props: { reason?: string })   // reason = /login?reason=… (LOGIN_NOTICES 키, 예 "expired")
+LoginForm(props: { reason?: string; callbackUrl?: string; onSuccess?: () => void })
+// reason = /login?reason=… (LOGIN_NOTICES 키, 예 "expired")
+// callbackUrl = 성공 뒤 이동할 내부 경로(호출하는 쪽이 safeCallbackUrl 로 검증, 기본 /home)
+// onSuccess = 있으면 이동하지 않고 이것만 호출 (ReauthModal)
 RegisterForm()                          // props 없음
 ```
 - react-hook-form + zod로 검증합니다.
 - 두 폼 모두 비밀번호를 **암호화한 뒤에만** 전송합니다(ADR 0004). `signIn`을 직접 부르지 말고 `useLogin`을 쓰세요.
 - LoginForm은 `useLogin`(`hooks/useAuth`)을 호출합니다. 결과 false → "이메일 또는 비밀번호가 올바르지 않습니다", throw(공개키 조회 실패) → "서버에 연결할 수 없습니다". `reason`이 `LOGIN_NOTICES`에 있으면 폼 위에 안내(amber)를 띄웁니다.
 - RegisterForm은 `useRegister`로 가입한 뒤 같은 계정으로 `useLogin` 해서 `/home` 으로 보냅니다. 자동 로그인이 실패하면 `/login`으로 보냅니다. 오류 안내: 400 "이미 가입된 이메일", 401 "서버에서 거절"(UMD public-paths 누락), 502 이상·연결 실패 "일시적으로 연결할 수 없음".
-- 사용처: `(auth)/login/page.tsx`, `(auth)/register/page.tsx`
+- 사용처: `(auth)/login/page.tsx`, `(auth)/register/page.tsx`, `ReauthModal`
+
+### ReauthModal / SessionActivity — `@/components/auth/ReauthModal`, `@/components/auth/SessionActivity`
+```ts
+ReauthModal()       // props 없음. Providers 가 {useReauthStore 의 open && <ReauthModal/>} 로 렌더링 (QueryClientProvider 안)
+SessionActivity()   // props 없음, 렌더링 없음. Providers 에 한 번
+```
+- ReauthModal: `apiClient` 가 refresh 로도 401 을 못 넘기면 뜹니다. 안에 `LoginForm(reason="expired", onSuccess)`. 성공 → `settleReauth(true)`(기다리던 요청 재전송), 다른 계정이면 `/home` 으로 새로 엶. 바깥 클릭·✕ → `settleReauth(false)`(요청만 실패, 로그아웃·이동 없음 — 입력을 지키기 위해) → [ADR 0007](../../docs/decisions/0007-cira-session-expiry-and-resume-plan.md)
+- SessionActivity: 로그인 상태에서 `pointerdown`·`keydown` 이 있으면 1분에 한 번 `refreshSession(true)` → 유휴 타이머 갱신, accessToken 미리 회전.
 
 ### MilestoneCard — `@/components/milestone/MilestoneCard`
 ```ts

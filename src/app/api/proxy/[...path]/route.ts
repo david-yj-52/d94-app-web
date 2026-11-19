@@ -1,4 +1,5 @@
-import {getBackendAccessToken} from "@/lib/auth/accessToken";
+import {readSessionToken} from "@/lib/auth/accessToken";
+import {isAccessTokenExpired} from "@/lib/auth/sessionPolicy";
 import {NextResponse} from "next/server";
 import {handleMockRequest, isMockEnabled} from "@/lib/mock/router";
 
@@ -46,7 +47,13 @@ async function proxyHandler(
     const method = request.method;
 
     // 백엔드 토큰은 서버에서만 세션 쿠키에서 꺼낸다 (브라우저 세션 응답에는 없음, ADR 0005)
-    const accessToken = await getBackendAccessToken(request);
+    const session = await readSessionToken(request);
+    // accessToken 만료 → 백엔드에 보내지 않고 401: apiClient 가 세션 refresh 후 재시도한다 (ADR 0007).
+    // 토큰 없이 보내면 d94-query 는 401 이 아니라 403 을 줘서 재시도가 일어나지 않는다
+    if (session && isAccessTokenExpired(session)) {
+        return NextResponse.json({success: false, code: "TOKEN_EXPIRED"}, {status: 401});
+    }
+    const accessToken = session?.accessToken;
 
     const headers = new Headers();
     for (const name of PASS_REQUEST_HEADERS) {

@@ -210,6 +210,9 @@ on("POST", "/v1/auth/login", async ({body}) => {
     // mock 은 비밀번호를 검사하지 않는다 (어떤 계정이든 로그인)
     return ok({accessToken: "dev-admin-token", tokenType: "Bearer", expiresIn: 3600, user: {name: fields.email ?? ME.name}});
 });
+// mock 로그인 토큰은 exp·refreshToken 이 없어 web 이 refresh 를 부르지 않는다. 형태만 맞춰 둔다
+on("POST", "/v1/auth/refresh", () => ok({accessToken: "dev-admin-token", tokenType: "Bearer", expiresIn: 3600}));
+on("POST", "/v1/auth/logout", () => ({status: 204}));
 
 // 사용자 / 대시보드
 on("GET", "/v1/users/search", ({query}) => {

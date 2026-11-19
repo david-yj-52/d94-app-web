@@ -37,7 +37,7 @@ interface-test/page.tsx   (form · logs 상태 보관, 조립)
 | DELETE 삭제 | `DELETE /v1/interface-tests/{id}` | 204 (soft delete), 이후 조회 404 |
 
 - 백엔드: d94-query `InterfaceTestController` (`/api/v1/interface-tests`, 테이블 `SN_IF_TEST_ITEM`). `BACKEND_URL` 에 `/tsh/api` 까지 포함합니다.
-- `callInterfaceTest` 는 4xx·5xx 도 throw 하지 않고 결과로 돌려줍니다(규칙 예외 → [conventions §7](../../../../docs/conventions.md)). `validateStatus` 를 모두 통과시키므로 401 이어도 `signOut` 하지 않습니다.
+- `callInterfaceTest` 는 4xx·5xx 도 throw 하지 않고 결과로 돌려줍니다(규칙 예외 → [conventions §7](../../../../docs/conventions.md)). `validateStatus` 를 모두 통과시키므로 401 이어도 refresh·재로그인을 하지 않습니다.
 
 ## 기능 (L4)
 ### 메서드 호출

@@ -47,7 +47,8 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 - **로그인·회원가입 자격 증명은 브라우저에서 암호화됩니다** (RSA-OAEP-256 + AES-256-GCM, [ADR 0004](decisions/0004-credential-encryption.md)). 브라우저가 `GET /v1/auth/public-key`로 d94-query 공개키를 받아 `{enc}` 봉투만 보내고, 복호화는 d94-query 만 합니다. 따라서 DevTools·Next 서버·UMD·Redis 구간에 평문 비밀번호가 남지 않습니다. d94-query 는 평문 본문을 400 `AUTH_CREDENTIAL_INVALID`로 거절합니다(`AUTH_CREDENTIAL_ALLOW_PLAINTEXT=true` 일 때만 예외).
 - **로그인도 `BACKEND_URL`(UMD) 을 거칩니다.** UMD(server)는 토큰 없는 요청을 401 로 막으므로, UMD 의 `umd.server.public-paths` 에 로그인 경로(예 `/tsh/api/v1/auth/**`)가 있어야 로그인할 수 있습니다.
 
-- 401 응답을 받으면 axios 인터셉터가 `signOut({callbackUrl: "/login?reason=expired"})`을 한 번만 호출하고, 로그인 화면이 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다 (`src/lib/api/client.ts`, `LoginForm`). `/v1/auth/*` 요청의 401 은 제외(화면이 직접 처리).
+- 401 응답을 받으면 axios 인터셉터가 세션 refresh(`refreshSession`) 후 원래 요청을 한 번 다시 보내고, 그래도 안 되면 화면을 떠나지 않고 재로그인 모달(`ReauthModal`)을 띄운 뒤 로그인하면 기다리던 요청을 다시 보냅니다 (`src/lib/api/client.ts`·`session.ts`, [ADR 0007](decisions/0007-cira-session-expiry-and-resume-plan.md)). `/v1/auth/*` 요청의 401 은 제외(화면이 직접 처리).
+- 프록시는 accessToken 이 만료된 세션이면 백엔드에 보내지 않고 401(`TOKEN_EXPIRED`)을 줍니다(토큰 없는 요청에 d94-query 는 403 을 주기 때문).
 - QueryClient 기본값은 `staleTime` 30초, `retry` 1입니다 (`src/components/Providers.tsx`).
 - **큰 파일(UMD 상한 요청 1MB·응답 5MB)**: 업로드는 768KB 조각으로 나눠 보내고(Study·CIRA 첨부), CIRA 첨부 다운로드는 `src/app/api/attachments/[id]/route.ts` 가 백엔드에 `Range` 로 4MB씩 요청해 하나의 응답으로 잇습니다. 이 라우트도 `getBackendAccessToken` 으로 토큰을 붙입니다.
 - 알림은 SSE 가 아니라 `/api/proxy/v1/notifications`를 30초마다 폴링합니다 (`src/hooks/useNotifications.ts`). 백엔드 토큰을 브라우저에 내리지 않기 위해서이고, UMD 도 스트리밍을 지원하지 않습니다 ([ADR 0005](decisions/0005-backend-token-server-only.md)).
@@ -56,17 +57,18 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 | 파일 | 역할 |
 |---|---|
-| `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`을 JWT에 저장. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
-| `src/next-auth.d.ts` | 세션·JWT 타입 확장. `Session`에는 표시용 `user`만, `JWT`(암호화된 쿠키)에 `accessToken`·`accessTokenExpiresAt` |
-| `src/lib/auth/accessToken.ts` | **서버 전용** `getBackendAccessToken(request)`: 세션 쿠키(JWE)를 풀어 백엔드 토큰 반환. https·http 쿠키 이름 둘 다 시도, 만료면 undefined. `/api/proxy`·`/api/attachments/[id]`가 사용 |
+| `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`과 응답 `Set-Cookie` 의 `refreshToken`을 JWT에 저장. `jwt` 콜백이 유휴·절대 만료를 검사하고, 세션 update 때 만료가 가까우면 `POST /v1/auth/refresh`(Cookie 헤더)로 회전. 로그아웃하면 `POST /v1/auth/logout` 으로 refreshToken 폐기. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
+| `src/next-auth.d.ts` | 세션·JWT 타입 확장. `Session`에는 표시용 `user`만, `JWT`(암호화된 쿠키)에 `accessToken`·`accessTokenExpiresAt`·`refreshToken`·`loginAt`·`lastActiveAt` |
+| `src/lib/auth/accessToken.ts` | **서버 전용** `readSessionToken(request)`: 세션 쿠키(JWE)를 **읽기만** 해서 JWT 반환(만료 정책상 끝난 세션이면 null, https·http 쿠키 이름 둘 다 시도). 미들웨어·`/api/proxy`가 사용. `getBackendAccessToken(request)`: accessToken(만료면 undefined), `/api/attachments/[id]`가 사용 |
+| `src/lib/auth/sessionPolicy.ts` | 만료 정책 순수 함수. 유휴 30분·절대 12시간·refresh 2분 전 상수, `isSessionExpired`·`isAccessTokenExpired`·`needsRefresh` |
 
 - **백엔드 토큰은 브라우저에 내리지 않습니다** ([ADR 0005](decisions/0005-backend-token-server-only.md)). `GET /api/auth/session` 응답에는 `user.name`·`user.email`·`expires`만 있습니다.
-- **백엔드 토큰이 만료되면 세션도 끝납니다.** `jwt` 콜백이 토큰 `exp`를 `accessTokenExpiresAt`에 저장하고, 지나면 `null`을 돌려 세션 쿠키를 지웁니다(미들웨어가 `/login`으로 보냄). `exp`가 없는 mock 토큰은 세션 만료(30일)를 따릅니다.
+- **세션은 활동 중에는 이어지고, 유휴 30분·로그인 12시간이 지나면 끝납니다** ([ADR 0007](decisions/0007-cira-session-expiry-and-resume-plan.md)). `SessionActivity` 가 키보드·포인터 입력이 있으면 1분에 한 번 세션 update(`{active: true}`)를 보내 `lastActiveAt` 을 갱신하고, 그때 accessToken(15분) 만료가 가까우면 refresh 합니다. 폴링은 활동이 아닙니다. refreshToken 이 없는 세션(UMD 가 쿠키를 넘기지 않을 때)은 예전처럼 accessToken 만료와 함께 끝납니다. `exp`가 없는 mock 토큰은 유휴·절대 만료만 따릅니다.
 | `src/app/api/auth/[...nextauth]/` | next-auth 라우트 핸들러 |
-| `src/middleware.ts` | 로그인 여부에 따른 리다이렉트 |
+| `src/middleware.ts` | 로그인 여부에 따른 리다이렉트. next-auth `auth()` 래퍼를 쓰지 않고 `readSessionToken` 으로 판정(쿠키를 다시 쓰지 않음 — refresh 로 회전된 쿠키를 덮지 않도록) |
 
 `src/middleware.ts` 규칙 (판정은 `src/lib/routeAccess.ts`의 `classifyPath`, 테스트 `routeAccess.test.ts`):
-- **보호 경로**: `/cira/**`, `/interface-test`, `/study/**`. 비로그인 상태면 `/login`으로 보냅니다. 단 `/cira/register`(예전 가입 경로)는 열어 둡니다.
+- **보호 경로**: `/cira/**`, `/interface-test`, `/study/**`. 비로그인 상태면 `/login?callbackUrl={경로+쿼리}`로 보내고, 세션 쿠키가 남아 있었으면(만료) `reason=expired` 도 붙입니다. 로그인 뒤 `safeCallbackUrl`(내부 경로만)로 검증한 경로로 돌아갑니다. 단 `/cira/register`(예전 가입 경로)는 열어 둡니다.
 - **비로그인 전용**: `/login`, `/register`. 로그인 상태면 `/home`으로 보냅니다.
 - **예전 CIRA 경로**(`/projects/**`, `/dashboard`, `/search/**`, `/notifications`)는 `next.config.mjs`의 `redirects()`가 미들웨어보다 먼저 `/cira/...`로 영구 redirect합니다(쿼리 유지). d94-query 위키가 만드는 `/issues/{key}` 링크는 `/cira/search?q={key}`로 보냅니다.
 - 정적 확장자(png, svg, css, js 등)는 통과시킵니다. `public/` 이미지가 리다이렉트되지 않게 하기 위함입니다.

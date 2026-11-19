@@ -5,18 +5,19 @@
 | 폴더/파일 | 역할 | 상태 |
 |---|---|---|
 | `api/` | axios 기반 도메인별 HTTP 함수 (`client.ts` + 17개 도메인) | ✅ 표준 |
-| `auth/` | **서버 전용** 인증 헬퍼. `accessToken.ts`의 `getBackendAccessToken(request)` — 세션 쿠키에서 백엔드 토큰을 꺼냄 ([ADR 0005](../../docs/decisions/0005-backend-token-server-only.md)). 클라이언트에서 import 금지 | ✅ 표준 |
+| `auth/` | **서버 전용** 인증 헬퍼. `accessToken.ts`의 `readSessionToken(request)`(세션 쿠키를 읽기만, 만료 정책 적용)·`getBackendAccessToken(request)`, `sessionPolicy.ts` 만료 정책(유휴·절대·refresh 시점) ([ADR 0005](../../docs/decisions/0005-backend-token-server-only.md), [ADR 0007](../../docs/decisions/0007-cira-session-expiry-and-resume-plan.md)). 클라이언트에서 import 금지 | ✅ 표준 |
 | `crypto/` | 로그인·회원가입 자격 증명 암호화 (WebCrypto) | ✅ 표준 |
 | `mock/` | 개발용 in-memory mock 백엔드 (`DEV_MOCK_API`) | ✅ 임시 |
 | `messaging/solace/` | Solace WebSocket 설정·훅 | 🧪 Solace 실험 전용 |
-| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
+| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"`, 로그인 뒤 복귀 경로 검증 `safeCallbackUrl(raw)`(내부 경로만, 아니면 `/home`), `SESSION_EXPIRED_REASON` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
 | `api.ts` | 구 fetch 래퍼 (서버·클라이언트 겸용) | 🧪 todo 실험 전용, 새 코드에서 사용 금지 |
 
 ## 1. API 함수 (`api/{domain}.ts`)
 
 - `apiClient`(`./client`)만 사용합니다. 경로는 `/v1/...`이고, 실제 요청은 `/api/proxy/v1/...`로 나갑니다.
 - 반환값은 `res.data.data`이고, 반환 타입을 명시합니다. 함수 하나가 HTTP 호출 하나를 맡으며 캐싱이나 상태 관리는 하지 않습니다.
-- `apiClient`는 401 응답을 받으면 `signOut({callbackUrl: "/login?reason=expired"})`을 **한 번만** 호출합니다(동시 401 여러 건 대비). `/login`은 `reason`을 보고 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다. `/v1/auth/*`(로그인·회원가입) 요청의 401 은 제외합니다.
+- `apiClient`는 401 응답을 받으면 `refreshSession()`(세션 update, 탭 안에서 동시 요청은 하나로 합류) 뒤 원래 요청을 **한 번** 다시 보냅니다. 그래도 안 되면 `requestReauth()` 로 재로그인 모달을 띄우고 기다렸다가, 로그인하면 다시 보내고 모달을 닫으면 401 로 실패합니다. `/v1/auth/*`(로그인·회원가입) 요청의 401 은 제외합니다 → [ADR 0007](../../docs/decisions/0007-cira-session-expiry-and-resume-plan.md)
+- `api/session.ts`: `refreshSession(active?)` — `GET /api/auth/csrf` 후 `POST /api/auth/session {csrfToken, data: {active}}`, 결과 true = 세션 살아 있음. `useReauthStore`(zustand `{open}`)·`requestReauth()`·`settleReauth(ok)` — 재로그인 모달 상태와 기다리는 요청들.
 - `api/auth.ts`: 자격 증명은 **암호화해서만** 보냅니다 ([ADR 0004](../../docs/decisions/0004-credential-encryption.md)).
   - `getCredentialPublicKey()` → `GET /v1/auth/public-key` (`CredentialPublicKeyResponse`, 캐시하지 않음)
   - `registerUser(data)` → 공개키로 암호화해 `POST /v1/auth/register` 에 `{enc}` 전송
@@ -56,7 +57,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
 
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
-통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 `signOut` 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
+통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 refresh·재로그인을 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
 
 ### 타입
 `src/types/{domain}.ts`에 `XxxResponse`, `CreateXxxRequest`, `UpdateXxxRequest`로 정의합니다. 페이지네이션은 `PageResponse<T>`(`types/issue.ts`)를 사용합니다.
@@ -83,9 +84,9 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 - 응답 헬퍼: `ok(data)` → `{success: true, data}`, `notFound(what)` → 404. 본문 없는 상태(`{status: 204}`)도 반환할 수 있습니다(프록시가 본문 없이 응답).
 - 인터페이스 테스트 mock(`/v1/interface-tests`)은 백엔드와 같은 상태코드(201·204·400·404)를 돌려줍니다. 저장소는 `getStore().interfaceTests`.
 - 첨부 조각 업로드 mock 은 바이트를 저장하지 않고 complete 에서 메타만 만듭니다. mock 모드의 `/api/attachments/[id]` 는 프록시 mock 다운로드(샘플 텍스트)로 redirect 합니다.
-- 인증 mock(`/v1/auth/public-key`·`login`·`register`)은 `credential.ts`의 실제 RSA 키(globalThis 보관, 재시작 시 새로 생성)로 봉투를 복호화합니다. 풀리지 않거나 평문이면 400 `AUTH_CREDENTIAL_INVALID`, 로그인은 비밀번호를 검사하지 않고 아무 계정이나 통과시킵니다. 핸들러는 `Promise<MockResult>`도 반환할 수 있습니다.
+- 인증 mock(`/v1/auth/public-key`·`login`·`register`, 형태만 맞춘 `refresh`·`logout`)은 `credential.ts`의 실제 RSA 키(globalThis 보관, 재시작 시 새로 생성)로 봉투를 복호화합니다. 풀리지 않거나 평문이면 400 `AUTH_CREDENTIAL_INVALID`, 로그인은 비밀번호를 검사하지 않고 아무 계정이나 통과시킵니다. 핸들러는 `Promise<MockResult>`도 반환할 수 있습니다.
 - mock 응답은 **web 타입 모양**이라 실제 d94-query 와 다른 곳이 있습니다. `mock/router.test.ts` 가 차이를 `KNOWN_DIFFS` 로 고정합니다(mock 이나 백엔드가 바뀌면 깨짐). 스프린트·댓글·멤버는 백엔드 모양·경로에 맞췄습니다. mock 은 `statusId`·`issueTypeId` 없는 이슈 생성과 255자 넘는 값을 받아 주므로, 그 경우 mock 에서 되고 실제 백엔드에서는 500 입니다.
-- `enabled.ts`의 `isMockEnabled`는 `src/auth.ts`(미들웨어 번들)가 라우터 전체를 끌어오지 않도록 분리해 둔 것입니다. `router.ts`도 같은 함수를 다시 export 합니다.
+- `enabled.ts`의 `isMockEnabled`는 `src/auth.ts`가 라우터 전체를 끌어오지 않도록 분리해 둔 것입니다(예전에는 미들웨어가 `auth.ts`를 import 했음. 지금 미들웨어는 `lib/auth/accessToken`만 씀). `router.ts`도 같은 함수를 다시 export 합니다.
 
 ## 3. Solace (`messaging/solace/`) 🧪
 

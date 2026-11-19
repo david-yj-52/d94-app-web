@@ -7,7 +7,7 @@ import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
-import {SESSION_EXPIRED_REASON} from "@/lib/api/client";
+import {SESSION_EXPIRED_REASON} from "@/lib/routeAccess";
 
 /** /login?reason=… 로 들어왔을 때 보여 줄 안내 */
 const LOGIN_NOTICES: Record<string, string> = {
@@ -21,7 +21,16 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-export default function LoginForm({reason}: { reason?: string }) {
+interface LoginFormProps {
+    /** /login?reason=… (LOGIN_NOTICES 키) */
+    reason?: string;
+    /** 로그인 성공 뒤 이동할 내부 경로 (호출하는 쪽이 safeCallbackUrl 로 검증한 값). 기본 /home */
+    callbackUrl?: string;
+    /** 있으면 이동하지 않고 이것만 부른다 — 화면을 떠나지 않는 재로그인(ReauthModal) */
+    onSuccess?: () => void;
+}
+
+export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: LoginFormProps) {
     const notice = reason ? LOGIN_NOTICES[reason] : undefined;
     const [showPassword, setShowPassword] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
@@ -46,8 +55,10 @@ export default function LoginForm({reason}: { reason?: string }) {
         }
         if (!success) {
             setServerError("이메일 또는 비밀번호가 올바르지 않습니다.");
+        } else if (onSuccess) {
+            onSuccess();
         } else {
-            window.location.href = "/home";
+            window.location.href = callbackUrl;
         }
     };
 

@@ -25,7 +25,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.
-  - 보호 경로(비로그인 시 `/login`으로): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`. 판정은 `src/lib/routeAccess.ts`
+  - 보호 경로(비로그인 시 `/login?callbackUrl=…`으로, 판정은 쿠키를 읽기만 하는 `readSessionToken`): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`. 판정은 `src/lib/routeAccess.ts`
   - 예전 CIRA 경로(`/projects/**` 등)는 `next.config.mjs` redirect 로 `/cira/...` 에 갑니다 → [architecture](../../docs/architecture.md)
   - `/home`, `/todo`는 페이지에서 직접 `auth()`를 확인해 redirect합니다. `/mpms`, `/solace`는 **보호되지 않습니다**.
 
@@ -57,7 +57,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 | Ayaan 셋업 | `/ayaan/setup` | 🧪 | 6단계 체크리스트·자동 점검·테스트 알림 | [ayaan](./(main)/ayaan/AGENTS.md) |
 
 **L3 문서 없이 여기서만 설명하는 화면**
-- `/login`, `/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)). `/login?reason=expired` 면 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다(API 401 → `apiClient` 가 로그아웃시키며 붙임).
+- `/login`, `/register`: 폼 컴포넌트 하나만 렌더링합니다([카탈로그 §5](../components/AGENTS.md)). `/login?reason=expired` 면 "로그인 정보가 만료되었거나 유효하지 않습니다" 안내를 띄웁니다(만료된 세션 쿠키로 보호 경로에 들어오면 미들웨어가 붙임). `?callbackUrl=` 이 있으면 로그인 뒤 그 내부 경로로 돌아갑니다(`safeCallbackUrl`, 이미 로그인 상태여도 그 경로로 redirect). API 401 은 페이지를 떠나지 않고 재로그인 모달로 처리합니다 → [ADR 0007](../../docs/decisions/0007-cira-session-expiry-and-resume-plan.md)
 - 로그인·회원가입 자격 증명은 브라우저에서 암호화되어 `{enc}` 봉투로만 나갑니다(`/api/auth/callback/credentials`·`/api/proxy/v1/auth/register` 모두). [ADR 0004](../../docs/decisions/0004-credential-encryption.md)
 - `/cira/register`: `/register` 로 redirect 합니다. 소셜(Google) 가입은 미구현입니다.
 - `/cira/notifications`: 알림 목록(페이지네이션)입니다.

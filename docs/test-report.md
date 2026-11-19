@@ -27,7 +27,8 @@
 | `src/lib/api/comments.test.ts` | 6 | 0 | `/v1/comments/{id}` 수정·삭제, 반응 토글 `{reactionType}`, 답글 `parentId` |
 | `src/lib/api/notifications.test.ts` | 6 | 0 | 목록 → `NotificationPage` 변환, `{count}`, mock 모양 통과 |
 | `src/lib/api/projectSettings.test.ts` | 3 | 0 | 멤버(`userNm`), 역할 변경 경로 `/role`, 워크플로우 상태 |
-| `src/lib/api/client.test.ts` | 1 | 0 | 401 → `signOut` 1회, `/v1/auth/*` 제외 |
+| `src/lib/api/client.test.ts` | 4 | 0 | 401 → 세션 refresh 1회(동시 요청 합류)·재시도, 재로그인 모달 하나로 동시 요청 재개·닫으면 실패, `/v1/auth/*` 제외 |
+| `src/lib/auth/sessionPolicy.test.ts` | 3 | 0 | 유휴·절대 만료, refreshToken 유무, refresh 시점 |
 | `src/hooks/useIssues.test.ts` | 8 | 0 | queryKey, invalidate, 상태 변경 낙관적 갱신·롤백 |
 | `src/hooks/useBoards.test.ts` | 16 | 0 | queryKey, invalidate, 칸반 순서 계산(제자리 포함)·서버 응답 반영·롤백 |
 | `src/hooks/useSprints.test.ts` | 8 | 0 | queryKey, invalidate 7종 |

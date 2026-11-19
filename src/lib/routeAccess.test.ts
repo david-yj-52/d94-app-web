@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {classifyPath} from "./routeAccess";
+import {classifyPath, safeCallbackUrl} from "./routeAccess";
 
 describe("lib/routeAccess classifyPath", () => {
     it("CIRA 경로는 보호한다", () => {
@@ -20,5 +20,12 @@ describe("lib/routeAccess classifyPath", () => {
     it("로그인·가입은 비로그인 전용이다", () => {
         expect(classifyPath("/login")).toBe("publicOnly");
         expect(classifyPath("/register")).toBe("publicOnly");
+    });
+
+    it("safeCallbackUrl 은 내부 경로(쿼리·해시 포함)만 돌려주고, 외부·로그인 화면·이상한 값은 /home", () => {
+        expect(safeCallbackUrl("/cira/projects/p1/issues/i1?tab=c#c3")).toBe("/cira/projects/p1/issues/i1?tab=c#c3");
+        for (const bad of [undefined, "", "https://evil.com", "//evil.com", "/\\evil.com", "/\t/evil.com", "javascript:alert(1)", "/login", "/register?x=1"]) {
+            expect(safeCallbackUrl(bad)).toBe("/home");
+        }
     });
 });
