@@ -2,7 +2,7 @@
 
 - 상태: 채택 (구현)
 - 날짜: 2026-11-18
-- 관련 저장소: d94-web (d94-query·lib-core 는 변경 없음)
+- 관련 저장소: d94-web, d94-lib-core(refresh·logout 이 본문 `refreshToken` 도 받음)
 - 이전 결정: [ADR 0005](0005-backend-token-server-only.md)의 "백엔드 토큰 만료 = 세션 종료"를 대체
 
 ## 배경 (분석 결과)
@@ -17,7 +17,7 @@
 
 ## 결정
 
-1. **refreshToken 도 서버에만 둔다.** `backendLogin` 이 로그인 응답 `Set-Cookie` 에서 `refreshToken` 을 꺼내 next-auth JWE 쿠키 안에 넣는다. 백엔드 호출 때는 `Cookie: refreshToken=…` 헤더로 보낸다. 브라우저 세션 응답에는 여전히 표시용 정보만 있다(ADR 0005 유지).
+1. **refreshToken 도 서버에만 둔다.** `backendLogin` 이 로그인 응답 `Set-Cookie` 에서 `refreshToken` 을 꺼내 next-auth JWE 쿠키 안에 넣는다. 백엔드 refresh·logout 호출 때는 본문 `{refreshToken}` 으로 보낸다 — UMD 가 요청의 `Cookie` 헤더를 버리기 때문(`ProxyHeaderPolicy.REQUEST_EXCLUDED`). lib-core `BaseAuthController` 는 쿠키를 먼저 보고, 없으면 본문(`RefreshRequest`)을 쓴다. 브라우저 세션 응답에는 여전히 표시용 정보만 있다(ADR 0005 유지).
 2. **refresh 는 세션 update(`POST /api/auth/session`) 한 곳에서만 한다.** `jwt` 콜백이 `trigger === "update"` 이고 accessToken 만료 2분 전(`REFRESH_BEFORE_MS`)이 지났을 때 백엔드 refresh 로 회전한다. 클라이언트(`lib/api/session.ts` `refreshSession`)는 탭 안에서 한 번에 하나만 보낸다.
 3. **세션 쿠키를 쓰는 곳을 줄인다.** 미들웨어는 `auth()` 래퍼 대신 `readSessionToken`(읽기만)으로 판정한다. `SessionProvider refetchOnWindowFocus={false}`.
 4. **유휴·절대 만료는 JWE 안의 시각으로 판단한다** (`lib/auth/sessionPolicy.ts`). `lastActiveAt`·`loginAt` 은 `AUTH_SECRET` 으로 암호화·서명돼 위조할 수 없으므로 서버 저장소가 필요 없다. 유휴 30분(`IDLE_TIMEOUT_MS`), 절대 12시간(`MAX_SESSION_MS`, 쿠키 maxAge 도 같음).
@@ -40,7 +40,7 @@
 
 ## 남은 위험
 
-- **UMD 경유 확인 필요**: UMD(server) `public-paths` 에 `/v1/auth/refresh`·`/v1/auth/logout` 이 있어야 하고, 로그인 응답의 `Set-Cookie` 를 UMD 가 넘겨줘야 한다. 넘겨주지 않으면 refreshToken 이 없어 **이전처럼 15분에 세션이 끝난다**(`[auth] refresh 실패` 로그는 남지 않음 — refresh 를 시도하지 않음).
+- **UMD 경유 (2026-11-18 확인)**: `public-paths` `/tsh/api/v1/auth/**` 가 refresh·logout 도 덮고, 응답 `Set-Cookie` 는 넘겨준다. 요청 `Cookie` 는 버린다 → 첫 배포(c085f28)에서는 운영 refresh 가 매번 실패해 15분마다 재로그인 모달이 떴고, 본문 전송 + lib-core 수정으로 고쳤다. **lib-core 가 배포되기 전 d94-query 이미지**에서는 여전히 실패한다(로그 `[auth] refresh 실패 status=400`).
 - **회전 경합**: lib-core 회전은 조회→삭제라 원자적이지 않다. 다른 탭과 동시에 회전하면 한쪽이 실패할 수 있다 → accessToken 이 아직 유효하면 세션을 유지하고, 만료됐으면 재로그인 모달.
 - **세션 조회(GET `/api/auth/session`)·서버 컴포넌트의 `auth()`** 도 쿠키를 다시 쓴다. refresh 와 정확히 겹치면 회전된 쿠키가 덮일 수 있다(재로그인 모달로 복구).
 - 유휴·절대 시간은 상수다. 제품 정책이 정해지면 `sessionPolicy.ts` 값만 바꾼다.

@@ -57,7 +57,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 
 | 파일 | 역할 |
 |---|---|
-| `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`과 응답 `Set-Cookie` 의 `refreshToken`을 JWT에 저장. `jwt` 콜백이 유휴·절대 만료를 검사하고, 세션 update 때 만료가 가까우면 `POST /v1/auth/refresh`(Cookie 헤더)로 회전. 로그아웃하면 `POST /v1/auth/logout` 으로 refreshToken 폐기. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
+| `src/auth.ts` | next-auth v5 설정. Credentials provider는 브라우저가 암호화한 봉투(`enc`)만 받아 **복호화하지 않고** `POST ${BACKEND_URL}/v1/auth/login`에 `{enc}`로 전달하고, 받은 `accessToken`과 응답 `Set-Cookie` 의 `refreshToken`을 JWT에 저장. `jwt` 콜백이 유휴·절대 만료를 검사하고, 세션 update 때 만료가 가까우면 `POST /v1/auth/refresh`(본문 `{refreshToken}` — UMD 가 요청 Cookie 를 버림)로 회전. 로그아웃하면 `POST /v1/auth/logout` 으로 refreshToken 폐기. 평문 email·password 는 받지 않는다(ADR 0004). 표시 이름·이메일은 accessToken 의 `sub`(d94-query 는 이메일). mock 모드(`DEV_MOCK_API`)면 로그인도 mock 이 복호화한다. 로그인·가입 실패 이유(상태, `x-umd-error`, 오류 코드)는 `[auth]` 로 Vercel 런타임 로그에 남긴다 |
 | `src/next-auth.d.ts` | 세션·JWT 타입 확장. `Session`에는 표시용 `user`만, `JWT`(암호화된 쿠키)에 `accessToken`·`accessTokenExpiresAt`·`refreshToken`·`loginAt`·`lastActiveAt` |
 | `src/lib/auth/accessToken.ts` | **서버 전용** `readSessionToken(request)`: 세션 쿠키(JWE)를 **읽기만** 해서 JWT 반환(만료 정책상 끝난 세션이면 null, https·http 쿠키 이름 둘 다 시도). 미들웨어·`/api/proxy`가 사용. `getBackendAccessToken(request)`: accessToken(만료면 undefined), `/api/attachments/[id]`가 사용 |
 | `src/lib/auth/sessionPolicy.ts` | 만료 정책 순수 함수. 유휴 30분·절대 12시간·refresh 2분 전 상수, `isSessionExpired`·`isAccessTokenExpired`·`needsRefresh` |

@@ -16,14 +16,16 @@ interface AuthUser {
 }
 
 /**
- * 인증 API 호출 (POST). refreshToken 은 백엔드가 쿠키로만 받으므로 Cookie 헤더로 보낸다.
+ * 인증 API 호출 (POST, JSON 본문).
  * mock 모드면 브라우저가 mock 공개키로 암호화했으므로 로그인도 mock 이 복호화한다.
  * mock 라우터는 미들웨어 번들에 들어가지 않도록 필요할 때만 불러온다.
  */
-async function authFetch(path: string, {body, refreshToken}: { body?: unknown; refreshToken?: string } = {}): Promise<Response> {
-    const headers: Record<string, string> = {"Content-Type": "application/json"};
-    if (refreshToken) headers.cookie = `refreshToken=${refreshToken}`;
-    const init: RequestInit = {method: "POST", headers, body: body === undefined ? undefined : JSON.stringify(body)};
+async function authFetch(path: string, body?: unknown): Promise<Response> {
+    const init: RequestInit = {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: body === undefined ? undefined : JSON.stringify(body),
+    };
     if (isMockEnabled()) {
         const {handleMockRequest} = await import("@/lib/mock/router");
         const mock = await handleMockRequest(new Request(`http://mock${path}`, init), path.slice(1).split("/"));
@@ -69,7 +71,7 @@ function parseEnvelope(raw: unknown): EncryptedCredential | null {
 /** 백엔드 로그인 (암호문 그대로 전달). 실패(자격 증명 오류·연결 실패)면 null — 이유는 Vercel 런타임 로그에 남긴다 */
 async function backendLogin(enc: EncryptedCredential): Promise<AuthUser | null> {
     try {
-        const res = await authFetch("/v1/auth/login", {body: {enc}});
+        const res = await authFetch("/v1/auth/login", {enc});
         if (!res.ok) {
             console.warn(`[auth] 로그인 실패 ${await describeFailure(res)}`);
             return null;
@@ -99,6 +101,7 @@ async function backendLogin(enc: EncryptedCredential): Promise<AuthUser | null> 
 /** 백엔드 refresh (회전: 새 refreshToken 이 Set-Cookie 로 온다). 실패면 null — 이유만 로그에 남긴다 (토큰 값은 남기지 않음) */
 async function backendRefresh(refreshToken: string): Promise<{ accessToken: string; refreshToken: string } | null> {
     try {
+        // UMD 는 요청의 Cookie 헤더를 버린다 → refreshToken 은 본문으로 보낸다 (lib-core 가 쿠키·본문 둘 다 받음)
         const res = await authFetch("/v1/auth/refresh", {refreshToken});
         const json = res.ok ? await res.json() : null;
         const next = refreshTokenFromResponse(res);
