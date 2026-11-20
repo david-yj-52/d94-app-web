@@ -11,7 +11,7 @@ import TermsPanel from "@/components/study/TermsPanel";
 import TocTree from "@/components/study/TocTree";
 import {Skeleton} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
-import {useCreateStudyAnnotation, useStudyDocument, useStudyPage, useStudyToc} from "@/hooks/useStudy";
+import {useCreateStudyAnnotation, useSaveStudyPosition, useStudyDocument, useStudyPage, useStudyToc} from "@/hooks/useStudy";
 import {errorMessage} from "@/lib/study/colors";
 import {rangeToAnchor, type SelectionAnchor} from "@/lib/study/selection";
 import type {AnnotationColor} from "@/types/study";
@@ -20,10 +20,11 @@ export default function StudyViewerPage() {
     return <Suspense><Viewer/></Suspense>;
 }
 
-function scrollToBlock(key: string) {
+/** smooth=false: 페이지를 연 직후 복원. smooth 는 새로고침 때 브라우저 스크롤 복원에 끊긴다 */
+function scrollToBlock(key: string, smooth = true) {
     const el = document.getElementById(key);
     if (!el) return;
-    el.scrollIntoView({block: "start", behavior: "smooth"});
+    el.scrollIntoView({block: "start", behavior: smooth ? "smooth" : "instant"});
     el.classList.add("ring-2", "ring-indigo-400", "rounded");
     setTimeout(() => el.classList.remove("ring-2", "ring-indigo-400", "rounded"), 1500);
 }
@@ -37,6 +38,10 @@ function Viewer() {
     const toc = useStudyToc(documentId, ready);
     const page = useStudyPage(documentId, section);
     const createAnnotation = useCreateStudyAnnotation();
+    const {mutate: savePosition} = useSaveStudyPosition(documentId);
+    const saved = useRef<{ section?: string; block?: string | null }>({});
+    const lastSectionId = doc.data?.lastSectionId;
+    const lastBlockKey = doc.data?.lastBlockKey;
     const {show, ToastComponent} = useToast();
     const containerRef = useRef<HTMLDivElement>(null);
     const [tab, setTab] = useState<"read" | "terms">("read");
@@ -44,19 +49,48 @@ function Viewer() {
     const [termDraft, setTermDraft] = useState<string | null>(null);
     const [openAnnotation, setOpenAnnotation] = useState<string | null>(null);
 
-    // section 이 없으면 목차 첫 페이지로
+    // section 이 없으면 마지막 읽던 위치, 없으면 목차 첫 페이지로
     useEffect(() => {
-        if (!section && toc.data?.length) router.replace(`/study/${documentId}?section=${toc.data[0].pageSectionId}`);
-    }, [section, toc.data, documentId, router]);
+        if (section || !toc.data?.length) return;
+        router.replace(lastSectionId ? `/study/${documentId}?section=${lastSectionId}${lastBlockKey ? `#${lastBlockKey}` : ""}`
+            : `/study/${documentId}?section=${toc.data[0].pageSectionId}`);
+    }, [section, toc.data, documentId, router, lastSectionId, lastBlockKey]);
 
     // 페이지가 바뀌어 데이터가 도착한 뒤에만 해시 블록으로 스크롤
     const pageId = page.data?.section.id;
     useEffect(() => {
-        if (!pageId) return;
-        const key = decodeURIComponent(window.location.hash.slice(1));
-        if (key) setTimeout(() => scrollToBlock(key), 50);
+        if (!pageId || !ready) return; // 문서 상태가 늦게 오면 아직 Skeleton 이라 블록이 없다
+        // 해시가 없으면(새로고침·재로그인 복귀) 같은 페이지에서 마지막으로 보던 블록
+        const key = decodeURIComponent(window.location.hash.slice(1)) || (lastSectionId === pageId ? lastBlockKey : null);
+        if (key) setTimeout(() => scrollToBlock(key, false), 50);
         else window.scrollTo({top: 0});
-    }, [pageId]);
+        // 저장할 때마다 last* 가 바뀌어도 다시 스크롤하지 않도록 페이지가 바뀔 때만 돈다
+    }, [pageId, ready]);
+
+    // 화면 맨 위에 보이는 블록을 백엔드에 남긴다 (스크롤이 멈추고 0.5초 뒤) → 다른 기기에서 이어 읽기
+    useEffect(() => {
+        if (!pageId || !ready) return; // 문서 상태가 늦게 오면 아직 Skeleton 이라 블록이 없다
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const save = () => {
+            const top = Array.from(containerRef.current?.querySelectorAll<HTMLElement>("[data-block-key], figure[id]") ?? [])
+                .find((el) => el.getBoundingClientRect().bottom > 80); // scroll-mt-20 만큼 위는 헤더에 가린다
+            // 단어장 탭처럼 본문이 없으면 남기지 않는다 (읽던 블록을 덮지 않게). 같은 위치면 다시 보내지 않는다
+            const blockKey = top?.id || null;
+            if (!top || (pageId === saved.current.section && blockKey === saved.current.block)) return;
+            saved.current = {section: pageId, block: blockKey};
+            savePosition({sectionId: pageId, blockKey});
+        };
+        const onScroll = () => {
+            clearTimeout(timer);
+            timer = setTimeout(save, 500);
+        };
+        timer = setTimeout(save, 1000); // 스크롤 없이 페이지만 옮겨도 남도록 (복원 스크롤 뒤)
+        window.addEventListener("scroll", onScroll, {passive: true});
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener("scroll", onScroll);
+        };
+    }, [pageId, ready, savePosition]);
 
     const goTo = useCallback((pageSectionId: string, blockKey?: string) => {
         setSelection(null);

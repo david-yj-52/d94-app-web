@@ -11,6 +11,14 @@ export interface StudyDocument {
     status: DocumentStatus;
     failReason: string | null;
     createdAt: string;
+    /** 마지막 읽던 페이지 섹션·블록 (기기 간 이어 읽기) */
+    lastSectionId: string | null;
+    lastBlockKey: string | null;
+}
+
+export interface StudyPositionRequest {
+    sectionId: string;
+    blockKey: string | null;
 }
 
 export interface StartUploadResponse {

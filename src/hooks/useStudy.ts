@@ -17,11 +17,12 @@ import {
     getStudyTerms,
     getStudyToc,
     putStudyUploadPart,
+    saveStudyPosition,
     startStudyUpload,
     updateStudyAnnotation,
     updateStudyTerm,
 } from "@/lib/api/study";
-import type {CreateAnnotationRequest, StudyDocument, TermRequest, UpdateAnnotationRequest} from "@/types/study";
+import type {CreateAnnotationRequest, StudyDocument, StudyPositionRequest, TermRequest, UpdateAnnotationRequest} from "@/types/study";
 
 // ── 문서 ───────────────────────────────────────────────────────────
 export function useStudyDocuments() {
@@ -35,6 +36,16 @@ export function useStudyDocuments() {
 
 export function useStudyDocument(id: string) {
     return useQuery({queryKey: ["studyDocument", id], queryFn: () => getStudyDocument(id), enabled: !!id});
+}
+
+/** 마지막 읽던 위치 저장. 다시 받지 않고 문서 캐시만 고친다 (목록에서 다시 열 때 바로 쓰이도록) */
+export function useSaveStudyPosition(id: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (req: StudyPositionRequest) => saveStudyPosition(id, req),
+        onSuccess: (_, req) => qc.setQueryData<StudyDocument>(["studyDocument", id],
+            (d) => d && {...d, lastSectionId: req.sectionId, lastBlockKey: req.blockKey}),
+    });
 }
 
 export function useDeleteStudyDocument() {

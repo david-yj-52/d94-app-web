@@ -58,7 +58,7 @@ const BLOCKS: Blk[] = [
 
 function seedDoc(id: string, title: string, fileName: string, fileSize: number): Doc {
     return {
-        doc: {id, title, fileName, fileSize, pageCount: 357, status: "READY", failReason: null, createdAt: new Date().toISOString()},
+        doc: {id, title, fileName, fileSize, pageCount: 357, status: "READY", failReason: null, createdAt: new Date().toISOString(), lastSectionId: null, lastBlockKey: null},
         sections: SECTIONS.map((s) => ({...s})),
         blocks: BLOCKS.map((b) => ({...b})),
     };
@@ -159,6 +159,13 @@ export function registerStudyMock(on: On) {
     on("GET", "/v1/study/documents/:id", ({params}) => {
         const d = findDoc(params.id);
         return d ? ok(d.doc) : notFound;
+    });
+    on("PUT", "/v1/study/documents/:id/position", ({params, body}) => {
+        const d = findDoc(params.id);
+        if (!d) return notFound;
+        d.doc.lastSectionId = String(body.sectionId);
+        d.doc.lastBlockKey = body.blockKey ? String(body.blockKey) : null;
+        return ok(null);
     });
     on("DELETE", "/v1/study/documents/:id", ({params}) => {
         const s = store();

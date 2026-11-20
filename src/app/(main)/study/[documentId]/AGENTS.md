@@ -5,7 +5,7 @@
 ## 개요
 - **URL:** `/study/[documentId]?section={pageSectionId}#{blockKey}` · **파일:** `page.tsx` (클라이언트, `useSearchParams` 때문에 `Suspense`)
 - **목적:** MS Docs 식 3단 뷰어. 페이지 = 목차 깊이 2 섹션(자식 없는 깊이 1은 그 자체). 어느 페이지를 열지는 백엔드가 `pageSectionId`로 알려 줍니다.
-- `section`이 없으면 목차 첫 노드의 `pageSectionId`로 `router.replace`.
+- `section`이 없으면 마지막 읽던 위치(문서의 `lastSectionId`·`lastBlockKey`), 없으면 목차 첫 노드의 `pageSectionId`로 `router.replace`.
 
 ## 화면 구성
 ```
@@ -27,11 +27,13 @@
 | `useStudyDocument` | `GET /v1/study/documents/{id}` |
 | `useStudyToc` (READY 일 때) | `GET /v1/study/documents/{id}/toc` |
 | `useStudyPage` | `GET /v1/study/documents/{id}/pages/{pageSectionId}` — 블록·셀·개요·`termHits`·`terms`·마킹 |
+| `useSaveStudyPosition` | `PUT /v1/study/documents/{id}/position` `{sectionId, blockKey}` — 성공하면 `["studyDocument", id]` 캐시만 고침 |
 | `useCreateStudyAnnotation` | `POST /v1/study/annotations` |
 | `useCreateStudyTerm` 외 | `/v1/study/terms` |
 
 ## 기능
 - **이동:** 목차·개요 클릭 → 같은 페이지면 `history.replaceState` + 스크롤, 다른 페이지면 `router.push(?section=…#key)`. 페이지 데이터가 도착한 뒤(`section.id` 변경 시)에만 해시 블록으로 스크롤하고 1.5초 강조.
+- **마지막 위치(기기 간 이어 읽기):** 스크롤이 멈추고 0.5초 뒤(페이지를 연 뒤엔 1초 뒤) 화면 맨 위 블록을 `useSaveStudyPosition` 으로 백엔드(`SN_STUDY_DOCUMENT.LAST_SECTION_ID`·`LAST_BLOCK_KEY`)에 남깁니다. 직전에 보낸 위치와 같으면 보내지 않고, 본문이 없으면(단어장 탭) 남기지 않습니다. 해시 없이 열리면(새로고침·재로그인 복귀·다른 기기) 같은 페이지일 때 그 블록으로 바로(smooth 아님) 스크롤합니다. 스크롤 효과는 문서가 READY 로 그려진 뒤에만 돕니다.
 - **마킹·노트:** 본문 `mouseup`/`keyup` → `rangeToAnchor` → 툴바. 마킹 클릭 → `AnnotationPopover`.
 - **단어장:** 툴바 "단어장" → `TermEditModal`(선택 글자 채움). 등록되면 페이지 쿼리 무효화로 밑줄이 바로 생깁니다.
 - 단어 매칭·오프셋 검증·quote 생성은 백엔드가 합니다. 웹은 `buildSegments`로 받은 구간을 그릴 뿐입니다.

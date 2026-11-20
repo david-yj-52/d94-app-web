@@ -6,6 +6,7 @@ import type {
     StartUploadResponse,
     StudyDocument,
     StudyPage,
+    StudyPositionRequest,
     StudyTerm,
     TermRequest,
     TocNode,
@@ -22,6 +23,10 @@ export async function getStudyDocuments(page = 0): Promise<PageResponse<StudyDoc
 export async function getStudyDocument(id: string): Promise<StudyDocument> {
     const res = await apiClient.get(`${BASE}/documents/${id}`);
     return res.data.data;
+}
+
+export async function saveStudyPosition(id: string, req: StudyPositionRequest): Promise<void> {
+    await apiClient.put(`${BASE}/documents/${id}/position`, req);
 }
 
 export async function deleteStudyDocument(id: string): Promise<void> {
