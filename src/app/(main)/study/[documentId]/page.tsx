@@ -40,6 +40,7 @@ function Viewer() {
     const createAnnotation = useCreateStudyAnnotation();
     const {mutate: savePosition} = useSaveStudyPosition(documentId);
     const saved = useRef<{ section?: string; block?: string | null }>({});
+    const pinning = useRef(false);
     const lastSectionId = doc.data?.lastSectionId;
     const lastBlockKey = doc.data?.lastBlockKey;
     const {show, ToastComponent} = useToast();
@@ -62,8 +63,33 @@ function Viewer() {
         if (!pageId || !ready) return; // 문서 상태가 늦게 오면 아직 Skeleton 이라 블록이 없다
         // 해시가 없으면(새로고침·재로그인 복귀) 같은 페이지에서 마지막으로 보던 블록
         const key = decodeURIComponent(window.location.hash.slice(1)) || (lastSectionId === pageId ? lastBlockKey : null);
-        if (key) setTimeout(() => scrollToBlock(key, false), 50);
-        else window.scrollTo({top: 0});
+        if (!key) {
+            window.scrollTo({top: 0});
+            return;
+        }
+        // 위쪽 그림이 늦게 로드되면 본문이 밀려 엉뚱한 곳에 선다(Safari 는 스크롤 앵커링이 없다).
+        // 높이가 바뀔 때마다 다시 맞추고, 사용자가 스크롤·클릭·키를 누르거나 5초가 지나면 멈춘다. 그동안 위치 저장도 멈춘다
+        // ponytail: 서버가 그림 크기를 주면 자리를 미리 잡아 이 고정이 필요 없어진다
+        pinning.current = true;
+        const pin = () => document.getElementById(key)?.scrollIntoView({block: "start", behavior: "instant"});
+        const ro = new ResizeObserver(pin);
+        const userEvents = ["wheel", "touchstart", "keydown", "mousedown"] as const;
+        const stop = () => {
+            pinning.current = false;
+            ro.disconnect();
+            clearTimeout(timeout);
+            userEvents.forEach((e) => window.removeEventListener(e, stop));
+        };
+        const start = setTimeout(() => {
+            scrollToBlock(key, false);
+            if (containerRef.current) ro.observe(containerRef.current);
+        }, 50);
+        const timeout = setTimeout(stop, 5000);
+        userEvents.forEach((e) => window.addEventListener(e, stop, {passive: true}));
+        return () => {
+            clearTimeout(start);
+            stop();
+        };
         // 저장할 때마다 last* 가 바뀌어도 다시 스크롤하지 않도록 페이지가 바뀔 때만 돈다
     }, [pageId, ready]);
 
@@ -72,6 +98,7 @@ function Viewer() {
         if (!pageId || !ready) return; // 문서 상태가 늦게 오면 아직 Skeleton 이라 블록이 없다
         let timer: ReturnType<typeof setTimeout> | undefined;
         const save = () => {
+            if (pinning.current) return; // 복원 위치를 맞추는 중에는 남기지 않는다 (밀린 위치를 저장하지 않게)
             const top = Array.from(containerRef.current?.querySelectorAll<HTMLElement>("[data-block-key], figure[id]") ?? [])
                 .find((el) => el.getBoundingClientRect().bottom > 80); // scroll-mt-20 만큼 위는 헤더에 가린다
             // 단어장 탭처럼 본문이 없으면 남기지 않는다 (읽던 블록을 덮지 않게). 같은 위치면 다시 보내지 않는다
