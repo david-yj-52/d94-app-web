@@ -103,7 +103,12 @@ function Viewer() {
                 .find((el) => el.getBoundingClientRect().bottom > 80); // scroll-mt-20 만큼 위는 헤더에 가린다
             // 단어장 탭처럼 본문이 없으면 남기지 않는다 (읽던 블록을 덮지 않게). 같은 위치면 다시 보내지 않는다
             const blockKey = top?.id || null;
-            if (!top || (pageId === saved.current.section && blockKey === saved.current.block)) return;
+            if (!top) return;
+            // 주소의 #블록도 지금 위치로. 목차로 들어오면 #챕터 제목이 남아 새로고침 때 그리로 돌아갔다
+            if (blockKey && window.location.hash !== `#${blockKey}`) {
+                window.history.replaceState(null, "", `?section=${pageId}#${blockKey}`);
+            }
+            if (pageId === saved.current.section && blockKey === saved.current.block) return;
             saved.current = {section: pageId, block: blockKey};
             savePosition({sectionId: pageId, blockKey});
         };
