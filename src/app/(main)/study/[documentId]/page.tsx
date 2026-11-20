@@ -4,6 +4,7 @@ import {Suspense, useCallback, useEffect, useRef, useState} from "react";
 import Link from "next/link";
 import {useParams, useRouter, useSearchParams} from "next/navigation";
 import AnnotationPopover from "@/components/study/AnnotationPopover";
+import AutoScroll from "@/components/study/AutoScroll";
 import PageView, {PageOutline} from "@/components/study/PageView";
 import SelectionToolbar from "@/components/study/SelectionToolbar";
 import TermEditModal from "@/components/study/TermEditModal";
@@ -224,6 +225,8 @@ function Viewer() {
                 <AnnotationPopover annotationId={openAnnotation} documentId={documentId}
                                    onClose={() => setOpenAnnotation(null)} onError={(m) => show(m, "error")}/>
             )}
+            {/* 다음 페이지를 불러오는 동안에도 떼지 않아야 자동 스크롤이 이어진다 (그동안 pageId 는 undefined) */}
+            {tab === "read" && <AutoScroll pageId={pageId} next={page.data?.next ?? null} onNext={(n) => goTo(n.id)}/>}
             {ToastComponent}
         </div>
     );
