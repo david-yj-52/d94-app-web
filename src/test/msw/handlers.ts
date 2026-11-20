@@ -48,6 +48,12 @@ export const handlers = [
         });
     }),
 
+    // 기준정보 설정 (SettingController) — 테스트마다 빈 상태에서 시작하도록 요청 본문을 그대로 돌려준다
+    http.get(`${API}/settings`, () => json(fx.ok({}))),
+    http.put(`${API}/settings`, async ({request}) => json(fx.ok(await request.json() as JsonBodyType))),
+    // lib-core BaseUserController GET /me
+    http.get(`${API}/users/me`, () => json(fx.ok({email: "dev@tsh.com", name: "김개발", avatarUrl: null, roles: ["USER", "ADMIN"]}))),
+
     // ProjectController
     http.get(`${API}/projects`, () => json(fx.ok([fx.project]))),
     http.get(`${API}/projects/:projectId`, () => json(fx.ok(fx.project))),

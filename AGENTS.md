@@ -18,6 +18,7 @@
 AGENTS.md (L1)
 ├── src/app/AGENTS.md (L2 라우팅·화면 목록)
 │   ├── (main)/home/AGENTS.md ............ 첫 화면 기능 대시보드
+│   ├── (main)/settings/AGENTS.md ........ 기준정보 (그룹별 설정, General 로고)
 │   ├── (cira)/cira/dashboard/AGENTS.md ....... 개인 대시보드
 │   ├── (cira)/cira/search/AGENTS.md .......... 통합 검색 + CQL 고급 검색
 │   ├── (cira)/cira/projects/AGENTS.md ........ 프로젝트 목록 + 프로젝트 공통 탭
@@ -40,7 +41,7 @@ AGENTS.md (L1)
 ├── src/components/AGENTS.md (L2 ★컴포넌트 카탈로그)
 │   ├── ui/AGENTS.md ..................... Primitive + 디자인 토큰
 │   ├── cira/AGENTS.md ................... CIRA 전용 토큰·primitive(ui)·셸(shell) → ADR 0006
-│   └── {board,interfaceTest,issue,layout,mpns,project,sprint,study,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
+│   └── {board,interfaceTest,issue,layout,mpns,project,settings,sprint,study,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
 ├── src/hooks/AGENTS.md (L2 Query 훅·queryKey)
 ├── src/lib/AGENTS.md (L2 API·mock·messaging)
 └── src/test/AGENTS.md (L2 테스트 공용 설정·MSW 백엔드 모양 → docs/testing.md)

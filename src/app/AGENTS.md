@@ -25,7 +25,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.
-  - 보호 경로(비로그인 시 `/login?callbackUrl=…`으로, 판정은 쿠키를 읽기만 하는 `readSessionToken`): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`. 판정은 `src/lib/routeAccess.ts`
+  - 보호 경로(비로그인 시 `/login?callbackUrl=…`으로, 판정은 쿠키를 읽기만 하는 `readSessionToken`): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`, `/settings`. 판정은 `src/lib/routeAccess.ts`
   - 예전 CIRA 경로(`/projects/**` 등)는 `next.config.mjs` redirect 로 `/cira/...` 에 갑니다 → [architecture](../../docs/architecture.md)
   - `/home`, `/todo`는 페이지에서 직접 `auth()`를 확인해 redirect합니다. `/mpms`, `/solace`는 **보호되지 않습니다**.
 
@@ -51,6 +51,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 | PDF 학습 | `/study` | 🧪 | 문서 목록·PDF 분할 업로드 | [study](./(main)/study/AGENTS.md) |
 | PDF 학습 뷰어 | `/study/[documentId]` | 🧪 | 목차·본문·이 페이지 내용 3단 뷰어, 마킹·단어장 | [viewer](./(main)/study/[documentId]/AGENTS.md) |
 | 노트 모아보기 | `/study/notes` | 🧪 | 모든 문서의 마킹·노트, 클릭하면 해당 문장으로 | [notes](./(main)/study/notes/AGENTS.md) |
+| 기준정보 | `/settings?group=` | 공통 | Mac 설정형 그룹 목록 + 그룹별 설정 (General: 헤더 로고 글자·폰트, ADMIN 만 변경) | [settings](./(main)/settings/AGENTS.md) |
 | Ayaan 대시보드 | `/ayaan` | 🧪 | Tool 한도 막대·진행/중단 작업 요약 | [ayaan](./(main)/ayaan/AGENTS.md) |
 | Ayaan 작업 | `/ayaan/tasks`, `/ayaan/tasks/[taskId]` | 🧪 | 작업 목록·새 작업·상세(실행 이력·로그·재개·취소) | [ayaan](./(main)/ayaan/AGENTS.md) |
 | Ayaan 기준정보 | `/ayaan/settings` | 🧪 | 전역 정책·Tool·작업공간, 설정마다 도움말 카드 | [ayaan](./(main)/ayaan/AGENTS.md) |

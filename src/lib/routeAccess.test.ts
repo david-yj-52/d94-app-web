@@ -2,6 +2,10 @@ import {describe, expect, it} from "vitest";
 import {classifyPath, safeCallbackUrl} from "./routeAccess";
 
 describe("lib/routeAccess classifyPath", () => {
+    it("기준정보 화면은 보호한다", () => {
+        expect(classifyPath("/settings")).toBe("protected");
+    });
+
     it("CIRA 경로는 보호한다", () => {
         expect(classifyPath("/cira")).toBe("protected");
         expect(classifyPath("/cira/")).toBe("protected");

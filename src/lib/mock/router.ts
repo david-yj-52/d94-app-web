@@ -195,6 +195,16 @@ registerStudyMock(on);
 // Ayaan(AI Tool 작업·토큰 관리) → ./ayaan.ts
 registerAyaanMock(on);
 
+// ── 기준정보 설정 ──────────────────────────────────────────────────────
+const settings: Record<string, string> = {};
+on("GET", "/v1/settings", () => ok({...settings}));
+on("PUT", "/v1/settings", ({body}) => {
+    Object.entries(body).forEach(([k, v]) => { settings[k] = String(v).trim(); });
+    return ok({...settings});
+});
+// 개발 중 기준정보 화면을 보려고 mock 사용자는 ADMIN
+on("GET", "/v1/users/me", () => ok({email: ME.email, name: ME.name, avatarUrl: null, roles: ["USER", "ADMIN"]}));
+
 // 인증
 // 인증: 본문은 암호화 봉투 {enc} (ADR 0004). 풀리지 않으면 백엔드처럼 400 AUTH_CREDENTIAL_INVALID
 const credentialInvalid: MockResult = {

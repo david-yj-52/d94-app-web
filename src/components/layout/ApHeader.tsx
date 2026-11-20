@@ -6,6 +6,10 @@ import GlobalSearch from "./GlobalSearch";
 import NotificationBell from "./NotificationBell";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
+import {Settings} from "lucide-react";
+import {useIsAdmin, useSettings} from "@/hooks/useSettings";
+import {DEFAULT_LOGO_TEXT, LOGO_FONT_KEY, LOGO_TEXT_KEY} from "@/types/settings";
+import {logoFontClass} from "@/components/ui/logoFonts";
 
 const NAV_ITEMS = [
     {href: "/home", label: "홈"},
@@ -16,15 +20,18 @@ const NAV_ITEMS = [
 
 export default function ApHeader({user}: { user: any }) {
     const pathname = usePathname();
+    const {data: settings} = useSettings();
+    const isAdmin = useIsAdmin();
 
     return (
         <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b bg-white px-6 shadow-sm">
             {/* Logo */}
             <Link href="/home" className="flex items-center gap-2 no-underline">
                 <TshLogo className="h-7 w-7 shrink-0 object-contain"/>
-                <span className="text-base font-bold tracking-tight text-gray-900">
-          TSHInc
-        </span>
+                <span data-testid="logo-text"
+                      className={`text-base font-bold tracking-tight text-gray-900 ${logoFontClass(settings?.[LOGO_FONT_KEY])}`}>
+                    {settings?.[LOGO_TEXT_KEY] || DEFAULT_LOGO_TEXT}
+                </span>
             </Link>
 
             {/* Nav */}
@@ -57,6 +64,15 @@ export default function ApHeader({user}: { user: any }) {
                 <span className="text-sm text-gray-600">
           <strong className="font-semibold">{user?.name}</strong> 님
         </span>
+                {isAdmin && (
+                    <Link
+                        href="/settings"
+                        className="flex h-8 items-center gap-1 rounded-lg bg-gray-100 px-3 text-sm text-gray-700 no-underline transition-colors hover:bg-gray-200 whitespace-nowrap"
+                    >
+                        <Settings className="h-4 w-4" aria-hidden/>
+                        기준정보
+                    </Link>
+                )}
                 <button
                     onClick={() => signOut()}
                     className="flex h-8 items-center rounded-lg bg-gray-100 px-3 text-sm text-gray-700 transition-colors hover:bg-gray-200 whitespace-nowrap"

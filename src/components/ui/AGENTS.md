@@ -47,6 +47,14 @@ SkeletonRow()                             // 테이블 행 모양
 if (isLoading) return <div className="space-y-3">{[1, 2, 3].map((i) => <SkeletonCard key={i}/>)}</div>;
 ```
 
+### logoFonts — `import {LOGO_FONTS, logoFontClass} from "@/components/ui/logoFonts"`
+```ts
+LOGO_FONTS: { id: string; label: string; className: string }[]  // default, noto-sans-kr, nanum-gothic, black-han-sans, do-hyeon
+logoFontClass(id: string | undefined): string                   // 모르는 id·undefined → "" (기본 폰트)
+```
+- 로고 글자용 폰트. `next/font/google` 로 빌드할 때 내려받아 앱에 포함합니다(`preload: false`, 실행 중 CDN 호출 없음). id 는 d94-query `SettingService.LOGO_FONTS` 와 같아야 합니다.
+- 사용처: `layout/ApHeader`, `settings/GeneralSettingsPanel`. 테스트에서는 `vi.mock("next/font/google", …)` 로 가짜 className 을 줍니다(`logoFonts.test.ts`).
+
 ## 3. 표준 마크업 (primitive가 생기기 전까지 복사해서 사용)
 
 아래 마크업은 `sprint/CreateSprintModal` 등 기존 코드에서 가장 많이 쓰이는 형태를 그대로 옮긴 것입니다.

@@ -23,6 +23,9 @@
   - `registerUser(data)` → 공개키로 암호화해 `POST /v1/auth/register` 에 `{enc}` 전송
   - `loginWithCredentials({email, password})` → 암호화한 봉투를 `signIn("credentials", {enc})`로 보내고 성공 여부(boolean) 반환. 공개키 조회 실패는 throw. 백엔드 호출은 next-auth(`src/auth.ts`)가 서버에서 암호문 그대로 `${BACKEND_URL}/v1/auth/login`에 전달합니다.
 
+- `api/settings.ts`: 기준정보 설정. `getSettings()` → `GET /v1/settings` (`SettingMap`, 없으면 `{}`), `updateSettings(changes)` → `PUT /v1/settings` (바뀐 키만, 응답은 전체 설정, ADMIN 아니면 403). 허용 키는 `general.logo.text`·`general.logo.font` (d94-query `SettingService`)
+- `api/users.ts`: `searchUsers(keyword)`, `getMe()` → `GET /v1/users/me` (`Me`, `roles` 는 `ROLE_` 접두사 없음)
+
 ## 1-1. 자격 증명 암호화 (`crypto/credential.ts`)
 
 - 브라우저·Node·Edge 공용(WebCrypto만 사용). `encryptCredential(publicKey, purpose, fields)` → `EncryptedCredential` (`{v:1, alg:"RSA-OAEP-256+A256GCM", kid, key, iv, data}`).
@@ -85,6 +88,7 @@ on("GET", "/v1/projects/:projectId/milestones", ({params}) =>
 - 응답 헬퍼: `ok(data)` → `{success: true, data}`, `notFound(what)` → 404. 본문 없는 상태(`{status: 204}`)도 반환할 수 있습니다(프록시가 본문 없이 응답).
 - 인터페이스 테스트 mock(`/v1/interface-tests`)은 백엔드와 같은 상태코드(201·204·400·404)를 돌려줍니다. 저장소는 `getStore().interfaceTests`.
 - 첨부 조각 업로드 mock 은 바이트를 저장하지 않고 complete 에서 메타만 만듭니다. mock 모드의 `/api/attachments/[id]` 는 프록시 mock 다운로드(샘플 텍스트)로 redirect 합니다.
+- 기준정보 mock(`/v1/settings`)은 메모리 맵에 병합 저장합니다(값 trim, 검증 없음 — 검증은 백엔드). `/v1/users/me` mock 은 화면 확인용으로 `roles: ["USER", "ADMIN"]` 입니다.
 - 인증 mock(`/v1/auth/public-key`·`login`·`register`, 형태만 맞춘 `refresh`·`logout`)은 `credential.ts`의 실제 RSA 키(globalThis 보관, 재시작 시 새로 생성)로 봉투를 복호화합니다. 풀리지 않거나 평문이면 400 `AUTH_CREDENTIAL_INVALID`, 로그인은 비밀번호를 검사하지 않고 아무 계정이나 통과시킵니다. 핸들러는 `Promise<MockResult>`도 반환할 수 있습니다.
 - mock 응답은 **web 타입 모양**이라 실제 d94-query 와 다른 곳이 있습니다. `mock/router.test.ts` 가 차이를 `KNOWN_DIFFS` 로 고정합니다(mock 이나 백엔드가 바뀌면 깨짐). 스프린트·댓글·멤버는 백엔드 모양·경로에 맞췄습니다. mock 은 `statusId`·`issueTypeId` 없는 이슈 생성과 255자 넘는 값을 받아 주므로, 그 경우 mock 에서 되고 실제 백엔드에서는 500 입니다.
 - `enabled.ts`의 `isMockEnabled`는 `src/auth.ts`가 라우터 전체를 끌어오지 않도록 분리해 둔 것입니다(예전에는 미들웨어가 `auth.ts`를 import 했음. 지금 미들웨어는 `lib/auth/accessToken`만 씀). `router.ts`도 같은 함수를 다시 export 합니다.
