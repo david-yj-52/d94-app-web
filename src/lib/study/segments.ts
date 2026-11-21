@@ -1,4 +1,4 @@
-import type {AnnotationColor, PageAnnotation, TermHit} from "@/types/study";
+import type {AnnotationColor, PageAnnotation, SyntaxRole, SyntaxSpan, TermHit} from "@/types/study";
 
 export interface Segment {
     start: number;
@@ -7,6 +7,9 @@ export interface Segment {
     termId: string | null;
     annotationIds: string[];
     color: AnnotationColor | null;
+    roles: SyntaxRole[];
+    opens: SyntaxRole[];
+    closes: SyntaxRole[];
 }
 
 /** 마킹이 이 블록에서 차지하는 구간. 여러 블록에 걸치면 시작 블록 [start, len), 중간 전체, 끝 블록 [0, end) */
@@ -25,6 +28,7 @@ export function buildSegments(
     hits: TermHit[],
     annotations: PageAnnotation[],
     blockOrder: Map<string, number>,
+    syntax: SyntaxSpan[] = [],
 ): Segment[] {
     const myHits = hits.filter((h) => h.blockKey === blockKey);
     const ranges = annotations
@@ -34,12 +38,16 @@ export function buildSegments(
     const cuts = new Set<number>([0, text.length]);
     myHits.forEach((h) => cuts.add(h.start).add(h.end));
     ranges.forEach(({r}) => cuts.add(r[0]).add(r[1]));
+    const mySyntax = syntax.filter((s) => s.blockKey === blockKey && s.start < text.length && s.end > 0);
+    mySyntax.forEach((s) => cuts.add(Math.max(0, s.start)).add(Math.min(text.length, s.end)));
     const points = [...cuts].filter((p) => p >= 0 && p <= text.length).sort((x, y) => x - y);
 
     const out: Segment[] = [];
     for (let i = 0; i < points.length - 1; i++) {
         const [start, end] = [points[i], points[i + 1]];
         const covering = ranges.filter(({r}) => r[0] <= start && end <= r[1]);
+        const active = mySyntax.filter((s) => s.start <= start && end <= s.end);
+        const boundaryRoles = ["CLAUSE", "PHRASE", "SUBJECT"] as const;
         out.push({
             start,
             end,
@@ -47,7 +55,10 @@ export function buildSegments(
             termId: myHits.find((h) => h.start <= start && end <= h.end)?.termId ?? null,
             annotationIds: covering.map(({a}) => a.id),
             color: covering.length ? covering[covering.length - 1].a.color : null,
+            roles: [...new Set(active.map((s) => s.role))],
+            opens: [...new Set(mySyntax.filter((s) => s.start === start && boundaryRoles.includes(s.role as typeof boundaryRoles[number])).map((s) => s.role))],
+            closes: [...new Set(mySyntax.filter((s) => s.end === end && boundaryRoles.includes(s.role as typeof boundaryRoles[number])).map((s) => s.role))],
         });
     }
-    return out.length ? out : [{start: 0, end: 0, text: "", termId: null, annotationIds: [], color: null}];
+    return out.length ? out : [{start: 0, end: 0, text: "", termId: null, annotationIds: [], color: null, roles: [], opens: [], closes: []}];
 }

@@ -97,6 +97,14 @@ export interface StudyPage {
     annotations: PageAnnotation[];
 }
 
+export type SyntaxRole = "SUBJECT" | "VERB" | "OBJECT" | "CLAUSE" | "PHRASE";
+export interface SyntaxSpan { blockKey: string; start: number; end: number; role: SyntaxRole }
+export interface SyntaxResponse { analyzerVersion: string; spans: SyntaxSpan[] }
+export interface DictionarySense { definition: string; example: string | null }
+export interface DictionaryEntry { headword: string; pos: string; senses: DictionarySense[] }
+export interface DictionaryResponse { word: string; status: "FOUND" | "NOT_FOUND"; entries: DictionaryEntry[]; suggestions: string[] }
+export interface DictionaryKeyStatus { registered: boolean; reference: string | null }
+
 export interface StudyTerm {
     id: string;
     term: string;

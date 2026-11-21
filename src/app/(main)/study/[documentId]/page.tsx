@@ -3,7 +3,11 @@
 import {Suspense, useCallback, useEffect, useRef, useState} from "react";
 import Link from "next/link";
 import {useParams, useRouter, useSearchParams} from "next/navigation";
+import {BookA, Loader2} from "lucide-react";
 import AnnotationPopover from "@/components/study/AnnotationPopover";
+import DictionaryKeyModal from "@/components/study/DictionaryKeyModal";
+import DictionaryPopover from "@/components/study/DictionaryPopover";
+import {useWordHover} from "@/components/study/useWordHover";
 import AutoScroll from "@/components/study/AutoScroll";
 import PageView, {PageOutline} from "@/components/study/PageView";
 import SelectionToolbar from "@/components/study/SelectionToolbar";
@@ -12,7 +16,7 @@ import TermsPanel from "@/components/study/TermsPanel";
 import TocTree from "@/components/study/TocTree";
 import {Skeleton} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
-import {useCreateStudyAnnotation, useSaveStudyPosition, useStudyDocument, useStudyPage, useStudyToc} from "@/hooks/useStudy";
+import {useCreateStudyAnnotation, useSaveStudyPosition, useStudyDocument, useStudyPage, useStudyToc, useStudySyntax} from "@/hooks/useStudy";
 import {errorMessage} from "@/lib/study/colors";
 import {rangeToAnchor, type SelectionAnchor} from "@/lib/study/selection";
 import type {AnnotationColor} from "@/types/study";
@@ -50,6 +54,19 @@ function Viewer() {
     const [selection, setSelection] = useState<{ anchor: SelectionAnchor; rect: DOMRect } | null>(null);
     const [termDraft, setTermDraft] = useState<string | null>(null);
     const [openAnnotation, setOpenAnnotation] = useState<string | null>(null);
+    const [syntaxOn, setSyntaxOn] = useState(() => { try { return localStorage.getItem("study.syntax") === "1"; } catch { return false; } });
+    const [dictionaryKeyOpen, setDictionaryKeyOpen] = useState(false);
+    const [dictionaryTerm, setDictionaryTerm] = useState<{term:string; definition:string} | null>(null);
+    const syntaxErrorShown = useRef(false);
+    const syntax = useStudySyntax(documentId, page.data?.section.id ?? null, syntaxOn && tab === "read");
+    const wordHover = useWordHover(containerRef, tab === "read" && !!page.data);
+    useEffect(() => {
+        if (syntax.isError && !syntaxErrorShown.current) {
+            syntaxErrorShown.current = true;
+            show(errorMessage(syntax.error, "문장 구조를 불러오지 못했습니다"), "error");
+        }
+        if (!syntax.isError) syntaxErrorShown.current = false;
+    }, [syntax.isError, syntax.error, show]);
 
     // section 이 없으면 마지막 읽던 위치, 없으면 목차 첫 페이지로
     useEffect(() => {
@@ -184,6 +201,11 @@ function Viewer() {
                             {t === "read" ? "본문" : "단어장"}
                         </button>
                     ))}
+                    <button type="button" aria-label="문장 구조" role="switch" aria-checked={syntaxOn}
+                            onClick={() => setSyntaxOn((value) => { const next = !value; try { localStorage.setItem("study.syntax", next ? "1" : "0"); } catch { /* storage can be disabled */ } return next; })}
+                            className={`rounded px-3 py-1 ${syntaxOn ? "bg-indigo-100 text-indigo-700" : "text-slate-600 hover:bg-slate-100"}`}>문장 구조</button>
+                    {syntax.isFetching && syntaxOn && <Loader2 className="mt-1 h-4 w-4 animate-spin text-slate-400" aria-label="분석 중"/>}
+                    <button type="button" aria-label="사전 API 키" onClick={() => setDictionaryKeyOpen(true)} className="rounded px-2 py-1 text-slate-600 hover:bg-slate-100"><BookA className="h-4 w-4"/></button>
                     <Link href={`/study/notes?documentId=${documentId}`} className="rounded px-3 py-1 text-slate-600 hover:bg-slate-100">노트</Link>
                 </div>
             </div>
@@ -196,11 +218,12 @@ function Viewer() {
                     <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto pr-2">{tocTree}</div>
                 </aside>
                 <main className="min-w-0 max-w-[760px]">
+                    {syntaxOn && tab === "read" && <p className="mb-3 text-xs text-slate-600">문장 구조: <span className="syn-subject">주어</span> · <span className="syn-verb">동사</span> · <span className="syn-object">목적어</span> · [절] · (수식어구)</p>}
                     {tab === "terms" ? <TermsPanel documentId={documentId} onError={(m) => show(m, "error")}/>
                         : page.data ? (
                             <PageView page={page.data} documentId={documentId} containerRef={containerRef}
                                       onNavigate={(s) => goTo(s.id)} onAnnotationClick={setOpenAnnotation}
-                                      onSelectionEnd={onSelectionEnd}/>
+                                      onSelectionEnd={onSelectionEnd} syntax={syntaxOn ? syntax.data?.spans : []}/>
                         ) : <Skeleton className="h-96"/>}
                 </main>
                 <aside className="hidden lg:block">
@@ -218,9 +241,14 @@ function Viewer() {
                                   }}/>
             )}
             {termDraft !== null && (
-                <TermEditModal initialTerm={termDraft} documentId={documentId} onClose={() => setTermDraft(null)}
+                <TermEditModal initialTerm={dictionaryTerm?.term ?? termDraft} initialDefinition={dictionaryTerm?.definition} documentId={documentId} onClose={() => {setTermDraft(null);setDictionaryTerm(null);}}
                                onError={(m) => show(m, "error")} onSaved={() => show("단어장에 추가했습니다")}/>
             )}
+            {wordHover.hover && tab === "read" && <DictionaryPopover word={wordHover.hover.word} rect={wordHover.hover.rect}
+                onKeepOpen={wordHover.keepOpen} onClose={wordHover.close}
+                onSaveTerm={(term, definition) => {setDictionaryTerm({term,definition});setTermDraft(term);wordHover.close();}}
+                onRegisterKey={() => setDictionaryKeyOpen(true)}/>}
+            {dictionaryKeyOpen && <DictionaryKeyModal onClose={() => setDictionaryKeyOpen(false)} onSaved={() => show("사전 키를 저장했습니다")}/>}
             {openAnnotation && (
                 <AnnotationPopover annotationId={openAnnotation} documentId={documentId}
                                    onClose={() => setOpenAnnotation(null)} onError={(m) => show(m, "error")}/>
