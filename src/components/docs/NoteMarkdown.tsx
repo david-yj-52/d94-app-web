@@ -1,7 +1,10 @@
 "use client";
 
 import ReactMarkdown, {type Components} from "react-markdown";
+import remarkGfm from "remark-gfm";
 import {stripFrontmatter, titleFromHref, toMarkdownLinks} from "@/lib/docs/markdown";
+import CodeBlock from "./CodeBlock";
+import MermaidDiagram from "./MermaidDiagram";
 
 interface NoteMarkdownProps {
     content: string;
@@ -19,9 +22,24 @@ export default function NoteMarkdown({content, existing, onOpenTitle}: NoteMarkd
         p: (p) => <p className="my-2 leading-7" {...p}/>,
         ul: (p) => <ul className="my-2 list-disc pl-6" {...p}/>,
         ol: (p) => <ol className="my-2 list-decimal pl-6" {...p}/>,
+        table: (p) => <div className="my-3 overflow-x-auto"><table className="min-w-full border-collapse text-sm" {...p}/></div>,
+        th: (p) => <th className="border border-slate-200 bg-slate-50 px-3 py-1.5 text-left font-semibold" {...p}/>,
+        td: (p) => <td className="border border-slate-200 px-3 py-1.5" {...p}/>,
+        del: (p) => <del className="text-slate-400" {...p}/>,
+        input: (p) => <input {...p} disabled className="mr-1 align-middle"/>,
+        li: (p) => <li {...p} className={p.className?.includes("task-list-item") ? "-ml-5 list-none" : undefined}/>,
         blockquote: (p) => <blockquote className="my-3 border-l-4 border-slate-200 pl-3 text-slate-500" {...p}/>,
-        code: (p) => <code className="rounded bg-slate-100 px-1 py-0.5 text-sm" {...p}/>,
-        pre: (p) => <pre className="my-3 overflow-x-auto rounded-lg bg-slate-100 p-3 text-sm" {...p}/>,
+        // 코드 블록은 code 가 직접 그린다(언어 → 하이라이트, mermaid → 다이어그램). pre 는 감싸지 않음
+        pre: ({children}) => <>{children}</>,
+        code: ({className, children}) => {
+            const text = String(children ?? "");
+            const lang = /language-([\w-]+)/.exec(className ?? "")?.[1]?.toLowerCase() ?? null;
+            if (lang === "mermaid") return <MermaidDiagram code={text.replace(/\n$/, "")}/>;
+            if (lang || text.includes("\n")) return <CodeBlock code={text.replace(/\n$/, "")} language={lang}/>;
+            return <code className="rounded bg-slate-100 px-1 py-0.5 text-sm">{children}</code>;
+        },
+        img: ({src, alt}) => <img src={typeof src === "string" ? src : undefined} alt={alt ?? ""} loading="lazy"
+                                  className="my-2 max-h-[32rem] max-w-full rounded border border-slate-200"/>,
         a: ({href, children}) => {
             const title = titleFromHref(href);
             if (title === null) return <a href={href} target="_blank" rel="noreferrer" className="text-blue-600 underline">{children}</a>;
@@ -36,7 +54,7 @@ export default function NoteMarkdown({content, existing, onOpenTitle}: NoteMarkd
     };
     return (
         <div className="text-slate-700 [&>*:first-child]:mt-0">
-            <ReactMarkdown components={components}>{toMarkdownLinks(stripFrontmatter(content))}</ReactMarkdown>
+            <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>{toMarkdownLinks(stripFrontmatter(content))}</ReactMarkdown>
         </div>
     );
 }
