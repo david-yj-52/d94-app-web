@@ -62,6 +62,11 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
 - mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `cira` 하나, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
+### Docs: `api/docs.ts` · `docs/`
+- `api/docs.ts`: d94-query `/api/v1/docs` 와 짝. 폴더 `getDocsFolders`·`create/rename/move/deleteDocsFolder`, 노트 `getNotes(filters)`(`folderId=""` 최상위만)·`getNoteTitles`·`getNoteByTitle`·`getNote`·`create/update/move/deleteNote`(수정은 `version` 필수, 불일치 409)·`getNoteVersions`·`getBacklinks`, 진화 `deriveNote`·`changeNoteKind`·`getLineage`, Task `getDocsTasks`·`setDocsTaskStatus`·`promoteDocsTask`.
+- `docs/markdown.ts`: 서버 `DocsMarkdownIndexer` 와 같은 규칙의 화면용 도우미 — `stripFrontmatter`·`readFrontmatter`(단순 `key: value`)·`extractLinks/Tags/Tasks`, `toMarkdownLinks`(`[[A|별칭]]` → `[별칭](#note:A)`)·`titleFromHref`. 테스트 `docs/markdown.test.ts`.
+- mock: `mock/docs.ts`의 `registerDocsMock(on)` (시드 폴더 `가이드`·노트 `시작하기`, 409·404·이름 변경 링크 치환·진화·Task 까지 백엔드 규칙과 같게, dev 서버 재시작 시 초기화).
+
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
 통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 refresh·재로그인을 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
 
