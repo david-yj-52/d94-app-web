@@ -29,7 +29,7 @@ export default function AyaanDashboardPage() {
                 </div>
                 <div className="flex gap-2 text-sm">
                     <Link href="/ayaan/tasks" className="self-center text-blue-600 hover:underline">작업</Link>
-                    <Link href="/ayaan/settings" className="self-center text-blue-600 hover:underline">기준정보</Link>
+                    <Link href="/settings?group=ayaan" className="self-center text-blue-600 hover:underline">기준정보</Link>
                     <Link href="/ayaan/setup" className="self-center text-blue-600 hover:underline">셋업</Link>
                     <button className={btnPrimary} disabled={refresh.isPending} onClick={() => refresh.mutate()}>지금 수집</button>
                 </div>

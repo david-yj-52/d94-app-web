@@ -11,8 +11,8 @@
 ## 화면 구성
 | 파일 | 내용 |
 |---|---|
-| `page.tsx` | `SettingsNav`(왼쪽) + 그룹 머리 카드(아이콘·이름·설명) + 패널. `general` → `GeneralSettingsPanel readOnly={!useIsAdmin()}`, 그 밖 → `EmptyGroupPanel`. `useSearchParams` 때문에 `Suspense` 로 감쌈 |
-| `groups.ts` | `SETTING_GROUPS`: general · cira · mpms · todo(Tasks) · solace · interface-test · study · ayaan(`link: "/ayaan/settings"`), `DEFAULT_GROUP = "general"` |
+| `page.tsx` | `SettingsNav`(왼쪽) + 그룹 머리 카드(아이콘·이름·설명) + 패널. `general` → `GeneralSettingsPanel readOnly={!useIsAdmin()}`, `ayaan` → `AyaanSettingsPanel`, 그 밖 → `EmptyGroupPanel`. `useSearchParams` 때문에 `Suspense` 로 감쌈 |
+| `groups.ts` | `SETTING_GROUPS`: general · cira · mpms · todo(Tasks) · solace · interface-test · study · ayaan, `DEFAULT_GROUP = "general"` |
 
 ## 데이터
 - `useSettings()` `["settings"]`, `useUpdateSettings()`(성공 시 `setQueryData`), `useIsAdmin()` ← `useMe()` `["users", "me"]` (`hooks/useSettings.ts`)
@@ -21,3 +21,4 @@
 ## 기능
 - **그룹 추가:** 새 기능(서비스)이 생기면 `groups.ts` 에 그룹을 넣고, 설정 항목이 생기면 `components/settings/` 에 패널을 만들어 `page.tsx` 에서 분기합니다. 새 키는 d94-query `SettingService` 허용 목록에도 추가해야 저장됩니다.
 - **General 로고:** 글자(1~30자, trim) + 폰트(`ui/logoFonts`) + 미리보기. 저장하면 `["settings"]` 캐시가 바뀌어 같은 탭의 헤더 로고가 바로 바뀝니다.
+- **Ayaan:** 전역 정책·Tool·작업공간 탭 (`AyaanSettingsPanel`). ayaan API(`/v1/ayaan/**`) 경유이고 값 검증은 ayaan. 전역 정책은 `SN_SETTING` 의 `ayaan.*` 키(d94-query V545 이관), Tool·작업공간은 `SN_AYN_TOOL`·`SN_AYN_WORKSPACE`. `/v1/settings` PUT 은 `ayaan.*` 키를 받지 않는다(허용 목록 밖). 변경 권한은 ayaan `AYAAN_JWT_ALLOWED_SUBJECTS`. 옛 주소 `/ayaan/settings` 는 redirect.

@@ -10,7 +10,7 @@ export const SETTING_GROUPS: SettingGroup[] = [
     {id: "solace", label: "Solace", icon: RadioTower, description: "Solace 메시징"},
     {id: "interface-test", label: "인터페이스 테스트", icon: Network, description: "REST 메서드별 통신 확인"},
     {id: "study", label: "Study", icon: BookOpen, description: "PDF 학습 뷰어"},
-    {id: "ayaan", label: "Ayaan", icon: Bot, description: "AI CLI 작업·토큰 관리", link: "/ayaan/settings"},
+    {id: "ayaan", label: "Ayaan", icon: Bot, description: "AI CLI 작업 전역 정책·Tool·작업공간"},
 ];
 
 export const DEFAULT_GROUP = "general";
