@@ -17,6 +17,9 @@
 - 저장 = `useUpdateSettings().mutate({general.logo.text, general.logo.font})`. 성공·실패는 `useToast`.
 - `readOnly` 면 입력·버튼 비활성 + "관리자만 변경할 수 있습니다." 안내.
 
+### AyaanSettingsPanel — `@/components/settings/AyaanSettingsPanel`
+- props 없음. 탭(전역 정책/Tool/작업공간), 입력마다 `HelpCard`, 서버 422 메시지를 필드 옆에 표시. API `@/lib/api/ayaan`, 검증·변환 헬퍼는 `app/(main)/ayaan/settings/{validate,toolBody}.ts`.
+
 ### EmptyGroupPanel — `@/components/settings/EmptyGroupPanel`
 ```ts
 { group: SettingGroup }

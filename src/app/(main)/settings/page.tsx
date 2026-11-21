@@ -2,6 +2,7 @@
 
 import {useRouter, useSearchParams} from "next/navigation";
 import {Suspense} from "react";
+import AyaanSettingsPanel from "@/components/settings/AyaanSettingsPanel";
 import EmptyGroupPanel from "@/components/settings/EmptyGroupPanel";
 import GeneralSettingsPanel from "@/components/settings/GeneralSettingsPanel";
 import SettingsNav from "@/components/settings/SettingsNav";
@@ -29,8 +30,8 @@ function SettingsScreen() {
                     <h1 className="text-2xl font-bold text-slate-900">{group.label}</h1>
                     <p className="mt-1 text-sm text-slate-500">{group.description}</p>
                 </header>
-                {group.id === "general"
-                    ? <GeneralSettingsPanel readOnly={!isAdmin}/>
+                {group.id === "general" ? <GeneralSettingsPanel readOnly={!isAdmin}/>
+                    : group.id === "ayaan" ? <AyaanSettingsPanel/>
                     : <EmptyGroupPanel group={group}/>}
             </div>
         </div>

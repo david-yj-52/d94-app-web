@@ -75,7 +75,7 @@ export default function AyaanTasksPage() {
                         </select>
                     </label>
                     {projects.data?.some((p) => !mapped.has(p.key)) && (
-                        <p className="text-xs text-slate-500">매핑이 없는 프로젝트는 <Link href="/ayaan/settings" className="text-blue-600 hover:underline">기준정보 › 작업공간</Link>에서 연결하면 선택할 수 있습니다.</p>
+                        <p className="text-xs text-slate-500">매핑이 없는 프로젝트는 <Link href="/settings?group=ayaan" className="text-blue-600 hover:underline">기준정보 › 작업공간</Link>에서 연결하면 선택할 수 있습니다.</p>
                     )}
                     <label className="block text-xs font-medium text-slate-600">이슈 (비우면 프롬프트로 실행)
                         <select className={inputCls} value={issueKey} disabled={!project} onChange={(e) => setIssueKey(e.target.value)}>
