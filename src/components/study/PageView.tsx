@@ -140,7 +140,7 @@ function BlockView({block: b, documentId, rich}: {
                                     const Cell = r === 0 ? "th" : "td";
                                     return (
                                         <Cell key={c.key} id={c.key} data-block-key={c.key}
-                                              className={`scroll-mt-20 border border-slate-300 px-3 py-2 align-top ${
+                                              className={`scroll-mt-20 whitespace-pre-line border border-slate-300 px-3 py-2 align-top ${
                                                   r === 0 ? "bg-slate-50 text-left font-semibold" : ""}`}>
                                             {rich(c.text, c.key)}
                                         </Cell>
