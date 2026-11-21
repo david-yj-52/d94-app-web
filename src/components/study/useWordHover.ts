@@ -7,8 +7,13 @@ export function useWordHover(containerRef: RefObject<HTMLElement | null>, enable
     const [candidate, setCandidate] = useState<{word: string; rect: DOMRect} | null>(null);
     const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
     const candidateWord = useRef<string | null>(null);
-    const keepOpen = useCallback(() => clearTimeout(closeTimer.current), []);
-    const close = useCallback(() => { clearTimeout(closeTimer.current); candidateWord.current = null; setHover(null); setCandidate(null); }, []);
+    const hoverWord = useRef<string | null>(null);
+    hoverWord.current = hover?.word ?? null;
+    const cancelClose = useCallback(() => { clearTimeout(closeTimer.current); closeTimer.current = undefined; }, []);
+    const keepOpen = cancelClose;
+    const close = useCallback(() => { cancelClose(); candidateWord.current = null; setHover(null); setCandidate(null); }, [cancelClose]);
+    // 열린 팝업이 있으면 200ms 유예 후 닫는다(이미 돌고 있으면 유지)
+    const scheduleClose = useCallback(() => { if (hoverWord.current && closeTimer.current === undefined) closeTimer.current = setTimeout(close, 200); }, [close]);
     useEffect(() => {
         const root = containerRef.current; if (!root || !enabled) { close(); return; }
         let frame = 0;
@@ -17,18 +22,20 @@ export function useWordHover(containerRef: RefObject<HTMLElement | null>, enable
             cancelAnimationFrame(frame);
             frame = requestAnimationFrame(() => {
                 const found = wordAtPoint(event.clientX, event.clientY, root);
-                if (!found || matchMedia("(hover: none)").matches) { candidateWord.current = null; setCandidate(null); return; }
-                if (candidateWord.current !== found.word) { candidateWord.current = found.word; setHover(null); setCandidate(found); }
+                if (!found || matchMedia("(hover: none)").matches) { candidateWord.current = null; setCandidate(null); scheduleClose(); return; }
+                if (found.word === hoverWord.current) { cancelClose(); candidateWord.current = null; setCandidate(null); return; }
+                scheduleClose();
+                if (candidateWord.current !== found.word) { candidateWord.current = found.word; setCandidate(found); }
             });
         };
-        const leave = () => { closeTimer.current = setTimeout(close, 200); };
+        const leave = scheduleClose;
         root.addEventListener("mousemove", move); root.addEventListener("mouseleave", leave);
-        return () => { root.removeEventListener("mousemove", move); root.removeEventListener("mouseleave", leave); cancelAnimationFrame(frame); clearTimeout(closeTimer.current); };
-    }, [containerRef, enabled, close]);
+        return () => { root.removeEventListener("mousemove", move); root.removeEventListener("mouseleave", leave); cancelAnimationFrame(frame); cancelClose(); };
+    }, [containerRef, enabled, close, scheduleClose, cancelClose]);
     useEffect(() => {
-        if (!candidate) { setHover(null); return; }
-        const timer = setTimeout(() => setHover(candidate), 400);
+        if (!candidate) return;
+        const timer = setTimeout(() => { cancelClose(); setHover(candidate); }, 400);
         return () => clearTimeout(timer);
-    }, [candidate]);
+    }, [candidate, cancelClose]);
     return {hover, keepOpen, close};
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import {useState} from "react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient, type QueryClient} from "@tanstack/react-query";
 import axios from "axios";
 import {
     completeStudyUpload,
@@ -136,18 +136,22 @@ export const useUpdateStudyTerm = () =>
 export const useDeleteStudyTerm = () => useTermMutation((id: string) => deleteStudyTerm(id));
 
 export function useDictionary(word: string | null) {
-    return useQuery({queryKey: ["studyDictionary", word], queryFn: () => getDictionary(word as string), enabled: !!word, staleTime: Infinity});
+    return useQuery({queryKey: ["studyDictionary", word], queryFn: () => getDictionary(word as string), enabled: !!word, staleTime: Infinity, retry: false});
 }
 export function useDictionaryKey() {
     return useQuery({queryKey: ["studyDictionaryKey"], queryFn: getDictionaryKey});
 }
+function refreshDictionary(qc: QueryClient) {
+    qc.invalidateQueries({queryKey: ["studyDictionaryKey"]});
+    qc.removeQueries({queryKey: ["studyDictionary"]});
+}
 export function useSaveDictionaryKey() {
     const qc = useQueryClient();
-    return useMutation({mutationFn: saveDictionaryKey, onSuccess: (data) => qc.setQueryData(["studyDictionaryKey"], data)});
+    return useMutation({mutationFn: saveDictionaryKey, onSuccess: () => refreshDictionary(qc)});
 }
 export function useDeleteDictionaryKey() {
     const qc = useQueryClient();
-    return useMutation({mutationFn: deleteDictionaryKey, onSuccess: () => qc.setQueryData(["studyDictionaryKey"], {registered: false, reference: null})});
+    return useMutation({mutationFn: deleteDictionaryKey, onSuccess: () => refreshDictionary(qc)});
 }
 export function useStudySyntax(documentId: string, pageId: string | null, enabled: boolean) {
     return useQuery({queryKey: ["studySyntax", documentId, pageId], queryFn: () => getStudySyntax(documentId, pageId as string), enabled: !!documentId && !!pageId && enabled, staleTime: Infinity});

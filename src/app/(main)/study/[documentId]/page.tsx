@@ -248,7 +248,7 @@ function Viewer() {
                 onKeepOpen={wordHover.keepOpen} onClose={wordHover.close}
                 onSaveTerm={(term, definition) => {setDictionaryTerm({term,definition});setTermDraft(term);wordHover.close();}}
                 onRegisterKey={() => setDictionaryKeyOpen(true)}/>}
-            {dictionaryKeyOpen && <DictionaryKeyModal onClose={() => setDictionaryKeyOpen(false)} onSaved={() => show("사전 키를 저장했습니다")}/>}
+            {dictionaryKeyOpen && <DictionaryKeyModal onClose={() => setDictionaryKeyOpen(false)} onSaved={show}/>}
             {openAnnotation && (
                 <AnnotationPopover annotationId={openAnnotation} documentId={documentId}
                                    onClose={() => setOpenAnnotation(null)} onError={(m) => show(m, "error")}/>
