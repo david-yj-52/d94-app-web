@@ -9,7 +9,7 @@
 | `crypto/` | 로그인·회원가입 자격 증명 암호화 (WebCrypto) | ✅ 표준 |
 | `mock/` | 개발용 in-memory mock 백엔드 (`DEV_MOCK_API`) | ✅ 임시 |
 | `messaging/solace/` | Solace WebSocket 설정·훅 | 🧪 Solace 실험 전용 |
-| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"`, 로그인 뒤 복귀 경로 검증 `safeCallbackUrl(raw)`(내부 경로만, 아니면 `/home`), `SESSION_EXPIRED_REASON` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
+| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"`, 로그인 뒤 복귀 경로 검증 `safeCallbackUrl(raw)`(내부 경로만, 아니면 `/home`), `SESSION_EXPIRED_REASON`. 보호 접두사 `/cira`·`/interface-test`·`/study`·`/ayaan`·`/settings`·`/docs` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
 | `api.ts` | 구 fetch 래퍼 (서버·클라이언트 겸용) | 🧪 todo 실험 전용, 새 코드에서 사용 금지 |
 
 ## 1. API 함수 (`api/{domain}.ts`)
@@ -61,6 +61,12 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
 - mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `cira` 하나, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
+
+### Docs: `api/docs.ts` · `docs/`
+- `api/docs.ts`: d94-query `/api/v1/docs` 와 짝. 폴더 `getDocsFolders`·`create/rename/move/deleteDocsFolder`, 노트 `getNotes(filters)`(`folderId=""` 최상위만)·`getNoteTitles`·`getNoteByTitle`·`getNote`·`create/update/move/deleteNote`(수정은 `version` 필수, 불일치 409)·`getNoteVersions`·`getBacklinks`, 진화 `deriveNote`·`changeNoteKind`·`getLineage`, Task `getDocsTasks`·`setDocsTaskStatus`·`promoteDocsTask`.
+- `docs/error.ts` `docsError(e, fallback)` — 서버 오류 메시지(409 등) 또는 fallback.
+- `docs/markdown.ts`: 서버 `DocsMarkdownIndexer` 와 같은 규칙의 화면용 도우미 — `stripFrontmatter`·`readFrontmatter`(단순 `key: value`)·`extractLinks/Tags/Tasks`, `toMarkdownLinks`(`[[A|별칭]]` → `[별칭](#note:A)`)·`titleFromHref`. 테스트 `docs/markdown.test.ts`.
+- mock: `mock/docs.ts`의 `registerDocsMock(on)` (시드 폴더 `가이드`·노트 `시작하기`, 409·404·이름 변경 링크 치환·진화·Task 까지 백엔드 규칙과 같게, dev 서버 재시작 시 초기화).
 
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
 통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 refresh·재로그인을 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
