@@ -75,7 +75,7 @@
 | project/settings | MemberTable, AddMemberModal | 멤버 관리 | `settings/*` | [project](project/AGENTS.md) |
 | project/settings/automation | AutomationRuleCard, AutomationRuleModal | 자동화 규칙 | `settings/automation` | [project](project/AGENTS.md) |
 | search | CqlEditor, CqlSyntaxGuide | CQL 입력기(자동완성·검증)·문법 가이드 | `search/advanced` | §5 |
-| settings | SettingsNav, GeneralSettingsPanel, EmptyGroupPanel | 기준정보 그룹 목록·General 로고 설정·빈 그룹 | `/settings` | [settings](settings/AGENTS.md) |
+| settings | SettingsNav, GeneralSettingsPanel, ApiTokenSettingsPanel, EmptyGroupPanel | 기준정보 그룹 목록·General 로고 설정·API 토큰 발급·폐기·빈 그룹 | `/settings` | [settings](settings/AGENTS.md) |
 | sprint | CreateSprintModal, EditSprintModal, AssignIssueModal, CompleteSprintModal | 스프린트 생성·편집·이슈 할당·완료 | `sprints` | [sprint](sprint/AGENTS.md) |
 | version | VersionCard › ReleaseNotesModal, VersionModal | 버전 카드·릴리즈 노트·생성/편집 | `versions` | [version](version/AGENTS.md) |
 | wiki | WikiTree, WikiViewer, WikiEditor, WikiVersionHistory | 위키 트리·보기·Tiptap 편집·이력 | `wiki` | [wiki](wiki/AGENTS.md) |

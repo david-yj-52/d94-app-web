@@ -24,6 +24,7 @@
   - `loginWithCredentials({email, password})` → 암호화한 봉투를 `signIn("credentials", {enc})`로 보내고 성공 여부(boolean) 반환. 공개키 조회 실패는 throw. 백엔드 호출은 next-auth(`src/auth.ts`)가 서버에서 암호문 그대로 `${BACKEND_URL}/v1/auth/login`에 전달합니다.
 
 - `api/settings.ts`: 기준정보 설정. `getSettings()` → `GET /v1/settings` (`SettingMap`, 없으면 `{}`), `updateSettings(changes)` → `PUT /v1/settings` (바뀐 키만, 응답은 전체 설정, ADMIN 아니면 403). 허용 키는 `general.logo.text`·`general.logo.font` (d94-query `SettingService`)
+- `api/apiTokens.ts`: API 토큰(MCP·AI 도구용). `getApiTokens` `GET /v1/api-tokens`, `issueApiToken` `POST`(201, `{token, info}` — 원문은 이 응답 1회), `revokeApiToken` `DELETE /{id}`(204), `getApiTokenServices` `GET /services`, `setApiTokenService` `PUT /services/{service}` `{enabled}`(ADMIN 아니면 403)
 - `api/users.ts`: `searchUsers(keyword)`, `getMe()` → `GET /v1/users/me` (`Me`, `roles` 는 `ROLE_` 접두사 없음)
 
 ## 1-1. 자격 증명 암호화 (`crypto/credential.ts`)
@@ -59,6 +60,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - `study/segments.ts` `buildSegments` — 블록 텍스트를 단어 hit·마킹 경계로 자른다. `study/selection.ts` `rangeToAnchor` — 브라우저 선택 → `{start,end}BlockKey/Offset`(블록 요소 시작부터 `Range.toString().length`, 표 컨테이너 제외). 테스트 `study/study.test.ts`.
 - `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
+- mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `cira` 하나, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
 통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 refresh·재로그인을 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
