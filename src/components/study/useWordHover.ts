@@ -13,7 +13,7 @@ export function useWordHover(containerRef: RefObject<HTMLElement | null>, enable
     const keepOpen = cancelClose;
     const close = useCallback(() => { cancelClose(); candidateWord.current = null; setHover(null); setCandidate(null); }, [cancelClose]);
     // 열린 팝업이 있으면 200ms 유예 후 닫는다(이미 돌고 있으면 유지)
-    const scheduleClose = useCallback(() => { if (hoverWord.current && closeTimer.current === undefined) closeTimer.current = setTimeout(close, 200); }, [close]);
+    const scheduleClose = useCallback(() => { if (hoverWord.current && closeTimer.current === undefined) closeTimer.current = setTimeout(() => { closeTimer.current = undefined; setHover(null); }, 200); }, []);
     useEffect(() => {
         const root = containerRef.current; if (!root || !enabled) { close(); return; }
         let frame = 0;

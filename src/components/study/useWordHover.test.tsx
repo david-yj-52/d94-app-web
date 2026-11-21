@@ -45,9 +45,12 @@ describe("useWordHover", () => {
 
     it("replaces the hover once a new word is held for 400ms", () => {
         const {result} = setup();
-        moveOver("beta"); wait(100);
+        moveOver("beta"); // 이후 마우스는 움직이지 않는다
+        wait(100);
         expect(result.current.hover?.word).toBe("alpha");
-        wait(300);
+        wait(120); // 유예(200ms) 만료: alpha 닫힘
+        expect(result.current.hover).toBeNull();
+        wait(100); wait(100); // beta 진입 후 400ms 경과
         expect(result.current.hover?.word).toBe("beta");
     });
 });
