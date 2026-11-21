@@ -46,7 +46,7 @@ describe("DictionaryPopover", () => {
     });
 
     it("shows the error message without a register button for other errors", async () => {
-        getDictionary.mockRejectedValue(apiError("STUDY_DICTIONARY_UPSTREAM", "사전 서버 오류"));
+        getDictionary.mockRejectedValue(apiError("STUDY_DICTIONARY_UNAVAILABLE", "사전 서버 오류"));
         renderPopover();
         expect(await screen.findByText("사전 서버 오류")).toBeTruthy();
         expect(screen.queryByRole("button", {name: "키 등록"})).toBeNull();

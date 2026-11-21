@@ -53,4 +53,12 @@ describe("useWordHover", () => {
         wait(100); wait(100); // beta 진입 후 400ms 경과
         expect(result.current.hover?.word).toBe("beta");
     });
+
+    it("leaving the reading area before 400ms cancels the pending candidate", () => {
+        const {result} = renderHook(() => useWordHover(ref, true));
+        moveOver("alpha"); wait(100);
+        act(() => { root.dispatchEvent(new MouseEvent("mouseleave")); });
+        wait(400);
+        expect(result.current.hover).toBeNull();
+    });
 });

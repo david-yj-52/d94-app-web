@@ -28,7 +28,7 @@ export function useWordHover(containerRef: RefObject<HTMLElement | null>, enable
                 if (candidateWord.current !== found.word) { candidateWord.current = found.word; setCandidate(found); }
             });
         };
-        const leave = scheduleClose;
+        const leave = () => { candidateWord.current = null; setCandidate(null); scheduleClose(); };
         root.addEventListener("mousemove", move); root.addEventListener("mouseleave", leave);
         return () => { root.removeEventListener("mousemove", move); root.removeEventListener("mouseleave", leave); cancelAnimationFrame(frame); cancelClose(); };
     }, [containerRef, enabled, close, scheduleClose, cancelClose]);
