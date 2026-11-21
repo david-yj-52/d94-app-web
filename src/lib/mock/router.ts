@@ -12,6 +12,7 @@ import {mockCredentialPublicKey, mockDecryptCredential} from "./credential";
 import {registerStudyMock} from "./study";
 import {registerAyaanMock} from "./ayaan";
 import {registerApiTokenMock} from "./apiToken";
+import {registerDocsMock} from "./docs";
 
 type Params = Record<string, string>;
 type Body = Record<string, unknown>;
@@ -198,6 +199,9 @@ registerAyaanMock(on);
 
 // API 토큰(MCP·AI 도구용) → ./apiToken.ts
 registerApiTokenMock(on);
+
+// Docs(Obsidian형 개인 vault) → ./docs.ts
+registerDocsMock(on);
 
 // ── 기준정보 설정 ──────────────────────────────────────────────────────
 const settings: Record<string, string> = {};

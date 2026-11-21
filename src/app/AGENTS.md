@@ -15,6 +15,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 ├── (main)/              허브·실험 모듈. layout: 로그인 시 ApHeader + NotificationMount + <main py-6>
 │   ├── page.tsx         "/" → 로그인 여부에 따라 /login 또는 /home 으로 redirect
 │   ├── home/                                       허브
+│   ├── docs/                                       Docs 개인 vault
 │   └── mpms/ solace/ todo/ interface-test/ study/  실험 모듈
 ├── (cira)/cira/         CIRA 전용 영역 (URL /cira/**). layout: CIRA 셸 (세션은 루트 Providers 공유)
 │   └── projects/ dashboard/ search/ notifications/
@@ -25,7 +26,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.
-  - 보호 경로(비로그인 시 `/login?callbackUrl=…`으로, 판정은 쿠키를 읽기만 하는 `readSessionToken`): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`, `/settings`. 판정은 `src/lib/routeAccess.ts`
+  - 보호 경로(비로그인 시 `/login?callbackUrl=…`으로, 판정은 쿠키를 읽기만 하는 `readSessionToken`): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`, `/settings`, `/docs/**`. 판정은 `src/lib/routeAccess.ts`
   - 예전 CIRA 경로(`/projects/**` 등)는 `next.config.mjs` redirect 로 `/cira/...` 에 갑니다 → [architecture](../../docs/architecture.md)
   - `/home`, `/todo`는 페이지에서 직접 `auth()`를 확인해 redirect합니다. `/mpms`, `/solace`는 **보호되지 않습니다**.
 
@@ -48,6 +49,8 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 | Solace | `/solace` | 🧪 | WebSocket 메시징 테스트 | [solace](./(main)/solace/AGENTS.md) |
 | Todo | `/todo` | 🧪 | Server Actions | [todo](./(main)/todo/AGENTS.md) |
 | 인터페이스 테스트 | `/interface-test` | 🧪 | REST 메서드별 UI→UMD→백엔드→DB 통신 확인 | [interface-test](./(main)/interface-test/AGENTS.md) |
+| Docs | `/docs`, `/docs/[noteId]` | 공통 | 개인 vault: 폴더 트리·Markdown 노트·[[링크]]·백링크·버전·Cmd+K | [docs](./(main)/docs/AGENTS.md) |
+| Docs Task | `/docs/tasks` | 공통 | 모든 노트의 체크박스 줄 상태별 모아보기·필터·상태 변경 | [docs/tasks](./(main)/docs/tasks/AGENTS.md) |
 | PDF 학습 | `/study` | 🧪 | 문서 목록·PDF 분할 업로드 | [study](./(main)/study/AGENTS.md) |
 | PDF 학습 뷰어 | `/study/[documentId]` | 🧪 | 목차·본문·이 페이지 내용 3단 뷰어, 마킹·단어장 | [viewer](./(main)/study/[documentId]/AGENTS.md) |
 | 노트 모아보기 | `/study/notes` | 🧪 | 모든 문서의 마킹·노트, 클릭하면 해당 문장으로 | [notes](./(main)/study/notes/AGENTS.md) |
