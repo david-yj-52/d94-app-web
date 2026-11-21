@@ -190,3 +190,13 @@ body {
     height: 0;
     float: left;
 }
+/* PDF study sentence roles: CSS decorations preserve the source text and offsets. */
+.syn-subject { text-decoration: underline 2px #3b82f6; text-underline-offset: 3px; }
+.syn-object { text-decoration: underline 2px #22c55e; text-underline-offset: 3px; }
+.syn-verb { font-weight: 700; color: #dc2626; }
+.syn-clause { opacity: .7; }
+[data-open~="CLAUSE"]::before { content: "["; color: #94a3b8; }
+[data-close~="CLAUSE"]::after { content: "]"; color: #94a3b8; }
+[data-open~="PHRASE"]::before { content: "("; color: #94a3b8; }
+[data-close~="PHRASE"]::after { content: ")"; color: #94a3b8; }
+[data-close~="SUBJECT"]::after { content: " ‖"; color: #94a3b8; }
