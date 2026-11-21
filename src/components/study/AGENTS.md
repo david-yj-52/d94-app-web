@@ -9,7 +9,7 @@
 `{ onUploaded: (doc: StudyDocument) => void; onError: (message: string) => void }` — 클릭·끌어놓기, `useUploadStudyDocument` 진행률 막대.
 
 ### DocumentList — `@/components/study/DocumentList`
-`{ documents: StudyDocument[]; onDelete: (doc: StudyDocument) => void }` — 상태 배지(분석 중·준비됨·실패+사유), READY 만 뷰어 링크.
+`{ documents: StudyDocument[]; onDelete: (doc: StudyDocument) => void; onReparse: (doc: StudyDocument) => void }` — 상태 배지(분석 중·준비됨·실패+사유), READY 만 뷰어 링크, 원본 PDF 재분석.
 
 ### TocTree — `@/components/study/TocTree`
 `{ nodes: TocNode[]; activePageSectionId: string | null; onSelect: (node: TocNode) => void }` — native `<details>`로 접기, 활성 페이지 강조.
