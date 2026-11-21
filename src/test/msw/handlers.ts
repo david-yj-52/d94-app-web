@@ -65,6 +65,7 @@ export const handlers = [
         const body = await readBody(request);
         return tooLong(body, "description") ? internalError() : json(fx.ok({...fx.project, ...body}));
     }),
+    http.delete(`${API}/projects/:projectId`, () => json(fx.noContent())),
 
     http.get(`${API}/projects/:projectId/members`, () => json(fx.ok(fx.members))),
     http.put(`${API}/projects/:projectId/members/:userId/role`, async ({request, params}) => {
