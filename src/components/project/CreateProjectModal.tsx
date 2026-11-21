@@ -9,10 +9,11 @@ import {z} from "zod";
 const schema = z.object({
     key: z
         .string()
+        .trim()
+        .toUpperCase()
         .min(2)
         .max(10)
-        .regex(/^[A-Z0-9]+$/, "대문자 영문/숫자만 입력 가능합니다.")
-        .transform((v) => v.toUpperCase()),
+        .regex(/^[A-Z0-9]+$/, "대문자 영문/숫자만 입력 가능합니다."),
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
     projectType: z.enum(["SCRUM", "KANBAN"]),
