@@ -23,6 +23,8 @@ import {
     renameDocsFolder,
     setDocsTaskStatus,
     updateNote,
+    docsImageUrl,
+    uploadDocsImage,
 } from "@/lib/api/docs";
 import type {DeriveRequest, NoteFilters, NoteKind, NoteRequest, TaskFilters, TaskStatus} from "@/types/docs";
 
@@ -32,6 +34,12 @@ import type {DeriveRequest, NoteFilters, NoteKind, NoteRequest, TaskFilters, Tas
  */
 export const invalidateDocs = (qc: QueryClient) =>
     qc.invalidateQueries({predicate: (q) => String(q.queryKey[0]).startsWith("docs")});
+
+/** 편집을 끝낼 때 등, 화면이 Docs 캐시 전체를 새로 받게 한다 */
+export function useInvalidateDocs() {
+    const qc = useQueryClient();
+    return useCallback(() => invalidateDocs(qc), [qc]);
+}
 
 // ── 폴더 ──
 export function useDocsFolders() {
@@ -106,6 +114,23 @@ export function useCreateNote() {
 export function useUpdateNote(id: string) {
     const qc = useQueryClient();
     return useMutation({mutationFn: (req: NoteRequest) => updateNote(id, req), onSuccess: () => invalidateDocs(qc)});
+}
+
+/**
+ * 자동 저장 전용: 저장 결과를 ["docsNote", id] 캐시에만 넣고 다른 키는 무효화하지 않는다(1.5초마다 목록·백링크를 다시 받지 않게).
+ * 편집을 끝낼 때 화면이 invalidateDocs 를 부른다.
+ */
+export function useAutosaveNote(id: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (req: NoteRequest) => updateNote(id, req),
+        onSuccess: (note) => qc.setQueryData(["docsNote", id], note),
+    });
+}
+
+/** 이미지를 올리고 본문에 넣을 주소(/api/proxy/v1/docs/images/{id})를 돌려준다 */
+export function useUploadDocsImage() {
+    return useMutation({mutationFn: (blob: Blob) => uploadDocsImage(blob).then((r) => docsImageUrl(r.id))});
 }
 
 export function useMoveNote() {

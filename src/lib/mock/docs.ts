@@ -8,7 +8,7 @@ type Ctx = { params: Record<string, string>; query: URLSearchParams; body: Recor
 type On = (method: string, pattern: string, h: (ctx: Ctx) => MockResult | Promise<MockResult>) => void;
 
 interface MNote { id: string; title: string; content: string; folderId: string | null; version: number; createdAt: string; modifiedAt: string }
-interface Store { folders: DocsFolder[]; notes: MNote[]; versions: Record<string, NoteVersion[]>; seq: number }
+interface Store { folders: DocsFolder[]; notes: MNote[]; versions: Record<string, NoteVersion[]>; images: Record<string, Uint8Array>; seq: number }
 
 const ok = (data: unknown): MockResult => ({status: 200, body: {success: true, data}});
 const fail = (status: number, code: string, message: string): MockResult => ({status, body: {success: false, code, message}});
@@ -32,6 +32,7 @@ function store(): Store {
             folders: [{id: "f-1", parentId: null, name: "가이드", sortOrder: 0}],
             notes: [{id: "n-1", title: "시작하기", content: SEED, folderId: "f-1", version: 1, createdAt: now, modifiedAt: now}],
             versions: {"n-1": [{version: 1, title: "시작하기", content: SEED, editedBy: "admin", editedAt: now}]},
+            images: {},
             seq: 2,
         };
     }
@@ -63,11 +64,14 @@ const renameLinks = (c: string, from: string, to: string) =>
     c.replace(new RegExp(`\\[\\[\\s*${from.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*(?=[#|\\]])`, "g"), `[[${to}`);
 
 function write(n: MNote, title: string, content: string) {
+    // 백엔드처럼 5분 안 같은 제목 재저장은 직전 이력을 바꿔치기
+    const vs = (store().versions[n.id] ??= []);
+    if (vs[0] && vs[0].title === title && Date.now() - Date.parse(vs[0].editedAt) < 5 * 60_000) vs.shift();
     n.title = title;
     n.content = content;
     n.version += 1;
     n.modifiedAt = new Date().toISOString();
-    (store().versions[n.id] ??= []).unshift({version: n.version, title, content, editedBy: "admin", editedAt: n.modifiedAt});
+    vs.unshift({version: n.version, title, content, editedBy: "admin", editedAt: n.modifiedAt});
 }
 
 function create(title: string, content: string, folderId: string | null): MockResult {
@@ -263,4 +267,27 @@ export function registerDocsMock(on: On) {
         write(n, n.title, lines.join("\n"));
         return r;
     });
+
+    // ── 이미지 (백엔드와 같은 형식 판별, 바이트는 메모리) ──
+    on("POST", "/v1/docs/images", ({body}) => {
+        const bytes = body.bytes as Uint8Array | undefined;
+        if (!bytes || !sniff(bytes)) return fail(400, "DOCS_INVALID_REQUEST", "PNG·JPEG·GIF·WebP 이미지만 올릴 수 있습니다.");
+        const id = crypto.randomUUID();
+        store().images[id] = bytes;
+        return ok({id});
+    });
+    on("GET", "/v1/docs/images/:id", ({params}) => {
+        const bytes = store().images[params.id];
+        if (!bytes) return notFound;
+        return {status: 200, raw: new Response(new Blob([bytes as BlobPart]), {headers: {"Content-Type": sniff(bytes)!}})};
+    });
+}
+
+function sniff(b: Uint8Array): string | null {
+    const s = (...sig: number[]) => sig.every((v, i) => b[i] === v);
+    if (s(0x89, 0x50, 0x4e, 0x47)) return "image/png";
+    if (s(0xff, 0xd8, 0xff)) return "image/jpeg";
+    if (s(0x47, 0x49, 0x46, 0x38)) return "image/gif";
+    if (s(0x52, 0x49, 0x46, 0x46) && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) return "image/webp";
+    return null;
 }
