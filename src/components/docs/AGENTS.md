@@ -15,7 +15,10 @@
 `{ initialTitle: string; initialContent: string; saving?: boolean; onSave: (title, content) => void; onCancel: () => void }` — 제목 + textarea, ⌘/Ctrl+S, 미리보기 토글.
 
 ### NoteSidePanel — `@/components/docs/NoteSidePanel`
-`{ note: Note; backlinks: NoteSummary[]; derived: NoteSummary[]; onOpenTitle; onShowVersions: () => void }` — 속성(종류·트랙·원본·버전)·태그·백링크·파생 노트.
+`{ note: Note; backlinks: NoteSummary[]; derived: NoteSummary[]; onOpenTitle; onShowVersions: () => void; onTaskStatus: (lineNo, status: TaskStatus) => void; onPromoteTask: (lineNo) => void }` — 속성(종류·트랙·원본·버전)·태그·Task(본문 `extractTasks`, 체크박스·hover 시 "노트로 만들기", 이미 `[[링크]]` 인 줄은 버튼 없음)·백링크·파생 노트.
+
+### DeriveModal — `@/components/docs/DeriveModal`
+`{ originTitle: string; saving?: boolean; onSubmit: (req: DeriveRequest) => void; onClose: () => void }` — 파생(브로드캐스트·결과 문서) 노트의 제목·트랙(datalist dev·design·knowledge)·종류(기본 문서).
 
 ### NoteVersionHistory — `@/components/docs/NoteVersionHistory`
 `{ versions: NoteVersion[]; isLoading: boolean; selected: number | null; onPreview: (v) => void; onClose: () => void }` — 최신 먼저.

@@ -18,8 +18,9 @@ docs/layout.tsx
 ├── FolderPickerModal (폴더 이동)  ·  DocsDialog (이름 입력·삭제 확인)  ·  {ToastComponent}
 docs/page.tsx            아이디어 빠른 기록(제목 한 줄) + 최근 노트 15개
 docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIRA 위키와 같은 패턴)
-├── 가운데: 폴더 경로·제목·[편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
-└── 오른쪽(lg 이상): NoteSidePanel(속성·태그·백링크·파생 노트) | NoteVersionHistory
+├── 가운데: 폴더 경로·제목·[종류▾(승격)][파생][편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
+├── 오른쪽(lg 이상): NoteSidePanel(속성·태그·Task·백링크·파생 노트) | NoteVersionHistory
+└── DeriveModal (파생)
 ```
 
 ## 데이터
@@ -31,6 +32,8 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 | `useCreateNote` (useOpenNote) | `POST /v1/docs/notes` | ✅ |
 | `useBacklinks`, `useNoteVersions` | `GET /v1/docs/notes/{id}/backlinks`, `/versions` (이력 패널을 열 때만) | ✅ |
 | `useNoteTitles` (QuickSwitcher) | `GET /v1/docs/notes/titles?prefix=` | ✅ |
+| `useChangeNoteKind`, `useDeriveNote` | `PUT /v1/docs/notes/{id}/kind`, `POST /{id}/derive` | ✅ |
+| `useSetDocsTaskStatus`, `usePromoteDocsTask` | `PUT /v1/docs/tasks/{noteId}/{lineNo}`, `POST …/promote` | ✅ |
 
 ## 기능 (L4)
 ### 링크 열기·만들기
@@ -43,6 +46,10 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 - 같은 상위 안 이름 중복 409, 자기 하위로 이동은 선택 목록에서 비활성(서버도 400), 비어 있지 않은 폴더 삭제 409.
 ### 빠른 전환
 - Cmd/Ctrl+K → 제목 접두어 검색, ↑↓·Enter, 일치하는 노트가 없으면 "만들기".
+### 진화 (승격·파생·Task)
+- **승격:** 제목 옆 종류 선택(아이디어·문서·Task·지식) → 서버가 frontmatter `kind` 만 바꿔 저장(버전 +1).
+- **파생:** 가지 아이콘 → DeriveModal(제목·트랙·종류) → 원본과 같은 폴더에 `origin: "[[원본]]"`·`stream` 이 붙은 노트를 만들고 `?edit=1` 로 이동. 원본의 "파생 노트"에 나타납니다.
+- **Task:** 본문의 `- [ ]` 줄이 Task 입니다. 오른쪽 Task 목록의 체크박스는 그 줄의 `[ ]`↔`[x]` 만 바꿔 저장, 그 줄이 바뀌었으면 409. "노트로 만들기" → 줄 내용을 제목으로 `kind: task` 노트를 만들고 줄을 `[[제목]]` 으로 바꾼 뒤 새 노트로 이동.
 ### 버전
 - 오른쪽 "버전 이력" → 버전을 고르면 가운데에 그 버전 본문(읽기 전용), "현재 버전으로" 로 복귀.
 

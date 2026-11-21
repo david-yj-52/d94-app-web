@@ -2,19 +2,21 @@
 
 import {Suspense, useState} from "react";
 import {useParams, useRouter, useSearchParams} from "next/navigation";
-import {FolderInput, Pencil, Trash2} from "lucide-react";
+import {FolderInput, GitBranch, Pencil, Trash2} from "lucide-react";
 import NoteEditor from "@/components/docs/NoteEditor";
 import NoteMarkdown from "@/components/docs/NoteMarkdown";
 import NoteSidePanel from "@/components/docs/NoteSidePanel";
 import NoteVersionHistory from "@/components/docs/NoteVersionHistory";
 import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import DocsDialog, {type DocsDialogSpec} from "@/components/docs/DocsDialog";
+import DeriveModal from "@/components/docs/DeriveModal";
 import {useOpenNote} from "@/components/docs/useOpenNote";
-import {useBacklinks, useDeleteNote, useDocsFolders, useMoveNote, useNote, useNotes, useNoteVersions, useUpdateNote} from "@/hooks/useDocs";
+import {useBacklinks, useChangeNoteKind, useDeriveNote, usePromoteDocsTask, useSetDocsTaskStatus, useDeleteNote, useDocsFolders, useMoveNote, useNote, useNotes, useNoteVersions, useUpdateNote} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
 import {Skeleton} from "@/components/ui/Skeleton";
 import {docsError} from "@/lib/docs/error";
-import type {NoteVersion} from "@/types/docs";
+import type {NoteKind, NoteVersion} from "@/types/docs";
+import {KIND_LABEL, KINDS} from "@/lib/docs/markdown";
 
 /** 노트 화면: mode 하나로 보기·편집·버전 미리보기를 전환 (CIRA 위키와 같은 패턴). ?edit=1 이면 편집으로 연다 */
 export default function NotePage() {
@@ -34,6 +36,11 @@ function NoteContent() {
     const [preview, setPreview] = useState<NoteVersion | null>(null);
     const [moving, setMoving] = useState(false);
     const [dialog, setDialog] = useState<DocsDialogSpec | null>(null);
+    const [deriving, setDeriving] = useState(false);
+    const changeKind = useChangeNoteKind(noteId);
+    const derive = useDeriveNote(noteId);
+    const setTask = useSetDocsTaskStatus();
+    const promote = usePromoteDocsTask();
     const versions = useNoteVersions(showVersions ? noteId : null);
     const update = useUpdateNote(noteId);
     const move = useMoveNote();
@@ -76,7 +83,13 @@ function NoteContent() {
                             {preview ? (
                                 <button type="button" onClick={() => setPreview(null)} className="h-8 rounded-lg px-3 text-xs text-blue-600 hover:bg-blue-50">현재 버전으로</button>
                             ) : (
-                                <div className="flex gap-1">
+                                <div className="flex items-center gap-1">
+                                    <select value={n.kind} aria-label="종류 (승격)" disabled={changeKind.isPending}
+                                            onChange={(e) => changeKind.mutate(e.target.value as NoteKind, {onError: (er) => show(docsError(er, "종류를 바꾸지 못했습니다."), "error")})}
+                                            className="h-8 rounded-lg border border-slate-200 px-2 text-xs text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        {KINDS.map((k) => <option key={k} value={k}>{KIND_LABEL[k]}</option>)}
+                                    </select>
+                                    <IconButton label="파생 노트 만들기" onClick={() => setDeriving(true)}><GitBranch className="h-4 w-4"/></IconButton>
                                     <IconButton label="편집" onClick={() => setMode("edit")}><Pencil className="h-4 w-4"/></IconButton>
                                     <IconButton label="폴더 이동" onClick={() => setMoving(true)}><FolderInput className="h-4 w-4"/></IconButton>
                                     <IconButton label="삭제" onClick={() => setDialog({
@@ -109,7 +122,13 @@ function NoteContent() {
                                         }}/>
                 ) : (
                     <NoteSidePanel note={n} backlinks={backlinks.data ?? []} derived={derived.data ?? []}
-                                   onOpenTitle={open} onShowVersions={() => setShowVersions(true)}/>
+                                   onOpenTitle={open} onShowVersions={() => setShowVersions(true)}
+                                   onTaskStatus={(lineNo, status) => setTask.mutate({noteId: n.id, lineNo, status},
+                                       {onError: (e) => show(docsError(e, "Task 를 바꾸지 못했습니다."), "error")})}
+                                   onPromoteTask={(lineNo) => promote.mutate({noteId: n.id, lineNo}, {
+                                       onSuccess: (created) => router.push(`/docs/${created.id}`),
+                                       onError: (e) => show(docsError(e, "노트로 만들지 못했습니다."), "error"),
+                                   })}/>
                 )}
             </div>
             {moving && (
@@ -121,6 +140,16 @@ function NoteContent() {
                                    }}/>
             )}
             {dialog && <DocsDialog spec={dialog} onClose={() => setDialog(null)}/>}
+            {deriving && (
+                <DeriveModal originTitle={n.title} saving={derive.isPending} onClose={() => setDeriving(false)}
+                             onSubmit={(req) => derive.mutate(req, {
+                                 onSuccess: (created) => {
+                                     setDeriving(false);
+                                     router.push(`/docs/${created.id}?edit=1`);
+                                 },
+                                 onError: (e) => show(docsError(e, "파생 노트를 만들지 못했습니다."), "error"),
+                             })}/>
+            )}
             {ToastComponent}
         </div>
     );
