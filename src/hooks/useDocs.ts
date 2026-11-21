@@ -1,5 +1,6 @@
 "use client";
 
+import {useCallback} from "react";
 import {useMutation, useQuery, useQueryClient, type QueryClient} from "@tanstack/react-query";
 import {
     changeNoteKind,
@@ -80,6 +81,13 @@ export function useNote(id: string) {
 
 export function useNoteTitles(prefix: string, enabled = true) {
     return useQuery({queryKey: ["docsTitles", prefix], queryFn: () => getNoteTitles(prefix), enabled});
+}
+
+/** 에디터 [[ 자동완성용: 명령형으로 제목 목록을 가져온다(같은 queryKey 캐시를 공유) */
+export function useNoteTitleFetcher() {
+    const qc = useQueryClient();
+    return useCallback((prefix: string) =>
+        qc.fetchQuery({queryKey: ["docsTitles", prefix], queryFn: () => getNoteTitles(prefix), staleTime: 10_000}), [qc]);
 }
 
 export function useNoteVersions(id: string | null) {

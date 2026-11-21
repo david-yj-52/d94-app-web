@@ -12,7 +12,7 @@
 - frontmatter 를 뺀 본문을 `react-markdown` 으로 렌더링, `[[링크]]` 는 버튼(없는 노트 회색). typography 플러그인 없이 요소별 Tailwind 클래스. 기본 `urlTransform` 유지(`javascript:` 차단).
 
 ### NoteEditor — `@/components/docs/NoteEditor`
-`{ initialTitle: string; initialContent: string; saving?: boolean; onSave: (title, content) => void; onCancel: () => void }` — 제목 + textarea, ⌘/Ctrl+S, 미리보기 토글.
+`{ initialTitle: string; initialContent: string; saving?: boolean; onSave: (title, content) => void; onCancel: () => void; fetchTitles: (prefix: string) => Promise<string[]> }` — 제목 + CodeMirror 6 Markdown(줄바꿈, 줄 번호 없음), ⌘/Ctrl+S, 미리보기 토글. `[[` 뒤 입력 시 `fetchTitles`(페이지가 `useNoteTitleFetcher()` 로 넘김) 후보, 고르면 `제목]]` 으로 닫음 — 같은 파일의 `wikilinkCompletion`.
 
 ### NoteSidePanel — `@/components/docs/NoteSidePanel`
 `{ note: Note; backlinks: NoteSummary[]; derived: NoteSummary[]; onOpenTitle; onShowVersions: () => void; onTaskStatus: (lineNo, status: TaskStatus) => void; onPromoteTask: (lineNo) => void }` — 속성(종류·트랙·원본·버전)·태그·Task(본문 `extractTasks`, 체크박스·hover 시 "노트로 만들기", 이미 `[[링크]]` 인 줄은 버튼 없음)·백링크·파생 노트.

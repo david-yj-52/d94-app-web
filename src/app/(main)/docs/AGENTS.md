@@ -40,7 +40,7 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 - 본문 `[[A]]`·`[[A|별칭]]` 은 `toMarkdownLinks` 로 `#note:A` 링크가 되고, NoteMarkdown 이 버튼으로 그립니다. 없는 노트(응답 `links[].exists=false`)는 회색.
 - 클릭 → `useOpenNote`: 전체 노트 목록에서 제목으로 찾아 이동, 없으면 같은 폴더에 그 제목으로 만들고 `?edit=1` 로 이동합니다(Obsidian 동작).
 ### 편집·저장
-- 제목 + Markdown textarea, ⌘S 저장, 미리보기 토글. 저장은 `version` 을 함께 보내고 409(다른 곳에서 수정·제목 중복)면 서버 메시지를 토스트로 보여 줍니다.
+- 제목 + CodeMirror Markdown 편집기, `[[` 입력 시 제목 자동완성(`useNoteTitleFetcher`), ⌘S 저장, 미리보기 토글. 저장은 `version` 을 함께 보내고 409(다른 곳에서 수정·제목 중복)면 서버 메시지를 토스트로 보여 줍니다.
 - 제목을 바꾸면 서버가 이 노트를 링크한 내 노트들의 `[[옛 제목]]` 을 고칩니다 → 노트 변경은 "docs" 키를 모두 무효화(`invalidateDocs`).
 ### 폴더
 - 같은 상위 안 이름 중복 409, 자기 하위로 이동은 선택 목록에서 비활성(서버도 400), 비어 있지 않은 폴더 삭제 409.

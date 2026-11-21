@@ -11,7 +11,7 @@ import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import DocsDialog, {type DocsDialogSpec} from "@/components/docs/DocsDialog";
 import DeriveModal from "@/components/docs/DeriveModal";
 import {useOpenNote} from "@/components/docs/useOpenNote";
-import {useBacklinks, useChangeNoteKind, useDeriveNote, usePromoteDocsTask, useSetDocsTaskStatus, useDeleteNote, useDocsFolders, useMoveNote, useNote, useNotes, useNoteVersions, useUpdateNote} from "@/hooks/useDocs";
+import {useBacklinks, useChangeNoteKind, useDeriveNote, usePromoteDocsTask, useSetDocsTaskStatus, useDeleteNote, useDocsFolders, useMoveNote, useNote, useNotes, useNoteTitleFetcher, useNoteVersions, useUpdateNote} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
 import {Skeleton} from "@/components/ui/Skeleton";
 import {docsError} from "@/lib/docs/error";
@@ -46,6 +46,7 @@ function NoteContent() {
     const move = useMoveNote();
     const remove = useDeleteNote();
     const openNote = useOpenNote();
+    const fetchTitles = useNoteTitleFetcher();
     const {show, ToastComponent} = useToast();
 
     if (note.isLoading) return <Skeleton className="h-96"/>;
@@ -64,7 +65,7 @@ function NoteContent() {
         <div className="flex gap-4">
             <article className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white p-6 lg:h-[calc(100vh-7.5rem)] lg:overflow-y-auto">
                 {mode === "edit" ? (
-                    <NoteEditor initialTitle={n.title} initialContent={n.content} saving={update.isPending}
+                    <NoteEditor initialTitle={n.title} initialContent={n.content} saving={update.isPending} fetchTitles={fetchTitles}
                                 onCancel={() => setMode("view")}
                                 onSave={(title, content) => update.mutate({title, content, version: n.version}, {
                                     onSuccess: () => {
