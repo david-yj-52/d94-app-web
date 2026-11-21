@@ -20,6 +20,13 @@
 ### AyaanSettingsPanel — `@/components/settings/AyaanSettingsPanel`
 - props 없음. 탭(전역 정책/Tool/작업공간), 입력마다 `HelpCard`, 서버 422 메시지를 필드 옆에 표시. API `@/lib/api/ayaan`, 검증·변환 헬퍼는 `app/(main)/ayaan/settings/{validate,toolBody}.ts`.
 
+### ApiTokenSettingsPanel — `@/components/settings/ApiTokenSettingsPanel`
+```ts
+{ isAdmin: boolean }
+```
+- 위: 서비스별 허용 체크박스(`isAdmin` 아니면 비활성 + 안내). 아래: 발급 폼(이름 1~100자, 허용된 서비스만, 권한, 만료) → 원문 1회 표시(복사·MCP 예시) → 목록·폐기.
+- 데이터 `hooks/useApiTokens` (`["apiTokens"]`, `["apiTokens","services"]`), API `@/lib/api/apiTokens`, 타입 `@/types/apiToken`, mock `lib/mock/apiToken.ts`.
+
 ### EmptyGroupPanel — `@/components/settings/EmptyGroupPanel`
 ```ts
 { group: SettingGroup }

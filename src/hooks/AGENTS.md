@@ -47,6 +47,7 @@ export function useCreateMilestone(projectId: string) {
 | useStudy | useStudyDocuments, useStudyDocument, useSaveStudyPosition, useDeleteStudyDocument, useUploadStudyDocument, useStudyToc, useStudyPage, useStudyTerms, useCreateStudyTerm, useUpdateStudyTerm, useDeleteStudyTerm, useStudyAnnotations, useCreateStudyAnnotation, useUpdateStudyAnnotation, useDeleteStudyAnnotation | `["studyDocuments"]`(PARSING 있으면 3초 재조회), `["studyDocument", id]`, `["studyToc", id]`, `["studyPage", id, pageSectionId]`, `["studyTerms", documentId ?? "global"]`, `["studyAnnotations", documentId ?? "all"]`. 단어 변경 → studyTerms·studyPage, 마킹 변경 → studyPage·studyAnnotations 무효화. 위치 저장은 무효화 대신 `["studyDocument", id]` 를 `setQueryData` (스크롤마다 재조회하지 않게) |
 | useInterfaceTests | useInterfaceTestItems, useInterfaceCall | `["interface-tests"]` (useInterfaceCall 은 변경 메서드 2xx 시 무효화) |
 | useSettings | useSettings, useUpdateSettings, useMe, useIsAdmin | `["settings"]` (저장 성공 시 응답으로 `setQueryData`), `["users", "me"]`. `useIsAdmin` = `roles` 에 `ADMIN` 포함 (화면 표시용, 권한 검사는 백엔드) |
+| useApiTokens | useApiTokens, useIssueApiToken, useRevokeApiToken, useApiTokenServices, useSetApiTokenService | `["apiTokens"]` (발급·폐기 성공 시 invalidate, exact), `["apiTokens", "services"]` (토글 성공 시 응답으로 `setQueryData`) |
 | useAuth | useRegister, useLogin | — (mutation 만, 캐시 없음. 둘 다 자격 증명을 암호화해 보냄. `useLogin` 결과 boolean = 자격 증명 일치) |
 
 **키 이름 표기:** 기존 키는 camelCase(`milestoneProgress`)와 kebab-case(`wiki-tree`)가 섞여 있습니다. 새 키는 **kebab-case**로 씁니다.

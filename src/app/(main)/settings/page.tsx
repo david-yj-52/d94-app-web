@@ -2,6 +2,7 @@
 
 import {useRouter, useSearchParams} from "next/navigation";
 import {Suspense} from "react";
+import ApiTokenSettingsPanel from "@/components/settings/ApiTokenSettingsPanel";
 import AyaanSettingsPanel from "@/components/settings/AyaanSettingsPanel";
 import CiraSettingsPanel from "@/components/settings/CiraSettingsPanel";
 import EmptyGroupPanel from "@/components/settings/EmptyGroupPanel";
@@ -34,6 +35,7 @@ function SettingsScreen() {
                 {group.id === "general" ? <GeneralSettingsPanel readOnly={!isAdmin}/>
                     : group.id === "cira" ? <CiraSettingsPanel readOnly={!isAdmin}/>
                     : group.id === "ayaan" ? <AyaanSettingsPanel/>
+                    : group.id === "api-tokens" ? <ApiTokenSettingsPanel isAdmin={isAdmin}/>
                     : <EmptyGroupPanel group={group}/>}
             </div>
         </div>

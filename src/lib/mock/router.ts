@@ -11,6 +11,7 @@ import {dateFrom, findUser, getStore, ISSUE_TYPES, ME, nextId, summary, USERS} f
 import {mockCredentialPublicKey, mockDecryptCredential} from "./credential";
 import {registerStudyMock} from "./study";
 import {registerAyaanMock} from "./ayaan";
+import {registerApiTokenMock} from "./apiToken";
 
 type Params = Record<string, string>;
 type Body = Record<string, unknown>;
@@ -194,6 +195,9 @@ registerStudyMock(on);
 
 // Ayaan(AI Tool 작업·토큰 관리) → ./ayaan.ts
 registerAyaanMock(on);
+
+// API 토큰(MCP·AI 도구용) → ./apiToken.ts
+registerApiTokenMock(on);
 
 // ── 기준정보 설정 ──────────────────────────────────────────────────────
 const settings: Record<string, string> = {};
