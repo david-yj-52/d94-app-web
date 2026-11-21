@@ -2,6 +2,8 @@
 
 import {useEffect, useState} from "react";
 import {useParams} from "next/navigation";
+import Link from "next/link";
+import {ListChecks} from "lucide-react";
 import DocsSidebar from "@/components/docs/DocsSidebar";
 import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import QuickSwitcher from "@/components/docs/QuickSwitcher";
@@ -56,6 +58,9 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
                         className="mb-3 flex h-8 w-full items-center rounded-lg bg-slate-50 px-2 text-left text-xs text-slate-400 hover:bg-slate-100">
                     노트 찾기 <span className="ml-auto">⌘K</span>
                 </button>
+                <Link href="/docs/tasks" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
+                    <ListChecks className="h-4 w-4"/> Task 모아보기
+                </Link>
                 {folders.isLoading || notes.isLoading ? <Skeleton className="h-40"/> : (
                     <DocsSidebar
                         folders={folders.data ?? []} notes={notes.data ?? []} selectedNoteId={params.noteId ?? null}

@@ -1,7 +1,7 @@
 # L2 · docs 컴포넌트
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **docs**
-> 사용 화면: [docs](../../app/(main)/docs/AGENTS.md). 이 모듈 밖에서 import 하지 않습니다.
+> 사용 화면: [docs](../../app/(main)/docs/AGENTS.md), [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md). 이 모듈 밖에서 import 하지 않습니다.
 
 ### DocsSidebar — `@/components/docs/DocsSidebar`
 `{ folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null) => void; onNewFolder: (parentId | null) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void }`
@@ -19,6 +19,9 @@
 
 ### DeriveModal — `@/components/docs/DeriveModal`
 `{ originTitle: string; saving?: boolean; onSubmit: (req: DeriveRequest) => void; onClose: () => void }` — 파생(브로드캐스트·결과 문서) 노트의 제목·트랙(datalist dev·design·knowledge)·종류(기본 문서).
+
+### TaskBoard — `@/components/docs/TaskBoard`
+`{ tasks: DocsTask[]; onStatus: (task: DocsTask, status: TaskStatus) => void }` — 할 일·진행 중·완료 3열, 카드 = 내용·원 노트 링크·마감·상태 선택. 사용: [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md)
 
 ### NoteVersionHistory — `@/components/docs/NoteVersionHistory`
 `{ versions: NoteVersion[]; isLoading: boolean; selected: number | null; onPreview: (v) => void; onClose: () => void }` — 최신 먼저.

@@ -36,6 +36,7 @@ AGENTS.md (L1)
 │   ├── (main)/interface-test/AGENTS.md .. [실험] REST 메서드별 통신 확인
 │   ├── (main)/ayaan/AGENTS.md ........... [실험] AI CLI 작업·토큰 관리 (대시보드·작업·기준정보·셋업)
 │   ├── (main)/docs/AGENTS.md ............ Docs 개인 vault (폴더 트리·노트·[[링크]]·버전·Cmd+K)
+│   │   └── tasks/AGENTS.md .............. Task 모아보기 (체크박스 줄 상태별)
 │   └── (main)/study/AGENTS.md ........... [실험] PDF 학습 뷰어 (문서 목록·업로드)
 │       ├── [documentId]/AGENTS.md ....... 3단 뷰어 (목차·본문·이 페이지 내용)
 │       └── notes/AGENTS.md .............. 노트 모아보기

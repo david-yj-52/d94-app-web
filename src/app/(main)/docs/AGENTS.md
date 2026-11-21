@@ -12,7 +12,7 @@
 컴포넌트 카드: [docs](../../../components/docs/AGENTS.md)
 ```
 docs/layout.tsx
-├── "노트 찾기 ⌘K" 버튼 → QuickSwitcher
+├── "노트 찾기 ⌘K" 버튼 → QuickSwitcher · "Task 모아보기" → [tasks](./tasks/AGENTS.md)
 ├── DocsSidebar   (폴더 트리·폴더별 노트, 폴더 ··· 메뉴: 새 노트·하위 폴더·이름 변경·이동·삭제)
 ├── {children}
 ├── FolderPickerModal (폴더 이동)  ·  DocsDialog (이름 입력·삭제 확인)  ·  {ToastComponent}

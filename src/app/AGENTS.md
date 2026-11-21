@@ -50,6 +50,7 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 | Todo | `/todo` | 🧪 | Server Actions | [todo](./(main)/todo/AGENTS.md) |
 | 인터페이스 테스트 | `/interface-test` | 🧪 | REST 메서드별 UI→UMD→백엔드→DB 통신 확인 | [interface-test](./(main)/interface-test/AGENTS.md) |
 | Docs | `/docs`, `/docs/[noteId]` | 공통 | 개인 vault: 폴더 트리·Markdown 노트·[[링크]]·백링크·버전·Cmd+K | [docs](./(main)/docs/AGENTS.md) |
+| Docs Task | `/docs/tasks` | 공통 | 모든 노트의 체크박스 줄 상태별 모아보기·필터·상태 변경 | [docs/tasks](./(main)/docs/tasks/AGENTS.md) |
 | PDF 학습 | `/study` | 🧪 | 문서 목록·PDF 분할 업로드 | [study](./(main)/study/AGENTS.md) |
 | PDF 학습 뷰어 | `/study/[documentId]` | 🧪 | 목차·본문·이 페이지 내용 3단 뷰어, 마킹·단어장 | [viewer](./(main)/study/[documentId]/AGENTS.md) |
 | 노트 모아보기 | `/study/notes` | 🧪 | 모든 문서의 마킹·노트, 클릭하면 해당 문장으로 | [notes](./(main)/study/notes/AGENTS.md) |
