@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import {FileText, Loader2, Trash2} from "lucide-react";
+import {FileText, Loader2, RotateCw, Trash2} from "lucide-react";
 import type {StudyDocument} from "@/types/study";
 
 interface Props {
     documents: StudyDocument[];
     onDelete: (doc: StudyDocument) => void;
+    onReparse: (doc: StudyDocument) => void;
 }
 
 const STATUS: Record<StudyDocument["status"], { label: string; cls: string }> = {
@@ -15,7 +16,7 @@ const STATUS: Record<StudyDocument["status"], { label: string; cls: string }> = 
     FAILED: {label: "실패", cls: "bg-red-50 text-red-700"},
 };
 
-export default function DocumentList({documents, onDelete}: Props) {
+export default function DocumentList({documents, onDelete, onReparse}: Props) {
     if (!documents.length) {
         return <p className="py-10 text-center text-sm text-slate-400">아직 올린 문서가 없습니다.</p>;
     }
@@ -30,7 +31,7 @@ export default function DocumentList({documents, onDelete}: Props) {
                             <p className="truncate text-sm font-medium text-slate-900">{d.title}</p>
                             <p className="truncate text-xs text-slate-500">
                                 {d.fileName}{d.pageCount ? ` · ${d.pageCount}쪽` : ""}
-                                {d.status === "FAILED" && d.failReason ? ` · ${d.failReason}` : ""}
+                                {d.failReason ? ` · ${d.status === "READY" ? "최근 재분석 실패: " : ""}${d.failReason}` : ""}
                             </p>
                         </div>
                     </div>
@@ -44,6 +45,11 @@ export default function DocumentList({documents, onDelete}: Props) {
                             {d.status === "PARSING" && <Loader2 className="h-3 w-3 animate-spin"/>}
                             {s.label}
                         </span>
+                        <button type="button" aria-label={`${d.title} 다시 분석`} title="원본 PDF로 다시 분석"
+                                disabled={d.status === "PARSING"} onClick={() => onReparse(d)}
+                                className="rounded p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-40">
+                            <RotateCw className="h-4 w-4"/>
+                        </button>
                         <button type="button" aria-label={`${d.title} 삭제`} onClick={() => onDelete(d)}
                                 className="rounded p-2 text-slate-400 hover:bg-red-50 hover:text-red-600">
                             <Trash2 className="h-4 w-4"/>

@@ -36,6 +36,11 @@ export async function deleteStudyDocument(id: string): Promise<void> {
     await apiClient.delete(`${BASE}/documents/${id}`);
 }
 
+export async function reparseStudyDocument(id: string): Promise<StudyDocument> {
+    const res = await apiClient.post(`${BASE}/documents/${id}/reparse`);
+    return res.data.data;
+}
+
 export async function startStudyUpload(fileName: string, fileSize: number): Promise<StartUploadResponse> {
     const res = await apiClient.post(`${BASE}/documents/uploads`, {fileName, fileSize});
     return res.data.data;
