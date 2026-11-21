@@ -10,14 +10,14 @@
 ## 화면 구성
 ```
 [documentId]/page.tsx
-├── 상단: ← 목록 · 문서 제목 · 탭(본문 / 단어장) · 노트 링크(/study/notes?documentId=)
+├── 상단: ← 목록 · 문서 제목 · 탭(본문 / 단어장) · 문장 구조 토글 · 사전 키 · 노트 링크
 ├── (lg 미만) <details> 목차
 ├── 3열 (lg: 260px · 본문 · 220px)
 │   ├── TocTree                 sticky
 │   ├── PageView | TermsPanel
 │   └── PageOutline             "이 페이지 내용"
 ├── SelectionToolbar           (선택 시)
-├── TermEditModal / AnnotationPopover
+├── DictionaryPopover / DictionaryKeyModal / TermEditModal / AnnotationPopover
 ├── AutoScroll                 본문 탭에서 항상 (오른쪽 아래)
 └── {ToastComponent}
 ```
@@ -31,6 +31,8 @@
 | `useSaveStudyPosition` | `PUT /v1/study/documents/{id}/position` `{sectionId, blockKey}` — 성공하면 `["studyDocument", id]` 캐시만 고침 |
 | `useCreateStudyAnnotation` | `POST /v1/study/annotations` |
 | `useCreateStudyTerm` 외 | `/v1/study/terms` |
+| `useDictionary` / `useDictionaryKey` | `GET /v1/study/dictionary?word=` · `/dictionary/key` |
+| `useStudySyntax` (본문 + 토글 ON) | `GET /v1/study/documents/{id}/pages/{pageSectionId}/syntax` |
 
 ## 기능
 - **이동:** 목차·개요 클릭 → 같은 페이지면 `history.replaceState` + 스크롤, 다른 페이지면 `router.push(?section=…#key)`. 페이지 데이터가 도착한 뒤(`section.id` 변경 시)에만 해시 블록으로 스크롤하고 1.5초 강조.
@@ -38,4 +40,6 @@
 - **자동 스크롤:** `AutoScroll` 이 설정 속도로 내려가고, 휠·터치·방향키·본문 누름이면 멈추고, Enter 로 멈춤·재개합니다(속도 0.1·0.5·1~10). 페이지 끝이면 2초 뒤 `goTo(next.id)` 로 다음 페이지 맨 위부터 이어 가고, 마지막 페이지 끝에서 멈춥니다. 자동 스크롤 중엔 스크롤이 멈추지 않아 위치 저장(0.5초 디바운스)도 멈춘 뒤에 됩니다.
 - **마킹·노트:** 본문 `mouseup`/`keyup` → `rangeToAnchor` → 툴바. 마킹 클릭 → `AnnotationPopover`.
 - **단어장:** 툴바 "단어장" → `TermEditModal`(선택 글자 채움). 등록되면 페이지 쿼리 무효화로 밑줄이 바로 생깁니다.
+- **영영 사전:** 본문 단어 위에 0.4초 포인터를 두면 Merriam-Webster 뜻을 표시합니다. 단어장 툴팁·선택 중은 제외합니다. 상단 사전 아이콘에서 개인 API 키를 등록·삭제합니다. 키와 조회 결과는 계정별로 저장됩니다.
+- **문장 구조:** 토글은 `localStorage`의 `study.syntax`에 저장됩니다. 본문 탭에서 켰을 때만 현재 페이지 분석을 요청하고 결과는 서버 캐시를 사용합니다. 역할 표시는 CSS로 그려 텍스트 오프셋을 바꾸지 않습니다.
 - 단어 매칭·오프셋 검증·quote 생성은 백엔드가 합니다. 웹은 `buildSegments`로 받은 구간을 그릴 뿐입니다.

@@ -11,6 +11,9 @@ import type {
     TermRequest,
     TocNode,
     UpdateAnnotationRequest,
+    DictionaryKeyStatus,
+    DictionaryResponse,
+    SyntaxResponse,
 } from "@/types/study";
 
 const BASE = "/v1/study";
@@ -96,4 +99,24 @@ export async function updateStudyAnnotation(id: string, req: UpdateAnnotationReq
 
 export async function deleteStudyAnnotation(id: string): Promise<void> {
     await apiClient.delete(`${BASE}/annotations/${id}`);
+}
+
+export async function getDictionary(word: string): Promise<DictionaryResponse> {
+    const res = await apiClient.get(`${BASE}/dictionary`, {params: {word}});
+    return res.data.data;
+}
+export async function getDictionaryKey(): Promise<DictionaryKeyStatus> {
+    const res = await apiClient.get(`${BASE}/dictionary/key`);
+    return res.data.data;
+}
+export async function saveDictionaryKey(apiKey: string): Promise<DictionaryKeyStatus> {
+    const res = await apiClient.put(`${BASE}/dictionary/key`, {apiKey});
+    return res.data.data;
+}
+export async function deleteDictionaryKey(): Promise<void> {
+    await apiClient.delete(`${BASE}/dictionary/key`);
+}
+export async function getStudySyntax(documentId: string, pageId: string): Promise<SyntaxResponse> {
+    const res = await apiClient.get(`${BASE}/documents/${documentId}/pages/${pageId}/syntax`);
+    return res.data.data;
 }
