@@ -3,7 +3,7 @@ export interface ProjectResponse {
     key: string;
     name: string;
     description: string;
-    projectType: "SCRUM" | "KANBAN";
+    projectType: string;
     ownerId: string;
     issueSequence: number;
 }
@@ -12,11 +12,11 @@ export interface CreateProjectRequest {
     key: string;
     name: string;
     description?: string;
-    projectType: "SCRUM" | "KANBAN";
+    projectType: string;
 }
 
 export interface UpdateProjectRequest {
     name: string;
     description?: string;
-    projectType: "SCRUM" | "KANBAN";
+    projectType: string;
 }

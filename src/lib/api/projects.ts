@@ -25,3 +25,7 @@ export async function updateProject(
     const res = await apiClient.put(`/v1/projects/${projectId}`, data);
     return res.data.data;
 }
+
+export async function deleteProject(projectId: string): Promise<void> {
+    await apiClient.delete(`/v1/projects/${projectId}`);
+}
