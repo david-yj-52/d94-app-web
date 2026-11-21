@@ -1,7 +1,7 @@
 "use client";
 
 import {useState} from "react";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient, type QueryClient} from "@tanstack/react-query";
 import axios from "axios";
 import {
     completeStudyUpload,
@@ -21,6 +21,7 @@ import {
     startStudyUpload,
     updateStudyAnnotation,
     updateStudyTerm,
+    getDictionary, getDictionaryKey, saveDictionaryKey, deleteDictionaryKey, getStudySyntax,
 } from "@/lib/api/study";
 import type {CreateAnnotationRequest, StudyDocument, StudyPositionRequest, TermRequest, UpdateAnnotationRequest} from "@/types/study";
 
@@ -133,6 +134,28 @@ export const useCreateStudyTerm = () => useTermMutation((req: TermRequest) => cr
 export const useUpdateStudyTerm = () =>
     useTermMutation(({id, req}: { id: string; req: TermRequest }) => updateStudyTerm(id, req));
 export const useDeleteStudyTerm = () => useTermMutation((id: string) => deleteStudyTerm(id));
+
+export function useDictionary(word: string | null) {
+    return useQuery({queryKey: ["studyDictionary", word], queryFn: () => getDictionary(word as string), enabled: !!word, staleTime: Infinity, retry: false});
+}
+export function useDictionaryKey() {
+    return useQuery({queryKey: ["studyDictionaryKey"], queryFn: getDictionaryKey});
+}
+function refreshDictionary(qc: QueryClient) {
+    qc.invalidateQueries({queryKey: ["studyDictionaryKey"]});
+    qc.removeQueries({queryKey: ["studyDictionary"]});
+}
+export function useSaveDictionaryKey() {
+    const qc = useQueryClient();
+    return useMutation({mutationFn: saveDictionaryKey, onSuccess: () => refreshDictionary(qc)});
+}
+export function useDeleteDictionaryKey() {
+    const qc = useQueryClient();
+    return useMutation({mutationFn: deleteDictionaryKey, onSuccess: () => refreshDictionary(qc)});
+}
+export function useStudySyntax(documentId: string, pageId: string | null, enabled: boolean) {
+    return useQuery({queryKey: ["studySyntax", documentId, pageId], queryFn: () => getStudySyntax(documentId, pageId as string), enabled: !!documentId && !!pageId && enabled, staleTime: Infinity});
+}
 
 // ── 마킹 · 노트 ───────────────────────────────────────────────────
 export function useStudyAnnotations(documentId?: string) {

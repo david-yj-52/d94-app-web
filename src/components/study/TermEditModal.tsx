@@ -6,6 +6,7 @@ import {errorMessage} from "@/lib/study/colors";
 
 interface Props {
     initialTerm: string;
+    initialDefinition?: string;
     documentId: string;
     onClose: () => void;
     onError: (message: string) => void;
@@ -13,10 +14,10 @@ interface Props {
 }
 
 /** 선택한 글자를 단어장에 등록. 범위: 전체 문서 공유 또는 이 문서에서만(덮어쓰기). */
-export default function TermEditModal({initialTerm, documentId, onClose, onError, onSaved}: Props) {
+export default function TermEditModal({initialTerm, initialDefinition = "", documentId, onClose, onError, onSaved}: Props) {
     const create = useCreateStudyTerm();
     const [term, setTerm] = useState(initialTerm.trim());
-    const [definition, setDefinition] = useState("");
+    const [definition, setDefinition] = useState(initialDefinition);
     const [scope, setScope] = useState<"GLOBAL" | "DOCUMENT">("GLOBAL");
 
     const save = () => create.mutate({term, definition, documentId: scope === "DOCUMENT" ? documentId : null}, {

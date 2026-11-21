@@ -4,7 +4,7 @@ import {Fragment, type ReactNode, type Ref} from "react";
 import {ChevronLeft, ChevronRight, StickyNote} from "lucide-react";
 import {buildSegments} from "@/lib/study/segments";
 import {MARK_CLASS} from "@/lib/study/colors";
-import type {PageBlock, SectionRef, StudyPage} from "@/types/study";
+import type {PageBlock, SectionRef, StudyPage, SyntaxSpan} from "@/types/study";
 
 interface Props {
     page: StudyPage;
@@ -13,13 +13,14 @@ interface Props {
     onNavigate: (section: SectionRef) => void;
     onAnnotationClick: (annotationId: string) => void;
     onSelectionEnd: () => void;
+    syntax?: SyntaxSpan[];
 }
 
 /**
  * 백엔드가 준 블록을 그대로 그린다. 모든 블록 요소는 id·data-block-key 를 가진다(선택 → 오프셋 변환, 이동 대상).
  * 블록 안에는 본문 글자 외의 텍스트 노드를 넣지 않는다 — 단어 툴팁은 CSS ::after(data-tip)로 그린다.
  */
-export default function PageView({page, documentId, containerRef, onNavigate, onAnnotationClick, onSelectionEnd}: Props) {
+export default function PageView({page, documentId, containerRef, onNavigate, onAnnotationClick, onSelectionEnd, syntax = []}: Props) {
     const order = new Map<string, number>();
     page.blocks.forEach((b, i) => {
         order.set(b.key, i * 1000);
@@ -30,7 +31,7 @@ export default function PageView({page, documentId, containerRef, onNavigate, on
         const notes = page.annotations.filter((a) => a.hasNote && a.endBlockKey === blockKey);
         return (
             <>
-                {buildSegments(text, blockKey, page.termHits, page.annotations, order).map((s) => {
+                {buildSegments(text, blockKey, page.termHits, page.annotations, order, syntax).map((s) => {
                     let node: ReactNode = s.text;
                     const def = s.termId ? page.terms[s.termId] : undefined;
                     if (def) {
@@ -50,6 +51,10 @@ export default function PageView({page, documentId, containerRef, onNavigate, on
                                 {node}
                             </mark>
                         );
+                    }
+                    if (s.roles.length) {
+                        node = <span className={s.roles.map((r) => `syn-${r.toLowerCase()}`).join(" ")}
+                                      data-open={s.opens.join(" ") || undefined} data-close={s.closes.join(" ") || undefined}>{node}</span>;
                     }
                     return <Fragment key={s.start}>{node}</Fragment>;
                 })}

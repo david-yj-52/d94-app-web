@@ -10,7 +10,7 @@ const ann = (id: string, s: string, so: number, e: string, eo: number, color: Pa
 describe("buildSegments", () => {
     it("returns one plain segment when nothing applies", () => {
         expect(buildSegments("abc", "b1", [], [], order)).toEqual(
-            [{start: 0, end: 3, text: "abc", termId: null, annotationIds: [], color: null}]);
+            [{start: 0, end: 3, text: "abc", termId: null, annotationIds: [], color: null, roles: [], opens: [], closes: []}]);
     });
 
     it("partialOverlapSplitsIntoThree", () => {
@@ -29,6 +29,31 @@ describe("buildSegments", () => {
     it("ignores hits and annotations of other blocks", () => {
         const segs = buildSegments("abc", "b1", [{blockKey: "b2", start: 0, end: 1, termId: "t"}], [ann("a", "b2", 0, "b2", 1)], order);
         expect(segs).toHaveLength(1);
+    });
+
+    it("syntaxSpansAddRoleCuts", () => {
+        const segs = buildSegments("The auditor reviews logs", "b1", [], [], order,
+            [{blockKey: "b1", start: 0, end: 11, role: "SUBJECT"}, {blockKey: "b1", start: 12, end: 19, role: "VERB"}]);
+        expect(segs.map((s) => [s.text, s.roles])).toEqual([["The auditor", ["SUBJECT"]], [" ", []], ["reviews", ["VERB"]], [" logs", []]]);
+        expect(segs[0].closes).toEqual(["SUBJECT"]);
+    });
+
+    it("nestedClauseCarriesBothRoles", () => {
+        const segs = buildSegments("that we use", "b1", [], [], order,
+            [{blockKey: "b1", start: 0, end: 11, role: "CLAUSE"}, {blockKey: "b1", start: 5, end: 7, role: "SUBJECT"}]);
+        expect(segs.find((s) => s.text === "we")?.roles).toEqual(["CLAUSE", "SUBJECT"]);
+        expect(segs[0].opens).toContain("CLAUSE");
+        expect(segs.at(-1)?.closes).toContain("CLAUSE");
+    });
+
+    it("syntaxRolesDoNotChangeText", () => {
+        const text = "The auditor reviews logs";
+        const segs = buildSegments(text, "b1", [], [], order, [{blockKey: "b1", start: 4, end: 11, role: "SUBJECT"}]);
+        expect(segs.map((s) => s.text).join("")).toBe(text);
+    });
+
+    it("ignoresSyntaxSpansOfOtherBlocks", () => {
+        expect(buildSegments("abc", "b1", [], [], order, [{blockKey: "b2", start: 0, end: 3, role: "VERB"}])[0].roles).toEqual([]);
     });
 });
 
