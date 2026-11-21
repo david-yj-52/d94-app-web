@@ -1,7 +1,7 @@
 import {renderHookWithClient} from "@/test/utils";
 import {act, waitFor} from "@testing-library/react";
 import {describe, expect, it, vi} from "vitest";
-import {useCreateProject, useProject, useProjects, useUpdateProject} from "./useProjects";
+import {useCreateProject, useDeleteProject, useProject, useProjects, useUpdateProject} from "./useProjects";
 
 describe("useProjects", () => {
     it("queryKey: [\"projects\"], [\"projects\", projectId]", async () => {
@@ -11,7 +11,7 @@ describe("useProjects", () => {
         expect(client.getQueryData(["projects", "PRJ-1"])).toMatchObject({key: "CIRA"});
     });
 
-    it("useCreateProject → [\"projects\"], useUpdateProject → 단건 + 목록", async () => {
+    it("useCreateProject → [\"projects\"], useUpdateProject → 단건 + 목록, useDeleteProject → 단건 제거 + 목록", async () => {
         const create = renderHookWithClient(() => useCreateProject());
         const spy = vi.spyOn(create.client, "invalidateQueries");
         await act(() => create.result.current.mutateAsync({key: "N", name: "n", projectType: "SCRUM"}));
@@ -21,5 +21,12 @@ describe("useProjects", () => {
         const spy2 = vi.spyOn(update.client, "invalidateQueries");
         await act(() => update.result.current.mutateAsync({name: "n", projectType: "SCRUM"}));
         expect(spy2.mock.calls.map((c) => c[0]?.queryKey)).toEqual([["projects", "PRJ-1"], ["projects"]]);
+
+        const del = renderHookWithClient(() => useDeleteProject());
+        const removeSpy = vi.spyOn(del.client, "removeQueries");
+        const invSpy = vi.spyOn(del.client, "invalidateQueries");
+        await act(() => del.result.current.mutateAsync("PRJ-1"));
+        expect(removeSpy.mock.calls.map((c) => c[0]?.queryKey)).toEqual([["projects", "PRJ-1"]]);
+        expect(invSpy.mock.calls.map((c) => c[0]?.queryKey)).toEqual([["projects"]]);
     });
 });

@@ -1,7 +1,7 @@
 import {project} from "@/test/msw/fixtures";
 import {lastRequest} from "@/test/utils";
 import {describe, expect, it} from "vitest";
-import {createProject, getProject, getProjects, updateProject} from "./projects";
+import {createProject, deleteProject, getProject, getProjects, updateProject} from "./projects";
 
 describe("lib/api/projects", () => {
     it("getProjects: 목록을 그대로 돌려준다", async () => {
@@ -14,7 +14,7 @@ describe("lib/api/projects", () => {
         expect(lastRequest()?.path).toBe("/v1/projects/PRJ-1");
     });
 
-    it("createProject / updateProject: 본문을 그대로 보낸다", async () => {
+    it("createProject / updateProject / deleteProject: 본문과 경로를 그대로 보낸다", async () => {
         await createProject({key: "NEW", name: "새 프로젝트", projectType: "SCRUM"});
         expect(lastRequest()).toMatchObject({
             method: "POST", path: "/v1/projects", body: {key: "NEW", name: "새 프로젝트", projectType: "SCRUM"},
@@ -23,5 +23,8 @@ describe("lib/api/projects", () => {
         const updated = await updateProject("PRJ-1", {name: "바뀐 이름", projectType: "KANBAN"});
         expect(lastRequest()).toMatchObject({method: "PUT", path: "/v1/projects/PRJ-1"});
         expect(updated.name).toBe("바뀐 이름");
+
+        await deleteProject("PRJ-1");
+        expect(lastRequest()).toMatchObject({method: "DELETE", path: "/v1/projects/PRJ-1"});
     });
 });

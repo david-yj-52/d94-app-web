@@ -290,6 +290,13 @@ on("PUT", "/v1/projects/:projectId", ({params, body}) => {
     });
     return ok(p);
 });
+on("DELETE", "/v1/projects/:projectId", ({params}) => {
+    const s = getStore();
+    const exists = s.projects.some((x) => x.id === params.projectId);
+    if (!exists) return notFound("project");
+    s.projects = s.projects.filter((x) => x.id !== params.projectId);
+    return {status: 204};
+});
 
 // 이슈
 on("GET", "/v1/projects/:projectId/issues", ({params, query}) => {

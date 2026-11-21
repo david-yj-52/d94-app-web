@@ -1,16 +1,19 @@
 "use client";
 
 import {useToast} from "@/components/ui/Toast";
-import {useProject, useUpdateProject} from "@/hooks/useProjects";
-import {use, useEffect} from "react";
-import {useForm} from "react-hook-form";
+import {useDeleteProject, useProject, useUpdateProject} from "@/hooks/useProjects";
+import {useSettings} from "@/hooks/useSettings";
+import {CIRA_PROJECT_TYPES_KEY, DEFAULT_CIRA_PROJECT_TYPES, parseCiraProjectTypes} from "@/types/settings";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {useRouter} from "next/navigation";
+import {use, useEffect, useMemo, useState} from "react";
+import {useForm} from "react-hook-form";
 import {z} from "zod";
 
 const schema = z.object({
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
-    projectType: z.enum(["SCRUM", "KANBAN"]),
+    projectType: z.string().min(1, "프로젝트 유형을 선택해주세요.").max(30),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -21,10 +24,23 @@ export default function SettingsGeneralPage({
     params: Promise<{ projectId: string }>;
 }) {
     const {projectId} = use(params);
+    const router = useRouter();
     const {data: project, isLoading} = useProject(projectId);
+    const {data: settings} = useSettings();
     const {mutate: updateProject, isPending, isSuccess, isError} =
         useUpdateProject(projectId);
+    const {mutate: deleteProject, isPending: isDeleting} = useDeleteProject();
     const {show, ToastComponent} = useToast();
+    const [confirmDelete, setConfirmDelete] = useState(false);
+
+    const projectTypes = useMemo(() => {
+        const configured = parseCiraProjectTypes(settings?.[CIRA_PROJECT_TYPES_KEY]);
+        const base = configured.length > 0 ? configured : DEFAULT_CIRA_PROJECT_TYPES;
+        if (project?.projectType && !base.includes(project.projectType)) {
+            return [project.projectType, ...base];
+        }
+        return base;
+    }, [settings, project?.projectType]);
 
     const {
         register,
@@ -33,7 +49,7 @@ export default function SettingsGeneralPage({
         formState: {errors, isDirty},
     } = useForm<FormData>({
         resolver: zodResolver(schema),
-        defaultValues: {name: "", description: "", projectType: "SCRUM"},
+        defaultValues: {name: "", description: "", projectType: projectTypes[0]},
     });
 
     useEffect(() => {
@@ -55,6 +71,18 @@ export default function SettingsGeneralPage({
     }, [isError, show]);
 
     const onSubmit = (data: FormData) => updateProject(data);
+
+    const handleDelete = () => {
+        deleteProject(projectId, {
+            onSuccess: () => {
+                router.push("/cira/projects");
+            },
+            onError: () => {
+                show("프로젝트 삭제에 실패했습니다.", "error");
+                setConfirmDelete(false);
+            },
+        });
+    };
 
     if (isLoading) {
         return (
@@ -117,8 +145,11 @@ export default function SettingsGeneralPage({
                         {...register("projectType")}
                         className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="SCRUM">Scrum</option>
-                        <option value="KANBAN">Kanban</option>
+                        {projectTypes.map((type) => (
+                            <option key={type} value={type}>
+                                {type}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -132,6 +163,41 @@ export default function SettingsGeneralPage({
                     </button>
                 </div>
             </form>
+
+            <section className="mt-10 max-w-lg rounded-xl border border-red-200 bg-red-50/50 p-5">
+                <h3 className="text-sm font-bold text-red-700">위험 구역</h3>
+                <p className="mt-1 text-xs text-red-600">
+                    프로젝트를 삭제하면 프로젝트 목록에서 제거되며 복구할 수 없습니다.
+                </p>
+                {!confirmDelete ? (
+                    <button
+                        type="button"
+                        onClick={() => setConfirmDelete(true)}
+                        className="mt-4 h-9 rounded-lg border border-red-300 bg-white px-4 text-sm font-semibold text-red-600 hover:bg-red-50"
+                    >
+                        프로젝트 삭제
+                    </button>
+                ) : (
+                    <div className="mt-4 flex items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                            className="h-9 rounded-lg bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+                        >
+                            {isDeleting ? "삭제 중..." : "정말 삭제"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setConfirmDelete(false)}
+                            disabled={isDeleting}
+                            className="h-9 rounded-lg border border-slate-200 bg-white px-4 text-sm text-slate-600 hover:bg-slate-50"
+                        >
+                            취소
+                        </button>
+                    </div>
+                )}
+            </section>
 
             {ToastComponent}
         </>
