@@ -13,6 +13,7 @@ describe("lib/routeAccess classifyPath", () => {
         expect(classifyPath("/interface-test")).toBe("protected");
         expect(classifyPath("/study/doc1")).toBe("protected");
         expect(classifyPath("/ayaan/settings")).toBe("protected");
+        expect(classifyPath("/docs/n1")).toBe("protected");
     });
 
     it("예전 가입 경로와 접두사만 같은 경로는 열어 둔다", () => {
