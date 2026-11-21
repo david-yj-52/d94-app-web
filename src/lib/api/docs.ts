@@ -122,3 +122,13 @@ export async function promoteDocsTask(noteId: string, lineNo: number): Promise<N
     const res = await apiClient.post(`${BASE}/tasks/${noteId}/${lineNo}/promote`);
     return res.data.data;
 }
+
+// ── 이미지 ──
+/** 노트에서 쓰는 이미지 주소 (/api/proxy 경유, 세션 토큰은 서버가 붙인다) */
+export const docsImageUrl = (id: string) => `/api/proxy${BASE}/images/${id}`;
+
+/** 이미지 바이트를 그대로 보낸다(1MB 이하로 줄여서 — lib/docs/image.ts). 형식은 서버가 판별 */
+export async function uploadDocsImage(blob: Blob): Promise<{ id: string }> {
+    const res = await apiClient.post(`${BASE}/images`, blob, {headers: {"Content-Type": "application/octet-stream"}});
+    return res.data.data;
+}

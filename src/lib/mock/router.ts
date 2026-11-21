@@ -1107,6 +1107,7 @@ export async function handleMockRequest(request: Request, path: string[]): Promi
     if (method !== "GET" && method !== "HEAD") {
         const ct = request.headers.get("content-type") ?? "";
         if (ct.includes("application/json")) body = (await request.json().catch(() => ({}))) as Body;
+        else if (ct.includes("application/octet-stream")) body = {bytes: new Uint8Array(await request.arrayBuffer())};
     }
 
     for (const [m, pattern, handler] of routes) {

@@ -33,6 +33,7 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 | `useBacklinks`, `useNoteVersions` | `GET /v1/docs/notes/{id}/backlinks`, `/versions` (이력 패널을 열 때만) | ✅ |
 | `useNoteTitles` (QuickSwitcher) | `GET /v1/docs/notes/titles?prefix=` | ✅ |
 | `useChangeNoteKind`, `useDeriveNote` | `PUT /v1/docs/notes/{id}/kind`, `POST /{id}/derive` | ✅ |
+| `useAutosaveNote`, `useUploadDocsImage`, `useInvalidateDocs` | `PUT /v1/docs/notes/{id}`(자동 저장), `POST /v1/docs/images` | ✅ |
 | `useSetDocsTaskStatus`, `usePromoteDocsTask` | `PUT /v1/docs/tasks/{noteId}/{lineNo}`, `POST …/promote` | ✅ |
 
 ## 기능 (L4)
@@ -40,12 +41,17 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 - 본문 `[[A]]`·`[[A|별칭]]` 은 `toMarkdownLinks` 로 `#note:A` 링크가 되고, NoteMarkdown 이 버튼으로 그립니다. 없는 노트(응답 `links[].exists=false`)는 회색.
 - 클릭 → `useOpenNote`: 전체 노트 목록에서 제목으로 찾아 이동, 없으면 같은 폴더에 그 제목으로 만들고 `?edit=1` 로 이동합니다(Obsidian 동작).
 ### 편집·저장
-- 제목 + CodeMirror Markdown 편집기, `[[` 입력 시 제목 자동완성(`useNoteTitleFetcher`), ⌘S 저장, 미리보기 토글. 저장은 `version` 을 함께 보내고 409(다른 곳에서 수정·제목 중복)면 서버 메시지를 토스트로 보여 줍니다.
+- **Live Preview:** CodeMirror 편집기가 입력 즉시 제목·굵게·기울임·취소선·코드를 스타일링하고, 커서가 없는 줄은 `#`·`**` 같은 기호를 숨기며 이미지를 보여 줍니다(Obsidian 방식). 코드 블록은 언어별 하이라이트, `[[` 는 제목 자동완성.
+- **자동 저장:** 입력이 멈추고 1.5초 뒤 서버 저장(`useAutosaveNote` — 이 노트 캐시만 갱신). 제목은 입력란을 떠나거나 Enter 때 저장. "완료" = 남은 입력 저장 후 보기로 돌아가며 Docs 캐시 전체 무효화(`useInvalidateDocs`). 서버 이력은 5분 안 같은 제목 재저장을 한 건으로 합칩니다.
+- **장애 대비:** 바뀔 때마다 브라우저 IndexedDB 에 초안을 남깁니다. 서버 저장 실패(네트워크·5xx)면 "서버에 저장하지 못함 — 이 브라우저에 보관 중" 표시 후 10초마다 재시도. 다시 열었을 때 초안이 서버 내용과 다르면 "복원/버리기" 배너. 409(다른 곳에서 수정) 는 자동 저장을 멈추고 안내합니다.
+- **이미지 붙여넣기:** 클립보드 이미지를 1MB 이하로 줄여(`shrinkImage`) `POST /v1/docs/images` 로 올리고, 주소 `/api/proxy/v1/docs/images/{id}` 를 이미지 Markdown 으로 넣습니다.
 - 제목을 바꾸면 서버가 이 노트를 링크한 내 노트들의 `[[옛 제목]]` 을 고칩니다 → 노트 변경은 "docs" 키를 모두 무효화(`invalidateDocs`).
 ### 폴더
 - 같은 상위 안 이름 중복 409, 자기 하위로 이동은 선택 목록에서 비활성(서버도 400), 비어 있지 않은 폴더 삭제 409.
 ### 빠른 전환
 - Cmd/Ctrl+K → 제목 접두어 검색, ↑↓·Enter, 일치하는 노트가 없으면 "만들기".
+### 보기 (Markdown 렌더링)
+- GFM(표·취소선·체크박스), ``` 코드 블록 문법 하이라이트(`CodeBlock`), ```mermaid 다이어그램(`MermaidDiagram`, 처음 쓸 때 불러옴), 이미지.
 ### 진화 (승격·파생·Task)
 - **승격:** 제목 옆 종류 선택(아이디어·문서·Task·지식) → 서버가 frontmatter `kind` 만 바꿔 저장(버전 +1).
 - **파생:** 가지 아이콘 → DeriveModal(제목·트랙·종류) → 원본과 같은 폴더에 `origin: "[[원본]]"`·`stream` 이 붙은 노트를 만들고 `?edit=1` 로 이동. 원본의 "파생 노트"에 나타납니다.
