@@ -6,7 +6,7 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {SkeletonCard} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {cancelTask, cleanTaskWorkspace, getTask, resumeTask} from "@/lib/api/ayaan";
-import {ayaanError, btnPrimary, btnSecondary, fmtNum, fmtTime, STATUS_CLASS} from "../../format";
+import {btnPrimary, btnSecondary, canCleanWorkspace, cleanError, fmtNum, fmtTime, STATUS_CLASS} from "../../format";
 
 export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId: string }> }) {
     const {taskId} = use(params);
@@ -26,12 +26,12 @@ export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId
     const clean = useMutation({
         mutationFn: () => cleanTaskWorkspace(taskId),
         onSuccess: () => show("작업공간을 정리했습니다."),
-        onError: (e: any) => show(e?.response?.status === 409 ? "push되지 않은 변경이 있어 정리하지 않았습니다." : ayaanError(e, "요청에 실패했습니다."), "error"),
+        onError: (e: unknown) => show(cleanError(e), "error"),
     });
     const t = q.data;
     if (q.isLoading || !t) return <div className="mx-auto max-w-5xl px-4"><SkeletonCard/></div>;
     const canResume = t.status === "PAUSED" || t.status === "FAILED";
-    const canClean = t.status === "DONE" || t.status === "CANCELLED" || t.status === "FAILED";
+    const canClean = canCleanWorkspace(t.status);
     const canCancel = t.status === "QUEUED" || t.status === "RUNNING" || t.status === "PAUSED";
     return (
         <div className="mx-auto max-w-5xl space-y-5 px-4">
