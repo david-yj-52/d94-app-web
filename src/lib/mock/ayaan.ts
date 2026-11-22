@@ -1,6 +1,6 @@
 // ayaan(AI Tool 작업·토큰 관리) mock — router.ts 가 registerAyaanMock(on) 으로 등록한다. dev 서버 재시작 시 초기화.
 import type {MockResult} from "./router";
-import type {AyaanTask, AyaanTaskDetail, AyaanTool, AyaanWorkspace, ConfigValues, Quota} from "@/types/ayaan";
+import type {AyaanPlan, AyaanTask, AyaanTaskDetail, AyaanTool, AyaanWorkspace, ConfigValues, Quota} from "@/types/ayaan";
 
 type Ctx = { params: Record<string, string>; query: URLSearchParams; body: Record<string, unknown> };
 type On = (method: string, pattern: string, h: (ctx: Ctx) => MockResult | Promise<MockResult>) => void;
@@ -35,7 +35,12 @@ const tools: AyaanTool[] = (["CLAUDE", "CODEX", "GEMINI", "CURSOR"] as const).ma
     model: null, maxConcurrency: 1, fallbackResetRule: "INTERVAL 30m", budgetTokens: null, budgetPeriod: null,
 }));
 const workspaces: AyaanWorkspace[] = [
-    {projectKey: "CIRA", workspacePath: "/workspace/d94-query", defaultTool: "CLAUDE", promptTemplate: "CIRA 이슈 {issueKey}: {title}\n\n{content}"},
+    {projectKey: "CIRA", workspacePath: null, defaultTool: "CLAUDE", promptTemplate: "CIRA 이슈 {issueKey}: {title}\n\n{content}", repos: [{repoNm: "d94-query", gitUrl: "git@github.com:tsh/d94-query.git", baseBranch: "main", deployBranch: null, sortOrd: 0}]},
+];
+
+const plans: AyaanPlan[] = [
+    {id: "p1", projectKey: "CIRA", milestoneId: "m1", milestoneKey: "M1", stage: "RUNNING", currentIssueKey: "CIRA-12", lastError: null, startedAt: iso(-60), endedAt: null, done: 3, total: 11},
+    {id: "p2", projectKey: "CIRA", milestoneId: "m0", milestoneKey: "M0", stage: "HALTED", currentIssueKey: "CIRA-7", lastError: "머지 충돌 (mock)", startedAt: iso(-600), endedAt: null, done: 5, total: 8},
 ];
 
 export function registerAyaanMock(on: On) {
@@ -62,6 +67,12 @@ export function registerAyaanMock(on: On) {
         if (t) t.status = "CANCELLED";
         return ok(t);
     });
+    on("GET", `${B}/plans`, () => ok(plans));
+    on("POST", `${B}/plans`, ({body}) => ok({...plans[0], id: `p${plans.length + 1}`, projectKey: body.projectKey, milestoneId: body.milestoneId, stage: "PREPARING", done: 0, total: 0}));
+    on("POST", `${B}/plans/:id/resume`, ({params}) => ok(plans.find((x) => x.id === params.id)));
+    on("POST", `${B}/plans/:id/cancel`, ({params}) => ok(plans.find((x) => x.id === params.id)));
+    on("GET", `${B}/projects/:key/milestones`, () => ok([{id: "m1", name: "M1 — 첫 마일스톤"}, {id: "m2", name: "M2"}]));
+    on("DELETE", `${B}/tasks/:id/workspace`, () => ok(null));
     on("GET", `${B}/config`, () => ok(config));
     on("PUT", `${B}/config`, ({body}) => {
         Object.assign(config, body);

@@ -31,7 +31,22 @@ describe("빈 값 지우기 (PUT 이 null 로 덮어씀)", () => {
         expect(toToolBody({...toToolForm({...tool, model: "opus"}), model: " "}).body?.model).toBeNull();
     });
     it("비운 promptTemplate 은 null 로 보낸다", () => {
-        const w = {projectKey: " CIRA ", workspacePath: "/workspace/a ", defaultTool: "CLAUDE" as const, promptTemplate: "  "};
-        expect(toWorkspaceBody(w)).toEqual({projectKey: "CIRA", workspacePath: "/workspace/a", defaultTool: "CLAUDE", promptTemplate: null});
+        const w = {projectKey: " CIRA ", workspacePath: null, defaultTool: "CLAUDE" as const, promptTemplate: "  ", repos: []};
+        expect(toWorkspaceBody(w)).toEqual({projectKey: "CIRA", workspacePath: null, defaultTool: "CLAUDE", promptTemplate: null, repos: []});
+    });
+});
+
+describe("toWorkspaceBody repos", () => {
+    const r = (repoNm: string, gitUrl: string, baseBranch = "main", deployBranch: string | null = null) => ({repoNm, gitUrl, baseBranch, deployBranch, sortOrd: 99});
+    const w = (repos: ReturnType<typeof r>[]) => ({projectKey: "A", workspacePath: null, defaultTool: "CLAUDE" as const, promptTemplate: null, repos});
+    it("빈 저장소 행을 버리고 sortOrd를 순서대로 매긴다", () => {
+        const b = toWorkspaceBody(w([r(" web ", " git@x:web.git "), r("", " "), r("api", "git@x:api.git", " ", " dev ")]));
+        expect(b.repos).toEqual([
+            {repoNm: "web", gitUrl: "git@x:web.git", baseBranch: "main", deployBranch: null, sortOrd: 0},
+            {repoNm: "api", gitUrl: "git@x:api.git", baseBranch: "main", deployBranch: "dev", sortOrd: 1},
+        ]);
+    });
+    it("일부만 채운 행은 서버 검증을 위해 남긴다", () => {
+        expect(toWorkspaceBody(w([r("web", "")])).repos).toHaveLength(1);
     });
 });

@@ -1,6 +1,7 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
+import {useSearchParams} from "next/navigation";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {useToast} from "@/components/ui/Toast";
 import {deleteWorkspace, getConfig, getTools, getWorkspaces, putConfig, putTool, putWorkspace} from "@/lib/api/ayaan";
@@ -9,7 +10,7 @@ import HelpCard from "@/app/(main)/ayaan/components/HelpCard";
 import {btnPrimary, btnSecondary, inputCls} from "@/app/(main)/ayaan/format";
 import {validateConfigField} from "@/app/(main)/ayaan/settings/validate";
 import {toToolBody, toToolForm, toWorkspaceBody, type ToolForm} from "@/app/(main)/ayaan/settings/toolBody";
-import {TOOLS, type AyaanTool, type AyaanWorkspace, type ToolCd} from "@/types/ayaan";
+import {TOOLS, type AyaanRepo, type AyaanTool, type AyaanWorkspace, type ToolCd} from "@/types/ayaan";
 
 type Errors = Record<string, string>;
 
@@ -132,9 +133,10 @@ function ToolsTab() {
     return <div className="space-y-4">{order.map((t) => <ToolCard key={t.toolCd} tool={t}/>)}</div>;
 }
 
-const EMPTY_WS: AyaanWorkspace = {projectKey: "", workspacePath: "", defaultTool: "CLAUDE", promptTemplate: ""};
+const EMPTY_REPO: AyaanRepo = {repoNm: "", gitUrl: "", baseBranch: "main", deployBranch: null, sortOrd: 0};
+const newWs = (projectKey = ""): AyaanWorkspace => ({projectKey, workspacePath: null, defaultTool: "CLAUDE", promptTemplate: "", repos: [{...EMPTY_REPO}]});
 const WS_FIELDS: [keyof AyaanWorkspace, string, Kind, string[]?][] = [
-    ["projectKey", "PROJECT_KEY", "text"], ["workspacePath", "WORKSPACE_PATH", "text"],
+    ["projectKey", "PROJECT_KEY", "text"],
     ["defaultTool", "DEFAULT_TOOL", "select", ["CLAUDE", "CODEX", "GEMINI", "CURSOR", "FAKE"]],
     ["promptTemplate", "PROMPT_TEMPLATE", "textarea"],
 ];
@@ -143,8 +145,25 @@ function WorkspacesTab() {
     const qc = useQueryClient();
     const {show, ToastComponent} = useToast();
     const q = useQuery({queryKey: ["ayaanWorkspaces"], queryFn: getWorkspaces});
+    const urlKey = useSearchParams().get("projectKey");
     const [form, setForm] = useState<AyaanWorkspace | null>(null);
     const [errors, setErrors] = useState<Errors>({});
+    const opened = useRef(false);
+    // ?projectKey= 가 있으면 그 프로젝트의 폼을 한 번 연다 (매핑이 있으면 편집, 없으면 새 폼)
+    useEffect(() => {
+        if (opened.current || !urlKey || !q.data) return;
+        opened.current = true;
+        const w = q.data.find((x) => x.projectKey === urlKey);
+        setForm(w ? {...w, promptTemplate: w.promptTemplate ?? ""} : newWs(urlKey));
+    }, [urlKey, q.data]);
+    const setRepo = (i: number, patch: Partial<AyaanRepo>) =>
+        form && setForm({...form, repos: form.repos.map((r, j) => (j === i ? {...r, ...patch} : r))});
+    const moveRepo = (i: number, d: number) => {
+        if (!form) return;
+        const repos = form.repos.slice();
+        [repos[i], repos[i + d]] = [repos[i + d], repos[i]];
+        setForm({...form, repos});
+    };
     const done = () => qc.invalidateQueries({queryKey: ["ayaanWorkspaces"]});
     const save = useMutation({
         mutationFn: (w: AyaanWorkspace) => putWorkspace(w.projectKey, w),
@@ -157,11 +176,11 @@ function WorkspacesTab() {
     const remove = useMutation({mutationFn: deleteWorkspace, onSuccess: () => { show("삭제했습니다."); done(); }});
     return (
         <div className="space-y-4">
-            <button className={btnSecondary} onClick={() => setForm(EMPTY_WS)}>작업공간 추가</button>
+            <button className={btnSecondary} onClick={() => setForm(newWs())}>작업공간 추가</button>
             <ul className="space-y-2">
                 {(q.data ?? []).map((w) => (
                     <li key={w.projectKey} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 text-sm">
-                        <span><b>{w.projectKey}</b> {w.workspacePath} · {w.defaultTool}</span>
+                        <span><b>{w.projectKey}</b> 저장소 {w.repos.length}개 · {w.defaultTool}</span>
                         <span className="flex gap-2">
                             <button className={btnSecondary} onClick={() => setForm({...w, promptTemplate: w.promptTemplate ?? ""})}>편집</button>
                             <button className={btnSecondary} onClick={() => window.confirm(`${w.projectKey} 작업공간을 삭제할까요?`) && remove.mutate(w.projectKey)}>삭제</button>
@@ -175,6 +194,22 @@ function WorkspacesTab() {
                         <Field key={f} id={`ws-${f}`} helpKey={helpKey} kind={kind} options={options} value={String(form[f] ?? "")}
                                error={errors[f] ?? errors[helpKey]} onChange={(v) => setForm({...form, [f]: v as ToolCd & string})}/>
                     ))}
+                    <fieldset className="space-y-2 py-3">
+                        <legend className="text-xs font-medium text-slate-600">저장소 (위에서부터 순서대로 사용)</legend>
+                        {errors.repos && <p role="alert" className="text-xs text-red-500">{errors.repos}</p>}
+                        {form.repos.map((r, i) => (
+                            <div key={i} className="flex flex-wrap items-center gap-2">
+                                <input aria-label={`저장소 ${i + 1} 이름`} placeholder="이름" className={`${inputCls} w-32`} value={r.repoNm} onChange={(e) => setRepo(i, {repoNm: e.target.value})}/>
+                                <input aria-label={`저장소 ${i + 1} URL`} placeholder="Git URL" className={`${inputCls} min-w-48 flex-1`} value={r.gitUrl} onChange={(e) => setRepo(i, {gitUrl: e.target.value})}/>
+                                <input aria-label={`저장소 ${i + 1} 기준 브랜치`} placeholder="기준 브랜치" className={`${inputCls} w-32`} value={r.baseBranch} onChange={(e) => setRepo(i, {baseBranch: e.target.value})}/>
+                                <input aria-label={`저장소 ${i + 1} 배포 브랜치`} placeholder="배포 브랜치" className={`${inputCls} w-32`} value={r.deployBranch ?? ""} onChange={(e) => setRepo(i, {deployBranch: e.target.value})}/>
+                                <button type="button" aria-label={`저장소 ${i + 1} 위로`} className={btnSecondary} disabled={i === 0} onClick={() => moveRepo(i, -1)}>↑</button>
+                                <button type="button" aria-label={`저장소 ${i + 1} 아래로`} className={btnSecondary} disabled={i === form.repos.length - 1} onClick={() => moveRepo(i, 1)}>↓</button>
+                                <button type="button" aria-label={`저장소 ${i + 1} 삭제`} className={btnSecondary} onClick={() => setForm({...form, repos: form.repos.filter((_, j) => j !== i)})}>삭제</button>
+                            </div>
+                        ))}
+                        <button type="button" className={btnSecondary} onClick={() => setForm({...form, repos: [...form.repos, {...EMPTY_REPO}]})}>저장소 추가</button>
+                    </fieldset>
                     <div className="flex gap-2">
                         <button className={btnPrimary} disabled={save.isPending} onClick={() => save.mutate(toWorkspaceBody(form))}>저장</button>
                         <button className={btnSecondary} onClick={() => setForm(null)}>취소</button>
@@ -190,7 +225,8 @@ const TABS = [["global", "전역 정책"], ["tool", "Tool"], ["workspace", "작�
 
 /** 기준정보 › Ayaan 그룹. 전역 정책은 d94 기준정보(SN_SETTING ayaan.*), Tool·작업공간은 SN_AYN_* — 모두 ayaan API 경유(값 검증은 ayaan) */
 export default function AyaanSettingsPanel() {
-    const [tab, setTab] = useState<(typeof TABS)[number][0]>("global");
+    const urlTab = useSearchParams().get("tab");
+    const [tab, setTab] = useState<(typeof TABS)[number][0]>(TABS.find(([k]) => k === urlTab)?.[0] ?? "global");
     return (
         <section className="space-y-4">
             <div role="tablist" className="flex gap-2 border-b border-slate-200">
