@@ -174,6 +174,14 @@ export function registerStudyMock(on: On) {
         s.terms = s.terms.filter((t) => t.documentId !== params.id);
         return ok(null);
     });
+    on("POST", "/v1/study/documents/:id/reparse", ({params}) => {
+        const d = findDoc(params.id);
+        if (!d) return notFound;
+        d.doc.status = "PARSING";
+        d.doc.failReason = null;
+        setTimeout(() => { d.doc.status = "READY"; }, 1000);
+        return ok(d.doc);
+    });
     on("POST", "/v1/study/documents/uploads", ({body}) => {
         const fileName = String(body.fileName ?? "");
         const fileSize = Number(body.fileSize ?? 0);

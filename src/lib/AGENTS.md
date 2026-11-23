@@ -56,6 +56,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 
 ### Study: `api/study.ts` · `study/`
 - `saveStudyPosition(id, {sectionId, blockKey})` → `PUT /v1/study/documents/{id}/position` (마지막 읽던 위치). mock 은 시드 문서에 저장.
+- `reparseStudyDocument(id)` → `POST /v1/study/documents/{id}/reparse` (저장된 원본 PDF로 비동기 재분석). mock 도 PARSING 상태를 거쳐 READY 로 돌아옵니다.
 - 조각 업로드 `putStudyUploadPart`는 `Blob`을 `Content-Type: application/octet-stream`으로 보냅니다(UMD 본문 1MB 제한 → 서버가 정한 `partSize` 768KB). 조립·재시도는 `useUploadStudyDocument`.
 - `study/segments.ts` `buildSegments` — 블록 텍스트를 단어 hit·마킹 경계로 자른다. `study/selection.ts` `rangeToAnchor` — 브라우저 선택 → `{start,end}BlockKey/Offset`(블록 요소 시작부터 `Range.toString().length`, 표 컨테이너 제외). 테스트 `study/study.test.ts`.
 - `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
