@@ -12,12 +12,18 @@ import {
     useRevokeApiToken,
     useSetApiTokenService,
 } from "@/hooks/useApiTokens";
+import {GLOBAL_TOKEN_SERVICE, serviceLabel} from "@/types/apiToken";
 import type {ApiTokenAccess, IssuedApiToken, IssueApiTokenRequest} from "@/types/apiToken";
 
 const NAME_MAX = 100;
 const DAYS = [30, 90, 365] as const;
 const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60";
 const cardCls = "rounded-xl border border-slate-200 bg-white p-6";
+
+/** 발급 직후 보여 줄 MCP 호출 예시 경로 (서비스별 대표 조회 API) */
+const EXAMPLE_PATH: Record<string, string> = {
+    cira: "/projects", docs: "/docs/notes", study: "/study/documents", "interface-test": "/interface-tests",
+};
 
 const errorMessage = (e: unknown, fallback: string) =>
     (isAxiosError(e) && e.response?.data?.message) || fallback;
@@ -46,12 +52,12 @@ function ServicesCard({isAdmin, onError}: { isAdmin: boolean; onError: (m: strin
     return (
         <section className={cardCls}>
             <h3 className="mb-1 text-sm font-semibold text-slate-900">서비스별 허용</h3>
-            <p className="mb-4 text-xs text-slate-500">끄면 그 서비스의 토큰 발급과 호출이 모두 막힙니다(이미 발급된 토큰 포함).</p>
+            <p className="mb-4 text-xs text-slate-500">끄면 그 서비스의 토큰 발급과 호출이 모두 막힙니다(이미 발급된 토큰 포함). 서비스를 끄면 전역 토큰도 그 서비스는 호출할 수 없습니다.</p>
             {!isAdmin && <p className="mb-4 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">관리자만 변경할 수 있습니다.</p>}
             <ul className="divide-y divide-slate-100">
                 {data.map((s) => (
                     <li key={s.service} className="flex items-center justify-between py-2">
-                        <span className="text-sm font-medium uppercase text-slate-700">{s.service}</span>
+                        <span className="text-sm font-medium text-slate-700">{serviceLabel(s.service)}</span>
                         <label className="inline-flex items-center gap-2 text-sm text-slate-600">
                             <input type="checkbox" checked={s.enabled} disabled={!isAdmin || toggle.isPending}
                                    aria-label={`${s.service} API 토큰 허용`}
@@ -75,7 +81,9 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
         {service: "", name: "", access: "READ", expiresInDays: 90});
     const [issued, setIssued] = useState<IssuedApiToken | null>(null);
 
-    const service = form.service || services[0]?.service || "";
+    // 기본 선택은 서비스 토큰 — 전역 토큰은 직접 골라야 한다
+    const service = form.service
+        || (services.find((s) => s.service !== GLOBAL_TOKEN_SERVICE) ?? services[0])?.service || "";
     const name = form.name.trim();
     const canIssue = !!service && name.length > 0 && name.length <= NAME_MAX && !issue.isPending;
 
@@ -118,7 +126,7 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                     </div>
                     <p className="mt-3 text-xs text-amber-900">MCP 설정 예시 (게이트웨이로 바로 호출):</p>
                     <pre className="mt-1 overflow-x-auto rounded bg-white px-3 py-2 text-xs text-slate-700">{
-                        `GET http://{게이트웨이}:10001/tsh/api/v1/projects\nAuthorization: Bearer ${issued.token}`
+                        `GET http://{게이트웨이}:10001/tsh/api/v1${EXAMPLE_PATH[issued.info.service] ?? "/projects"}\nAuthorization: Bearer ${issued.token}`
                     }</pre>
                     <div className="mt-3 flex justify-end">
                         <button type="button" onClick={() => setIssued(null)}
@@ -136,7 +144,7 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                 <select className={inputCls} aria-label="서비스" value={service}
                         onChange={(e) => setForm({...form, service: e.target.value})}>
                     {services.length === 0 && <option value="">허용된 서비스 없음</option>}
-                    {services.map((s) => <option key={s.service} value={s.service}>{s.service.toUpperCase()}</option>)}
+                    {services.map((s) => <option key={s.service} value={s.service}>{serviceLabel(s.service)}</option>)}
                 </select>
                 <select className={inputCls} aria-label="권한" value={form.access}
                         onChange={(e) => setForm({...form, access: e.target.value as ApiTokenAccess})}>
@@ -152,6 +160,12 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                     <KeyRound className="h-4 w-4"/> 발급
                 </button>
             </div>
+
+            {service === GLOBAL_TOKEN_SERVICE && (
+                <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800" role="note">
+                    전역 토큰은 모든 서비스(CIRA·Docs·Study 등)의 API 를 내 권한으로 호출합니다. 유출되면 피해 범위가 크니 꼭 필요할 때만 쓰고, 가능하면 읽기 전용으로 발급하세요.
+                </p>
+            )}
 
             <div className="mt-5 overflow-x-auto">
                 {!tokens ? <SkeletonCard/> : tokens.length === 0 ? (
@@ -175,7 +189,7 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                             return (
                                 <tr key={t.id} className={expired ? "text-slate-400" : "text-slate-700"}>
                                     <td className="py-2 pr-2">{t.name}</td>
-                                    <td className="py-2 pr-2 uppercase">{t.service}</td>
+                                    <td className="py-2 pr-2">{serviceLabel(t.service)}</td>
                                     <td className="py-2 pr-2">{t.access === "WRITE" ? "읽기·쓰기" : "읽기 전용"}</td>
                                     <td className="py-2 pr-2 font-mono text-xs">{t.prefix}…</td>
                                     <td className="py-2 pr-2">{expired ? <span className="text-red-500">만료됨</span> : day(t.expiresAt)}</td>
