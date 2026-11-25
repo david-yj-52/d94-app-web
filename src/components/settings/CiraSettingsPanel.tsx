@@ -146,11 +146,9 @@ function TypesTab({types, catalog, readOnly, show}: {
                     <p className="mb-2 text-xs text-slate-500">
                         이 타입의 프로젝트가 물려받는 필드입니다. 바꾸면 기존 프로젝트({selected.projectCount}개)에도 바로 반영됩니다.
                     </p>
-                    <div className="mb-1 flex justify-end pr-[4.5rem] text-[11px] text-slate-400">기본 표시</div>
                     <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
                         <li className="flex min-h-10 items-center gap-2 px-3 text-sm text-slate-500">
-                            <Lock className="h-3 w-3"/><span className="flex-1">유형 · 키 · 요약 · 상태 (고정)</span>
-                            <input type="checkbox" checked disabled aria-label="고정 필드 기본 표시" className="mr-[4.5rem]"/>
+                            <Lock className="h-3 w-3"/><span className="flex-1">유형 · 키 · 요약 · 상태 (고정, 항상 표시)</span>
                         </li>
                         {selected.fields.map((tf, i) => {
                             const f = byKey.get(tf.fieldKey);
@@ -160,8 +158,11 @@ function TypesTab({types, catalog, readOnly, show}: {
                                         {f?.name ?? tf.fieldKey}
                                         {f?.kind === "cf" && <span className="ml-2 text-xs text-slate-400">전역 · {CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}</span>}
                                     </span>
-                                    <input type="checkbox" aria-label={`${f?.name} 기본 표시`} checked={tf.defaultVisible} disabled={readOnly}
-                                           onChange={() => setFields(selected.fields.map((x) => x.fieldKey === tf.fieldKey ? {...x, defaultVisible: !x.defaultVisible} : x))}/>
+                                    <label className="flex items-center gap-1 text-xs text-slate-500">
+                                        <input type="checkbox" checked={tf.defaultVisible} disabled={readOnly}
+                                               onChange={() => setFields(selected.fields.map((x) => x.fieldKey === tf.fieldKey ? {...x, defaultVisible: !x.defaultVisible} : x))}/>
+                                        기본 표시
+                                    </label>
                                     <button type="button" aria-label={`${f?.name} 위로`} disabled={readOnly || i === 0} onClick={() => move(i, -1)} className={iconBtn}><ArrowUp className="h-4 w-4"/></button>
                                     <button type="button" aria-label={`${f?.name} 아래로`} disabled={readOnly || i === selected.fields.length - 1} onClick={() => move(i, 1)} className={iconBtn}><ArrowDown className="h-4 w-4"/></button>
                                     {!readOnly && (
