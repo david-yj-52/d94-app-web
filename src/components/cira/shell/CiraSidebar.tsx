@@ -23,6 +23,7 @@ import {getNavContext} from "./navContext";
 
 const SETTINGS_MENU = [
     {suffix: "", label: "기본 정보"},
+    {suffix: "/fields", label: "필드"},
     {suffix: "/members", label: "멤버"},
     {suffix: "/workflow", label: "워크플로우"},
     {suffix: "/git", label: "Git 연동"},
@@ -70,7 +71,7 @@ export default function CiraSidebar({collapsed = false}: { collapsed?: boolean }
     const projectMenu = [
         {href: `${base}/sprints`, label: "백로그", icon: ListTodo},
         {href: `${base}/boards`, label: "보드", icon: SquareKanban},
-        {href: `${base}/issues`, label: "이슈", icon: Columns3},
+        {href: `${base}/issues`, label: "Task", icon: Columns3},
         {href: `${base}/reports`, label: "리포트", icon: ChartLine},
         {href: `${base}/versions`, label: "릴리스", icon: Package},
         {href: `${base}/wiki`, label: "위키", icon: BookOpen},

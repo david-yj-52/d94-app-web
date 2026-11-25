@@ -1,10 +1,12 @@
 "use client";
 
+import {useProjectFields} from "@/hooks/useFields";
 import {useCreateIssue} from "@/hooks/useIssues";
 import {useProjectMembers, useWorkflowStatuses} from "@/hooks/useProjectSettings";
-import type {Priority} from "@/types/issue";
+import type {CustomFieldValue, Priority} from "@/types/issue";
+import CustomFieldInput from "./CustomFieldInput";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useEffect, useMemo} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
@@ -38,7 +40,12 @@ export default function CreateIssueModal({
     const {mutate, isPending, isSuccess, isError} = useCreateIssue(projectId);
     const {data: members = []} = useProjectMembers(projectId);
     const {data: statuses = []} = useWorkflowStatuses(projectId);
-    // 새 이슈의 상태 = 워크플로우 첫 상태 (d94-query 는 statusId 가 없으면 500)
+    // 필수 사용자 정의 필드만 여기서 받는다. 나머지는 상세에서
+    const {data: fields = []} = useProjectFields(projectId);
+    const requiredFields = fields.filter((f) => f.kind === "cf" && f.required);
+    const [cfValues, setCfValues] = useState<Record<string, CustomFieldValue>>({});
+    const [cfError, setCfError] = useState<string>();
+    // 새 Task 의 상태 = 워크플로우 첫 상태 (d94-query 는 statusId 가 없으면 500)
     const initialStatusId = useMemo(
         () => [...statuses].sort((a, b) => a.sortOrd - b.sortOrd)[0]?.id,
         [statuses],
@@ -58,7 +65,14 @@ export default function CreateIssueModal({
     }, [isSuccess, onClose, onSuccess]);
 
     const onSubmit = (data: FormData) => {
+        const missing = requiredFields.find((f) => cfValues[f.fieldKey] === undefined || cfValues[f.fieldKey] === null);
+        if (missing) {
+            setCfError(`${missing.name} 값을 입력해주세요.`);
+            return;
+        }
+        setCfError(undefined);
         mutate({
+            customFields: requiredFields.length ? cfValues : undefined,
             title: data.title,
             content: data.content || undefined,
             priority: data.priority,
@@ -77,7 +91,7 @@ export default function CreateIssueModal({
             />
             <div
                 className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 p-6 max-h-[90vh] overflow-y-auto">
-                <h2 className="text-lg font-bold text-slate-900 mb-5">이슈 생성</h2>
+                <h2 className="text-lg font-bold text-slate-900 mb-5">Task 생성</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
@@ -86,7 +100,7 @@ export default function CreateIssueModal({
                         </label>
                         <input
                             {...register("title")}
-                            placeholder="이슈 제목을 입력하세요"
+                            placeholder="Task 제목을 입력하세요"
                             className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         {errors.title && (
@@ -103,7 +117,7 @@ export default function CreateIssueModal({
                         <textarea
                             {...register("content")}
                             rows={4}
-                            placeholder="이슈 설명을 입력하세요..."
+                            placeholder="Task 설명을 입력하세요..."
                             className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
@@ -176,9 +190,20 @@ export default function CreateIssueModal({
                         </div>
                     </div>
 
+                    {requiredFields.map((f) => (
+                        <div key={f.fieldKey}>
+                            <label htmlFor={`cf-${f.fieldKey}`} className="block text-xs font-medium text-slate-600 mb-1">
+                                {f.name} <span className="text-red-500">*</span>
+                            </label>
+                            <CustomFieldInput id={`cf-${f.fieldKey}`} field={f} value={cfValues[f.fieldKey]} members={members}
+                                              onChange={(v) => setCfValues((prev) => ({...prev, [f.fieldKey]: v}))}/>
+                        </div>
+                    ))}
+                    {cfError && <p className="text-xs text-red-500">{cfError}</p>}
+
                     {isError && (
                         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">
-                            이슈 생성에 실패했습니다.
+                            Task 생성에 실패했습니다.
                         </p>
                     )}
 
@@ -195,7 +220,7 @@ export default function CreateIssueModal({
                             disabled={isPending}
                             className="flex-1 h-10 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
                         >
-                            {isPending ? "생성 중..." : "이슈 생성"}
+                            {isPending ? "생성 중..." : "Task 생성"}
                         </button>
                     </div>
                 </form>

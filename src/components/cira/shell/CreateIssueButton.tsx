@@ -6,7 +6,7 @@ import {useProjects} from "@/hooks/useProjects";
 import {Plus} from "lucide-react";
 import {useState} from "react";
 
-// 프로젝트 안이면 바로 이슈 생성, 밖이면 프로젝트부터 고른다
+// 프로젝트 안이면 바로 Task 생성, 밖이면 프로젝트부터 고른다
 export default function CreateIssueButton({projectId}: { projectId?: string }) {
     const [step, setStep] = useState<"closed" | "pick" | "form">("closed");
     const [picked, setPicked] = useState<string>();
@@ -18,13 +18,13 @@ export default function CreateIssueButton({projectId}: { projectId?: string }) {
             <button
                 onClick={() => setStep(projectId ? "form" : "pick")}
                 className="flex h-9 items-center gap-1 rounded-md bg-cira-brand px-3 text-sm font-semibold text-white hover:opacity-90"
-                aria-label="이슈 만들기"
+                aria-label="Task 만들기"
             >
                 <Plus className="h-4 w-4"/>
                 <span className="hidden sm:inline">만들기</span>
             </button>
 
-            <Dialog open={step === "pick"} onOpenChange={(o) => !o && setStep("closed")} title="이슈를 만들 프로젝트">
+            <Dialog open={step === "pick"} onOpenChange={(o) => !o && setStep("closed")} title="Task를 만들 프로젝트">
                 <ul className="p-2">
                     {projects.length === 0 && <li className="p-3 text-sm text-cira-muted">프로젝트가 없습니다.</li>}
                     {projects.map((p) => (

@@ -2,18 +2,17 @@
 
 import {useToast} from "@/components/ui/Toast";
 import {useDeleteProject, useProject, useUpdateProject} from "@/hooks/useProjects";
-import {useSettings} from "@/hooks/useSettings";
-import {CIRA_PROJECT_TYPES_KEY, DEFAULT_CIRA_PROJECT_TYPES, parseCiraProjectTypes} from "@/types/settings";
+import {useProjectTypes} from "@/hooks/useFields";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useRouter} from "next/navigation";
-import {use, useEffect, useMemo, useState} from "react";
+import {use, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
 const schema = z.object({
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
-    projectType: z.string().min(1, "프로젝트 유형을 선택해주세요.").max(30),
+    projectTypeId: z.string().min(1, "프로젝트 타입을 선택해주세요."),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -26,21 +25,12 @@ export default function SettingsGeneralPage({
     const {projectId} = use(params);
     const router = useRouter();
     const {data: project, isLoading} = useProject(projectId);
-    const {data: settings} = useSettings();
+    const {data: projectTypes = []} = useProjectTypes();
     const {mutate: updateProject, isPending, isSuccess, isError} =
         useUpdateProject(projectId);
     const {mutate: deleteProject, isPending: isDeleting} = useDeleteProject();
     const {show, ToastComponent} = useToast();
     const [confirmDelete, setConfirmDelete] = useState(false);
-
-    const projectTypes = useMemo(() => {
-        const configured = parseCiraProjectTypes(settings?.[CIRA_PROJECT_TYPES_KEY]);
-        const base = configured.length > 0 ? configured : DEFAULT_CIRA_PROJECT_TYPES;
-        if (project?.projectType && !base.includes(project.projectType)) {
-            return [project.projectType, ...base];
-        }
-        return base;
-    }, [settings, project?.projectType]);
 
     const {
         register,
@@ -49,7 +39,7 @@ export default function SettingsGeneralPage({
         formState: {errors, isDirty},
     } = useForm<FormData>({
         resolver: zodResolver(schema),
-        defaultValues: {name: "", description: "", projectType: projectTypes[0]},
+        defaultValues: {name: "", description: "", projectTypeId: ""},
     });
 
     useEffect(() => {
@@ -57,7 +47,7 @@ export default function SettingsGeneralPage({
             reset({
                 name: project.name,
                 description: project.description ?? "",
-                projectType: project.projectType,
+                projectTypeId: project.projectTypeId ?? "",
             });
         }
     }, [project, reset]);
@@ -139,18 +129,21 @@ export default function SettingsGeneralPage({
 
                 <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                        프로젝트 유형
+                        프로젝트 타입
                     </label>
                     <select
-                        {...register("projectType")}
+                        {...register("projectTypeId")}
                         className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         {projectTypes.map((type) => (
-                            <option key={type} value={type}>
-                                {type}
+                            <option key={type.id} value={type.id}>
+                                {type.typeNm}
                             </option>
                         ))}
                     </select>
+                    <p className="mt-1 text-xs text-slate-400">
+                        타입을 바꾸면 물려받는 필드 세트가 새 타입 기준으로 바뀝니다. 빠진 필드의 값은 지워지지 않고 보관됩니다.
+                    </p>
                 </div>
 
                 <div className="pt-2">

@@ -1,0 +1,145 @@
+"use client";
+
+import {
+    createGlobalField,
+    createProjectField,
+    createProjectType,
+    deleteGlobalField,
+    deleteProjectField,
+    deleteProjectType,
+    getColumnPref,
+    getFieldCatalog,
+    getFieldUsage,
+    getProjectFields,
+    getProjectTypes,
+    replaceProjectFields,
+    replaceProjectTypeFields,
+    resetColumnPref,
+    saveColumnPref,
+    updateGlobalField,
+    updateProjectField,
+    updateProjectType,
+} from "@/lib/api/fields";
+import type {SaveCustomField, SaveProjectType, TypeField} from "@/types/fields";
+import {type QueryClient, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+
+// 타입 세트·전역 필드가 바뀌면 모든 프로젝트의 유효 필드·컬럼이 바뀐다
+const invalidateAll = (qc: QueryClient) => {
+    qc.invalidateQueries({queryKey: ["project-types"]});
+    qc.invalidateQueries({queryKey: ["field-catalog"]});
+    qc.invalidateQueries({queryKey: ["project-fields"]});
+    qc.invalidateQueries({queryKey: ["column-pref"]});
+    qc.invalidateQueries({queryKey: ["issues"]});
+};
+
+export function useFieldCatalog() {
+    return useQuery({queryKey: ["field-catalog"], queryFn: getFieldCatalog});
+}
+
+export function useProjectTypes() {
+    return useQuery({queryKey: ["project-types"], queryFn: getProjectTypes});
+}
+
+export function useCreateProjectType() {
+    const qc = useQueryClient();
+    return useMutation({mutationFn: (d: SaveProjectType) => createProjectType(d), onSuccess: () => invalidateAll(qc)});
+}
+
+export function useUpdateProjectType() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: ({id, data}: { id: string; data: SaveProjectType }) => updateProjectType(id, data),
+        onSuccess: () => {
+            invalidateAll(qc);
+            qc.invalidateQueries({queryKey: ["projects"]});
+        },
+    });
+}
+
+export function useDeleteProjectType() {
+    const qc = useQueryClient();
+    return useMutation({mutationFn: (id: string) => deleteProjectType(id), onSuccess: () => invalidateAll(qc)});
+}
+
+export function useReplaceProjectTypeFields() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: ({id, fields}: { id: string; fields: TypeField[] }) => replaceProjectTypeFields(id, fields),
+        onSuccess: () => invalidateAll(qc),
+    });
+}
+
+export function useSaveGlobalField() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: ({id, data}: { id?: string; data: SaveCustomField }) =>
+            id ? updateGlobalField(id, data) : createGlobalField(data),
+        onSuccess: () => invalidateAll(qc),
+    });
+}
+
+export function useDeleteGlobalField() {
+    const qc = useQueryClient();
+    return useMutation({mutationFn: (id: string) => deleteGlobalField(id), onSuccess: () => invalidateAll(qc)});
+}
+
+/** 삭제 확인 문구용 (N개 프로젝트, M개 Task) */
+export function useFieldUsage(id?: string) {
+    return useQuery({queryKey: ["field-usage", id], queryFn: () => getFieldUsage(id!), enabled: !!id});
+}
+
+export function useProjectFields(projectId?: string) {
+    return useQuery({
+        queryKey: ["project-fields", projectId],
+        queryFn: () => getProjectFields(projectId!),
+        enabled: !!projectId,
+    });
+}
+
+const invalidateProject = (qc: QueryClient, projectId: string) => {
+    qc.invalidateQueries({queryKey: ["project-fields", projectId]});
+    qc.invalidateQueries({queryKey: ["column-pref", projectId]});
+    qc.invalidateQueries({queryKey: ["issues", projectId]});
+};
+
+export function useReplaceProjectFields(projectId: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (keys: string[]) => replaceProjectFields(projectId, keys),
+        onSuccess: () => invalidateProject(qc, projectId),
+    });
+}
+
+export function useSaveProjectField(projectId: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: ({id, data}: { id?: string; data: SaveCustomField }) =>
+            id ? updateProjectField(projectId, id, data) : createProjectField(projectId, data),
+        onSuccess: () => invalidateProject(qc, projectId),
+    });
+}
+
+export function useDeleteProjectField(projectId: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => deleteProjectField(projectId, id),
+        onSuccess: () => invalidateProject(qc, projectId),
+    });
+}
+
+export function useColumnPref(projectId?: string) {
+    return useQuery({
+        queryKey: ["column-pref", projectId],
+        queryFn: () => getColumnPref(projectId!),
+        enabled: !!projectId,
+    });
+}
+
+/** keys = null 이면 [기본값으로]. 응답으로 캐시를 바로 바꾼다 */
+export function useSaveColumnPref(projectId: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (keys: string[] | null) => (keys ? saveColumnPref(projectId, keys) : resetColumnPref(projectId)),
+        onSuccess: (keys) => qc.setQueryData(["column-pref", projectId], keys),
+    });
+}

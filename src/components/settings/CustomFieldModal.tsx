@@ -1,0 +1,72 @@
+"use client";
+
+import Dialog from "@/components/cira/ui/Dialog";
+import {CUSTOM_FIELD_TYPE_LABELS, type CustomFieldType, type FieldDef, type SaveCustomField} from "@/types/fields";
+import {useState} from "react";
+
+const TYPES = Object.keys(CUSTOM_FIELD_TYPE_LABELS) as CustomFieldType[];
+const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60";
+
+/**
+ * 사용자 정의 필드 생성/수정 (전역·프로젝트 공용). 저장은 부모가 onSubmit 으로.
+ * 필드 타입은 만든 뒤 바꿀 수 없다.
+ */
+export default function CustomFieldModal({editTarget, onSubmit, isPending, onClose}: {
+    editTarget?: FieldDef | null;
+    onSubmit: (data: SaveCustomField) => void;
+    isPending?: boolean;
+    onClose: () => void;
+}) {
+    const [fieldNm, setFieldNm] = useState(editTarget?.name ?? "");
+    const [fieldType, setFieldType] = useState<CustomFieldType>(editTarget?.fieldType ?? "TEXT");
+    const [required, setRequired] = useState(editTarget?.required ?? false);
+    const [options, setOptions] = useState((editTarget?.options ?? []).join("\n"));
+    const hasOptions = fieldType === "SELECT" || fieldType === "MULTI_SELECT";
+    const optionList = options.split("\n").map((o) => o.trim()).filter(Boolean);
+    const valid = fieldNm.trim().length > 0 && fieldNm.trim().length <= 100 && (!hasOptions || optionList.length > 0);
+
+    return (
+        <Dialog open onOpenChange={(o) => !o && onClose()} title={editTarget ? "필드 수정" : "새 필드 만들기"}>
+            <form
+                className="space-y-4 p-4"
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    if (valid) onSubmit({fieldNm: fieldNm.trim(), fieldType, required, options: hasOptions ? optionList : undefined});
+                }}
+            >
+                <div>
+                    <label htmlFor="cf-name" className="mb-1 block text-xs font-medium text-slate-600">이름</label>
+                    <input id="cf-name" className={inputCls} value={fieldNm} maxLength={100}
+                           onChange={(e) => setFieldNm(e.target.value)} placeholder="예: 고객사"/>
+                </div>
+                <div>
+                    <label htmlFor="cf-type" className="mb-1 block text-xs font-medium text-slate-600">필드 타입</label>
+                    <select id="cf-type" className={inputCls} value={fieldType} disabled={!!editTarget}
+                            onChange={(e) => setFieldType(e.target.value as CustomFieldType)}>
+                        {TYPES.map((t) => <option key={t} value={t}>{CUSTOM_FIELD_TYPE_LABELS[t]}</option>)}
+                    </select>
+                    {editTarget && <p className="mt-1 text-[11px] text-slate-400">필드 타입은 만든 뒤 바꿀 수 없습니다.</p>}
+                </div>
+                {hasOptions && (
+                    <div>
+                        <label htmlFor="cf-options" className="mb-1 block text-xs font-medium text-slate-600">선택지 (한 줄에 하나)</label>
+                        <textarea id="cf-options" rows={4} value={options} onChange={(e) => setOptions(e.target.value)}
+                                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                    </div>
+                )}
+                <label className="flex items-center gap-2 text-sm text-slate-700">
+                    <input type="checkbox" checked={required} onChange={(e) => setRequired(e.target.checked)}/>
+                    필수 입력 (Task 생성 시 입력해야 함)
+                </label>
+                <div className="flex gap-3 pt-2">
+                    <button type="button" onClick={onClose}
+                            className="h-10 flex-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
+                    <button type="submit" disabled={!valid || isPending}
+                            className="h-10 flex-1 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+                        {isPending ? "저장 중..." : "저장"}
+                    </button>
+                </div>
+            </form>
+        </Dialog>
+    );
+}

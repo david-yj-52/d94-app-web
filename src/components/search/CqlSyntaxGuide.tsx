@@ -9,15 +9,15 @@ interface CqlSyntaxGuideProps {
 
 const EXAMPLE_QUERIES = [
     {
-        label: "특정 프로젝트의 진행 중 이슈",
+        label: "특정 프로젝트의 진행 중 Task",
         query: 'project = "PROJ-A" AND status = "In Progress"',
     },
     {
-        label: "내 담당 높은 우선순위 이슈",
+        label: "내 담당 높은 우선순위 Task",
         query: "assignee = currentUser() AND priority in (HIGH, HIGHEST)",
     },
     {
-        label: "열린 스프린트의 이슈 (우선순위 내림차순)",
+        label: "열린 스프린트의 Task (우선순위 내림차순)",
         query: "sprint in openSprints() ORDER BY priority DESC",
     },
     {
@@ -25,19 +25,19 @@ const EXAMPLE_QUERIES = [
         query: 'created >= -7d AND type = "Story"',
     },
     {
-        label: "미완료 고우선순위 이슈",
+        label: "미완료 고우선순위 Task",
         query: 'status != "Done" AND priority in (HIGH, HIGHEST) ORDER BY created DESC',
     },
 ];
 
 const FIELDS = [
     {name: "project", desc: "프로젝트 키"},
-    {name: "status", desc: "이슈 상태"},
+    {name: "status", desc: "Task 상태"},
     {name: "assignee", desc: "담당자"},
     {name: "reporter", desc: "보고자"},
     {name: "priority", desc: "우선순위"},
     {name: "sprint", desc: "스프린트"},
-    {name: "type", desc: "이슈 유형"},
+    {name: "type", desc: "Task 유형"},
     {name: "created", desc: "생성일"},
     {name: "updated", desc: "수정일"},
 ];

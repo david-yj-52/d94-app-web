@@ -40,7 +40,7 @@ function formatDate(dt?: string) {
     return new Date(dt).toLocaleDateString("ko-KR");
 }
 
-// 스프린트에 없는 이슈. 행 메뉴로 스프린트에 넣는다 (터치에서도 동작)
+// 스프린트에 없는 Task. 행 메뉴로 스프린트에 넣는다 (터치에서도 동작)
 function BacklogSection({projectId, sprints, onMoved}: {
     projectId: string;
     sprints: SprintResponse[];
@@ -55,7 +55,7 @@ function BacklogSection({projectId, sprints, onMoved}: {
         <section className="mt-6 rounded-md border border-slate-200 bg-white">
             <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-3">
                 <h2 className="text-sm font-semibold text-slate-800">백로그</h2>
-                <span className="text-xs text-slate-500">이슈 {page?.totalElements ?? issues.length}개</span>
+                <span className="text-xs text-slate-500">Task {page?.totalElements ?? issues.length}개</span>
             </div>
             {isLoading && <p className="px-4 py-6 text-sm text-slate-400">불러오는 중...</p>}
             {!isLoading && issues.length === 0 && (
@@ -151,7 +151,7 @@ function SprintCard({
                             onClick={() => setExpanded((v) => !v)}
                             className="text-blue-500 hover:text-blue-700 font-medium"
                         >
-                            이슈 {issues.length}개 {expanded ? "▲" : "▼"}
+                            Task {issues.length}개 {expanded ? "▲" : "▼"}
                         </button>
                     </div>
                 </div>
@@ -179,7 +179,7 @@ function SprintCard({
                             onClick={() => onAssign(sprint)}
                             className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
                         >
-                            이슈 할당
+                            Task 할당
                         </button>
                     )}
                     {sprint.sprintStat !== "Active" && (
@@ -206,7 +206,7 @@ function SprintCard({
                 <div className="overflow-x-auto border-t border-slate-100">
                     {issues.length === 0 ? (
                         <p className="text-sm text-slate-400 text-center py-4">
-                            할당된 이슈가 없습니다.
+                            할당된 Task가 없습니다.
                         </p>
                     ) : (
                         <table className="w-full min-w-[520px] text-sm">
@@ -408,7 +408,7 @@ export default function SprintsPage({
                     projectId={projectId}
                     sprint={assignTarget}
                     onClose={() => setAssignTarget(null)}
-                    onSuccess={() => show("이슈가 할당되었습니다.")}
+                    onSuccess={() => show("Task가 할당되었습니다.")}
                 />
             )}
 

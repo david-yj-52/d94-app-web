@@ -75,8 +75,34 @@ export interface BackendProject {
     name: string;
     description: string | null;
     projectType: string;
+    projectTypeId: string | null;
+    projectTypeNm: string | null;
     ownerId: string;
     issueSequence: number;
+}
+
+/** CiraFieldDto.Field */
+export interface BackendField {
+    fieldKey: string;
+    name: string;
+    kind: "sys" | "cf";
+    fieldType: string;
+    options: string[] | null;
+    required: boolean;
+    sortable: boolean;
+    source: "fixed" | "type" | "project" | null;
+    defaultVisible: boolean;
+    projectId: string | null;
+}
+
+/** CiraFieldDto.ProjectType */
+export interface BackendProjectType {
+    id: string;
+    typeNm: string;
+    descr: string | null;
+    sortOrd: number;
+    projectCount: number;
+    fields: { fieldKey: string; defaultVisible: boolean }[];
 }
 
 export interface BackendBoard {

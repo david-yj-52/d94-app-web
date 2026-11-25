@@ -82,20 +82,20 @@ export default function CompleteSprintModal({
                 <div className="flex gap-4 mb-5 p-4 bg-slate-50 rounded-xl">
                     <div className="flex-1 text-center">
                         <p className="text-2xl font-bold text-green-600">{completedCount}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">완료된 이슈</p>
+                        <p className="text-xs text-slate-500 mt-0.5">완료된 Task</p>
                     </div>
                     <div className="w-px bg-slate-200"/>
                     <div className="flex-1 text-center">
                         <p className="text-2xl font-bold text-slate-700">{issues.length}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">전체 이슈</p>
+                        <p className="text-xs text-slate-500 mt-0.5">전체 Task</p>
                     </div>
                 </div>
 
-                {/* 미완료 이슈 처리 */}
+                {/* 미완료 Task 처리 */}
                 {incompleteIssues.length > 0 ? (
                     <div className="mb-4">
                         <p className="text-sm font-medium text-slate-700 mb-2">
-                            미완료 이슈{" "}
+                            미완료 Task{" "}
                             <span className="text-amber-600">{incompleteIssues.length}개</span>{" "}
                             처리 방법
                         </p>
@@ -130,7 +130,7 @@ export default function CompleteSprintModal({
                                         백로그로 이동
                                     </p>
                                     <p className="text-xs text-slate-500">
-                                        미완료 이슈를 백로그로 돌려보냅니다.
+                                        미완료 Task를 백로그로 돌려보냅니다.
                                     </p>
                                 </div>
                             </label>
@@ -150,7 +150,7 @@ export default function CompleteSprintModal({
                                         다음 스프린트로 이동
                                     </p>
                                     <p className="text-xs text-slate-500">
-                                        미완료 이슈를 다음 스프린트에 추가합니다.
+                                        미완료 Task를 다음 스프린트에 추가합니다.
                                     </p>
                                 </div>
                             </label>
@@ -180,7 +180,7 @@ export default function CompleteSprintModal({
                     </div>
                 ) : (
                     <p className="text-sm text-slate-500 mb-4">
-                        모든 이슈가 완료되었습니다. 스프린트를 종료합니다.
+                        모든 Task가 완료되었습니다. 스프린트를 종료합니다.
                     </p>
                 )}
 

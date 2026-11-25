@@ -15,6 +15,7 @@ describe("cira/ui tones", () => {
         expect(issueTypeTone("STORY")).toBe("story");
         expect(issueTypeTone("스토리")).toBe("story");
         expect(issueTypeTone("작업")).toBe("task");
+        expect(issueTypeTone("Issue")).toBe("task"); // V590: 기본 세부 유형 Task → Issue
         expect(issueTypeTone("Epic")).toBe("task");
         expect(issueTypeTone(null)).toBe("task");
     });

@@ -19,6 +19,7 @@ export async function getIssues(
     if (filters?.issueType) params.issueType = filters.issueType;
     if (filters?.sprintId) params.sprintId = filters.sprintId;
     if (filters?.status?.length) params.status = filters.status;
+    if (filters?.sort) params.sort = filters.sort;
     if (filters?.page !== undefined) params.page = filters.page;
     if (filters?.size !== undefined) params.size = filters.size ?? 20;
     const res = await apiClient.get(`/v1/projects/${projectId}/issues`, {

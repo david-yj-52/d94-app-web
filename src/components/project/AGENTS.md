@@ -15,6 +15,7 @@
 ```ts
 { onClose: () => void; onSuccess?: () => void }
 ```
+- 키·이름·설명·타입. 타입 목록은 `useProjectTypes`(기준정보 › CIRA), 첫 타입이 기본값이고 `projectTypeId` 로 보냅니다.
 
 ## settings/
 

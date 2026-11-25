@@ -38,4 +38,4 @@ projects/page.tsx
 
 ## 기능 (L4)
 ### 프로젝트 생성
-- CreateProjectModal의 필드는 키, 이름, 설명, 프로젝트 유형입니다. 생성에 성공하면 "프로젝트가 생성되었습니다." 토스트를 띄우고 `["projects"]`를 무효화합니다.
+- CreateProjectModal의 필드는 키, 이름, 설명, 프로젝트 타입(기준정보 › CIRA 의 타입 목록, `projectTypeId`)입니다. 생성에 성공하면 "프로젝트가 생성되었습니다." 토스트를 띄우고 `["projects"]`를 무효화합니다.

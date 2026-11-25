@@ -21,6 +21,14 @@ export function ayaanError(e: unknown, fallback: string): string {
     if (d && typeof d === "object") return Object.entries(d).map(([k, v]) => `${k}: ${v}`).join(", ");
     return typeof d === "string" && d ? d : fallback;
 }
+/** 작업공간 정리: 서버는 DONE/CANCELLED 만 허용 */
+export const canCleanWorkspace = (status: string) => status === "DONE" || status === "CANCELLED";
+/** 정리 409 중 미push 변경만 고정 문구, 나머지(진행 중 등)는 서버 메시지 */
+export function cleanError(e: unknown): string {
+    const r = (e as { response?: { status?: number; data?: { message?: string } } })?.response;
+    if (r?.status === 409 && r.data?.message?.includes("unpushed")) return "push되지 않은 변경이 있어 정리하지 않았습니다.";
+    return ayaanError(e, "요청에 실패했습니다.");
+}
 export const STATUS_CLASS: Record<string, string> = {
     RUNNING: "bg-blue-50 text-blue-700", PAUSED: "bg-amber-50 text-amber-700", DONE: "bg-emerald-50 text-emerald-700",
     FAILED: "bg-red-50 text-red-600", QUEUED: "bg-slate-100 text-slate-600", CANCELLED: "bg-slate-100 text-slate-500",

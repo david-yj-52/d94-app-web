@@ -61,6 +61,15 @@ export function toToolBody(f: ToolForm): { body: AyaanTool | null; errors: Recor
 export const toWorkspaceBody = (w: AyaanWorkspace): AyaanWorkspace => ({
     ...w,
     projectKey: w.projectKey.trim(),
-    workspacePath: w.workspacePath.trim(),
     promptTemplate: w.promptTemplate?.trim() ? w.promptTemplate : null,
+    // 이름·URL 모두 빈 행은 버리고, 일부만 채운 행은 서버 검증이 오류를 돌려주도록 남긴다
+    repos: w.repos
+        .filter((r) => r.repoNm.trim() || r.gitUrl.trim())
+        .map((r, i) => ({
+            repoNm: r.repoNm.trim(),
+            gitUrl: r.gitUrl.trim(),
+            baseBranch: r.baseBranch.trim() || "main",
+            deployBranch: orNull(r.deployBranch ?? ""),
+            sortOrd: i,
+        })),
 });

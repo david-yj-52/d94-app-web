@@ -18,7 +18,18 @@
 - `readOnly` 면 입력·버튼 비활성 + "관리자만 변경할 수 있습니다." 안내.
 
 ### CiraSettingsPanel — `@/components/settings/CiraSettingsPanel`
-`{ readOnly: boolean }` — 기준정보 CIRA 그룹. `useSettings()` 의 프로젝트 타입 설정(`CIRA_PROJECT_TYPES_KEY`)을 편집하는 폼(내부 `ProjectTypesForm`). ADMIN 이 아니면 `readOnly`.
+```ts
+{ readOnly: boolean }
+```
+- 탭 [프로젝트 타입] [사용자 정의 필드]. 프로젝트 타입: 왼쪽 타입 목록(쓰는 프로젝트 수)·추가, 오른쪽 선택 타입의 이름 변경·삭제(쓰는 프로젝트가 있으면 막음)와 필드 세트(고정 4개 잠김 + 필드별 기본 표시·위/아래·빼기·[+ 필드 추가]). 바꾸면 바로 저장되고 그 타입의 기존 프로젝트에도 반영됩니다.
+- 사용자 정의 필드: 전역 필드 목록·생성·수정(`CustomFieldModal`)·삭제(확인 창에 `useFieldUsage` 의 "N개 프로젝트, M개 Task").
+- 데이터 `hooks/useFields`, `readOnly` 면 편집 UI 를 숨깁니다(ADMIN 판단은 `useIsAdmin`, 권한 검사는 백엔드).
+
+### CustomFieldModal — `@/components/settings/CustomFieldModal`
+```ts
+{ editTarget?: FieldDef | null; onSubmit: (data: SaveCustomField) => void; isPending?: boolean; onClose: () => void }
+```
+- 이름(1~100자)·필드 타입(수정 때는 바꿀 수 없음)·선택지(선택형·다중 선택, 한 줄에 하나)·필수 여부. 저장은 부모가 `onSubmit` 으로(전역 = CiraSettingsPanel, 프로젝트 = `settings/fields` 화면).
 
 ### AyaanSettingsPanel — `@/components/settings/AyaanSettingsPanel`
 - props 없음. 탭(전역 정책/Tool/작업공간), 입력마다 `HelpCard`, 서버 422 메시지를 필드 옆에 표시. API `@/lib/api/ayaan`, 검증·변환 헬퍼는 `app/(main)/ayaan/settings/{validate,toolBody}.ts`.

@@ -22,9 +22,16 @@ export interface IssueResponse {
     projectId: string;
     sprintId?: string;
     dueDt?: string;
+    startedAt?: string;
+    resolvedAt?: string;
     createdAt: string;
     modifiedAt: string;
+    /** {"cf:<id>": 값}. 값이 있는 사용자 정의 필드만 */
+    customFields?: Record<string, CustomFieldValue>;
 }
+
+/** 사용자 정의 필드 값: TEXT·URL·DATE·DATETIME·SELECT·USER → string, NUMBER → number, MULTI_SELECT → string[], CHECKBOX → boolean */
+export type CustomFieldValue = string | number | boolean | string[] | null;
 
 export interface IssueStatusResponse {
     id: string;
@@ -44,6 +51,8 @@ export interface CreateIssueRequest {
     assigneeId?: string;
     sprintId?: string;
     dueDt?: string;
+    /** null·"" = 값 삭제 */
+    customFields?: Record<string, CustomFieldValue>;
 }
 
 export interface UpdateIssueRequest {
@@ -55,6 +64,8 @@ export interface UpdateIssueRequest {
     assigneeId?: string;
     sprintId?: string;
     dueDt?: string;
+    /** null·"" = 값 삭제 */
+    customFields?: Record<string, CustomFieldValue>;
 }
 
 export interface IssueFilterParams {
@@ -64,6 +75,8 @@ export interface IssueFilterParams {
     issueType?: string;
     sprintId?: string;
     keyword?: string;
+    /** "sys:dueDate,asc" (sys: 키만) */
+    sort?: string;
     page?: number;
     size?: number;
 }

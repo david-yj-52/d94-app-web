@@ -112,14 +112,14 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                 },
             },
             {
-                onError: () => show("이슈 이동에 실패했습니다.", "error"),
+                onError: () => show("Task 이동에 실패했습니다.", "error"),
             },
         );
     };
 
     // 모바일(터치)은 HTML5 DnD 가 안 되므로 카드 메뉴로 컬럼 이동
     const handleMoveTo = (issueId: string, targetColumnId: string) =>
-        moveIssue({issueId, data: {targetColumnId}}, {onError: () => show("이슈 이동에 실패했습니다.", "error")});
+        moveIssue({issueId, data: {targetColumnId}}, {onError: () => show("Task 이동에 실패했습니다.", "error")});
 
     const handleDragEnd = () => {
         setDragging(null);
@@ -233,7 +233,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                             mineOnly ? "border-indigo-300 bg-indigo-50 font-semibold text-indigo-700" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                         }`}
                     >
-                        내 이슈만
+                        내 Task만
                     </button>
                 </div>
             )}
@@ -316,7 +316,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                             컬럼 삭제
                         </h3>
                         <p className="text-sm text-slate-600 mb-5">
-                            이 컬럼을 삭제하시겠습니까? 컬럼의 이슈는 삭제되지 않습니다.
+                            이 컬럼을 삭제하시겠습니까? 컬럼의 Task는 삭제되지 않습니다.
                         </p>
                         <div className="flex gap-3">
                             <button
