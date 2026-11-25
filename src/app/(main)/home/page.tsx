@@ -11,6 +11,7 @@ import {
     LayoutDashboard,
     ListTodo,
     type LucideIcon,
+    NotebookPen,
     Package,
     Radio,
     Search,
@@ -83,6 +84,13 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
                 desc: "Solace WebSocket 메시지 송수신을 테스트합니다.",
                 icon: Radio,
                 iconClass: "bg-rose-50 text-rose-600",
+            },
+            {
+                href: "/docs",
+                label: "Docs",
+                desc: "Obsidian처럼 Markdown 노트를 [[링크]]로 잇고, 아이디어를 문서 · Task · 지식으로 키웁니다.",
+                icon: NotebookPen,
+                iconClass: "bg-emerald-50 text-emerald-600",
             },
             {
                 href: "/study",

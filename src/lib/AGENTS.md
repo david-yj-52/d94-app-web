@@ -9,7 +9,7 @@
 | `crypto/` | 로그인·회원가입 자격 증명 암호화 (WebCrypto) | ✅ 표준 |
 | `mock/` | 개발용 in-memory mock 백엔드 (`DEV_MOCK_API`) | ✅ 임시 |
 | `messaging/solace/` | Solace WebSocket 설정·훅 | 🧪 Solace 실험 전용 |
-| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"`, 로그인 뒤 복귀 경로 검증 `safeCallbackUrl(raw)`(내부 경로만, 아니면 `/home`), `SESSION_EXPIRED_REASON` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
+| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"`, 로그인 뒤 복귀 경로 검증 `safeCallbackUrl(raw)`(내부 경로만, 아니면 `/home`), `SESSION_EXPIRED_REASON`. 보호 접두사 `/cira`·`/interface-test`·`/study`·`/ayaan`·`/settings`·`/docs` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
 | `api.ts` | 구 fetch 래퍼 (서버·클라이언트 겸용) | 🧪 todo 실험 전용, 새 코드에서 사용 금지 |
 
 ## 1. API 함수 (`api/{domain}.ts`)
@@ -66,6 +66,14 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - mock: `mock/fields.ts`의 `registerFieldsMock(on, projectTypeId)` (타입 SCRUM·KANBAN 시드, 유효 필드·기본 컬럼 계산만 흉내, 검증 없음). 프로젝트 생성·수정 mock 은 `mockTypeOf` 로 `projectTypeId` 를 채우고, Task mock 은 `customFields` 를 병합합니다(null = 삭제).
 - mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `cira` 하나, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
+### Docs: `api/docs.ts` · `docs/`
+- `api/docs.ts`: d94-query `/api/v1/docs` 와 짝. 폴더 `getDocsFolders`·`create/rename/move/deleteDocsFolder`, 노트 `getNotes(filters)`(`folderId=""` 최상위만)·`getNoteTitles`·`getNoteByTitle`·`getNote`·`create/update/move/deleteNote`(수정은 `version` 필수, 불일치 409)·`getNoteVersions`·`getBacklinks`, 진화 `deriveNote`·`changeNoteKind`·`getLineage`, Task `getDocsTasks`·`setDocsTaskStatus`·`promoteDocsTask`, 이미지 `uploadDocsImage(blob)`(`application/octet-stream`, 형식은 서버가 앞 바이트로 판별)·`docsImageUrl(id)`(`/api/proxy/v1/docs/images/{id}`).
+- `docs/drafts.ts` `loadDraft`·`saveDraft`·`deleteDraft` — 편집 초안 IndexedDB(`d94-docs`/`drafts`, 키 noteId). 열 수 없으면 조용히 건너뜀 → [conventions §7](../../docs/conventions.md)
+- `docs/image.ts` `shrinkImage(blob)` — 900KB 이하·허용 형식이면 그대로, 아니면 긴 변 1920→800px·WebP 품질을 낮춰 가며 줄임(UMD 1MB 상한).
+- `docs/error.ts` `docsError(e, fallback)` — 서버 오류 메시지(409 등) 또는 fallback.
+- `docs/markdown.ts`: 서버 `DocsMarkdownIndexer` 와 같은 규칙의 화면용 도우미 — `stripFrontmatter`·`readFrontmatter`(단순 `key: value`)·`extractLinks/Tags/Tasks`, `toMarkdownLinks`(`[[A|별칭]]` → `[별칭](#note:A)`)·`titleFromHref`. 테스트 `docs/markdown.test.ts`.
+- mock: `mock/docs.ts`의 `registerDocsMock(on)` (시드 폴더 `가이드`·노트 `시작하기`, 409·404·이름 변경 링크 치환·진화·Task·5분 버전 병합까지 백엔드 규칙과 같게, 이미지는 앞 바이트 판별 후 메모리 보관·`raw` 응답, dev 서버 재시작 시 초기화).
+
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
 통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 refresh·재로그인을 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
 
@@ -82,7 +90,7 @@ CIRA 타입은 d94-query DTO 필드 이름·값 그대로입니다(스프린트 
 `DEV_MOCK_API=true`이고 production이 아니면, `/api/proxy` 요청이 백엔드 대신 mock으로 처리됩니다.
 
 - `data.ts`: 시드 데이터와 in-memory store(`getStore()`). dev 서버를 재시작하면 초기화됩니다.
-- `router.ts`: `on(method, pattern, handler)`로 라우트를 등록합니다. `:param` 패턴을 지원합니다.
+- `router.ts`: `on(method, pattern, handler)`로 라우트를 등록합니다. `:param` 패턴을 지원합니다. 본문은 JSON 이면 객체, `application/octet-stream` 이면 `{bytes: Uint8Array}` 로 넘깁니다.
 
 ```ts
 on("GET", "/v1/projects/:projectId/milestones", ({params}) =>

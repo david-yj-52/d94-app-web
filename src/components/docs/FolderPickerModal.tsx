@@ -1,0 +1,45 @@
+"use client";
+
+import {useState} from "react";
+import type {DocsFolder} from "@/types/docs";
+
+interface FolderPickerModalProps {
+    title: string;
+    folders: DocsFolder[];
+    /** 고를 수 없는 폴더 (자기 자신과 하위 — 서버도 400 으로 막는다) */
+    disabledIds?: Set<string>;
+    initial: string | null;
+    onPick: (folderId: string | null) => void;
+    onClose: () => void;
+}
+
+/** 노트·폴더 이동 대상 선택. 들여쓴 폴더 경로 목록 + 최상위. */
+export default function FolderPickerModal({title, folders, disabledIds, initial, onPick, onClose}: FolderPickerModalProps) {
+    const [value, setValue] = useState(initial ?? "");
+    const rows: { f: DocsFolder; depth: number }[] = [];
+    const walk = (parentId: string | null, depth: number) =>
+        folders.filter((f) => f.parentId === parentId).sort((a, b) => a.name.localeCompare(b.name)).forEach((f) => {
+            rows.push({f, depth});
+            walk(f.id, depth + 1);
+        });
+    walk(null, 0);
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
+            <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
+                <h2 className="mb-3 text-base font-semibold text-slate-900">{title}</h2>
+                <select value={value} onChange={(e) => setValue(e.target.value)} aria-label="대상 폴더" size={8}
+                        className="w-full rounded-lg border border-slate-200 p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">/ (최상위)</option>
+                    {rows.map(({f, depth}) => (
+                        <option key={f.id} value={f.id} disabled={disabledIds?.has(f.id)}>{"  ".repeat(depth + 1)}{f.name}</option>
+                    ))}
+                </select>
+                <div className="mt-4 flex justify-end gap-2">
+                    <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
+                    <button type="button" onClick={() => onPick(value || null)}
+                            className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700">이동</button>
+                </div>
+            </div>
+        </div>
+    );
+}
