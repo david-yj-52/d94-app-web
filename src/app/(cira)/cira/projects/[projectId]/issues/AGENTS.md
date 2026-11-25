@@ -17,7 +17,8 @@ issues/page.tsx
 ├── PageHeader (프로젝트 / {이름} · "Task" · [+ Task 생성])  → cira 카드
 ├── IssueFilter (filters 상태는 페이지가 보유) + ColumnPicker(md 이상)  → issue 카드
 ├── 로딩: SkeletonRow × n / 결과: IssueTable fields·columns·names·sort  → ui · issue 카드
-└── {showCreate && <CreateIssueModal/>} + {ToastComponent}
+├── {showCreate && <CreateIssueModal/>} + {ToastComponent}
+└── 컬럼 만들기·수정 settings/CustomFieldModal · {showLibrary && <FieldLibraryDialog/>} · 컬럼 삭제 Dialog
 
 issues/[issueId]/page.tsx
 ├── PageHeader (프로젝트 / 이슈 › 제목 = issueKey) + ··· 더보기 Menu(삭제)
@@ -39,6 +40,7 @@ issues/[issueId]/page.tsx
 | `useProjectFields(projectId)` | `GET /v1/projects/:id/fields` (유효 필드) | `["project-fields", projectId]` |
 | `useColumnPref` / `useSaveColumnPref` | `GET·PUT·DELETE /v1/projects/:id/column-pref` | `["column-pref", projectId]` |
 | `useProjectMembers`, `useSprints` | 사용자·스프린트 이름(`names`) | `["projects", projectId, "members"]`, `["sprints", projectId]` |
+| `useSaveProjectField`·`useDeleteProjectField`·`useFieldLibrary`·`useImportToProject` | 컬럼 만들기·수정·삭제·라이브러리 가져오기 | `["project-fields", projectId]`, `["field-library", projectId]` |
 
 ## 기능 (L4)
 ### 목록 필터링
@@ -46,6 +48,10 @@ issues/[issueId]/page.tsx
 ### 컬럼 · 정렬
 - 표시 컬럼은 사람별(`column-pref`, 서버 저장)입니다. 저장한 적 없으면 타입 세트의 기본 표시 필드, 저장 후에도 관리자가 타입 세트에 새로 넣은 기본 표시 필드는 뒤에 붙습니다(서버 계산). [컬럼] → ColumnPicker, 바꿀 때마다 저장, [기본값으로] = DELETE. 실패하면 오류 토스트.
 - `sys:` 헤더를 누르면 `filters.sort = "sys:<key>,asc|desc"` 로 다시 조회합니다(첫 페이지로). 사용자 정의 필드는 정렬하지 않습니다(3단계).
+### 컬럼 만들기 · 가져오기 (프로젝트 멤버 누구나)
+- [컬럼] → [+ 새 컬럼 만들기] → `CustomFieldModal` → 프로젝트 필드 생성, 성공하면 내 컬럼 끝에 바로 추가.
+- [+ 라이브러리에서 가져오기] → `FieldLibraryDialog`(전역 + 이 타입의 필드) → 복사본 생성, 내 컬럼 끝에 추가. 같은 이름이 있으면 서버 400 메시지 토스트.
+- 내가 만든(또는 ADMIN 이면 모든) 프로젝트 필드는 [수정]·[삭제] — 삭제는 확인 창, 모든 Task 값도 삭제.
 ### Task 생성
 - CreateIssueModal에서 생성에 성공하면 "Task가 생성되었습니다." 토스트를 띄웁니다. 필수 사용자 정의 필드는 여기서 받습니다.
 ### 사용자 정의 필드 (상세)

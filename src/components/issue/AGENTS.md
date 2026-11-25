@@ -33,9 +33,17 @@
 
 ### ColumnPicker — `@/components/issue/ColumnPicker`
 ```ts
-{ fields: FieldDef[]; columns: string[]; onChange: (keys: string[] | null) => void }
+{ fields: FieldDef[]; columns: string[]; onChange: (keys: string[] | null) => void;
+  onCreate?: () => void; onImport?: () => void; onEdit?: (f: FieldDef) => void; onDelete?: (f: FieldDef) => void }
 ```
 - [컬럼] 버튼 → `cira/ui/Dialog`. 체크로 표시·숨김, 위/아래로 순서. 바꿀 때마다 `onChange(keys)`(부모가 바로 저장), [기본값으로] = `onChange(null)`. `sys:key`·`sys:summary` 는 끌 수 없습니다.
+- 아래쪽 [+ 새 컬럼 만들기]·[+ 라이브러리에서 가져오기] 는 창을 닫고 `onCreate`·`onImport`(부모가 창을 엶). `canEdit` 인 프로젝트 필드 행에만 [수정]·[삭제] → `onEdit`·`onDelete`. 테스트 `ColumnPicker.test.tsx`.
+
+### FieldLibraryDialog — `@/components/issue/FieldLibraryDialog`
+```ts
+{ items: LibraryItem[]; onImport: (sourceFieldId: string) => void; isPending?: boolean; onClose: () => void }
+```
+- 가져올 수 있는 필드를 "전역 필드"·"이 타입의 필드" 로 나눠 보여 줍니다. [가져오기] → `onImport(원본 id)`, 이미 가져온 항목(`importedAs`)은 "가져옴" 비활성. 사용처: Task 목록, 프로젝트 설정 › 필드.
 
 ### FieldValue — `@/components/issue/FieldValue`
 ```ts

@@ -66,7 +66,7 @@
 | board | KanbanBoard › KanbanColumn › KanbanCard | 칸반 보드 (HTML5 DnD) | `boards/[boardId]` | [board](board/AGENTS.md) |
 | board | CreateBoardModal, AddColumnModal | 보드 생성, 컬럼 추가·편집 | `boards`, KanbanBoard | [board](board/AGENTS.md) |
 | issue | IssueTable, IssueFilter, CreateIssueModal | Task 목록(프로젝트 필드 기준 동적 컬럼·정렬)·필터·생성(필수 사용자 정의 필드) | `issues` | [issue](issue/AGENTS.md) |
-| issue | ColumnPicker, FieldValue, CustomFieldInput | 사람별 컬럼 선택·순서 · 필드 값 표시 · 사용자 정의 필드 입력 | `issues`, `issues/[issueId]` | [issue](issue/AGENTS.md) |
+| issue | ColumnPicker, FieldLibraryDialog, FieldValue, CustomFieldInput | 사람별 컬럼 선택·순서·만들기·가져오기 · 라이브러리 가져오기 창 · 필드 값 표시 · 사용자 정의 필드 입력 | `issues`, `issues/[issueId]`, `settings/fields` | [issue](issue/AGENTS.md) |
 | issue | CommentSection, AttachmentSection | 댓글(멘션·이모지·답글)·첨부(DnD 업로드) | `issues/[issueId]` | [issue](issue/AGENTS.md) |
 | interfaceTest | InterfaceRequestPanel, InterfaceCallLog, InterfaceItemTable, MethodBadge | REST 메서드별 통신 확인 (요청 폼·호출 기록·DB 목록) | `/interface-test` 🧪 | [interfaceTest](interfaceTest/AGENTS.md) |
 | study | DocumentList, UploadDropzone, TocTree, PageView, SelectionToolbar, AnnotationPopover, TermEditModal, TermsPanel, NoteList, AutoScroll, DictionaryPopover, DictionaryKeyModal | PDF 학습 뷰어 (업로드·목차·본문 렌더링·마킹·단어장·노트·자동 스크롤) | `/study/**` 🧪 | [study](study/AGENTS.md) |
