@@ -6,7 +6,7 @@ const INT_RANGE: Record<string, [number, number]> = {
     TASK_TIMEOUT_SEC: [300, 14400],
     QUOTA_POLL_INTERVAL_SEC: [60, 3600],
 };
-const TOOLS = ["CLAUDE", "CODEX", "GEMINI", "CURSOR"];
+const TOOLS = ["CLAUDE", "CODEX", "ANTIGRAVITY", "CURSOR"];
 const EVENTS = ["PAUSED", "RESUMED", "DONE", "FAILED", "QUOTA_EXHAUSTED", "QUOTA_RESTORED"];
 const CRON_FIELD = /^(\*|\d+(-\d+)?)(\/\d+)?(,(\*|\d+(-\d+)?)(\/\d+)?)*$/;
 

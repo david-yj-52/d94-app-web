@@ -1,5 +1,5 @@
-export type ToolCd = "CLAUDE" | "CODEX" | "GEMINI" | "CURSOR";
-export const TOOLS: ToolCd[] = ["CLAUDE", "CODEX", "GEMINI", "CURSOR"];
+export type ToolCd = "CLAUDE" | "CODEX" | "ANTIGRAVITY" | "CURSOR";
+export const TOOLS: ToolCd[] = ["CLAUDE", "CODEX", "ANTIGRAVITY", "CURSOR"];
 
 export interface Quota {
     toolCd: ToolCd;

@@ -137,7 +137,7 @@ const EMPTY_REPO: AyaanRepo = {repoNm: "", gitUrl: "", baseBranch: "main", deplo
 const newWs = (projectKey = ""): AyaanWorkspace => ({projectKey, workspacePath: null, defaultTool: "CLAUDE", promptTemplate: "", repos: [{...EMPTY_REPO}]});
 const WS_FIELDS: [keyof AyaanWorkspace, string, Kind, string[]?][] = [
     ["projectKey", "PROJECT_KEY", "text"],
-    ["defaultTool", "DEFAULT_TOOL", "select", ["CLAUDE", "CODEX", "GEMINI", "CURSOR", "FAKE"]],
+    ["defaultTool", "DEFAULT_TOOL", "select", ["CLAUDE", "CODEX", "ANTIGRAVITY", "CURSOR", "FAKE"]],
     ["promptTemplate", "PROMPT_TEMPLATE", "textarea"],
 ];
 

@@ -30,7 +30,7 @@ const config: ConfigValues = {
     CLAUDE_PLUGINS: "ponytail@ponytail|https://github.com/JCAO98/PonyTaill_AgentSkill.git",
     DEFAULT_PROJECT_KEY: "CIRA",
 };
-const tools: AyaanTool[] = (["CLAUDE", "CODEX", "GEMINI", "CURSOR"] as const).map((toolCd) => ({
+const tools: AyaanTool[] = (["CLAUDE", "CODEX", "ANTIGRAVITY", "CURSOR"] as const).map((toolCd) => ({
     toolCd, enabled: toolCd === "CLAUDE", authMode: "ACCOUNT", planName: toolCd === "CLAUDE" ? "Max 5x" : null, apiKeyRef: null,
     model: null, maxConcurrency: 1, fallbackResetRule: "INTERVAL 30m", budgetTokens: null, budgetPeriod: null,
 }));
