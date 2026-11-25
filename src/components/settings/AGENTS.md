@@ -21,15 +21,17 @@
 ```ts
 { readOnly: boolean }
 ```
-- 탭 [프로젝트 타입] [사용자 정의 필드]. 프로젝트 타입: 왼쪽 타입 목록(쓰는 프로젝트 수)·추가, 오른쪽 선택 타입의 이름 변경·삭제(쓰는 프로젝트가 있으면 막음)와 필드 세트(고정 4개 잠김 + 필드별 기본 표시·위/아래·빼기·[+ 필드 추가]). 바꾸면 바로 저장되고 그 타입의 기존 프로젝트에도 반영됩니다.
-- 사용자 정의 필드: 전역 필드 목록·생성·수정(`CustomFieldModal`)·삭제(확인 창에 `useFieldUsage` 의 "N개 프로젝트, M개 Task").
+- 탭 [프로젝트 타입] [사용자 정의 필드]. 프로젝트 타입: 왼쪽 타입 목록(쓰는 프로젝트 수)·추가, 오른쪽 선택 타입의 이름 변경·삭제(쓰는 프로젝트가 있으면 막음)와 기본 세트(고정 4개 잠김 + 필드별 기본 표시·위/아래·빼기·[+ 필드 추가] — 기본 필드와 이 타입의 필드만). 바꾸면 바로 저장되고 그 타입의 기존 프로젝트에도 반영됩니다.
+- 기본 세트 아래 "이 타입의 필드": 목록(기본 세트/라이브러리·출처 표시)·[새 필드] 버튼(aria-label "이 타입에 새 필드")·[+ 전역에서 가져오기] select(복사)·수정·삭제(확인 창 "이 타입 프로젝트 N개, Task M개의 값… 가져간 복사본은 남습니다").
+- 사용자 정의 필드(전역 라이브러리): 행마다 `catalog.copies` 가 0 이면 "아직 어디에도 적용되지 않음", 아니면 "복사본 N개". 생성 창은 `typeOptions` 로 "넣을 타입" 선택(→ `copyToTypeIds`). 삭제 확인 "가져간 프로젝트·타입의 복사본은 남습니다". 테스트 `CiraSettingsPanel.test.tsx`.
 - 데이터 `hooks/useFields`, `readOnly` 면 편집 UI 를 숨깁니다(ADMIN 판단은 `useIsAdmin`, 권한 검사는 백엔드).
 
 ### CustomFieldModal — `@/components/settings/CustomFieldModal`
 ```ts
-{ editTarget?: FieldDef | null; onSubmit: (data: SaveCustomField) => void; isPending?: boolean; onClose: () => void }
+{ editTarget?: FieldDef | null; onSubmit: (data: SaveCustomField) => void; isPending?: boolean; onClose: () => void;
+  typeOptions?: {id: string; typeNm: string}[] }
 ```
-- 이름(1~100자)·필드 타입(수정 때는 바꿀 수 없음)·선택지(선택형·다중 선택, 한 줄에 하나)·필수 여부. 저장은 부모가 `onSubmit` 으로(전역 = CiraSettingsPanel, 프로젝트 = `settings/fields` 화면).
+- 이름(1~100자)·필드 타입(수정 때는 바꿀 수 없음)·선택지(선택형·다중 선택, 한 줄에 하나)·필수 여부. `typeOptions` 가 있고 새로 만들 때만 "넣을 타입" 체크박스(`copyToTypeIds`). 저장은 부모가 `onSubmit` 으로(전역 = CiraSettingsPanel, 프로젝트 = `settings/fields` 화면).
 
 ### AyaanSettingsPanel — `@/components/settings/AyaanSettingsPanel`
 - props 없음. 탭(전역 정책/Tool/작업공간), 입력마다 `HelpCard`, 서버 422 메시지를 필드 옆에 표시. API `@/lib/api/ayaan`, 검증·변환 헬퍼는 `app/(main)/ayaan/settings/{validate,toolBody}.ts`.

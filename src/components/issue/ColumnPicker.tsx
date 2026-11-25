@@ -7,12 +7,17 @@ import {useState} from "react";
 
 /**
  * Task 목록 컬럼 선택·순서. 바꿀 때마다 onChange(keys) — 부모가 바로 저장한다.
- * onChange(null) = [기본값으로]
+ * onChange(null) = [기본값으로]. onCreate·onImport = 새 컬럼 만들기·라이브러리에서 가져오기(부모가 창을 연다).
+ * 프로젝트 필드 중 canEdit 인 것만 [수정]·[삭제].
  */
-export default function ColumnPicker({fields, columns, onChange}: {
+export default function ColumnPicker({fields, columns, onChange, onCreate, onImport, onEdit, onDelete}: {
     fields: FieldDef[];
     columns: string[];
     onChange: (keys: string[] | null) => void;
+    onCreate?: () => void;
+    onImport?: () => void;
+    onEdit?: (f: FieldDef) => void;
+    onDelete?: (f: FieldDef) => void;
 }) {
     const [open, setOpen] = useState(false);
     const byKey = new Map(fields.map((f) => [f.fieldKey, f]));
@@ -36,6 +41,14 @@ export default function ColumnPicker({fields, columns, onChange}: {
                 {f.name}
                 {f.kind === "cf" && <span className="text-[11px] text-slate-400">사용자 정의</span>}
             </label>
+            {f.canEdit && onEdit && (
+                <button type="button" aria-label={`${f.name} 수정`} onClick={() => { setOpen(false); onEdit(f); }}
+                        className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
+            )}
+            {f.canEdit && onDelete && (
+                <button type="button" aria-label={`${f.name} 삭제`} onClick={() => { setOpen(false); onDelete(f); }}
+                        className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
+            )}
             {i !== undefined && (
                 <>
                     <button type="button" aria-label={`${f.name} 위로`} disabled={i === 0} onClick={() => move(i, -1)}
@@ -66,7 +79,16 @@ export default function ColumnPicker({fields, columns, onChange}: {
                         <ul className="py-2">{hidden.map((f) => row(f, false))}</ul>
                     </>
                 )}
-                <div className="flex justify-end border-t border-slate-100 px-4 py-3">
+                <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 px-4 py-3">
+                    {onCreate && (
+                        <button type="button" onClick={() => { setOpen(false); onCreate(); }}
+                                className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50">+ 새 컬럼 만들기</button>
+                    )}
+                    {onImport && (
+                        <button type="button" onClick={() => { setOpen(false); onImport(); }}
+                                className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50">+ 라이브러리에서 가져오기</button>
+                    )}
+                    <span className="flex-1"/>
                     <button type="button" onClick={() => onChange(null)}
                             className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-600 hover:bg-slate-50">
                         기본값으로

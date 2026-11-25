@@ -30,6 +30,8 @@ const types: ProjectTypeResponse[] = [
     {id: "PT-KANBAN", typeNm: "KANBAN", sortOrd: 2, projectCount: 0, fields: [...BASE]},
 ];
 const customFields: FieldDef[] = [];
+/** 타입 필드의 소속 타입 (FieldDef 에는 타입 id 칸이 없다) */
+const typeOfField: Record<string, string> = {};
 const projectFieldKeys: Record<string, string[]> = {};
 const prefs: Record<string, string[]> = {};
 let seq = 0;
@@ -55,7 +57,9 @@ function effective(projectId: string, typeId?: string | null): FieldDef[] {
     return [...out.values()];
 }
 
-function saveField(body: Record<string, unknown>, projectId: string | null, existing?: FieldDef): FieldDef {
+const isGlobal = (f: FieldDef) => !f.projectId && !typeOfField[f.fieldKey];
+
+function saveField(body: Record<string, unknown>, projectId: string | null, existing?: FieldDef, typeId?: string): FieldDef {
     const f: FieldDef = {
         fieldKey: existing?.fieldKey ?? `cf:mock-${++seq}`,
         name: String(body.fieldNm ?? "").trim(),
@@ -66,10 +70,25 @@ function saveField(body: Record<string, unknown>, projectId: string | null, exis
         sortable: false,
         defaultVisible: true,
         projectId,
+        scope: projectId ? "project" : typeId ? "type" : "global",
+        sourceFieldId: existing?.sourceFieldId ?? null,
+        sourceName: existing?.sourceName ?? null,
+        createdBy: existing?.createdBy ?? "mock-user",
+        canEdit: !!projectId,
     };
+    if (typeId) typeOfField[f.fieldKey] = typeId;
     if (existing) Object.assign(existing, f);
     else customFields.push(f);
     return existing ?? f;
+}
+
+/** 가져오기 = 원본 복사 (설계 F3) */
+function copyField(src: FieldDef, projectId: string | null, typeId?: string): FieldDef {
+    const copy = saveField({fieldNm: src.name, fieldType: src.fieldType, options: src.options, required: src.required},
+        projectId, undefined, typeId);
+    copy.sourceFieldId = src.fieldKey.slice(3);
+    copy.sourceName = src.name;
+    return copy;
 }
 
 const removeField = (id: string) => {
@@ -81,7 +100,42 @@ const removeField = (id: string) => {
 };
 
 export function registerFieldsMock(on: On, projectTypeId: (projectId: string) => string | null | undefined) {
-    on("GET", "/v1/cira/field-catalog", () => ok({system: SYSTEM, custom: customFields.filter((f) => !f.projectId)}));
+    on("GET", "/v1/cira/field-catalog", () => ok({
+        system: SYSTEM,
+        custom: customFields.filter(isGlobal),
+        typeFields: Object.fromEntries(types.map((t) => [t.id, customFields.filter((f) => typeOfField[f.fieldKey] === t.id)])),
+        copies: Object.fromEntries(customFields.filter(isGlobal).map((g) =>
+            [g.fieldKey.slice(3), customFields.filter((f) => f.sourceFieldId === g.fieldKey.slice(3)).length])),
+    }));
+    on("POST", "/v1/cira/project-types/:id/custom-fields", ({params, body}) => ok(saveField(body, null, undefined, params.id)));
+    on("PUT", "/v1/cira/project-types/:id/custom-fields/:cfId", ({params, body}) =>
+        ok(saveField(body, null, customFields.find((f) => f.fieldKey === `cf:${params.cfId}`), params.id)));
+    on("DELETE", "/v1/cira/project-types/:id/custom-fields/:cfId", ({params}) => {
+        removeField(params.cfId);
+        return {status: 204};
+    });
+    on("POST", "/v1/cira/project-types/:id/custom-fields/import", ({params, body}) => {
+        const src = customFields.find((f) => f.fieldKey === `cf:${body.sourceFieldId}`);
+        return src ? ok(copyField(src, null, params.id)) : fail(404, "원본 없음");
+    });
+    on("GET", "/v1/projects/:projectId/field-library", ({params}) => {
+        const typeId = projectTypeId(params.projectId);
+        const inSet = new Set(mockTypeOf(typeId).fields.map((f) => f.fieldKey));
+        const mine = customFields.filter((f) => f.projectId === params.projectId);
+        return ok(customFields
+            .filter((f) => isGlobal(f) || (typeOfField[f.fieldKey] === typeId && !inSet.has(f.fieldKey)))
+            .map((f) => ({field: f, importedAs: mine.find((m) => m.sourceFieldId === f.fieldKey.slice(3))?.fieldKey ?? null})));
+    });
+    on("POST", "/v1/projects/:projectId/custom-fields/import", ({params, body}) => {
+        const src = customFields.find((f) => f.fieldKey === `cf:${body.sourceFieldId}`);
+        if (!src) return fail(404, "원본 없음");
+        if (customFields.some((f) => f.projectId === params.projectId && f.name === src.name)) {
+            return fail(400, `이 프로젝트에 같은 이름의 필드가 있습니다: ${src.name}`);
+        }
+        const copy = copyField(src, params.projectId);
+        projectFieldKeys[params.projectId] = [...(projectFieldKeys[params.projectId] ?? []), copy.fieldKey];
+        return ok(copy);
+    });
     on("GET", "/v1/cira/project-types", () => ok(types));
     on("POST", "/v1/cira/project-types", ({body}) => {
         const typeNm = String(body.typeNm ?? "").trim();
@@ -107,7 +161,11 @@ export function registerFieldsMock(on: On, projectTypeId: (projectId: string) =>
         t.fields = (body as unknown as TypeField[]).filter((f) => !FIXED.includes(f.fieldKey));
         return ok(t);
     });
-    on("POST", "/v1/cira/custom-fields", ({body}) => ok(saveField(body, null)));
+    on("POST", "/v1/cira/custom-fields", ({body}) => {
+        const g = saveField(body, null);
+        ((body.copyToTypeIds as string[] | undefined) ?? []).forEach((typeId) => copyField(g, null, typeId));
+        return ok(g);
+    });
     on("PUT", "/v1/cira/custom-fields/:id", ({params, body}) =>
         ok(saveField(body, null, customFields.find((f) => f.fieldKey === `cf:${params.id}`))));
     on("DELETE", "/v1/cira/custom-fields/:id", ({params}) => {
