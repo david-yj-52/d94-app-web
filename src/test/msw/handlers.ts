@@ -71,6 +71,14 @@ export const handlers = [
 
     // 프로젝트 타입·필드·컬럼 (CiraFieldController)
     http.get(`${API}/cira/project-types`, () => json(fx.ok(fx.projectTypes))),
+    http.get(`${API}/cira/field-catalog`, () => json(fx.ok({
+        system: fx.projectFields.filter((f) => f.kind === "sys"),
+        custom: [fx.globalField],
+        typeFields: {"PT-KANBAN": []},
+        copies: {"CF-G": 0},
+    }))),
+    http.post(`${API}/cira/custom-fields`, async ({request}) =>
+        json(fx.ok({...fx.globalField, fieldKey: "cf:CF-NEW", name: String((await readBody(request)).fieldNm)}))),
     http.get(`${API}/projects/:projectId/fields`, () => json(fx.ok(fx.projectFields))),
     http.get(`${API}/projects/:projectId/field-library`, () => json(fx.ok([{field: fx.globalField, importedAs: null}]))),
     http.post(`${API}/projects/:projectId/custom-fields/import`, async ({request}) =>

@@ -8,13 +8,23 @@ import {
     useDeleteGlobalField,
     useDeleteProjectType,
     useFieldCatalog,
+    useDeleteTypeField,
     useFieldUsage,
+    useImportToType,
     useProjectTypes,
+    useSaveTypeField,
     useReplaceProjectTypeFields,
     useSaveGlobalField,
     useUpdateProjectType,
 } from "@/hooks/useFields";
-import {CUSTOM_FIELD_TYPE_LABELS, FIXED_FIELD_KEYS, type FieldDef, type ProjectTypeResponse, type TypeField} from "@/types/fields";
+import {
+    CUSTOM_FIELD_TYPE_LABELS,
+    FIXED_FIELD_KEYS,
+    type FieldCatalog,
+    type FieldDef,
+    type ProjectTypeResponse,
+    type TypeField,
+} from "@/types/fields";
 import {isAxiosError} from "axios";
 import {ArrowDown, ArrowUp, Lock, Plus, X} from "lucide-react";
 import {useState} from "react";
@@ -46,8 +56,8 @@ export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
             </div>
             {readOnly && <p className="mb-4 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">관리자만 변경할 수 있습니다.</p>}
             {tab === "types"
-                ? <TypesTab types={types} catalog={[...catalog.system, ...catalog.custom]} readOnly={readOnly} show={show}/>
-                : <GlobalFieldsTab fields={catalog.custom} readOnly={readOnly} show={show}/>}
+                ? <TypesTab types={types} catalog={catalog} readOnly={readOnly} show={show}/>
+                : <GlobalFieldsTab fields={catalog.custom} copies={catalog.copies} types={types} readOnly={readOnly} show={show}/>}
             {ToastComponent}
         </section>
     );
@@ -57,7 +67,7 @@ type Show = (msg: string, type?: "success" | "error") => void;
 
 function TypesTab({types, catalog, readOnly, show}: {
     types: ProjectTypeResponse[];
-    catalog: FieldDef[];
+    catalog: FieldCatalog;
     readOnly: boolean;
     show: Show;
 }) {
@@ -70,7 +80,15 @@ function TypesTab({types, catalog, readOnly, show}: {
     const remove = useDeleteProjectType();
     const replace = useReplaceProjectTypeFields();
     const selected = types.find((t) => t.id === selectedId) ?? types[0];
-    const byKey = new Map(catalog.map((f) => [f.fieldKey, f]));
+    const ownFields = (selected && catalog.typeFields[selected.id]) ?? [];
+    const byKey = new Map([...catalog.system, ...ownFields].map((f) => [f.fieldKey, f]));
+    const [editingField, setEditingField] = useState<FieldDef | null | undefined>(undefined); // undefined 닫힘, null 새로
+    const [deletingField, setDeletingField] = useState<FieldDef | null>(null);
+    const saveField = useSaveTypeField();
+    const deleteField = useDeleteTypeField();
+    const importField = useImportToType();
+    const {data: deletingUsage} = useFieldUsage(deletingField?.fieldKey.slice(3));
+    const importable = catalog.custom.filter((g) => !ownFields.some((f) => f.sourceFieldId === g.fieldKey.slice(3)));
     const name = draft.trim();
     const canAdd = name.length > 0 && name.length <= TYPE_NAME_MAX && !types.some((t) => t.typeNm === name);
 
@@ -84,7 +102,8 @@ function TypesTab({types, catalog, readOnly, show}: {
         setFields(next);
     };
     const inSet = new Set([...FIXED_FIELD_KEYS, ...(selected?.fields.map((f) => f.fieldKey) ?? [])]);
-    const addable = catalog.filter((f) => !inSet.has(f.fieldKey));
+    // 세트에는 기본 필드와 이 타입의 필드만 (전역 필드는 먼저 "전역에서 가져오기")
+    const addable = [...catalog.system, ...ownFields].filter((f) => !inSet.has(f.fieldKey));
 
     return (
         <div className="flex flex-col gap-6 md:flex-row">
@@ -156,7 +175,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                                 <li key={tf.fieldKey} className="flex min-h-10 items-center gap-2 px-3 text-sm">
                                     <span className="flex-1">
                                         {f?.name ?? tf.fieldKey}
-                                        {f?.kind === "cf" && <span className="ml-2 text-xs text-slate-400">전역 · {CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}</span>}
+                                        {f?.kind === "cf" && <span className="ml-2 text-xs text-slate-400">타입 필드 · {CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}</span>}
                                     </span>
                                     <label className="flex items-center gap-1 text-xs text-slate-500">
                                         <input type="checkbox" checked={tf.defaultVisible} disabled={readOnly}
@@ -178,9 +197,85 @@ function TypesTab({types, catalog, readOnly, show}: {
                                 onChange={(e) => e.target.value && setFields([...selected.fields, {fieldKey: e.target.value, defaultVisible: true}])}
                                 className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm">
                             <option value="">+ 필드 추가</option>
-                            {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}{f.kind === "cf" ? " (전역 사용자 정의)" : ""}</option>)}
+                            {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}{f.kind === "cf" ? " (이 타입의 필드)" : ""}</option>)}
                         </select>
                     )}
+
+                    <h4 className="mb-1 mt-6 text-sm font-semibold text-slate-800">이 타입의 필드</h4>
+                    <p className="mb-2 text-xs text-slate-500">
+                        기본 세트에 넣으면 이 타입의 모든 프로젝트에 적용되고, 넣지 않으면 이 타입 프로젝트들이 라이브러리에서 골라 가져갑니다.
+                    </p>
+                    {ownFields.length === 0 && <p className="mb-2 text-xs text-slate-400">이 타입의 필드가 없습니다.</p>}
+                    <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
+                        {ownFields.map((f) => (
+                            <li key={f.fieldKey} aria-label={f.name} className="flex min-h-10 items-center gap-2 px-3 text-sm">
+                                <span className="flex-1">
+                                    {f.name}
+                                    <span className="ml-2 text-xs text-slate-400">
+                                        {CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}
+                                        {inSet.has(f.fieldKey) ? " · 기본 세트" : " · 라이브러리"}
+                                        {f.sourceFieldId && ` · ${f.sourceName ?? "원본 삭제됨"}에서 가져옴`}
+                                    </span>
+                                </span>
+                                {!readOnly && (
+                                    <>
+                                        <button type="button" onClick={() => setEditingField(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
+                                        <button type="button" onClick={() => setDeletingField(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
+                                    </>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                    {!readOnly && (
+                        <div className="flex flex-wrap gap-2">
+                            <button type="button" aria-label="이 타입에 새 필드" className={btnCls} onClick={() => setEditingField(null)}>
+                                <Plus className="h-4 w-4"/>새 필드
+                            </button>
+                            <select aria-label="전역에서 가져오기" value="" disabled={importable.length === 0 || importField.isPending}
+                                    onChange={(e) => e.target.value && importField.mutate({typeId: selected.id, sourceFieldId: e.target.value}, {
+                                        onSuccess: (f) => show(`'${f.name}' 필드를 이 타입으로 가져왔습니다.`),
+                                        onError: (err) => show(errMsg(err, "가져오지 못했습니다."), "error"),
+                                    })}
+                                    className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm">
+                                <option value="">+ 전역에서 가져오기</option>
+                                {importable.map((g) => <option key={g.fieldKey} value={g.fieldKey.slice(3)}>{g.name}</option>)}
+                            </select>
+                        </div>
+                    )}
+
+                    {editingField !== undefined && (
+                        <CustomFieldModal
+                            editTarget={editingField}
+                            isPending={saveField.isPending}
+                            onClose={() => setEditingField(undefined)}
+                            onSubmit={(data) => saveField.mutate({typeId: selected.id, id: editingField?.fieldKey.slice(3), data}, {
+                                onSuccess: () => {
+                                    setEditingField(undefined);
+                                    show("저장했습니다.");
+                                },
+                                onError: (e) => show(errMsg(e, "저장하지 못했습니다."), "error"),
+                            })}
+                        />
+                    )}
+
+                    <Dialog open={!!deletingField} onOpenChange={(o) => !o && setDeletingField(null)} title="타입 필드 삭제">
+                        <div className="p-4">
+                            <p className="mb-5 text-sm text-slate-600">
+                                <strong>{deletingField?.name}</strong> 필드를 삭제하면{" "}
+                                {deletingUsage ? `이 타입 프로젝트 ${deletingUsage.projects}개, Task ${deletingUsage.issues}개의 값이 함께 삭제됩니다.` : "값이 함께 삭제됩니다."}{" "}
+                                가져간 복사본은 남습니다.
+                            </p>
+                            <div className="flex gap-3">
+                                <button type="button" onClick={() => setDeletingField(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</button>
+                                <button type="button" disabled={deleteField.isPending}
+                                        onClick={() => deletingField && deleteField.mutate({typeId: selected.id, id: deletingField.fieldKey.slice(3)}, {
+                                            onSuccess: () => setDeletingField(null),
+                                            onError: (e) => show(errMsg(e, "삭제하지 못했습니다."), "error"),
+                                        })}
+                                        className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60">삭제</button>
+                            </div>
+                        </div>
+                    </Dialog>
 
                     <Dialog open={confirmDelete} onOpenChange={setConfirmDelete} title="타입 삭제">
                         <div className="p-4">
@@ -209,7 +304,13 @@ function TypesTab({types, catalog, readOnly, show}: {
     );
 }
 
-function GlobalFieldsTab({fields, readOnly, show}: { fields: FieldDef[]; readOnly: boolean; show: Show }) {
+function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
+    fields: FieldDef[];
+    copies: Record<string, number>;
+    types: ProjectTypeResponse[];
+    readOnly: boolean;
+    show: Show;
+}) {
     const [editing, setEditing] = useState<FieldDef | null | undefined>(undefined);
     const [deleting, setDeleting] = useState<FieldDef | null>(null);
     const save = useSaveGlobalField();
@@ -218,14 +319,19 @@ function GlobalFieldsTab({fields, readOnly, show}: { fields: FieldDef[]; readOnl
 
     return (
         <>
-            <p className="mb-3 text-xs text-slate-500">모든 프로젝트에서 쓸 수 있는 필드입니다. 타입 세트에 넣거나 프로젝트가 골라 추가합니다.</p>
+            <p className="mb-3 text-xs text-slate-500">
+                라이브러리 필드입니다. 타입으로 가져가거나(만들 때 "넣을 타입") 프로젝트가 가져가야 적용되고, 가져가면 복사본이 생깁니다.
+            </p>
             {fields.length === 0 && <p className="mb-3 text-xs text-slate-400">전역 사용자 정의 필드가 없습니다.</p>}
             <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
                 {fields.map((f) => (
-                    <li key={f.fieldKey} className="flex min-h-11 items-center gap-2 px-3 text-sm">
+                    <li key={f.fieldKey} aria-label={f.name} className="flex min-h-11 items-center gap-2 px-3 text-sm">
                         <span className="flex-1">{f.name}
                             <span className="ml-2 text-xs text-slate-400">{CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}{f.required ? " · 필수" : ""}</span>
                         </span>
+                        {(copies[f.fieldKey.slice(3)] ?? 0) === 0
+                            ? <span className="text-xs text-amber-600">아직 어디에도 적용되지 않음</span>
+                            : <span className="text-xs text-slate-400">복사본 {copies[f.fieldKey.slice(3)]}개</span>}
                         {!readOnly && (
                             <>
                                 <button type="button" onClick={() => setEditing(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
@@ -240,6 +346,7 @@ function GlobalFieldsTab({fields, readOnly, show}: { fields: FieldDef[]; readOnl
             {editing !== undefined && (
                 <CustomFieldModal
                     editTarget={editing}
+                    typeOptions={types.map((t) => ({id: t.id, typeNm: t.typeNm}))}
                     isPending={save.isPending}
                     onClose={() => setEditing(undefined)}
                     onSubmit={(data) => save.mutate({id: editing?.fieldKey.slice(3), data}, {
@@ -255,9 +362,8 @@ function GlobalFieldsTab({fields, readOnly, show}: { fields: FieldDef[]; readOnl
             <Dialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)} title="필드 삭제">
                 <div className="p-4">
                     <p className="mb-5 text-sm text-slate-600">
-                        <strong>{deleting?.name}</strong> 필드를 삭제하면{" "}
-                        {usage ? `${usage.projects}개 프로젝트, ${usage.issues}개 Task의 값이 함께 삭제됩니다.` : "값이 함께 삭제됩니다."}{" "}
-                        되돌릴 수 없습니다.
+                        <strong>{deleting?.name}</strong> 필드를 라이브러리에서 삭제합니다.{" "}
+                        가져간 프로젝트·타입의 복사본{usage ? `(${usage.copies}개)` : ""}은 남습니다. 되돌릴 수 없습니다.
                     </p>
                     <div className="flex gap-3">
                         <button type="button" onClick={() => setDeleting(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</button>
