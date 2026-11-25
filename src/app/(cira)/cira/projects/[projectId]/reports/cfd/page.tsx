@@ -158,12 +158,12 @@ export default function CfdPage({
             {!isLoading && !cfd && (
                 <div className="flex flex-col items-center justify-center py-24 text-slate-400">
                     <p className="text-lg font-medium text-slate-600 mb-1">CFD 데이터가 없습니다</p>
-                    <p className="text-sm mb-6">이슈를 생성하고 스프린트를 시작하면 데이터가 표시됩니다.</p>
+                    <p className="text-sm mb-6">Task를 생성하고 스프린트를 시작하면 데이터가 표시됩니다.</p>
                     <Link
                         href={`/cira/projects/${projectId}/issues`}
                         className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 flex items-center no-underline"
                     >
-                        이슈 생성하러 가기
+                        Task 생성하러 가기
                     </Link>
                 </div>
             )}

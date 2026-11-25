@@ -17,11 +17,18 @@ async function setup() {
     await screen.findByRole("option", {name: "김개발"}, {timeout: 5000});
     await waitFor(() => expect(utils.client.getQueryData(["projects", "PRJ-1", "workflow", "statuses"])).toBeDefined(),
         {timeout: 5000});
+    await screen.findByLabelText(/계약 단계/); // 필수 사용자 정의 필드 (fixtures.projectFields)
     return {...utils, user, onClose, onSuccess};
 }
 
-const titleInput = () => screen.getByPlaceholderText("이슈 제목을 입력하세요");
-const submit = () => screen.getByRole("button", {name: "이슈 생성"});
+/** 제목 + 필수 사용자 정의 필드 */
+async function fillRequired(user: ReturnType<typeof userEvent.setup>, title: string) {
+    await user.type(titleInput(), title);
+    await user.selectOptions(screen.getByLabelText(/계약 단계/), "리드");
+}
+
+const titleInput = () => screen.getByPlaceholderText("Task 제목을 입력하세요");
+const submit = () => screen.getByRole("button", {name: "Task 생성"});
 
 describe("CreateIssueModal", () => {
     it("제목이 없으면 검증 메시지를 보이고 요청하지 않는다", async () => {
@@ -33,18 +40,29 @@ describe("CreateIssueModal", () => {
 
     it("제목만 입력해도(우선순위·포인트 비움) 요청을 보내고, statusId 는 워크플로우 첫 상태다", async () => {
         const {user} = await setup();
-        await user.type(titleInput(), "제목만");
+        await fillRequired(user, "제목만");
         await user.click(submit());
         await waitFor(() => expect(lastRequest("POST")).toBeDefined());
         // 빈 우선순위("")·포인트(NaN)·담당자는 보내지 않는다. ST-TODO = sortOrd 최솟값
-        expect(lastRequest("POST")).toMatchObject({path: "/v1/projects/PRJ-1/issues", body: {title: "제목만", statusId: "ST-TODO"}});
-        expect(Object.keys(lastRequest("POST")!.body as object).sort()).toEqual(["statusId", "title"]);
+        expect(lastRequest("POST")).toMatchObject({
+            path: "/v1/projects/PRJ-1/issues",
+            body: {title: "제목만", statusId: "ST-TODO", customFields: {"cf:CF-1": "리드"}},
+        });
+        expect(Object.keys(lastRequest("POST")!.body as object).sort()).toEqual(["customFields", "statusId", "title"]);
+    });
+
+    it("필수 사용자 정의 필드를 비우면 안내하고 요청하지 않는다", async () => {
+        const {user} = await setup();
+        await user.type(titleInput(), "필수 누락");
+        await user.click(submit());
+        expect(await screen.findByText("계약 단계 값을 입력해주세요.")).toBeInTheDocument();
+        expect(lastRequest("POST")).toBeUndefined();
     });
 
     it("담당자는 프로젝트 멤버에서 고르고 사용자 objId(userId)를 assigneeId 로 보낸다", async () => {
         const {user} = await setup();
         expect(screen.getByRole("option", {name: "이기획"})).toBeInTheDocument(); // userNm 으로 표시
-        await user.type(titleInput(), "새 이슈");
+        await fillRequired(user, "새 이슈");
         await user.selectOptions(screen.getByLabelText("우선순위"), "HIGH");
         await user.type(screen.getByPlaceholderText("0"), "5");
         await user.selectOptions(screen.getByLabelText("담당자"), "USR-0001");
@@ -57,7 +75,7 @@ describe("CreateIssueModal", () => {
     it("서버가 성공을 주면 onSuccess·onClose 를 부른다", async () => {
         server.use(http.post("*/api/proxy/v1/projects/:projectId/issues", () => HttpResponse.json(ok(issue1))));
         const {user, onClose, onSuccess} = await setup();
-        await user.type(titleInput(), "새 이슈");
+        await fillRequired(user, "새 이슈");
         await user.click(submit());
         await waitFor(() => expect(onClose).toHaveBeenCalled());
         expect(onSuccess).toHaveBeenCalled();
@@ -65,9 +83,9 @@ describe("CreateIssueModal", () => {
 
     it("서버가 실패하면 오류 문구를 보이고 닫지 않는다", async () => {
         const {user, onClose} = await setup();
-        await user.type(titleInput(), "실패할 이슈"); // issueTypeId 가 없어 백엔드 모양 핸들러는 500
+        await fillRequired(user, "실패할 이슈"); // issueTypeId 가 없어 백엔드 모양 핸들러는 500
         await user.click(submit());
-        expect(await screen.findByText("이슈 생성에 실패했습니다.")).toBeInTheDocument();
+        expect(await screen.findByText("Task 생성에 실패했습니다.")).toBeInTheDocument();
         expect(onClose).not.toHaveBeenCalled();
     });
 
@@ -76,7 +94,7 @@ describe("CreateIssueModal", () => {
     // 백엔드가 유형 목록 API(또는 기본 유형)를 주면 폼에 유형 선택을 넣고 이 테스트를 it 으로 바꾼다
     it.fails("[결함·백엔드 대기] 생성 요청에 issueTypeId 를 담는다", async () => {
         const {user} = await setup();
-        await user.type(titleInput(), "유형");
+        await fillRequired(user, "유형");
         await user.click(submit());
         await waitFor(() => expect(lastRequest("POST")).toBeDefined());
         expect(lastRequest("POST")!.body).toMatchObject({issueTypeId: expect.any(String)});

@@ -5,8 +5,8 @@ import Link from "next/link";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {SkeletonCard} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
-import {cancelTask, getTask, resumeTask} from "@/lib/api/ayaan";
-import {btnPrimary, btnSecondary, fmtNum, fmtTime, STATUS_CLASS} from "../../format";
+import {cancelTask, cleanTaskWorkspace, getTask, resumeTask} from "@/lib/api/ayaan";
+import {btnPrimary, btnSecondary, canCleanWorkspace, cleanError, fmtNum, fmtTime, STATUS_CLASS} from "../../format";
 
 export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId: string }> }) {
     const {taskId} = use(params);
@@ -23,9 +23,15 @@ export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId
     });
     const resume = useMutation(act(resumeTask, "재개를 요청했습니다."));
     const cancel = useMutation(act(cancelTask, "취소했습니다."));
+    const clean = useMutation({
+        mutationFn: () => cleanTaskWorkspace(taskId),
+        onSuccess: () => show("작업공간을 정리했습니다."),
+        onError: (e: unknown) => show(cleanError(e), "error"),
+    });
     const t = q.data;
     if (q.isLoading || !t) return <div className="mx-auto max-w-5xl px-4"><SkeletonCard/></div>;
     const canResume = t.status === "PAUSED" || t.status === "FAILED";
+    const canClean = canCleanWorkspace(t.status);
     const canCancel = t.status === "QUEUED" || t.status === "RUNNING" || t.status === "PAUSED";
     return (
         <div className="mx-auto max-w-5xl space-y-5 px-4">
@@ -36,6 +42,8 @@ export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId
                 </h1>
                 <div className="flex gap-2">
                     <button className={btnPrimary} disabled={!canResume || resume.isPending} onClick={() => resume.mutate()}>재개</button>
+                    {canClean && <button className={btnSecondary} disabled={clean.isPending}
+                            onClick={() => window.confirm("작업공간을 정리할까요?") && clean.mutate()}>작업공간 정리</button>}
                     <button className={btnSecondary} disabled={!canCancel || cancel.isPending}
                             onClick={() => window.confirm("작업을 취소할까요?") && cancel.mutate()}>취소</button>
                 </div>

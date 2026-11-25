@@ -147,7 +147,7 @@ export default function DashboardPage() {
             {/* 상단 요약 카드 */}
             <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <div className="bg-white rounded-xl border border-slate-200 p-5">
-                    <p className="text-xs font-medium text-slate-500 mb-1">내 할당 이슈</p>
+                    <p className="text-xs font-medium text-slate-500 mb-1">내 할당 Task</p>
                     <p className="text-3xl font-bold text-slate-900">
                         {dashboard?.assignedIssues.length ?? 0}
                     </p>
@@ -158,26 +158,26 @@ export default function DashboardPage() {
                     <p className={`text-3xl font-bold ${todayDueCount > 0 ? "text-red-600" : "text-slate-900"}`}>
                         {todayDueCount}
                     </p>
-                    <p className="text-xs text-slate-400 mt-1">오늘 기한 이슈</p>
+                    <p className="text-xs text-slate-400 mt-1">오늘 기한 Task</p>
                 </div>
                 <div className="bg-white rounded-xl border border-slate-200 p-5">
                     <p className="text-xs font-medium text-slate-500 mb-1">이번 주 완료</p>
                     <p className="text-3xl font-bold text-green-600">{thisWeekCompleted}</p>
-                    <p className="text-xs text-slate-400 mt-1">완료된 이슈</p>
+                    <p className="text-xs text-slate-400 mt-1">완료된 Task</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                {/* 좌측: 할당 이슈 + 마감 임박 */}
+                {/* 좌측: 할당 Task + 마감 임박 */}
                 <div className="space-y-6 lg:col-span-2">
-                    {/* 내 할당 이슈 */}
+                    {/* 내 할당 Task */}
                     <div className="overflow-x-auto bg-white rounded-xl border border-slate-200">
                         <div className="px-5 py-4 border-b border-slate-100">
-                            <h2 className="text-sm font-semibold text-slate-800">나에게 할당된 이슈</h2>
+                            <h2 className="text-sm font-semibold text-slate-800">나에게 할당된 Task</h2>
                         </div>
                         {!dashboard?.assignedIssues.length ? (
                             <div className="py-10 text-center text-slate-400 text-sm">
-                                할당된 이슈가 없습니다.
+                                할당된 Task가 없습니다.
                             </div>
                         ) : (
                             <table className="w-full min-w-[560px] text-sm">
@@ -199,17 +199,17 @@ export default function DashboardPage() {
                         )}
                     </div>
 
-                    {/* 마감 임박 이슈 */}
+                    {/* 마감 임박 Task */}
                     <div className="overflow-x-auto bg-white rounded-xl border border-slate-200">
                         <div className="px-5 py-4 border-b border-slate-100">
                             <h2 className="text-sm font-semibold text-slate-800">
-                                마감 임박 이슈
+                                마감 임박 Task
                                 <span className="ml-2 text-xs font-normal text-slate-400">7일 이내</span>
                             </h2>
                         </div>
                         {!dashboard?.upcomingDeadlines.length ? (
                             <div className="py-10 text-center text-slate-400 text-sm">
-                                마감 임박 이슈가 없습니다.
+                                마감 임박 Task가 없습니다.
                             </div>
                         ) : (
                             <table className="w-full min-w-[560px] text-sm">

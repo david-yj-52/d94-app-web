@@ -68,6 +68,12 @@ export const handlers = [
     http.delete(`${API}/projects/:projectId`, () => json(fx.noContent())),
 
     http.get(`${API}/projects/:projectId/members`, () => json(fx.ok(fx.members))),
+
+    // 프로젝트 타입·필드·컬럼 (CiraFieldController)
+    http.get(`${API}/cira/project-types`, () => json(fx.ok(fx.projectTypes))),
+    http.get(`${API}/projects/:projectId/fields`, () => json(fx.ok(fx.projectFields))),
+    http.get(`${API}/projects/:projectId/column-pref`, () =>
+        json(fx.ok({fieldKeys: fx.projectFields.filter((f) => f.defaultVisible).map((f) => f.fieldKey)}))),
     http.put(`${API}/projects/:projectId/members/:userId/role`, async ({request, params}) => {
         const body = await readBody(request);
         const m = fx.members.find((x) => x.userId === params.userId) ?? fx.members[0];

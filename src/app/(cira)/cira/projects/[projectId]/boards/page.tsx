@@ -64,7 +64,7 @@ export default function BoardsPage({
                     <p className="text-lg font-medium text-slate-600 mb-1">
                         보드가 없습니다.
                     </p>
-                    <p className="text-sm mb-6">새 보드를 생성해서 이슈를 관리하세요.</p>
+                    <p className="text-sm mb-6">새 보드를 생성해서 Task를 관리하세요.</p>
                     <button
                         onClick={() => setShowCreate(true)}
                         className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"

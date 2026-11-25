@@ -91,11 +91,37 @@ export interface AyaanTool {
     budgetTokens: number | null;
     budgetPeriod: string | null;
 }
+export interface AyaanRepo {
+    repoNm: string;
+    gitUrl: string;
+    baseBranch: string;
+    deployBranch: string | null;
+    sortOrd: number;
+}
 export interface AyaanWorkspace {
     projectKey: string;
-    workspacePath: string;
+    workspacePath: string | null;
     defaultTool: ToolCd;
     promptTemplate: string | null;
+    repos: AyaanRepo[];
+}
+export type PlanStage = "PREPARING" | "RUNNING" | "MERGING" | "DEPLOYING" | "CLEANING" | "DONE" | "HALTED" | "CANCELLED";
+export interface AyaanPlan {
+    id: string;
+    projectKey: string;
+    milestoneId: string;
+    milestoneKey: string;
+    stage: PlanStage;
+    currentIssueKey: string | null;
+    lastError: string | null;
+    startedAt: string;
+    endedAt: string | null;
+    done: number;
+    total: number;
+}
+export interface AyaanMilestone {
+    id: string;
+    name: string;
 }
 export interface SetupStep {
     step: number;

@@ -214,7 +214,7 @@ function SearchPageContent() {
                         onKeyDown={(e) => {
                             if (e.key === "Enter") push({q: qInput, page: 0});
                         }}
-                        placeholder="이슈 검색..."
+                        placeholder="Task 검색..."
                         className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>

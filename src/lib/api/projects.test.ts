@@ -15,12 +15,12 @@ describe("lib/api/projects", () => {
     });
 
     it("createProject / updateProject / deleteProject: 본문과 경로를 그대로 보낸다", async () => {
-        await createProject({key: "NEW", name: "새 프로젝트", projectType: "SCRUM"});
+        await createProject({key: "NEW", name: "새 프로젝트", projectTypeId: "PT-SCRUM"});
         expect(lastRequest()).toMatchObject({
-            method: "POST", path: "/v1/projects", body: {key: "NEW", name: "새 프로젝트", projectType: "SCRUM"},
+            method: "POST", path: "/v1/projects", body: {key: "NEW", name: "새 프로젝트", projectTypeId: "PT-SCRUM"},
         });
 
-        const updated = await updateProject("PRJ-1", {name: "바뀐 이름", projectType: "KANBAN"});
+        const updated = await updateProject("PRJ-1", {name: "바뀐 이름", projectTypeId: "PT-KANBAN"});
         expect(lastRequest()).toMatchObject({method: "PUT", path: "/v1/projects/PRJ-1"});
         expect(updated.name).toBe("바뀐 이름");
 

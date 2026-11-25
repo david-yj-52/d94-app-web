@@ -36,7 +36,7 @@ function ProgressBar({milestoneId}: { milestoneId: string }) {
         <div className="mt-3">
             <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
         <span>
-          {data.completed} / {data.total} 이슈 완료
+          {data.completed} / {data.total} Task 완료
         </span>
                 <span>{pct}%</span>
             </div>

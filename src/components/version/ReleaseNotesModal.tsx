@@ -72,7 +72,7 @@ export default function ReleaseNotesModal({versionId, versionName, onClose}: Pro
                     )}
                     {data && data.groups.length === 0 && (
                         <p className="text-sm text-slate-400 text-center py-8">
-                            연결된 이슈가 없습니다.
+                            연결된 Task가 없습니다.
                         </p>
                     )}
                     {data &&

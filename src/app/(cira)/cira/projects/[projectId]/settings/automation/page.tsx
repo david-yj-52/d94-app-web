@@ -66,7 +66,7 @@ export default function SettingsAutomationPage({
                 <div>
                     <h2 className="text-xl font-bold text-slate-900">자동화</h2>
                     <p className="text-sm text-slate-500 mt-1">
-                        이슈 이벤트에 자동으로 반응하는 규칙을 설정합니다.
+                        Task 이벤트에 자동으로 반응하는 규칙을 설정합니다.
                     </p>
                 </div>
                 <button
@@ -92,7 +92,7 @@ export default function SettingsAutomationPage({
                     <div className="text-4xl mb-3">⚡</div>
                     <p className="text-slate-600 font-medium">자동화 규칙이 없습니다.</p>
                     <p className="text-sm text-slate-400 mt-1">
-                        규칙을 추가하면 이슈 이벤트에 자동으로 반응합니다.
+                        규칙을 추가하면 Task 이벤트에 자동으로 반응합니다.
                     </p>
                     <button
                         onClick={openCreate}

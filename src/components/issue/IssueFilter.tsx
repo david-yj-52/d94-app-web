@@ -28,7 +28,7 @@ export default function IssueFilter({filters, onChange}: Props) {
                 type="text"
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                placeholder="이슈 검색..."
+                placeholder="Task 검색..."
                 className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
             />
 

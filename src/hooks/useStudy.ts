@@ -9,6 +9,7 @@ import {
     createStudyTerm,
     deleteStudyAnnotation,
     deleteStudyDocument,
+    reparseStudyDocument,
     deleteStudyTerm,
     getStudyAnnotations,
     getStudyDocument,
@@ -54,6 +55,21 @@ export function useDeleteStudyDocument() {
     return useMutation({
         mutationFn: deleteStudyDocument,
         onSuccess: () => qc.invalidateQueries({queryKey: ["studyDocuments"]}),
+    });
+}
+
+export function useReparseStudyDocument() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: reparseStudyDocument,
+        onSuccess: (_, id) => {
+            qc.invalidateQueries({queryKey: ["studyDocuments"]});
+            qc.invalidateQueries({queryKey: ["studyDocument", id]});
+            qc.invalidateQueries({queryKey: ["studyToc", id]});
+            qc.invalidateQueries({queryKey: ["studyPage", id]});
+            qc.invalidateQueries({queryKey: ["studyAnnotations", id]});
+            qc.invalidateQueries({queryKey: ["studySyntax", id]});
+        },
     });
 }
 

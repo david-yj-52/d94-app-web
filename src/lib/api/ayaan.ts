@@ -1,5 +1,7 @@
 import apiClient from "./client";
 import type {
+    AyaanMilestone,
+    AyaanPlan,
     AyaanTask,
     AyaanTaskDetail,
     AyaanTool,
@@ -70,4 +72,22 @@ export async function syncPlugins(): Promise<PluginResult[]> {
 }
 export async function getPlugins(): Promise<string> {
     return (await apiClient.get(`${BASE}/plugins`)).data.data.output;
+}
+export async function getPlans(projectKey?: string): Promise<AyaanPlan[]> {
+    return (await apiClient.get(`${BASE}/plans`, {params: {projectKey}})).data.data;
+}
+export async function createPlan(projectKey: string, milestoneId: string): Promise<AyaanPlan> {
+    return (await apiClient.post(`${BASE}/plans`, {projectKey, milestoneId})).data.data;
+}
+export async function resumePlan(id: string): Promise<AyaanPlan> {
+    return (await apiClient.post(`${BASE}/plans/${id}/resume`)).data.data;
+}
+export async function cancelPlan(id: string): Promise<AyaanPlan> {
+    return (await apiClient.post(`${BASE}/plans/${id}/cancel`)).data.data;
+}
+export async function getMilestones(projectKey: string): Promise<AyaanMilestone[]> {
+    return (await apiClient.get(`${BASE}/projects/${projectKey}/milestones`)).data.data;
+}
+export async function cleanTaskWorkspace(taskId: string): Promise<void> {
+    await apiClient.delete(`${BASE}/tasks/${taskId}/workspace`);
 }

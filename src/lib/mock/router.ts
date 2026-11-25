@@ -12,6 +12,7 @@ import {mockCredentialPublicKey, mockDecryptCredential} from "./credential";
 import {registerStudyMock} from "./study";
 import {registerAyaanMock} from "./ayaan";
 import {registerApiTokenMock} from "./apiToken";
+import {mockTypeOf, registerFieldsMock} from "./fields";
 import {registerDocsMock} from "./docs";
 
 type Params = Record<string, string>;
@@ -65,6 +66,11 @@ function applyIssuePatch(issue: IssueResponse, body: Body) {
     if (body.storyPnt !== undefined) issue.storyPnt = body.storyPnt === null ? undefined : Number(body.storyPnt);
     if (body.dueDt !== undefined) issue.dueDt = (body.dueDt as string) || undefined;
     if (body.sprintId !== undefined) issue.sprintId = (body.sprintId as string) || undefined;
+    if (body.customFields && typeof body.customFields === "object") {
+        const merged = {...issue.customFields, ...(body.customFields as IssueResponse["customFields"])};
+        Object.keys(merged).forEach((k) => merged[k] === null && delete merged[k]);
+        issue.customFields = merged;
+    }
     if (typeof body.issueTypeId === "string") {
         issue.issueTypeId = body.issueTypeId;
         issue.issueTypeNm = ISSUE_TYPES.find((t) => t.id === body.issueTypeId)?.name;
@@ -199,6 +205,7 @@ registerAyaanMock(on);
 
 // API 토큰(MCP·AI 도구용) → ./apiToken.ts
 registerApiTokenMock(on);
+registerFieldsMock(on, (projectId) => getStore().projects.find((x) => x.id === projectId)?.projectTypeId);
 
 // Docs(Obsidian형 개인 vault) → ./docs.ts
 registerDocsMock(on);
@@ -274,7 +281,9 @@ on("POST", "/v1/projects", ({body}) => {
         key: String(body.key),
         name: String(body.name),
         description: String(body.description ?? ""),
-        projectType: (body.projectType as "SCRUM" | "KANBAN") ?? "SCRUM",
+        projectType: mockTypeOf(body.projectTypeId ?? body.projectType).typeNm,
+        projectTypeId: mockTypeOf(body.projectTypeId ?? body.projectType).id,
+        projectTypeNm: mockTypeOf(body.projectTypeId ?? body.projectType).typeNm,
         ownerId: ME.userId,
         issueSequence: 0
     };
@@ -294,8 +303,11 @@ on("PUT", "/v1/projects/:projectId", ({params, body}) => {
     Object.assign(p, {
         name: body.name ?? p.name,
         description: body.description ?? p.description,
-        projectType: body.projectType ?? p.projectType
     });
+    if (body.projectTypeId) {
+        const t = mockTypeOf(body.projectTypeId);
+        Object.assign(p, {projectTypeId: t.id, projectTypeNm: t.typeNm, projectType: t.typeNm});
+    }
     return ok(p);
 });
 on("DELETE", "/v1/projects/:projectId", ({params}) => {

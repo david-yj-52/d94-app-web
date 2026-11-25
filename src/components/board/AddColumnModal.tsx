@@ -119,7 +119,7 @@ export default function AddColumnModal({
                             </label>
                             <input
                                 {...register("statusId")}
-                                placeholder="이슈 상태 ID"
+                                placeholder="Task 상태 ID"
                                 className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <p className="mt-0.5 text-[10px] text-slate-400">
