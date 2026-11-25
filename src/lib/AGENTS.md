@@ -64,7 +64,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
 - mock: `mock/fields.ts`의 `registerFieldsMock(on, projectTypeId)` (타입 SCRUM·KANBAN 시드, 유효 필드·기본 컬럼 계산만 흉내, 검증 없음). 프로젝트 생성·수정 mock 은 `mockTypeOf` 로 `projectTypeId` 를 채우고, Task mock 은 `customFields` 를 병합합니다(null = 삭제).
-- mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `cira` 하나, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
+- mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `all`·`cira`·`docs`·`study`·`interface-test`, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
 ### Docs: `api/docs.ts` · `docs/`
 - `api/docs.ts`: d94-query `/api/v1/docs` 와 짝. 폴더 `getDocsFolders`·`create/rename/move/deleteDocsFolder`, 노트 `getNotes(filters)`(`folderId=""` 최상위만)·`getNoteTitles`·`getNoteByTitle`·`getNote`·`create/update/move/deleteNote`(수정은 `version` 필수, 불일치 409)·`getNoteVersions`·`getBacklinks`, 진화 `deriveNote`·`changeNoteKind`·`getLineage`, Task `getDocsTasks`·`setDocsTaskStatus`·`promoteDocsTask`, 이미지 `uploadDocsImage(blob)`(`application/octet-stream`, 형식은 서버가 앞 바이트로 판별)·`docsImageUrl(id)`(`/api/proxy/v1/docs/images/{id}`).

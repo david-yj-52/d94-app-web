@@ -30,3 +30,17 @@ export interface ApiTokenService {
     service: string;
     enabled: boolean;
 }
+
+/** 전역 토큰 서비스 코드. 모든 서비스 API 를 호출할 수 있다(토큰·설정 관리 API 는 제외) */
+export const GLOBAL_TOKEN_SERVICE = "all";
+
+const SERVICE_LABELS: Record<string, string> = {
+    [GLOBAL_TOKEN_SERVICE]: "전체 (전역)",
+    cira: "CIRA",
+    docs: "Docs",
+    study: "Study",
+    "interface-test": "인터페이스 테스트",
+};
+
+/** 서비스 코드 → 화면 이름. 모르는 코드는 대문자로 */
+export const serviceLabel = (code: string) => SERVICE_LABELS[code] ?? code.toUpperCase();

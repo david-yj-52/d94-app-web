@@ -91,6 +91,20 @@ describe("ApiTokenSettingsPanel", () => {
         expect(within(row).getByText("만료됨")).toBeInTheDocument();
     });
 
+    it("서비스 이름을 보여 주고, 기본 선택은 전역이 아닌 서비스이며 전역을 고르면 경고가 뜬다", async () => {
+        server.use(http.get(`${API}/services`, () => HttpResponse.json(ok([
+            {service: "all", enabled: true}, {service: "cira", enabled: true}, {service: "docs", enabled: true},
+        ]))));
+        const user = userEvent.setup();
+        renderWithClient(<ApiTokenSettingsPanel isAdmin={false}/>);
+        await screen.findByRole("option", {name: "전체 (전역)"});
+        expect(screen.getByRole("option", {name: "Docs"})).toBeInTheDocument();
+        expect(screen.getByLabelText("서비스")).toHaveValue("cira");
+        expect(screen.queryByRole("note")).not.toBeInTheDocument();
+        await user.selectOptions(screen.getByLabelText("서비스"), "all");
+        expect(screen.getByRole("note")).toHaveTextContent("전역 토큰은 모든 서비스");
+    });
+
     it("관리자가 아니면 서비스 허용을 바꿀 수 없다", async () => {
         renderWithClient(<ApiTokenSettingsPanel isAdmin={false}/>);
         expect(await screen.findByLabelText("cira API 토큰 허용")).toBeDisabled();
