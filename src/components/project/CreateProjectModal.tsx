@@ -1,11 +1,10 @@
 "use client";
 
 import {useCreateProject} from "@/hooks/useProjects";
-import {useSettings} from "@/hooks/useSettings";
-import {CIRA_PROJECT_TYPES_KEY, DEFAULT_CIRA_PROJECT_TYPES, parseCiraProjectTypes} from "@/types/settings";
+import {useProjectTypes} from "@/hooks/useFields";
 import {zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
-import {useEffect, useMemo} from "react";
+import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 
@@ -19,7 +18,7 @@ const schema = z.object({
         .regex(/^[A-Z0-9]+$/, "대문자 영문/숫자만 입력 가능합니다."),
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
-    projectType: z.string().min(1, "프로젝트 유형을 선택해주세요.").max(30),
+    projectTypeId: z.string().min(1, "프로젝트 타입을 선택해주세요."),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -31,14 +30,7 @@ interface Props {
 
 export default function CreateProjectModal({onClose, onSuccess}: Props) {
     const {mutate, isPending, isSuccess, isError} = useCreateProject();
-    const {data: settings} = useSettings();
-
-    const configuredTypes = useMemo(
-        () => parseCiraProjectTypes(settings?.[CIRA_PROJECT_TYPES_KEY]),
-        [settings],
-    );
-    const hasCustomTypes = configuredTypes.length > 0;
-    const projectTypes = hasCustomTypes ? configuredTypes : DEFAULT_CIRA_PROJECT_TYPES;
+    const {data: projectTypes = []} = useProjectTypes();
 
     const {
         register,
@@ -48,12 +40,12 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
         formState: {errors},
     } = useForm<FormData>({
         resolver: zodResolver(schema),
-        defaultValues: {projectType: projectTypes[0]},
+        defaultValues: {projectTypeId: ""},
     });
 
     useEffect(() => {
-        if (!projectTypes.includes(getValues("projectType"))) {
-            setValue("projectType", projectTypes[0]);
+        if (projectTypes.length && !projectTypes.some((t) => t.id === getValues("projectTypeId"))) {
+            setValue("projectTypeId", projectTypes[0].id);
         }
     }, [projectTypes, getValues, setValue]);
 
@@ -124,7 +116,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                     <div>
                         <div className="flex items-center justify-between mb-1">
                             <label className="block text-xs font-medium text-slate-600">
-                                유형
+                                타입
                             </label>
                             <Link
                                 href="/settings?group=cira"
@@ -135,19 +127,20 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                             </Link>
                         </div>
                         <select
-                            {...register("projectType")}
+                            {...register("projectTypeId")}
                             className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             {projectTypes.map((type) => (
-                                <option key={type} value={type}>
-                                    {type}
+                                <option key={type.id} value={type.id}>
+                                    {type.typeNm}
                                 </option>
                             ))}
                         </select>
-                        {!hasCustomTypes && (
-                            <p className="mt-1 text-[11px] text-slate-400">
-                                CIRA 기준정보에 등록된 유형이 없어 기본값이 표시됩니다.
-                            </p>
+                        <p className="mt-1 text-[11px] text-slate-400">
+                            타입에 따라 Task가 관리할 필드가 정해집니다.
+                        </p>
+                        {errors.projectTypeId && (
+                            <p className="mt-0.5 text-xs text-red-500">{errors.projectTypeId.message}</p>
                         )}
                     </div>
 

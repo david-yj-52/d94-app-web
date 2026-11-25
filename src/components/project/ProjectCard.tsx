@@ -34,7 +34,7 @@ export default function ProjectCard({project}: Props) {
                     </p>
                 )}
                 <div className="mt-4 text-xs text-slate-400">
-                    이슈 {project.issueSequence ?? 0}개
+                    Task {project.issueSequence ?? 0}개
                 </div>
             </div>
         </Link>

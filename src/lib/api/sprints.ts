@@ -59,7 +59,7 @@ export async function removeIssueFromSprint(
     await apiClient.delete(`/v1/sprints/${sprintId}/issues/${issueId}`);
 }
 
-// 스프린트에 없는 이슈 (d94-query 는 우선순위 내림차순)
+// 스프린트에 없는 Task (d94-query 는 우선순위 내림차순)
 export async function getBacklog(projectId: string, page = 0, size = 100): Promise<PageResponse<IssueResponse>> {
     const res = await apiClient.get(`/v1/projects/${projectId}/backlog`, {params: {page, size}});
     return res.data.data;

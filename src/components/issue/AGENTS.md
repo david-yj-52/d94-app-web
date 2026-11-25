@@ -5,9 +5,12 @@
 
 ### IssueTable — `@/components/issue/IssueTable`
 ```ts
-{ issues: IssueResponse[]; projectId?: string; emptyText?: string }
+{ issues: IssueResponse[]; projectId?: string; emptyText?: string;
+  fields?: FieldDef[]; columns?: string[]; names?: Record<string, string>; sort?: string; onSort?: (sort: string) => void }
 ```
-- `md` 이상은 표(유형·키·요약·상태 배지·우선순위·담당자·수정일), 모바일은 카드 목록입니다. 행을 누르면 `/cira/projects/{projectId ?? issue.projectId}/issues/{id}`로 이동합니다. `projectId` 를 생략하면 이슈마다 자기 프로젝트로 갑니다(검색 결과). 표현 컴포넌트이며 데이터 조회는 하지 않습니다.
+- `fields`·`columns` 가 있으면 `columns` 순서대로 컬럼을 그립니다(유효 필드에 없는 키는 건너뜀, 값은 `FieldValue`). 없으면 고정 컬럼(유형·키·요약·상태 배지·우선순위·담당자·수정일) — 검색 결과처럼 여러 프로젝트가 섞인 곳.
+- `onSort` 가 있으면 `sortable`(sys:) 헤더가 버튼입니다. 누르면 `"sys:<key>,asc"`, 같은 헤더를 다시 누르면 `desc`. `names` = userId·sprintId → 이름. 테스트 `IssueTable.test.tsx`.
+- `md` 이상은 표, 모바일은 카드 목록(표시 컬럼 중 앞의 사용자 정의 필드 두 개를 한 줄로 추가). 행을 누르면 `/cira/projects/{projectId ?? issue.projectId}/issues/{id}`로 이동합니다. `projectId` 를 생략하면 이슈마다 자기 프로젝트로 갑니다(검색 결과). 표현 컴포넌트이며 데이터 조회는 하지 않습니다.
 - 사용처: 프로젝트 이슈 목록, `/cira/search`, `/cira/search/advanced`
 
 ### IssueFilter — `@/components/issue/IssueFilter`
@@ -21,11 +24,30 @@
 { projectId: string; onClose: () => void; onSuccess?: () => void }
 ```
 - react-hook-form + zod 폼이며, 내부에서 `useCreateIssue`를 호출합니다.
+- 프로젝트 유효 필드(`useProjectFields`) 중 **필수 사용자 정의 필드만** `CustomFieldInput` 으로 받아 `customFields` 로 보냅니다. 비어 있으면 "{이름} 값을 입력해주세요." 를 보이고 요청하지 않습니다. 나머지 필드는 상세에서 입력합니다.
 - 담당자는 `useProjectMembers` 목록에서 고르고 `userId` 를 `assigneeId` 로 보냅니다. `statusId` 는 `useWorkflowStatuses` 의 sortOrd 최솟값입니다. 우선순위·스토리 포인트는 비우면 보내지 않습니다.
 - ⚠️ 남은 결함(`it.fails`): `issueTypeId` 를 보내지 않아 실제 d94-query 에서는 **여전히 500** 입니다(백엔드에 이슈 유형 목록 API 가 없음). 설명(content)이 255자를 넘으면 백엔드 저장이 실패합니다(varchar(255)) → [test-report](../../../docs/test-report.md)
 ```tsx
 {showCreate && <CreateIssueModal projectId={projectId} onClose={() => setShowCreate(false)} onSuccess={() => show("이슈가 생성되었습니다.")}/>}
 ```
+
+### ColumnPicker — `@/components/issue/ColumnPicker`
+```ts
+{ fields: FieldDef[]; columns: string[]; onChange: (keys: string[] | null) => void }
+```
+- [컬럼] 버튼 → `cira/ui/Dialog`. 체크로 표시·숨김, 위/아래로 순서. 바꿀 때마다 `onChange(keys)`(부모가 바로 저장), [기본값으로] = `onChange(null)`. `sys:key`·`sys:summary` 는 끌 수 없습니다.
+
+### FieldValue — `@/components/issue/FieldValue`
+```ts
+{ field: FieldDef; issue: IssueResponse; names?: Record<string, string> }   // + export isNumeric(field)
+```
+- 필드 하나의 읽기 전용 값. sys 필드는 `IssueResponse` 속성, cf 는 `issue.customFields[fieldKey]` 를 타입별로(숫자 `ko-KR`, 날짜, 선택 칩, 사용자 이름, URL 새 탭, 체크 ✓).
+
+### CustomFieldInput — `@/components/issue/CustomFieldInput`
+```ts
+{ field: FieldDef; value: CustomFieldValue | undefined; onChange: (v: CustomFieldValue) => void; members?: ProjectMemberResponse[]; id?: string }
+```
+- 사용자 정의 필드 타입별 입력. 텍스트·숫자·URL·날짜는 blur 때, 선택·체크는 바로 `onChange`. 빈 값은 `null`(서버에서 값 삭제). 사용처: CreateIssueModal(필수만), Task 상세 세부 정보.
 
 ### CommentSection — `import {CommentSection} from "@/components/issue/CommentSection"` (named export)
 ```ts

@@ -65,17 +65,19 @@
 | auth | ReauthModal, SessionActivity | 세션 만료 시 그 자리 재로그인 모달 · 사용자 입력 시 세션 활동 신호 | `Providers` | §5 |
 | board | KanbanBoard › KanbanColumn › KanbanCard | 칸반 보드 (HTML5 DnD) | `boards/[boardId]` | [board](board/AGENTS.md) |
 | board | CreateBoardModal, AddColumnModal | 보드 생성, 컬럼 추가·편집 | `boards`, KanbanBoard | [board](board/AGENTS.md) |
-| issue | IssueTable, IssueFilter, CreateIssueModal | 이슈 목록·필터·생성 | `issues` | [issue](issue/AGENTS.md) |
+| issue | IssueTable, IssueFilter, CreateIssueModal | Task 목록(프로젝트 필드 기준 동적 컬럼·정렬)·필터·생성(필수 사용자 정의 필드) | `issues` | [issue](issue/AGENTS.md) |
+| issue | ColumnPicker, FieldValue, CustomFieldInput | 사람별 컬럼 선택·순서 · 필드 값 표시 · 사용자 정의 필드 입력 | `issues`, `issues/[issueId]` | [issue](issue/AGENTS.md) |
 | issue | CommentSection, AttachmentSection | 댓글(멘션·이모지·답글)·첨부(DnD 업로드) | `issues/[issueId]` | [issue](issue/AGENTS.md) |
 | interfaceTest | InterfaceRequestPanel, InterfaceCallLog, InterfaceItemTable, MethodBadge | REST 메서드별 통신 확인 (요청 폼·호출 기록·DB 목록) | `/interface-test` 🧪 | [interfaceTest](interfaceTest/AGENTS.md) |
-| study | DocumentList, UploadDropzone, TocTree, PageView, SelectionToolbar, AnnotationPopover, TermEditModal, TermsPanel, NoteList, AutoScroll | PDF 학습 뷰어 (업로드·목차·본문 렌더링·마킹·단어장·노트·자동 스크롤) | `/study/**` 🧪 | [study](study/AGENTS.md) |
+| study | DocumentList, UploadDropzone, TocTree, PageView, SelectionToolbar, AnnotationPopover, TermEditModal, TermsPanel, NoteList, AutoScroll, DictionaryKeyModal, DictionaryPopover | PDF 학습 뷰어 (업로드·목차·본문 렌더링·마킹·단어장·노트·자동 스크롤) | `/study/**` 🧪 | [study](study/AGENTS.md) |
 | milestone | MilestoneCard, MilestoneModal | 마일스톤 카드·생성/편집 | `versions` | §5 |
 | mpns | PlatformTable, ProductTable, DetailPanel, PlatformAddPopup, ProductAddPopup | MPMS 마스터-디테일 | `/mpms` 🧪 | [mpns](mpns/AGENTS.md) |
 | project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성 | `/cira/projects` | [project](project/AGENTS.md) |
 | project/settings | MemberTable, AddMemberModal | 멤버 관리 | `settings/*` | [project](project/AGENTS.md) |
 | project/settings/automation | AutomationRuleCard, AutomationRuleModal | 자동화 규칙 | `settings/automation` | [project](project/AGENTS.md) |
 | search | CqlEditor, CqlSyntaxGuide | CQL 입력기(자동완성·검증)·문법 가이드 | `search/advanced` | §5 |
-| settings | SettingsNav, GeneralSettingsPanel, ApiTokenSettingsPanel, EmptyGroupPanel | 기준정보 그룹 목록·General 로고 설정·API 토큰 발급·폐기·빈 그룹 | `/settings` | [settings](settings/AGENTS.md) |
+| settings | SettingsNav, GeneralSettingsPanel, CiraSettingsPanel, AyaanSettingsPanel, ApiTokenSettingsPanel, EmptyGroupPanel | 기준정보 그룹 목록·General 로고·CIRA 프로젝트 타입/필드·Ayaan·API 토큰·빈 그룹 | `/settings` | [settings](settings/AGENTS.md) |
+| settings | CustomFieldModal | 사용자 정의 필드 생성·수정 폼 (전역·프로젝트 공용, 저장은 부모) | `/settings` CIRA, `settings/fields` | [settings](settings/AGENTS.md) |
 | sprint | CreateSprintModal, EditSprintModal, AssignIssueModal, CompleteSprintModal | 스프린트 생성·편집·이슈 할당·완료 | `sprints` | [sprint](sprint/AGENTS.md) |
 | version | VersionCard › ReleaseNotesModal, VersionModal | 버전 카드·릴리즈 노트·생성/편집 | `versions` | [version](version/AGENTS.md) |
 | wiki | WikiTree, WikiViewer, WikiEditor, WikiVersionHistory | 위키 트리·보기·Tiptap 편집·이력 | `wiki` | [wiki](wiki/AGENTS.md) |

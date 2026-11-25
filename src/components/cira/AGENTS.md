@@ -59,8 +59,8 @@ Avatar({name?: string | null; size?: "sm" | "md"})                // 이름 첫 
 ```ts
 { collapsed?: boolean }
 ```
-- 메뉴: 내 작업(`/cira/dashboard`) · 알림 / 프로젝트 목록(`useProjects`) — 현재 프로젝트는 백로그(sprints)·보드·이슈·리포트·릴리스(versions)·위키·프로젝트 설정(ADMIN만, `useProjectMembers`) / 필터: 검색·고급 검색.
-- 설정 화면 안에서는 프로젝트 하위 메뉴 대신 설정 메뉴(기본 정보·멤버·워크플로우·Git 연동·자동화).
+- 메뉴: 내 작업(`/cira/dashboard`) · 알림 / 프로젝트 목록(`useProjects`) — 현재 프로젝트는 백로그(sprints)·보드·Task(`/issues`)·리포트·릴리스(versions)·위키·프로젝트 설정(ADMIN만, `useProjectMembers`) / 필터: 검색·고급 검색.
+- 설정 화면 안에서는 프로젝트 하위 메뉴 대신 설정 메뉴(기본 정보·필드·멤버·워크플로우·Git 연동·자동화).
 - 현재 위치 판정은 `navContext.ts`의 `getNavContext(pathname)` → `{projectId?, inSettings}` (`navContext.test.ts`).
 - **새 프로젝트 하위 화면을 추가하면 `projectMenu` 배열에 항목을 추가하세요.**
 

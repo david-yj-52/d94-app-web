@@ -1,4 +1,4 @@
-// 상태 분류·이슈 유형·우선순위 → 표시 색/라벨 (CIRA 디자인 토큰, ADR 0006)
+// 상태 분류·Task 유형·우선순위 → 표시 색/라벨 (CIRA 디자인 토큰, ADR 0006)
 
 export type StatusTone = "todo" | "inProgress" | "done";
 

@@ -251,7 +251,7 @@ export default function CqlEditor({
               유효한 CQL
             </span>
           ) : (
-              "CQL 문법으로 이슈를 검색하세요"
+              "CQL 문법으로 Task를 검색하세요"
           )}
         </span>
                 <span className="text-gray-300">Ctrl+Enter로 검색</span>

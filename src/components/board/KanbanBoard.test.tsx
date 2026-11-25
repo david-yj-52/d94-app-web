@@ -95,7 +95,7 @@ describe("KanbanBoard 드래그 앤 드롭", () => {
         await renderBoard();
         server.use(http.put(MOVE, () => HttpResponse.json({success: false, code: "INTERNAL_ERROR", message: "x"}, {status: 500})));
         drag("이슈 CIRA-11", "이슈 CIRA-21", "완료");
-        expect(await screen.findByText("이슈 이동에 실패했습니다.")).toBeInTheDocument();
+        expect(await screen.findByText("Task 이동에 실패했습니다.")).toBeInTheDocument();
         expect(titlesIn("할 일")).toEqual(["이슈 CIRA-11", "이슈 CIRA-12", "이슈 CIRA-13"]);
     });
 

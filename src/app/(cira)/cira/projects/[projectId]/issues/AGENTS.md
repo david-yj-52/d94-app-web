@@ -1,4 +1,4 @@
-# L3 · 화면: 이슈 (CIRA)
+# L3 · 화면: Task (CIRA)
 
 > 계층: [L1](../../../../../../../AGENTS.md) › [L2 app](../../../../../AGENTS.md) › [L3 projects](../../AGENTS.md) › **L3 issues**
 > 컴포넌트 카드: [issue](../../../../../../components/issue/AGENTS.md)
@@ -6,17 +6,17 @@
 ## 개요
 | URL | 파일 | 설명 |
 |---|---|---|
-| `/cira/projects/:projectId/issues` | `page.tsx` (135줄) | 이슈 목록·필터·생성 |
-| `/cira/projects/:projectId/issues/:issueId` | `[issueId]/page.tsx` (398줄) | 이슈 상세·인라인 편집·댓글·첨부·삭제 |
+| `/cira/projects/:projectId/issues` | `page.tsx` (135줄) | Task 목록·필터·생성·컬럼 |
+| `/cira/projects/:projectId/issues/:issueId` | `[issueId]/page.tsx` (398줄) | Task 상세·인라인 편집·사용자 정의 필드·댓글·첨부·삭제 |
 
-- 진입: ProjectCard 클릭(프로젝트의 기본 탭), 셸 사이드바 "이슈", 칸반 카드 클릭
+- 진입: ProjectCard 클릭(프로젝트의 기본 탭), 셸 사이드바 "Task", 칸반 카드 클릭
 
 ## 화면 구성
 ```
 issues/page.tsx
-├── PageHeader (프로젝트 / {이름} · "이슈" · [+ 이슈 생성])  → cira 카드
-├── IssueFilter (filters 상태는 페이지가 보유)       → issue 카드
-├── 로딩: SkeletonRow × n / 결과: IssueTable        → ui · issue 카드
+├── PageHeader (프로젝트 / {이름} · "Task" · [+ Task 생성])  → cira 카드
+├── IssueFilter (filters 상태는 페이지가 보유) + ColumnPicker(md 이상)  → issue 카드
+├── 로딩: SkeletonRow × n / 결과: IssueTable fields·columns·names·sort  → ui · issue 카드
 └── {showCreate && <CreateIssueModal/>} + {ToastComponent}
 
 issues/[issueId]/page.tsx
@@ -25,7 +25,7 @@ issues/[issueId]/page.tsx
 │   ├── 제목·설명: InlineText (페이지 내부 컴포넌트)
 │   ├── AttachmentSection issueId                → issue 카드
 │   └── CommentSection issueId                   → issue 카드
-├── 우측 사이드바 (모바일은 본문 위): 상태 드롭다운(Menu, 모바일 sticky) · <details> "세부 정보"(우선순위 select · 담당자/보고자 · 스토리 포인트 · 마감일 · 생성/수정 시각)
+├── 우측 사이드바 (모바일은 본문 위): 상태 드롭다운(Menu, 모바일 sticky) · <details> "세부 정보"(우선순위 select · 담당자/보고자 · 스토리 포인트 · 마감일 · 사용자 정의 필드(CustomFieldInput) · 생성/수정 시각)
 └── 삭제 확인 다이얼로그 (표준 삭제 다이얼로그의 원본)
 ```
 
@@ -36,12 +36,20 @@ issues/[issueId]/page.tsx
 | `useIssue(issueId)` | `GET /v1/issues/:id` | `["issue", issueId]` |
 | `useAvailableTransitions(issueId)` | 전이 가능한 상태 목록 | `["issue-transitions", issueId]` |
 | `useCreateIssue` / `useUpdateIssue` / `useUpdateIssueStatus` / `useDeleteIssue` | 생성·수정·상태 변경·삭제 | 위 키 무효화 |
+| `useProjectFields(projectId)` | `GET /v1/projects/:id/fields` (유효 필드) | `["project-fields", projectId]` |
+| `useColumnPref` / `useSaveColumnPref` | `GET·PUT·DELETE /v1/projects/:id/column-pref` | `["column-pref", projectId]` |
+| `useProjectMembers`, `useSprints` | 사용자·스프린트 이름(`names`) | `["projects", projectId, "members"]`, `["sprints", projectId]` |
 
 ## 기능 (L4)
 ### 목록 필터링
 - `IssueFilter`가 `filters`를 바꾸면 queryKey가 바뀌어 다시 조회합니다(필터 상태는 페이지가 갖는 controlled 패턴).
-### 이슈 생성
-- CreateIssueModal에서 생성에 성공하면 "이슈가 생성되었습니다." 토스트를 띄웁니다.
+### 컬럼 · 정렬
+- 표시 컬럼은 사람별(`column-pref`, 서버 저장)입니다. 저장한 적 없으면 타입 세트의 기본 표시 필드, 저장 후에도 관리자가 타입 세트에 새로 넣은 기본 표시 필드는 뒤에 붙습니다(서버 계산). [컬럼] → ColumnPicker, 바꿀 때마다 저장, [기본값으로] = DELETE. 실패하면 오류 토스트.
+- `sys:` 헤더를 누르면 `filters.sort = "sys:<key>,asc|desc"` 로 다시 조회합니다(첫 페이지로). 사용자 정의 필드는 정렬하지 않습니다(3단계).
+### Task 생성
+- CreateIssueModal에서 생성에 성공하면 "Task가 생성되었습니다." 토스트를 띄웁니다. 필수 사용자 정의 필드는 여기서 받습니다.
+### 사용자 정의 필드 (상세)
+- 세부 정보의 사용자 정의 필드는 blur·선택 즉시 `update({customFields: {[key]: 값}})` 로 저장합니다(빈 값 = 삭제). 타입이 바뀌어 유효 필드에서 빠진 필드는 보이지 않지만 값은 서버에 보관됩니다.
 ### 인라인 편집 (상세)
 - 제목, 설명, 스토리 포인트는 `InlineText`로 편집합니다. 클릭하면 편집 모드가 되고, blur나 Enter로 저장합니다(`update({field})`).
 - 우선순위는 select를 바꾸면 바로 저장되고, 마감일은 date input에서 blur할 때 저장됩니다. 결과는 "저장되었습니다." 또는 "저장에 실패했습니다." 토스트로 알립니다.
@@ -56,3 +64,4 @@ issues/[issueId]/page.tsx
 - `InlineText`가 상세 페이지 안에 정의되어 있습니다. 다른 곳에서도 인라인 편집이 필요하면 `ui/InlineEditable`로 승격하세요.
 - 상세 로딩 스켈레톤을 `Skeleton` 컴포넌트 없이 직접 마크업했습니다.
 - 담당자는 표시만 되고 변경 UI가 없습니다.
+- URL·코드 이름은 `issues`·`IssueXxx` 그대로이고 화면 글자만 'Task' 입니다.

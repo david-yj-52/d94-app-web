@@ -5,7 +5,7 @@ import type {ActionType, AutomationRule, TriggerType} from "@/lib/api/automation
 import {useState} from "react";
 
 export const TRIGGER_LABEL: Record<TriggerType, string> = {
-    ISSUE_CREATED: "이슈 생성됨",
+    ISSUE_CREATED: "Task 생성됨",
     ISSUE_STATUS_CHANGED: "상태 변경됨",
     ISSUE_ASSIGNED: "담당자 지정됨",
     ISSUE_PRIORITY_CHANGED: "우선순위 변경됨",

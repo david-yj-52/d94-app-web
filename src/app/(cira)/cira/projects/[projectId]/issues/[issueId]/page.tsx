@@ -2,10 +2,13 @@
 
 import {AttachmentSection} from "@/components/issue/AttachmentSection";
 import {CommentSection} from "@/components/issue/CommentSection";
+import CustomFieldInput from "@/components/issue/CustomFieldInput";
 import Menu from "@/components/cira/ui/Menu";
 import PageHeader from "@/components/cira/ui/PageHeader";
 import {STATUS_TONE_CLASS, statusTone} from "@/components/cira/ui/tones";
 import {useToast} from "@/components/ui/Toast";
+import {useProjectFields} from "@/hooks/useFields";
+import {useProjectMembers} from "@/hooks/useProjectSettings";
 import {
     useAvailableTransitions,
     useDeleteIssue,
@@ -110,6 +113,10 @@ export default function IssueDetailPage({
         useDeleteIssue(projectId);
 
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    // 유효 필드 중 사용자 정의 필드 (타입이 바뀌어 빠진 필드의 값은 서버에 보관만 되고 여기 안 보인다)
+    const {data: fields = []} = useProjectFields(projectId);
+    const customFields = fields.filter((f) => f.kind === "cf");
+    const {data: members = []} = useProjectMembers(projectId);
 
     const update = (data: UpdateIssueRequest) => {
         updateIssue(
@@ -143,7 +150,7 @@ export default function IssueDetailPage({
     if (isError || !issue) {
         return (
             <div className="max-w-5xl mx-auto px-4 py-20 text-center text-slate-400">
-                이슈를 불러오는 데 실패했습니다.
+                Task를 불러오는 데 실패했습니다.
             </div>
         );
     }
@@ -153,7 +160,7 @@ export default function IssueDetailPage({
             <PageHeader
                 breadcrumbs={[
                     {label: "프로젝트", href: "/cira/projects"},
-                    {label: "이슈", href: `/cira/projects/${projectId}/issues`},
+                    {label: "Task", href: `/cira/projects/${projectId}/issues`},
                 ]}
                 title={issue.issueKey}
                 actions={
@@ -302,6 +309,17 @@ export default function IssueDetailPage({
                             />
                         </div>
 
+                        {customFields.map((f) => (
+                            <div key={f.fieldKey}>
+                                <label htmlFor={`cf-${f.fieldKey}`} className="text-xs font-medium text-slate-500 mb-1 block">
+                                    {f.name}{f.required && <span className="text-red-500"> *</span>}
+                                </label>
+                                <CustomFieldInput id={`cf-${f.fieldKey}`} field={f} members={members}
+                                                  value={issue.customFields?.[f.fieldKey]}
+                                                  onChange={(v) => update({customFields: {[f.fieldKey]: v}})}/>
+                            </div>
+                        ))}
+
                         <div className="border-t border-slate-100 pt-3 space-y-1">
                             <p className="text-xs text-slate-400">
                                 생성:{" "}
@@ -327,10 +345,10 @@ export default function IssueDetailPage({
                     <div className="absolute inset-0 bg-black/40"/>
                     <div className="relative bg-white rounded-2xl shadow-xl p-6 max-w-sm mx-4">
                         <h3 className="text-lg font-bold text-slate-900 mb-2">
-                            이슈 삭제
+                            Task 삭제
                         </h3>
                         <p className="text-sm text-slate-600 mb-5">
-                            이슈 <strong>{issue.issueKey}</strong>를 삭제하시겠습니까? 이
+                            Task <strong>{issue.issueKey}</strong>를 삭제하시겠습니까? 이
                             작업은 되돌릴 수 없습니다.
                         </p>
                         <div className="flex gap-3">

@@ -24,6 +24,8 @@
   - `loginWithCredentials({email, password})` → 암호화한 봉투를 `signIn("credentials", {enc})`로 보내고 성공 여부(boolean) 반환. 공개키 조회 실패는 throw. 백엔드 호출은 next-auth(`src/auth.ts`)가 서버에서 암호문 그대로 `${BACKEND_URL}/v1/auth/login`에 전달합니다.
 
 - `api/settings.ts`: 기준정보 설정. `getSettings()` → `GET /v1/settings` (`SettingMap`, 없으면 `{}`), `updateSettings(changes)` → `PUT /v1/settings` (바뀐 키만, 응답은 전체 설정, ADMIN 아니면 403). 허용 키는 `general.logo.text`·`general.logo.font` (d94-query `SettingService`)
+- `api/fields.ts`: CIRA 프로젝트 타입·필드(d94-query `CiraFieldController`). 기준정보(쓰기 ADMIN): `getFieldCatalog` `GET /v1/cira/field-catalog`, `get/create/update/deleteProjectType` `/v1/cira/project-types[/{id}]`(쓰는 프로젝트가 있으면 삭제 409), `replaceProjectTypeFields` `PUT /{id}/fields`(배열 순서 = 순서), `create/update/deleteGlobalField` `/v1/cira/custom-fields[/{id}]`, `getFieldUsage` `GET /{id}/usage`. 프로젝트(쓰기 프로젝트 ADMIN): `getProjectFields`·`replaceProjectFields` `/v1/projects/{id}/fields`, `create/update/deleteProjectField` `/v1/projects/{id}/custom-fields[/{cfId}]`, `getColumnPref`·`saveColumnPref`·`resetColumnPref` `GET·PUT·DELETE /v1/projects/{id}/column-pref`(→ `fieldKeys`). 필드 키는 `sys:<name>` / `cf:<id>`
+- `api/issues.ts` `getIssues`: `filters.sort`(`"sys:dueDate,asc"`)를 `sort` 로 보냅니다. Task 생성·수정 본문의 `customFields` 는 `{"cf:<id>": 값}`(null = 삭제)
 - `api/apiTokens.ts`: API 토큰(MCP·AI 도구용). `getApiTokens` `GET /v1/api-tokens`, `issueApiToken` `POST`(201, `{token, info}` — 원문은 이 응답 1회), `revokeApiToken` `DELETE /{id}`(204), `getApiTokenServices` `GET /services`, `setApiTokenService` `PUT /services/{service}` `{enabled}`(ADMIN 아니면 403)
 - `api/users.ts`: `searchUsers(keyword)`, `getMe()` → `GET /v1/users/me` (`Me`, `roles` 는 `ROLE_` 접두사 없음)
 
@@ -61,6 +63,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - `study/segments.ts` `buildSegments` — 블록 텍스트를 단어 hit·마킹 경계로 자른다. `study/selection.ts` `rangeToAnchor` — 브라우저 선택 → `{start,end}BlockKey/Offset`(블록 요소 시작부터 `Range.toString().length`, 표 컨테이너 제외). 테스트 `study/study.test.ts`.
 - `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
+- mock: `mock/fields.ts`의 `registerFieldsMock(on, projectTypeId)` (타입 SCRUM·KANBAN 시드, 유효 필드·기본 컬럼 계산만 흉내, 검증 없음). 프로젝트 생성·수정 mock 은 `mockTypeOf` 로 `projectTypeId` 를 채우고, Task mock 은 `customFields` 를 병합합니다(null = 삭제).
 - mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `cira` 하나, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`

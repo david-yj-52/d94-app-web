@@ -41,7 +41,7 @@ export default function AssignIssueModal({projectId, sprint, onClose, onSuccess}
             <div
                 className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 p-6 max-h-[80vh] flex flex-col">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-slate-900">이슈 할당</h2>
+                    <h2 className="text-lg font-bold text-slate-900">Task 할당</h2>
                     <span className="text-sm text-slate-500">{sprint.sprintNm}</span>
                 </div>
 
@@ -49,7 +49,7 @@ export default function AssignIssueModal({projectId, sprint, onClose, onSuccess}
                     type="text"
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="이슈 검색..."
+                    placeholder="Task 검색..."
                     className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
 
@@ -60,7 +60,7 @@ export default function AssignIssueModal({projectId, sprint, onClose, onSuccess}
 
                     {!isLoading && issues.length === 0 && (
                         <div className="text-center py-8 text-slate-400 text-sm">
-                            할당 가능한 이슈가 없습니다.
+                            할당 가능한 Task가 없습니다.
                         </div>
                     )}
 

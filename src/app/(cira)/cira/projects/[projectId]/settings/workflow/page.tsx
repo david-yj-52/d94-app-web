@@ -229,7 +229,7 @@ export default function SettingsWorkflowPage({
             <div className="mb-6">
                 <h2 className="text-xl font-bold text-slate-900">워크플로우</h2>
                 <p className="text-sm text-slate-500 mt-1">
-                    이슈 상태와 전이 규칙을 관리합니다.
+                    Task 상태와 전이 규칙을 관리합니다.
                 </p>
             </div>
 

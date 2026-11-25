@@ -7,12 +7,14 @@ import type {
     BackendBoard,
     BackendBoardDetail,
     BackendComment,
+    BackendField,
     BackendIssue,
     BackendIssueStatus,
     BackendNotification,
     BackendPage,
     BackendProject,
     BackendProjectMember,
+    BackendProjectType,
     BackendSprint,
     BackendUser,
     BackendUserSearch,
@@ -57,9 +59,30 @@ export const project: BackendProject = {
     name: "CIRA 프로젝트",
     description: null,
     projectType: "KANBAN",
+    projectTypeId: "PT-KANBAN",
+    projectTypeNm: "KANBAN",
     ownerId: "USR-0001",
     issueSequence: 2,
 };
+
+const sysField = (fieldKey: string, name: string, fieldType: string, source: BackendField["source"]): BackendField =>
+    ({fieldKey, name, kind: "sys", fieldType, options: null, required: false, sortable: true, source, defaultVisible: true, projectId: null});
+
+/** GET /v1/projects/:id/fields — KANBAN 기본 세트 + 프로젝트 전용 필수 선택형 하나 */
+export const projectFields: BackendField[] = [
+    sysField("sys:type", "유형", "SELECT", "fixed"), sysField("sys:key", "키", "TEXT", "fixed"),
+    sysField("sys:summary", "요약", "TEXT", "fixed"), sysField("sys:status", "상태", "SELECT", "fixed"),
+    sysField("sys:priority", "우선순위", "SELECT", "type"), sysField("sys:assignee", "담당자", "USER", "type"),
+    sysField("sys:modifiedAt", "수정일", "DATETIME", "type"),
+    {fieldKey: "cf:CF-1", name: "계약 단계", kind: "cf", fieldType: "SELECT", options: ["리드", "계약"], required: true,
+        sortable: false, source: "project", defaultVisible: true, projectId: "PRJ-1"},
+];
+
+export const projectTypes: BackendProjectType[] = [
+    {id: "PT-KANBAN", typeNm: "KANBAN", descr: null, sortOrd: 1, projectCount: 1,
+        fields: [{fieldKey: "sys:priority", defaultVisible: true}, {fieldKey: "sys:assignee", defaultVisible: true},
+            {fieldKey: "sys:modifiedAt", defaultVisible: true}]},
+];
 
 export const issue1: BackendIssue = {
     id: "ISS-1",

@@ -23,7 +23,7 @@ const ACTION_TYPES: ActionType[] = [
 ];
 
 const ACTION_PARAMS_PLACEHOLDER: Record<ActionType, string> = {
-    SEND_NOTIFICATION: JSON.stringify({message: "이슈가 생성되었습니다."}, null, 2),
+    SEND_NOTIFICATION: JSON.stringify({message: "Task가 생성되었습니다."}, null, 2),
     CHANGE_STATUS: JSON.stringify({statusId: "uuid-of-target-status"}, null, 2),
     ASSIGN_USER: JSON.stringify({userId: "uuid-of-user"}, null, 2),
     ADD_LABEL: JSON.stringify({label: "긴급"}, null, 2),
@@ -98,7 +98,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                         <input
                             value={ruleName}
                             onChange={(e) => setRuleName(e.target.value)}
-                            placeholder="예: 이슈 생성 시 Slack 알림"
+                            placeholder="예: Task 생성 시 Slack 알림"
                             required
                             className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
