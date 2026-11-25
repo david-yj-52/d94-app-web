@@ -66,7 +66,8 @@ export const project: BackendProject = {
 };
 
 const sysField = (fieldKey: string, name: string, fieldType: string, source: BackendField["source"]): BackendField =>
-    ({fieldKey, name, kind: "sys", fieldType, options: null, required: false, sortable: true, source, defaultVisible: true, projectId: null});
+    ({fieldKey, name, kind: "sys", fieldType, options: null, required: false, sortable: true, source, defaultVisible: true, projectId: null,
+        scope: null, sourceFieldId: null, sourceName: null, createdBy: null, canEdit: false});
 
 /** GET /v1/projects/:id/fields — KANBAN 기본 세트 + 프로젝트 전용 필수 선택형 하나 */
 export const projectFields: BackendField[] = [
@@ -75,8 +76,22 @@ export const projectFields: BackendField[] = [
     sysField("sys:priority", "우선순위", "SELECT", "type"), sysField("sys:assignee", "담당자", "USER", "type"),
     sysField("sys:modifiedAt", "수정일", "DATETIME", "type"),
     {fieldKey: "cf:CF-1", name: "계약 단계", kind: "cf", fieldType: "SELECT", options: ["리드", "계약"], required: true,
-        sortable: false, source: "project", defaultVisible: true, projectId: "PRJ-1"},
+        sortable: false, source: "project", defaultVisible: true, projectId: "PRJ-1",
+        scope: "project", sourceFieldId: null, sourceName: null, createdBy: "USR-0001", canEdit: true},
 ];
+
+/** 전역 필드 "고객사" (라이브러리 항목) */
+export const globalField: BackendField = {
+    fieldKey: "cf:CF-G", name: "고객사", kind: "cf", fieldType: "TEXT", options: null, required: false, sortable: false,
+    source: null, defaultVisible: true, projectId: null, scope: "global", sourceFieldId: null, sourceName: null,
+    createdBy: null, canEdit: false,
+};
+
+/** 가져오기 응답: 원본을 복사한 프로젝트 필드 */
+export const importedCopy = (sourceFieldId: string): BackendField => ({
+    ...globalField, fieldKey: "cf:CF-COPY", projectId: "PRJ-1", scope: "project", source: "project", sourceFieldId,
+    sourceName: globalField.name, createdBy: "USR-0001", canEdit: true,
+});
 
 export const projectTypes: BackendProjectType[] = [
     {id: "PT-KANBAN", typeNm: "KANBAN", descr: null, sortOrd: 1, projectCount: 1,

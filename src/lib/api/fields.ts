@@ -3,6 +3,7 @@ import type {
     FieldCatalog,
     FieldDef,
     FieldUsage,
+    LibraryItem,
     ProjectTypeResponse,
     SaveCustomField,
     SaveProjectType,
@@ -85,4 +86,31 @@ export async function saveColumnPref(projectId: string, fieldKeys: string[]): Pr
 /** [기본값으로] — 타입 기본 표시로 되돌린 결과 */
 export async function resetColumnPref(projectId: string): Promise<string[]> {
     return (await apiClient.delete(`/v1/projects/${projectId}/column-pref`)).data.data.fieldKeys;
+}
+
+// 라이브러리 (설계 2026-11-25: 전역·타입 필드를 가져가면 복사본)
+export async function createTypeField(typeId: string, data: SaveCustomField): Promise<FieldDef> {
+    return (await apiClient.post(`/v1/cira/project-types/${typeId}/custom-fields`, data)).data.data;
+}
+
+export async function updateTypeField(typeId: string, id: string, data: SaveCustomField): Promise<FieldDef> {
+    return (await apiClient.put(`/v1/cira/project-types/${typeId}/custom-fields/${id}`, data)).data.data;
+}
+
+export async function deleteTypeField(typeId: string, id: string): Promise<void> {
+    await apiClient.delete(`/v1/cira/project-types/${typeId}/custom-fields/${id}`);
+}
+
+/** 전역 필드를 타입 필드로 복사 (ADMIN) */
+export async function importToType(typeId: string, sourceFieldId: string): Promise<FieldDef> {
+    return (await apiClient.post(`/v1/cira/project-types/${typeId}/custom-fields/import`, {sourceFieldId})).data.data;
+}
+
+export async function getFieldLibrary(projectId: string): Promise<LibraryItem[]> {
+    return (await apiClient.get(`/v1/projects/${projectId}/field-library`)).data.data;
+}
+
+/** 라이브러리 필드를 프로젝트 필드로 복사 (프로젝트 멤버) */
+export async function importToProject(projectId: string, sourceFieldId: string): Promise<FieldDef> {
+    return (await apiClient.post(`/v1/projects/${projectId}/custom-fields/import`, {sourceFieldId})).data.data;
 }

@@ -4,6 +4,12 @@ import {
     createGlobalField,
     createProjectField,
     createProjectType,
+    createTypeField,
+    deleteTypeField,
+    getFieldLibrary,
+    importToProject,
+    importToType,
+    updateTypeField,
     deleteGlobalField,
     deleteProjectField,
     deleteProjectType,
@@ -98,6 +104,7 @@ export function useProjectFields(projectId?: string) {
 
 const invalidateProject = (qc: QueryClient, projectId: string) => {
     qc.invalidateQueries({queryKey: ["project-fields", projectId]});
+    qc.invalidateQueries({queryKey: ["field-library", projectId]});
     qc.invalidateQueries({queryKey: ["column-pref", projectId]});
     qc.invalidateQueries({queryKey: ["issues", projectId]});
 };
@@ -141,5 +148,50 @@ export function useSaveColumnPref(projectId: string) {
     return useMutation({
         mutationFn: (keys: string[] | null) => (keys ? saveColumnPref(projectId, keys) : resetColumnPref(projectId)),
         onSuccess: (keys) => qc.setQueryData(["column-pref", projectId], keys),
+    });
+}
+
+// ── 라이브러리 (전역·타입 필드는 가져가면 복사본) ──
+
+export function useSaveTypeField() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: ({typeId, id, data}: { typeId: string; id?: string; data: SaveCustomField }) =>
+            id ? updateTypeField(typeId, id, data) : createTypeField(typeId, data),
+        onSuccess: () => invalidateAll(qc),
+    });
+}
+
+export function useDeleteTypeField() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: ({typeId, id}: { typeId: string; id: string }) => deleteTypeField(typeId, id),
+        onSuccess: () => invalidateAll(qc),
+    });
+}
+
+/** 전역 필드 → 타입 필드 복사 */
+export function useImportToType() {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: ({typeId, sourceFieldId}: { typeId: string; sourceFieldId: string }) => importToType(typeId, sourceFieldId),
+        onSuccess: () => invalidateAll(qc),
+    });
+}
+
+export function useFieldLibrary(projectId?: string) {
+    return useQuery({
+        queryKey: ["field-library", projectId],
+        queryFn: () => getFieldLibrary(projectId!),
+        enabled: !!projectId,
+    });
+}
+
+/** 라이브러리 필드 → 프로젝트 필드 복사 (프로젝트 멤버) */
+export function useImportToProject(projectId: string) {
+    const qc = useQueryClient();
+    return useMutation({
+        mutationFn: (sourceFieldId: string) => importToProject(projectId, sourceFieldId),
+        onSuccess: () => invalidateProject(qc, projectId),
     });
 }

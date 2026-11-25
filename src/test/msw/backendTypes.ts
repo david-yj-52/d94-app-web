@@ -93,6 +93,11 @@ export interface BackendField {
     source: "fixed" | "type" | "project" | null;
     defaultVisible: boolean;
     projectId: string | null;
+    scope: "global" | "type" | "project" | null;
+    sourceFieldId: string | null;
+    sourceName: string | null;
+    createdBy: string | null;
+    canEdit: boolean;
 }
 
 /** CiraFieldDto.ProjectType */

@@ -14,11 +14,30 @@ export interface FieldDef {
     source?: "fixed" | "type" | "project" | null;
     defaultVisible: boolean;
     projectId?: string | null;
+    /** 사용자 정의 필드의 소속 (sys 는 null) */
+    scope?: "global" | "type" | "project" | null;
+    /** 복사해 온 원본 id·이름 (원본이 지워졌으면 sourceName null) */
+    sourceFieldId?: string | null;
+    sourceName?: string | null;
+    createdBy?: string | null;
+    /** 현재 사용자가 이 프로젝트 필드를 수정·삭제할 수 있는지 (만든 사람 또는 프로젝트 ADMIN) */
+    canEdit?: boolean;
+}
+
+/** 프로젝트가 가져올 수 있는 전역·타입 필드. importedAs = 이미 가져온 복사본 fieldKey */
+export interface LibraryItem {
+    field: FieldDef;
+    importedAs?: string | null;
 }
 
 export interface FieldCatalog {
     system: FieldDef[];
+    /** 전역 필드 */
     custom: FieldDef[];
+    /** 타입 id → 그 타입의 타입 필드 */
+    typeFields: Record<string, FieldDef[]>;
+    /** 전역 필드 id → 복사본 수 (0 이면 어디에도 적용되지 않음) */
+    copies: Record<string, number>;
 }
 
 export interface TypeField {
@@ -45,9 +64,12 @@ export interface SaveCustomField {
     fieldType: CustomFieldType;
     required?: boolean;
     options?: string[];
+    /** 전역 필드를 만들 때만: 이 타입들로 바로 복사 */
+    copyToTypeIds?: string[];
 }
 
 export interface FieldUsage {
+    copies: number;
     projects: number;
     issues: number;
 }
