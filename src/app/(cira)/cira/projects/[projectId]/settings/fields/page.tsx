@@ -1,11 +1,14 @@
 "use client";
 
 import Dialog from "@/components/cira/ui/Dialog";
+import FieldLibraryDialog from "@/components/issue/FieldLibraryDialog";
 import CustomFieldModal from "@/components/settings/CustomFieldModal";
 import {useToast} from "@/components/ui/Toast";
 import {
     useDeleteProjectField,
     useFieldCatalog,
+    useFieldLibrary,
+    useImportToProject,
     useProjectFields,
     useReplaceProjectFields,
     useSaveProjectField,
@@ -31,12 +34,16 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
     const {show, ToastComponent} = useToast();
     const [editing, setEditing] = useState<FieldDef | null | undefined>(undefined); // undefined = 닫힘, null = 새로
     const [deleting, setDeleting] = useState<FieldDef | null>(null);
+    const [showLibrary, setShowLibrary] = useState(false);
+    const {data: library = []} = useFieldLibrary(showLibrary ? projectId : undefined);
+    const importField = useImportToProject(projectId);
 
     const inherited = fields.filter((f) => f.source !== "project");
     const added = fields.filter((f) => f.source === "project");
     const addedKeys = added.map((f) => f.fieldKey);
     const usedKeys = new Set(fields.map((f) => f.fieldKey));
-    const addable = [...(catalog?.system ?? []), ...(catalog?.custom ?? [])].filter((f) => !usedKeys.has(f.fieldKey));
+    // 기본 필드만 직접 추가. 사용자 정의 필드는 라이브러리에서 가져온다(복사)
+    const addable = (catalog?.system ?? []).filter((f) => !usedKeys.has(f.fieldKey));
 
     const setKeys = (keys: string[]) =>
         replace.mutate(keys, {onError: (e) => show(errMsg(e, "저장하지 못했습니다."), "error")});
@@ -78,17 +85,20 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
                             <span className="flex-1">
                                 {f.name}
                                 {f.kind === "cf" && <span className="ml-2 text-xs text-slate-400">{CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}{f.required ? " · 필수" : ""}</span>}
+                                {f.sourceFieldId && (
+                                    <span className="ml-2 text-xs text-slate-400">· {f.sourceName ? `'${f.sourceName}'에서 가져옴` : "원본 삭제됨"}</span>
+                                )}
                             </span>
                             <button type="button" aria-label={`${f.name} 위로`} disabled={i === 0} onClick={() => move(i, -1)}
                                     className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowUp className="h-4 w-4"/></button>
                             <button type="button" aria-label={`${f.name} 아래로`} disabled={i === added.length - 1} onClick={() => move(i, 1)}
                                     className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowDown className="h-4 w-4"/></button>
-                            {f.projectId ? (
+                            {f.kind === "cf" ? (f.canEdit && (
                                 <>
                                     <button type="button" onClick={() => setEditing(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
                                     <button type="button" onClick={() => setDeleting(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
                                 </>
-                            ) : (
+                            )) : (
                                 <button type="button" onClick={() => setKeys(addedKeys.filter((k) => k !== f.fieldKey))}
                                         className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">제거</button>
                             )}
@@ -104,8 +114,10 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
                         className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm"
                     >
                         <option value="">+ 제공 필드 추가</option>
-                        {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}{f.kind === "cf" ? " (전역)" : ""}</option>)}
+                        {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}</option>)}
                     </select>
+                    <button type="button" onClick={() => setShowLibrary(true)}
+                            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">+ 라이브러리에서 가져오기</button>
                     <button type="button" onClick={() => setEditing(null)}
                             className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">+ 새 필드 만들기</button>
                 </div>
@@ -122,6 +134,21 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
                             show("저장했습니다.");
                         },
                         onError: (e) => show(errMsg(e, "저장하지 못했습니다."), "error"),
+                    })}
+                />
+            )}
+
+            {showLibrary && (
+                <FieldLibraryDialog
+                    items={library}
+                    isPending={importField.isPending}
+                    onClose={() => setShowLibrary(false)}
+                    onImport={(sourceFieldId) => importField.mutate(sourceFieldId, {
+                        onSuccess: (f) => {
+                            setShowLibrary(false);
+                            show(`'${f.name}' 필드를 가져왔습니다.`);
+                        },
+                        onError: (e) => show(errMsg(e, "가져오지 못했습니다."), "error"),
                     })}
                 />
             )}
