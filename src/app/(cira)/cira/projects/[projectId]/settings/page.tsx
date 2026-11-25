@@ -25,7 +25,7 @@ export default function SettingsGeneralPage({
     const {projectId} = use(params);
     const router = useRouter();
     const {data: project, isLoading} = useProject(projectId);
-    const {data: projectTypes = []} = useProjectTypes();
+    const {data: projectTypes} = useProjectTypes();
     const {mutate: updateProject, isPending, isSuccess, isError} =
         useUpdateProject(projectId);
     const {mutate: deleteProject, isPending: isDeleting} = useDeleteProject();
@@ -42,15 +42,17 @@ export default function SettingsGeneralPage({
         defaultValues: {name: "", description: "", projectTypeId: ""},
     });
 
+    // 타입 목록이 오기 전에 reset 하면 select 에 해당 option 이 없어 브라우저가 첫 타입을 고르고,
+    // 목록이 와도 react-hook-form 은 값을 다시 넣지 않는다 → 둘 다 온 뒤에 채운다
     useEffect(() => {
-        if (project) {
+        if (project && projectTypes) {
             reset({
                 name: project.name,
                 description: project.description ?? "",
                 projectTypeId: project.projectTypeId ?? "",
             });
         }
-    }, [project, reset]);
+    }, [project, projectTypes, reset]);
 
     useEffect(() => {
         if (isSuccess) show("프로젝트 정보가 저장되었습니다.");
@@ -135,7 +137,7 @@ export default function SettingsGeneralPage({
                         {...register("projectTypeId")}
                         className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        {projectTypes.map((type) => (
+                        {(projectTypes ?? []).map((type) => (
                             <option key={type.id} value={type.id}>
                                 {type.typeNm}
                             </option>
