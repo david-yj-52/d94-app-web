@@ -24,6 +24,7 @@ import {getNavContext} from "./navContext";
 const SETTINGS_MENU = [
     {suffix: "", label: "기본 정보"},
     {suffix: "/fields", label: "필드"},
+    {suffix: "/docs", label: "문서 관리"},
     {suffix: "/members", label: "멤버"},
     {suffix: "/workflow", label: "워크플로우"},
     {suffix: "/git", label: "Git 연동"},

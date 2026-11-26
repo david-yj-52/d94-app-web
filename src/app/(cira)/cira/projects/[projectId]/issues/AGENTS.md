@@ -7,7 +7,7 @@
 | URL | 파일 | 설명 |
 |---|---|---|
 | `/cira/projects/:projectId/issues` | `page.tsx` (135줄) | Task 목록·필터·생성·컬럼 |
-| `/cira/projects/:projectId/issues/:issueId` | `[issueId]/page.tsx` (398줄) | Task 상세·인라인 편집·사용자 정의 필드·댓글·첨부·삭제 |
+| `/cira/projects/:projectId/issues/:issueId` | `[issueId]/page.tsx` (398줄) | Task 상세·인라인 편집·사용자 정의 필드·첨부·연결 문서(Docs)·댓글·삭제 |
 
 - 진입: ProjectCard 클릭(프로젝트의 기본 탭), 셸 사이드바 "Task", 칸반 카드 클릭
 
@@ -25,6 +25,7 @@ issues/[issueId]/page.tsx
 ├── 좌측 본문
 │   ├── 제목·설명: InlineText (페이지 내부 컴포넌트)
 │   ├── AttachmentSection issueId                → issue 카드
+│   ├── IssueDocsSection projectId issueId       → issue 카드 (연결 문서 & 계보)
 │   └── CommentSection issueId                   → issue 카드
 ├── 우측 사이드바 (모바일은 본문 위): 상태 드롭다운(Menu, 모바일 sticky) · <details> "세부 정보"(우선순위 select · 담당자/보고자 · 스토리 포인트 · 마감일 · 사용자 정의 필드(CustomFieldInput) · 생성/수정 시각)
 └── 삭제 확인 다이얼로그 (표준 삭제 다이얼로그의 원본)
@@ -54,6 +55,10 @@ issues/[issueId]/page.tsx
 - 내가 만든(또는 ADMIN 이면 모든) 프로젝트 필드는 [수정]·[삭제] — 삭제는 확인 창, 모든 Task 값도 삭제.
 ### Task 생성
 - CreateIssueModal에서 생성에 성공하면 "Task가 생성되었습니다." 토스트를 띄웁니다. 필수 사용자 정의 필드는 여기서 받습니다.
+### 연결 문서 & 계보 (상세)
+- Task 를 만들면 서버가 프로젝트 Team vault `task/{프로젝트키}/{Task키}` 에 메인 Docs 노트를 만들고, 상태·담당자 변경을 그 노트의 `## 진행 경과` 에 한 줄씩 남깁니다. 섹션은 메인 노트 링크, 기준정보 슬롯 버튼(`+ draft` 등, [설정 › 문서 관리](../settings/AGENTS.md))·`+ 자유 문서`(폴더 이름 선택 입력), 계보 트리(`useIssueDocs` → `GET /v1/projects/{id}/issues/{issueId}/docs`)를 보여 줍니다.
+- 메인 노트가 없는(배포 전) Task 는 [Docs 문서 생성] → `POST …/docs`. 파생 → `POST …/docs/derive` 후 Docs 캐시 무효화. mock 은 "메인 문서 없음"만.
+
 ### 사용자 정의 필드 (상세)
 - 세부 정보의 사용자 정의 필드는 blur·선택 즉시 `update({customFields: {[key]: 값}})` 로 저장합니다(빈 값 = 삭제). 타입이 바뀌어 유효 필드에서 빠진 필드는 보이지 않지만 값은 서버에 보관됩니다.
 ### 인라인 편집 (상세)

@@ -39,18 +39,18 @@ app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
 | 대시보드 | `/cira/dashboard` | CIRA | 내 할당 이슈·오늘 마감·최근 활동·현재 스프린트 | [dashboard](./(cira)/cira/dashboard/AGENTS.md) |
 | 검색 | `/cira/search`, `/cira/search/advanced` | CIRA | 키워드·필터 검색, 저장 필터, CQL 고급 검색 | [search](./(cira)/cira/search/AGENTS.md) |
 | 프로젝트 | `/cira/projects` (+ 하위 공통) | CIRA | 프로젝트 목록·생성, 하위 탭 구조 | [projects](./(cira)/cira/projects/AGENTS.md) |
-| 이슈 | `/cira/projects/:id/issues[/:issueId]` | CIRA | 목록·필터·생성, 상세(인라인 편집·댓글·첨부) | [issues](./(cira)/cira/projects/[projectId]/issues/AGENTS.md) |
+| 이슈 | `/cira/projects/:id/issues[/:issueId]` | CIRA | 목록·필터·생성, 상세(인라인 편집·댓글·첨부·연결 문서) | [issues](./(cira)/cira/projects/[projectId]/issues/AGENTS.md) |
 | 보드 | `/cira/projects/:id/boards[/:boardId]` | CIRA | 칸반 보드 DnD | [boards](./(cira)/cira/projects/[projectId]/boards/AGENTS.md) |
 | 스프린트 | `/cira/projects/:id/sprints` | CIRA | 스프린트 CRUD·시작·완료·이슈 할당 | [sprints](./(cira)/cira/projects/[projectId]/sprints/AGENTS.md) |
 | 리포트 | `/cira/projects/:id/reports/*` | CIRA | 번다운·CFD·Velocity 차트 | [reports](./(cira)/cira/projects/[projectId]/reports/AGENTS.md) |
-| 설정 | `/cira/projects/:id/settings/*` | CIRA | 기본정보·멤버·워크플로우·Git·자동화 | [settings](./(cira)/cira/projects/[projectId]/settings/AGENTS.md) |
+| 설정 | `/cira/projects/:id/settings/*` | CIRA | 기본정보·필드·문서 관리·멤버·워크플로우·Git·자동화 | [settings](./(cira)/cira/projects/[projectId]/settings/AGENTS.md) |
 | 버전 | `/cira/projects/:id/versions` | CIRA | 버전·마일스톤 탭 | [versions](./(cira)/cira/projects/[projectId]/versions/AGENTS.md) |
 | 위키 | `/cira/projects/:id/wiki` | CIRA | 트리·뷰어·Tiptap 편집·이력 | [wiki](./(cira)/cira/projects/[projectId]/wiki/AGENTS.md) |
 | MPMS | `/mpms` | 🧪 | 플랫폼·제품 마스터-디테일 | [mpms](./(main)/mpms/AGENTS.md) |
 | Solace | `/solace` | 🧪 | WebSocket 메시징 테스트 | [solace](./(main)/solace/AGENTS.md) |
 | Todo | `/todo` | 🧪 | Server Actions | [todo](./(main)/todo/AGENTS.md) |
 | 인터페이스 테스트 | `/interface-test` | 🧪 | REST 메서드별 UI→UMD→백엔드→DB 통신 확인 | [interface-test](./(main)/interface-test/AGENTS.md) |
-| Docs | `/docs`, `/docs/[noteId]` | 공통 | 개인 vault: 폴더 트리·Markdown 노트·[[링크]]·백링크·버전·Cmd+K | [docs](./(main)/docs/AGENTS.md) |
+| Docs | `/docs`, `/docs/[noteId]` | 공통 | 다중 vault(Private·Team): 폴더 트리·Markdown 노트·[[링크]]·백링크·버전·Cmd+K | [docs](./(main)/docs/AGENTS.md) |
 | Docs Task | `/docs/tasks` | 공통 | 모든 노트의 체크박스 줄 상태별 모아보기·필터·상태 변경 | [docs/tasks](./(main)/docs/tasks/AGENTS.md) |
 | Life Metric | `/life-metric` | 🧪 | 지표 카드 대시보드 · 템플릿/커스텀 수식으로 지표 생성 | [life-metric](./(main)/life-metric/AGENTS.md) |
 | Life Metric 상세 | `/life-metric/[metricId]` | 🧪 | 현재 값·수식 편집·기준값·기록(추이 차트) | [[metricId]](./(main)/life-metric/[metricId]/AGENTS.md) |

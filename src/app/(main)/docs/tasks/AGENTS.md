@@ -18,7 +18,7 @@ docs/tasks/page.tsx
 ## 데이터
 | 훅 | 엔드포인트 | mock |
 |---|---|---|
-| `useDocsTasks(filters)` | `GET /v1/docs/tasks?tag=&stream=&dueBefore=` (정렬: 마감 있는 것 먼저 → 노트 제목 → 줄) | ✅ |
+| `useDocsTasks(filters)` | `GET /v1/docs/tasks?tag=&stream=&dueBefore=` (vaultId 생략 = 통합 뷰: 내 Private + 소속 Team vault 의 체크박스. 정렬: 마감 있는 것 먼저 → 노트 제목 → 줄) | ✅ |
 | `useSetDocsTaskStatus` | `PUT /v1/docs/tasks/{noteId}/{lineNo}` `{status}` | ✅ |
 
 ## 기능 (L4)

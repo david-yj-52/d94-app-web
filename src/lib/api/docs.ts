@@ -2,6 +2,7 @@ import apiClient from "./client";
 import type {
     DeriveRequest,
     DocsFolder,
+    DocsVault,
     DocsTask,
     LineageNode,
     Note,
@@ -12,18 +13,26 @@ import type {
     NoteVersion,
     TaskFilters,
     TaskStatus,
+    VaultScope,
 } from "@/types/docs";
 
 const BASE = "/v1/docs";
 
-// ── 폴더 ──
-export async function getDocsFolders(): Promise<DocsFolder[]> {
-    const res = await apiClient.get(`${BASE}/folders`);
+// ── vault ──
+export async function getDocsVaults(): Promise<DocsVault[]> {
+    const res = await apiClient.get(`${BASE}/vaults`);
     return res.data.data;
 }
 
-export async function createDocsFolder(name: string, parentId: string | null): Promise<DocsFolder> {
-    const res = await apiClient.post(`${BASE}/folders`, {name, parentId});
+// ── 폴더 ──
+export async function getDocsFolders(vaultId: VaultScope = "ALL"): Promise<DocsFolder[]> {
+    const res = await apiClient.get(`${BASE}/folders`, {params: {vaultId}});
+    return res.data.data;
+}
+
+/** parentId 가 없으면 vaultId 의 최상위 (생략 = 내 Private) */
+export async function createDocsFolder(name: string, parentId: string | null, vaultId?: string): Promise<DocsFolder> {
+    const res = await apiClient.post(`${BASE}/folders`, {name, parentId, vaultId});
     return res.data.data;
 }
 

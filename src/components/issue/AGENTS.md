@@ -57,6 +57,12 @@
 ```
 - 사용자 정의 필드 타입별 입력. 텍스트·숫자·URL·날짜는 blur 때, 선택·체크는 바로 `onChange`. 빈 값은 `null`(서버에서 값 삭제). 사용처: CreateIssueModal(필수만), Task 상세 세부 정보.
 
+### IssueDocsSection — `import {IssueDocsSection} from "@/components/issue/IssueDocsSection"` (named export)
+```ts
+{ projectId: string; issueId: string }
+```
+- 자기 완결형 섹션. `useIssueDocs` 로 메인 Docs 노트·파생 문서·계보·슬롯을 받아, 메인 노트 링크(`/docs/{noteId}`), 슬롯 버튼(`+ {folderName}`)·`+ 자유 문서` → 인라인 폼(제목, 자유면 폴더 이름) → `useDeriveIssueDoc`, 계보(origin 제목으로 이은 들여쓴 트리, 깊이만 인라인 style)를 그립니다. 메인 노트가 없으면 [Docs 문서 생성] 버튼 → `useEnsureIssueMainDoc`. 오류는 토스트(`docsError`).
+
 ### CommentSection — `import {CommentSection} from "@/components/issue/CommentSection"` (named export)
 ```ts
 { issueId: string }

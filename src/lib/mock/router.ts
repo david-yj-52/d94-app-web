@@ -468,6 +468,18 @@ on("GET", "/v1/attachments/:id/download", ({params}) => {
 });
 
 // 보드
+// CIRA Task ↔ Docs — ponytail: 기준정보만 메모리에 저장. 메인 노트·파생은 실제 백엔드에서만(mock 은 "메인 문서 없음")
+const docRules: Record<string, Array<Record<string, unknown>>> = {};
+on("GET", "/v1/issue-types", () => ok([{id: "type-issue", typeNm: "Issue"}, {id: "type-bug", typeNm: "Bug"}]));
+on("GET", "/v1/projects/:projectId/doc-rules", ({params}) => ok(docRules[params.projectId] ?? []));
+on("PUT", "/v1/projects/:projectId/doc-rules/:issueTypeId", ({params, body}) => {
+    const rows = (Array.isArray(body) ? body : []) as Array<Record<string, unknown>>;
+    const kept = (docRules[params.projectId] ?? []).filter((r) => r.issueTypeId !== params.issueTypeId);
+    docRules[params.projectId] = [...kept, ...rows.map((r, i) => ({...r, id: r.id ?? `rule-${Date.now()}-${i}`, issueTypeId: params.issueTypeId, sortOrder: i}))];
+    return ok(docRules[params.projectId].filter((r) => r.issueTypeId === params.issueTypeId));
+});
+on("GET", "/v1/projects/:projectId/issues/:issueId/docs", () => ok({main: null, derived: [], lineage: [], rules: []}));
+
 on("GET", "/v1/projects/:projectId/boards", ({params}) => ok(getStore().boards.filter((b) => b.projectId === params.projectId)));
 on("POST", "/v1/projects/:projectId/boards", ({params, body}) => {
     const s = getStore();

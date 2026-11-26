@@ -8,6 +8,7 @@
 |---|---|---|
 | `/cira/projects/:id/settings` | `page.tsx` | 기본 정보 (이름·설명·프로젝트 타입 수정, 키는 변경 불가) |
 | `…/settings/fields` | `fields/page.tsx` | 타입에서 물려받은 필드(잠김) · 이 프로젝트에 추가한 필드(순서·제거·출처) · 프로젝트 필드 생성·라이브러리 가져오기·수정·삭제 |
+| `…/settings/docs` | `docs/page.tsx` | 문서 관리: Task 타입별 파생 문서 폴더 슬롯(이름·기본 종류·트랙·템플릿·Task 생성 때 폴더 만들기) |
 | `…/settings/members` | `members/page.tsx` | 멤버 목록·추가·역할 변경·제거 |
 | `…/settings/workflow` | `workflow/page.tsx` (335줄) | 상태 추가·삭제, 상태 전이 매트릭스 |
 | `…/settings/git` | `git/page.tsx` (329줄) | Git 저장소 연동·Webhook 정보·최근 활동 |
@@ -19,10 +20,11 @@
 ```
 settings/layout.tsx
 ├── PageHeader (프로젝트 / {이름} · "프로젝트 설정")
-├── (설정 메뉴는 CIRA 셸 사이드바: 기본 정보 / 필드 / 멤버 / 워크플로우 / Git 연동 / 자동화)
+├── (설정 메뉴는 CIRA 셸 사이드바: 기본 정보 / 필드 / 문서 관리 / 멤버 / 워크플로우 / Git 연동 / 자동화)
 └── {children}
     ├── (기본)     폼: 이름·설명·타입 select + [저장]  (react-hook-form)
     ├── fields     물려받은 필드 칩 · 추가 필드 목록 · [+ 제공 필드 추가] select(기본 필드만) · [+ 라이브러리에서 가져오기] → issue/FieldLibraryDialog · [+ 새 필드 만들기] → settings/CustomFieldModal · 삭제 Dialog
+    ├── docs       Task 타입 select · 슬롯 행(폴더 이름·종류·트랙·자동 생성·위/아래·삭제·템플릿) · [+ 슬롯 추가] [저장]
     ├── members    MemberTable + {showAdd && <AddMemberModal/>}           → project 카드
     ├── workflow   AddStatusForm · 상태 목록 · TransitionMatrix (페이지 내부 컴포넌트)
     ├── git        저장소 목록 · 등록 폼 · WebhookModal · CopyButton · 최근 활동 (페이지 내부 컴포넌트)
@@ -35,6 +37,7 @@ settings/layout.tsx
 |---|---|---|
 | 기본 | `useProject`, `useUpdateProject`, `useProjectTypes` | `["projects", projectId]`, `["project-types"]` |
 | fields | `useProjectFields`, `useFieldCatalog`, `useReplaceProjectFields`, `useSave/DeleteProjectField`, `useFieldLibrary`, `useImportToProject` | `["project-fields", projectId]`, `["field-catalog"]`, `["field-library", projectId]` |
+| docs | `useIssueTypes`, `useDocRules`, `useSaveDocRules` | `["issueTypes"]`, `["docRules", projectId]` |
 | members | `useProjectMembers`, `useAdd/UpdateRole/RemoveProjectMember` | `["projects", projectId, "members"]` |
 | workflow | `useWorkflowStatuses`, `useCreate/DeleteWorkflowStatus`, `useWorkflowTransitions`, `useUpdateWorkflowTransitions` | `[…, "workflow", "statuses" \| "transitions"]` |
 | git | `useGitRepos`, `useRegister/DeleteGitRepo`, `useGitActivity` | `["git-repos", projectId]`, `["git-activity", projectId]` |
@@ -46,6 +49,8 @@ settings/layout.tsx
 ### 필드
 - 타입이 물려준 필드(고정 4개 포함)는 끌 수 없습니다 — 바꾸려면 기준정보 › CIRA. 목록에서 숨기는 것은 각자 Task 목록의 [컬럼]입니다.
 - 추가 필드: 기본 필드를 고르거나(`replaceProjectFields`, 전체 교체), 라이브러리(전역 + 이 타입의 필드)에서 가져오거나(복사본 생성), 프로젝트 필드를 새로 만듭니다(만들면 바로 추가 필드). 위/아래로 순서, 기본 필드는 [제거], 사용자 정의 필드는 `canEdit`(만든 사람·프로젝트 ADMIN)일 때만 [수정]·[삭제] — 모든 Task 의 값도 삭제, 확인 다이얼로그. 가져온 필드는 "'원본'에서 가져옴"(원본이 지워졌으면 "원본 삭제됨"). 서버 오류 메시지는 토스트로.
+### 문서 관리
+- 타입을 고르고 슬롯을 편집한 뒤 [저장] → `PUT /v1/projects/{id}/doc-rules/{issueTypeId}` 로 그 타입 목록을 통째로 바꿉니다(프로젝트 ADMIN, 아니면 403 토스트). 같은 폴더 이름 두 번·빈 이름은 저장 불가. 자동 생성을 끈 슬롯은 첫 파생 때 폴더가 생깁니다. 슬롯은 Task 상세 "연결 문서 & 계보"의 `+ 폴더` 버튼이 됩니다.
 ### 멤버
 - 현재 사용자가 ADMIN일 때만 역할 변경과 제거를 할 수 있습니다(`isAdmin` prop). MemberTable은 결과 메시지를 `onSuccess`/`onError`로 페이지에 넘기고, 페이지가 토스트를 띄웁니다.
 ### 워크플로우

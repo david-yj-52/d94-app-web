@@ -11,7 +11,7 @@ import {useNoteAutosave} from "./useNoteAutosave";
 import {deleteDraft, saveDraft} from "@/lib/docs/drafts";
 
 const note: Note = {
-    id: "n1", title: "T", content: "a", folderId: null, kind: "idea", stream: null, origin: null, version: 3,
+    id: "n1", vaultId: "v1", title: "T", content: "a", folderId: null, kind: "idea", stream: null, origin: null, version: 3,
     tags: [], links: [], createdAt: null, modifiedAt: null,
 };
 

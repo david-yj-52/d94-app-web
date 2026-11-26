@@ -24,12 +24,13 @@ kind: doc
 - [ ] 첫 노트 작성하기
 - [x] Docs 열어 보기`;
 
+const MOCK_VAULT = "mock-private";
 const g = globalThis as unknown as { __docsMock?: Store };
 function store(): Store {
     if (!g.__docsMock) {
         const now = new Date().toISOString();
         g.__docsMock = {
-            folders: [{id: "f-1", parentId: null, name: "가이드", sortOrder: 0}],
+            folders: [{id: "f-1", vaultId: MOCK_VAULT, parentId: null, name: "가이드", sortOrder: 0}],
             notes: [{id: "n-1", title: "시작하기", content: SEED, folderId: "f-1", version: 1, createdAt: now, modifiedAt: now}],
             versions: {"n-1": [{version: 1, title: "시작하기", content: SEED, editedBy: "admin", editedAt: now}]},
             images: {},
@@ -48,7 +49,7 @@ const originOf = (c: string) => linkTitle(readFrontmatter(c).origin);
 const linksOf = (n: MNote) => [...(originOf(n.content) ? [{title: originOf(n.content)!, rel: "origin" as const}] : []),
     ...extractLinks(n.content).map((title) => ({title, rel: "link" as const}))];
 
-const summary = (n: MNote): NoteSummary => ({id: n.id, title: n.title, folderId: n.folderId, kind: kindOf(n.content), stream: streamOf(n.content), modifiedAt: n.modifiedAt});
+const summary = (n: MNote): NoteSummary => ({id: n.id, vaultId: MOCK_VAULT, title: n.title, folderId: n.folderId, kind: kindOf(n.content), stream: streamOf(n.content), modifiedAt: n.modifiedAt});
 function full(n: MNote): Note {
     const titles = new Set(store().notes.map((x) => x.title));
     return {
@@ -91,6 +92,8 @@ function tasks(): DocsTask[] {
 
 export function registerDocsMock(on: On) {
     // ── 폴더 ──
+    // ponytail: mock 은 Private vault 하나 (Team vault·CIRA 연동은 실제 백엔드에서만)
+    on("GET", "/v1/docs/vaults", () => ok([{id: MOCK_VAULT, type: "PRIVATE", name: "Private", projectId: null}]));
     on("GET", "/v1/docs/folders", () => ok(store().folders));
     on("POST", "/v1/docs/folders", ({body}) => {
         const s = store();
@@ -98,7 +101,7 @@ export function registerDocsMock(on: On) {
         const parentId = (body.parentId as string) || null;
         if (!name || /[/\\]/.test(name)) return fail(400, "DOCS_INVALID_REQUEST", "폴더 이름을 확인하세요.");
         if (s.folders.some((f) => f.parentId === parentId && f.name === name)) return fail(409, "DOCS_DUPLICATE_FOLDER", "같은 이름의 폴더가 이미 있습니다.");
-        const f = {id: `f-${s.seq++}`, parentId, name, sortOrder: 0};
+        const f = {id: `f-${s.seq++}`, vaultId: MOCK_VAULT, parentId, name, sortOrder: 0};
         s.folders.push(f);
         return ok(f);
     });

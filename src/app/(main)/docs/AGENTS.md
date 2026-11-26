@@ -4,16 +4,17 @@
 
 ## 개요
 - **URL:** `/docs`, `/docs/[noteId]` (`?edit=1` 이면 편집으로 엶) · **파일:** `layout.tsx`, `page.tsx`, `[noteId]/page.tsx` (모두 클라이언트 컴포넌트)
-- **목적:** 웹 버전 Obsidian형 **개인 vault**. Markdown 노트를 폴더로 정리하고 `[[제목]]` 으로 잇습니다. 노트 본문(frontmatter `kind`·`stream`·`origin`, `#태그`, `- [ ]` 체크박스)이 원천이고 서버가 저장할 때 색인합니다. 계획: d94-note `docs/superpowers/plans/2026-11-21-docs-service.md`
+- **목적:** 웹 버전 Obsidian형 **다중 vault** — 내 Private vault + 소속 CIRA 프로젝트의 Team vault(멤버 공유, 프로젝트에 첫 Task 가 생길 때 서버가 만듦). Markdown 노트를 폴더로 정리하고 `[[제목]]` 으로 잇습니다. 노트 본문(frontmatter `kind`·`stream`·`origin`, `#태그`, `- [ ]` 체크박스)이 원천이고 서버가 저장할 때 색인합니다. 계획: d94-note `docs/superpowers/plans/2026-11-21-docs-service.md`
 - **진입:** 홈 "Docs" 카드 · **접근:** 보호 경로(`routeAccess.ts` `/docs`)
-- **layout:** 왼쪽 폴더 트리 + Cmd/Ctrl+K 빠른 전환. 가운데·오른쪽은 각 page 가 그립니다.
+- **layout:** 왼쪽 vault 선택(전체 통합·🔒 Private·👥 프로젝트) + vault 섹션별 폴더 트리 + Cmd/Ctrl+K 빠른 전환. 가운데·오른쪽은 각 page 가 그립니다.
 
 ## 화면 구성
 컴포넌트 카드: [docs](../../../components/docs/AGENTS.md)
 ```
 docs/layout.tsx
 ├── "노트 찾기 ⌘K" 버튼 → QuickSwitcher · "Task 모아보기" → [tasks](./tasks/AGENTS.md)
-├── DocsSidebar   (폴더 트리·폴더별 노트, 폴더 ··· 메뉴: 새 노트·하위 폴더·이름 변경·이동·삭제)
+├── vault select ("전체 통합" | vault 하나 — layout 상태, 새로고침하면 통합)
+├── DocsSidebar   (vault 섹션별 폴더 트리·폴더별 노트, 폴더 ··· 메뉴: 새 노트·하위 폴더·이름 변경·이동·삭제)
 ├── {children}
 ├── FolderPickerModal (폴더 이동)  ·  DocsDialog (이름 입력·삭제 확인)  ·  {ToastComponent}
 docs/page.tsx            아이디어 빠른 기록(제목 한 줄) + 최근 노트 15개
@@ -26,8 +27,9 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 ## 데이터
 | 훅 | 엔드포인트 | mock |
 |---|---|---|
-| `useDocsFolders`, `useCreate/Rename/Move/DeleteDocsFolder` | `GET/POST /v1/docs/folders`, `PUT /{id}`, `PUT /{id}/move`, `DELETE /{id}` | ✅ |
-| `useNotes(filters)` | `GET /v1/docs/notes` (layout·home 은 전체, 파생 노트는 `{origin: 제목}`) | ✅ |
+| `useDocsVaults` | `GET /v1/docs/vaults` | ✅ (Private 하나) |
+| `useDocsFolders(vaultId)`, `useCreate/Rename/Move/DeleteDocsFolder` | `GET/POST /v1/docs/folders` (`vaultId`, 생성은 `{name, parentId, vaultId}`), `PUT /{id}`, `PUT /{id}/move`, `DELETE /{id}` | ✅ |
+| `useNotes(filters)` | `GET /v1/docs/notes` (layout 은 선택한 `vaultId`, home·useOpenNote 는 통합, 파생 노트는 `{origin: 제목, vaultId: 노트의 vault}`) | ✅ |
 | `useNote`, `useUpdateNote`, `useMoveNote`, `useDeleteNote` | `GET/PUT/DELETE /v1/docs/notes/{id}`, `PUT /{id}/move` | ✅ |
 | `useCreateNote` (useOpenNote) | `POST /v1/docs/notes` | ✅ |
 | `useBacklinks`, `useNoteVersions` | `GET /v1/docs/notes/{id}/backlinks`, `/versions` (이력 패널을 열 때만) | ✅ |
@@ -39,13 +41,16 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 ## 기능 (L4)
 ### 링크 열기·만들기
 - 본문 `[[A]]`·`[[A|별칭]]` 은 `toMarkdownLinks` 로 `#note:A` 링크가 되고, NoteMarkdown 이 버튼으로 그립니다. 없는 노트(응답 `links[].exists=false`)는 회색.
-- 클릭 → `useOpenNote`: 전체 노트 목록에서 제목으로 찾아 이동, 없으면 같은 폴더에 그 제목으로 만들고 `?edit=1` 로 이동합니다(Obsidian 동작).
+- 클릭 → `useOpenNote`: **이 노트의 vault 안에서** 제목으로 찾아 이동, 없으면 같은 vault·같은 폴더에 그 제목으로 만들고 `?edit=1` 로 이동합니다(Obsidian 동작).
 ### 편집·저장
 - **Live Preview:** CodeMirror 편집기가 입력 즉시 제목·굵게·기울임·취소선·코드를 스타일링하고, 커서가 없는 줄은 `#`·`**` 같은 기호를 숨기며 이미지를 보여 줍니다(Obsidian 방식). 코드 블록은 언어별 하이라이트, `[[` 는 제목 자동완성.
 - **자동 저장:** 입력이 멈추고 1.5초 뒤 서버 저장(`useAutosaveNote` — 이 노트 캐시만 갱신). 제목은 입력란을 떠나거나 Enter 때 저장. "완료" = 남은 입력 저장 후 보기로 돌아가며 Docs 캐시 전체 무효화(`useInvalidateDocs`). 서버 이력은 5분 안 같은 제목 재저장을 한 건으로 합칩니다.
 - **장애 대비:** 바뀔 때마다 브라우저 IndexedDB 에 초안을 남깁니다. 서버 저장 실패(네트워크·5xx)면 "서버에 저장하지 못함 — 이 브라우저에 보관 중" 표시 후 10초마다 재시도. 다시 열었을 때 초안이 서버 내용과 다르면 "복원/버리기" 배너. 409(다른 곳에서 수정) 는 자동 저장을 멈추고 안내합니다.
 - **이미지 붙여넣기:** 클립보드 이미지를 1MB 이하로 줄여(`shrinkImage`) `POST /v1/docs/images` 로 올리고, 주소 `/api/proxy/v1/docs/images/{id}` 를 이미지 Markdown 으로 넣습니다.
 - 제목을 바꾸면 서버가 이 노트를 링크한 내 노트들의 `[[옛 제목]]` 을 고칩니다 → 노트 변경은 "docs" 키를 모두 무효화(`invalidateDocs`).
+### Vault
+- 선택: "전체 통합"이면 접근 가능한 vault 를 모두 섹션으로, 하나를 고르면 그 vault 만. 섹션 헤더의 [새 노트][새 폴더]는 그 vault 에 만듭니다. Team vault 는 프로젝트 멤버 모두가 보고 고칩니다(Private 는 본인만).
+- 제목·폴더 이름 유일, `[[링크]]`·백링크·계보·파생·폴더 이동은 모두 vault 안에서만(다른 vault 폴더로 노트 이동은 서버 400, 폴더 이동 선택 목록도 같은 vault 만).
 ### 폴더
 - 같은 상위 안 이름 중복 409, 자기 하위로 이동은 선택 목록에서 비활성(서버도 400), 비어 있지 않은 폴더 삭제 409.
 ### 빠른 전환

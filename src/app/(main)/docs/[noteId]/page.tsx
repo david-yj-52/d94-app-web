@@ -29,8 +29,9 @@ function NoteContent() {
     const search = useSearchParams();
     const note = useNote(noteId);
     const backlinks = useBacklinks(noteId);
-    const derived = useNotes(note.data ? {origin: note.data.title} : {origin: "\u0000"});
-    const folders = useDocsFolders();
+    // 파생·이동 대상은 이 노트의 vault 안에서만 (링크·계보가 vault 단위)
+    const derived = useNotes(note.data ? {origin: note.data.title, vaultId: note.data.vaultId} : {origin: "\u0000"});
+    const folders = useDocsFolders(note.data?.vaultId ?? "ALL");
     const [mode, setMode] = useState<"view" | "edit">(search.get("edit") ? "edit" : "view");
     const [showVersions, setShowVersions] = useState(false);
     const [preview, setPreview] = useState<NoteVersion | null>(null);
@@ -60,7 +61,7 @@ function NoteContent() {
         for (let id = n.folderId; id; id = byId.get(id)?.parentId ?? null) parts.unshift(byId.get(id)?.name ?? "…");
         return parts.join(" / ") || "/";
     })();
-    const open = (t: string) => openNote(t, n.folderId).catch((e) => show(docsError(e, "노트를 열지 못했습니다."), "error"));
+    const open = (t: string) => openNote(t, n.folderId, n.vaultId).catch((e) => show(docsError(e, "노트를 열지 못했습니다."), "error"));
 
     return (
         <div className="flex gap-4">

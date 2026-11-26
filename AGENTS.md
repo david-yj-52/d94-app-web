@@ -27,7 +27,7 @@ AGENTS.md (L1)
 │   │       ├── boards/AGENTS.md ......... 칸반 보드
 │   │       ├── sprints/AGENTS.md ........ 스프린트
 │   │       ├── reports/AGENTS.md ........ 번다운·CFD·Velocity
-│   │       ├── settings/AGENTS.md ....... 기본정보·멤버·워크플로우·자동화·Git
+│   │       ├── settings/AGENTS.md ....... 기본정보·필드·문서 관리·멤버·워크플로우·자동화·Git
 │   │       ├── versions/AGENTS.md ....... 버전·마일스톤
 │   │       └── wiki/AGENTS.md ........... 위키
 │   ├── (main)/mpms/AGENTS.md ............ [실험] 플랫폼·제품 관리
@@ -37,7 +37,7 @@ AGENTS.md (L1)
 │   ├── (main)/ayaan/AGENTS.md ........... [실험] AI CLI 작업·토큰 관리 (대시보드·작업·기준정보·셋업)
 │   ├── (main)/life-metric/AGENTS.md ..... [실험] Life Metric 삶의 수치화 (지표 카드·생성)
 │   │   └── [metricId]/AGENTS.md ......... 지표 상세 (기준값·기록·추이)
-│   ├── (main)/docs/AGENTS.md ............ Docs 개인 vault (폴더 트리·노트·[[링크]]·버전·Cmd+K)
+│   ├── (main)/docs/AGENTS.md ............ Docs 다중 vault (Private·Team, 폴더 트리·노트·[[링크]]·버전·Cmd+K)
 │   │   └── tasks/AGENTS.md .............. Task 모아보기 (체크박스 줄 상태별)
 │   └── (main)/study/AGENTS.md ........... [실험] PDF 학습 뷰어 (문서 목록·업로드)
 │       ├── [documentId]/AGENTS.md ....... 3단 뷰어 (목차·본문·이 페이지 내용)
@@ -65,7 +65,7 @@ AGENTS.md (L1)
 | **Solace** | `/solace` | WebSocket 메시징 (solclientjs) |
 | **todo** | `/todo` | Server Actions + `revalidatePath` |
 | **인터페이스 테스트** | `/interface-test` | REST 메서드별 UI → UMD → 백엔드 → DB 통신 확인 |
-| **Docs** | `/docs` | 웹 버전 Obsidian형 개인 vault: Markdown 노트·폴더·`[[링크]]`·백링크·버전 (d94-query `/api/v1/docs`) |
+| **Docs** | `/docs` | 웹 버전 Obsidian형 다중 vault(Private + CIRA 프로젝트 Team, Task 메인 문서·계보): Markdown 노트·폴더·`[[링크]]`·백링크·버전 (d94-query `/api/v1/docs`) |
 | **Life Metric** | `/life-metric` | 삶의 수치화: 템플릿·커스텀 수식(`@code` 참조)으로 지표 계산, 기준값·기록 (d94-query `/api/v1/life-metric`) |
 | **PDF 학습(Study)** | `/study` | PDF 분할 업로드, 구조화 뷰어, 단어장 툴팁, 마킹·노트 (d94-query `/api/v1/study` + d94-app-pdf 파서) |
 

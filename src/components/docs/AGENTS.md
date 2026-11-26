@@ -4,8 +4,8 @@
 > 사용 화면: [docs](../../app/(main)/docs/AGENTS.md), [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md). 이 모듈 밖에서 import 하지 않습니다.
 
 ### DocsSidebar — `@/components/docs/DocsSidebar`
-`{ folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null) => void; onNewFolder: (parentId | null) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void }`
-- `parentId` 로 폴더 트리, 폴더마다 그 폴더의 노트(제목순). 접힘은 로컬 상태. 폴더 `···` 메뉴(hover 시 표시). 들여쓰기만 인라인 style.
+`{ vaults: DocsVault[]; folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null, vaultId: string) => void; onNewFolder: (parentId | null, vaultId: string) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void }`
+- `vaults` 마다 섹션(🔒 Private · 👥 Team 이름, 접기, 섹션별 [새 노트][새 폴더])을 그리고, 그 안에 `vaultId` 가 같은 폴더·노트만. `parentId` 로 폴더 트리, 폴더마다 그 폴더의 노트(제목순). 접힘은 로컬 상태. 폴더 `···` 메뉴(hover 시 표시). 들여쓰기만 인라인 style.
 
 ### NoteMarkdown — `@/components/docs/NoteMarkdown`
 `{ content: string; existing: Set<string>; onOpenTitle: (title: string) => void }`
@@ -56,4 +56,4 @@
 `{ spec: DocsDialogSpec; onClose }`, `DocsDialogSpec = { title; message?; input?: {initial?, placeholder?}; confirmLabel; danger?; onConfirm: (value) => void }` — 이름 입력·삭제 확인 겸용(브라우저 `prompt`·`confirm` 대신, 표준 모달 마크업). ⬆ `ConfirmDialog` primitive 가 생기면 교체.
 
 ### useOpenNote — `@/components/docs/useOpenNote`
-`() => (title: string, folderId?: string | null) => Promise<void>` — 제목으로 찾아 이동, 없으면 만들고 `?edit=1` 로 이동. 목록은 `useNotes()` 캐시(서버 최대 500건).
+`() => (title: string, folderId?: string | null, vaultId?: string) => Promise<void>` — 제목으로 찾아 이동, 없으면 만들고 `?edit=1` 로 이동. `vaultId` 를 주면 그 vault 안에서만 찾고 그 vault 에 만듭니다(링크는 vault 단위). 목록은 `useNotes()` 캐시(통합 뷰, 서버 최대 500건).

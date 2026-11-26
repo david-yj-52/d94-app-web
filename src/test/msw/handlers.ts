@@ -54,6 +54,12 @@ export const handlers = [
     // lib-core BaseUserController GET /me
     http.get(`${API}/users/me`, () => json(fx.ok({email: "dev@tsh.com", name: "김개발", avatarUrl: null, roles: ["USER", "ADMIN"]}))),
 
+    // DocsController GET /vaults · CiraDocsController (백엔드 모양: CiraDocsService.IssueDocsResponse)
+    http.get(`${API}/docs/vaults`, () => json(fx.ok([{id: "v-private", type: "PRIVATE", name: "Private", projectId: null}]))),
+    http.get(`${API}/issue-types`, () => json(fx.ok([{id: "type-issue", typeNm: "Issue", icon: null, colorCd: null, descr: null}]))),
+    http.get(`${API}/projects/:projectId/doc-rules`, () => json(fx.ok([]))),
+    http.get(`${API}/projects/:projectId/issues/:issueId/docs`, () => json(fx.ok({main: null, derived: [], lineage: [], rules: []}))),
+
     // ProjectController
     http.get(`${API}/projects`, () => json(fx.ok([fx.project]))),
     http.get(`${API}/projects/:projectId`, () => json(fx.ok(fx.project))),

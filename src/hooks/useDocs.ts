@@ -12,6 +12,7 @@ import {
     getBacklinks,
     getDocsFolders,
     getDocsTasks,
+    getDocsVaults,
     getLineage,
     getNote,
     getNoteTitles,
@@ -26,7 +27,7 @@ import {
     docsImageUrl,
     uploadDocsImage,
 } from "@/lib/api/docs";
-import type {DeriveRequest, NoteFilters, NoteKind, NoteRequest, TaskFilters, TaskStatus} from "@/types/docs";
+import type {DeriveRequest, NoteFilters, NoteKind, NoteRequest, TaskFilters, TaskStatus, VaultScope} from "@/types/docs";
 
 /**
  * 노트 하나를 저장해도 다른 노트의 백링크·제목 목록·Task·계보가 바뀐다(이름 변경 시 링크 치환 포함).
@@ -41,15 +42,21 @@ export function useInvalidateDocs() {
     return useCallback(() => invalidateDocs(qc), [qc]);
 }
 
+// ── vault ──
+export function useDocsVaults() {
+    return useQuery({queryKey: ["docsVaults"], queryFn: getDocsVaults});
+}
+
 // ── 폴더 ──
-export function useDocsFolders() {
-    return useQuery({queryKey: ["docsFolders"], queryFn: getDocsFolders});
+export function useDocsFolders(vaultId: VaultScope = "ALL") {
+    return useQuery({queryKey: ["docsFolders", vaultId], queryFn: () => getDocsFolders(vaultId)});
 }
 
 export function useCreateDocsFolder() {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: ({name, parentId}: { name: string; parentId: string | null }) => createDocsFolder(name, parentId),
+        mutationFn: ({name, parentId, vaultId}: { name: string; parentId: string | null; vaultId?: string }) =>
+            createDocsFolder(name, parentId, vaultId),
         onSuccess: () => qc.invalidateQueries({queryKey: ["docsFolders"]}),
     });
 }

@@ -2,6 +2,7 @@
 
 import {AttachmentSection} from "@/components/issue/AttachmentSection";
 import {CommentSection} from "@/components/issue/CommentSection";
+import {IssueDocsSection} from "@/components/issue/IssueDocsSection";
 import CustomFieldInput from "@/components/issue/CustomFieldInput";
 import Menu from "@/components/cira/ui/Menu";
 import PageHeader from "@/components/cira/ui/PageHeader";
@@ -207,6 +208,11 @@ export default function IssueDetailPage({
                     {/* Attachments */}
                     <div className="border-t border-slate-100 pt-6">
                         <AttachmentSection issueId={issueId}/>
+                    </div>
+
+                    {/* 연결 문서 & 계보 (Docs) */}
+                    <div className="border-t border-slate-100 pt-6">
+                        <IssueDocsSection projectId={projectId} issueId={issueId}/>
                     </div>
 
                     {/* Comments */}
