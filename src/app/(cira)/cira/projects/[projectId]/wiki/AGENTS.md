@@ -19,7 +19,7 @@ wiki/page.tsx  (WikiPageContent를 Suspense로 감쌈 — useSearchParams 사용
 │   ├── "edit"            WikiEditor (initial = 현재 페이지)
 │   ├── "create"          WikiEditor (빈 값, createParentId 하위)
 │   └── "version-preview" 선택한 과거 버전 미리보기
-└── 우측: {showVersions && <WikiVersionHistory/>}
+└── 우측: {showVersions && <WikiVersionHistory/>}   (모바일은 본문 위 오버레이)
 ```
 **한 화면에서 `mode` 상태 하나로 보기·편집·생성·미리보기를 전환하는 패턴**입니다.
 

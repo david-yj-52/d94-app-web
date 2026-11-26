@@ -22,12 +22,12 @@ export default function AyaanDashboardPage() {
 
     return (
         <div className="mx-auto max-w-6xl space-y-6 px-4">
-            <div className="flex items-end justify-between">
+            <div className="flex flex-wrap items-end justify-between gap-2">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">Ayaan</h1>
                     <p className="text-sm text-slate-500">AI Tool 한도와 작업 현황 (30초마다 갱신)</p>
                 </div>
-                <div className="flex gap-2 text-sm">
+                <div className="flex flex-wrap gap-2 text-sm">
                     <Link href="/ayaan/tasks" className="self-center text-blue-600 hover:underline">작업</Link>
                     <Link href="/settings?group=ayaan" className="self-center text-blue-600 hover:underline">기준정보</Link>
                     <Link href="/ayaan/setup" className="self-center text-blue-600 hover:underline">셋업</Link>

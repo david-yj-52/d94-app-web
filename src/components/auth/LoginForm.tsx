@@ -84,7 +84,7 @@ export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: Lo
                         {...register("email")}
                         type="email"
                         placeholder="example@company.com"
-                        className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                     />
                     {errors.email && (
                         <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
@@ -100,7 +100,7 @@ export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: Lo
                             {...register("password")}
                             type={showPassword ? "text" : "password"}
                             placeholder="••••••••"
-                            className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                         />
                         <button
                             type="button"
@@ -126,7 +126,7 @@ export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: Lo
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-11 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full h-11 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                     {isSubmitting ? (
                         <>
@@ -161,7 +161,7 @@ export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: Lo
                 계정이 없으신가요?{" "}
                 <Link
                     href="/register"
-                    className="text-blue-600 font-medium hover:underline"
+                    className="text-d94-brand font-medium hover:underline"
                 >
                     회원가입
                 </Link>

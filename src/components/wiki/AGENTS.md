@@ -11,7 +11,7 @@
   onAddPage: (parentId?: string) => void; onDeletePage: (id: string, title: string) => void }
 ```
 - 반응형: md 이상은 왼쪽 240px 세로 트리, 모바일은 본문 위에 최대 224px(`max-h-56`) 높이로 스크롤됩니다.
-- 평평한 목록(`parentId`)을 `buildTree`로 트리로 바꿔 재귀 렌더링합니다(내부 `TreeNode`). 노드마다 하위 페이지 추가와 삭제 버튼이 있습니다.
+- 평평한 목록(`parentId`)을 `buildTree`로 트리로 바꿔 재귀 렌더링합니다(내부 `TreeNode`). 노드마다 하위 페이지 추가와 삭제 버튼이 있습니다. md 이상은 hover 때만, 모바일(터치)은 항상 보입니다.
 - ⚠️ 들여쓰기 깊이에 인라인 style을 씁니다.
 
 ### WikiViewer — `@/components/wiki/WikiViewer`
@@ -31,4 +31,4 @@
 ```ts
 { versions: WikiVersionResponse[]; isLoading: boolean; onClose: () => void; onPreview: (v: WikiVersionResponse) => void }
 ```
-- 버전 이력을 보여 주는 사이드 패널입니다. 항목을 클릭하면 `onPreview`로 해당 버전을 미리 봅니다.
+- 버전 이력을 보여 주는 사이드 패널입니다(md 이상 오른쪽 `w-72`, 모바일은 본문 영역 전체를 덮는 오버레이 — 부모가 `relative`). 항목을 클릭하면 `onPreview`로 해당 버전을 미리 봅니다.

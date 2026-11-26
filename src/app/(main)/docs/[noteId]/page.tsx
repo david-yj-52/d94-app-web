@@ -72,8 +72,8 @@ function NoteContent() {
     const open = (t: string) => openNote(t, n.folderId, n.vaultId).catch((e) => show(docsError(e, "노트를 열지 못했습니다."), "error"));
 
     return (
-        <div className="flex gap-4">
-            <article className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white p-6 lg:h-[calc(100vh-7.5rem)] lg:overflow-y-auto">
+        <div className="flex flex-col gap-4 lg:flex-row">
+            <article className="min-w-0 flex-1 rounded-xl border border-slate-200 bg-white p-4 md:p-6 lg:h-[calc(100vh-7.5rem)] lg:overflow-y-auto">
                 {mode === "edit" ? (
                     <NoteEditor note={n} fetchTitles={fetchTitles}
                                 uploadImage={uploadImage.mutateAsync}
@@ -85,10 +85,10 @@ function NoteContent() {
                                 }}/>
                 ) : (
                     <>
-                        <div className="mb-4 flex items-start gap-2 border-b border-slate-100 pb-3">
-                            <div className="min-w-0 flex-1">
+                        <div className="mb-4 flex flex-wrap items-start gap-2 border-b border-slate-100 pb-3">
+                            <div className="min-w-0 basis-full flex-1 sm:basis-auto">
                                 <p className="text-xs text-slate-400">{folderPath}</p>
-                                <h1 className="truncate text-2xl font-bold text-slate-900">{preview ? `${preview.title} (v${preview.version})` : n.title}</h1>
+                                <h1 className="truncate text-xl font-semibold md:text-2xl md:font-bold text-slate-900">{preview ? `${preview.title} (v${preview.version})` : n.title}</h1>
                             </div>
                             {preview ? (
                                 <button type="button" onClick={() => setPreview(null)} className="h-8 rounded-lg px-3 text-xs text-blue-600 hover:bg-blue-50">현재 버전으로</button>
@@ -120,7 +120,7 @@ function NoteContent() {
                     </>
                 )}
             </article>
-            <div className="hidden w-64 shrink-0 overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:block lg:h-[calc(100vh-7.5rem)]">
+            <div className="w-full shrink-0 overflow-y-auto rounded-xl border border-slate-200 bg-white p-4 lg:w-64 lg:h-[calc(100vh-7.5rem)]">
                 {showVersions ? (
                     <NoteVersionHistory versions={versions.data ?? []} isLoading={versions.isLoading} selected={preview?.version ?? null}
                                         onPreview={(v) => {
@@ -181,7 +181,7 @@ function NoteContent() {
 function IconButton({label, onClick, children}: { label: string; onClick: () => void; children: React.ReactNode }) {
     return (
         <button type="button" onClick={onClick} aria-label={label} title={label}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100">
+                className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 md:h-8 md:w-8 hover:bg-slate-100">
             {children}
         </button>
     );

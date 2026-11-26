@@ -105,7 +105,7 @@ export default function RegisterForm() {
                         {...register("name")}
                         type="text"
                         placeholder="홍길동"
-                        className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                     />
                     {errors.name && (
                         <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
@@ -120,7 +120,7 @@ export default function RegisterForm() {
                         {...register("email")}
                         type="email"
                         placeholder="example@company.com"
-                        className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                     />
                     {errors.email && (
                         <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
@@ -136,7 +136,7 @@ export default function RegisterForm() {
                             {...register("password")}
                             type={showPassword ? "text" : "password"}
                             placeholder="영문+숫자 8자 이상"
-                            className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                         />
                         <button
                             type="button"
@@ -162,7 +162,7 @@ export default function RegisterForm() {
                             {...register("passwordConfirm")}
                             type={showConfirm ? "text" : "password"}
                             placeholder="비밀번호를 다시 입력하세요"
-                            className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                         />
                         <button
                             type="button"
@@ -188,7 +188,7 @@ export default function RegisterForm() {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-11 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full h-11 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                     {isSubmitting ? (
                         <>
@@ -223,7 +223,7 @@ export default function RegisterForm() {
                 이미 계정이 있으신가요?{" "}
                 <Link
                     href="/login"
-                    className="text-blue-600 font-medium hover:underline"
+                    className="text-d94-brand font-medium hover:underline"
                 >
                     로그인
                 </Link>

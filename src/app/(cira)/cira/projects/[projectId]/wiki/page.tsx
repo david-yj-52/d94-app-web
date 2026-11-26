@@ -181,8 +181,7 @@ function WikiPageContent({projectId}: { projectId: string }) {
 
     return (
         <div
-            className="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white md:flex-row"
-            style={{height: "calc(100vh - 140px)"}}
+            className="flex min-h-[60vh] flex-col overflow-hidden rounded-xl border border-slate-200 bg-white md:h-[calc(100vh-140px)] md:flex-row"
         >
             {/* Sidebar tree */}
             <WikiTree
@@ -194,7 +193,7 @@ function WikiPageContent({projectId}: { projectId: string }) {
             />
 
             {/* Main area */}
-            <div className="flex-1 flex overflow-hidden">
+            <div className="relative flex-1 flex overflow-hidden">
                 <div className="flex-1 flex flex-col overflow-hidden">{renderContent()}</div>
 
                 {/* Version history panel */}

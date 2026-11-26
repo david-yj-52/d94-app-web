@@ -17,7 +17,7 @@ export default function WikiVersionHistory({
                                                onPreview,
                                            }: WikiVersionHistoryProps) {
     return (
-        <div className="w-72 shrink-0 border-l border-slate-200 flex flex-col h-full bg-white">
+        <div className="absolute inset-0 z-10 w-full shrink-0 border-l border-slate-200 flex flex-col h-full bg-white md:static md:w-72">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
                 <span className="text-sm font-semibold text-slate-700">버전 이력</span>

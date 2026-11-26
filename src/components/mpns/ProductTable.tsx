@@ -62,8 +62,8 @@ export default function ProductTable({
                 </div>
             </header>
 
-            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-                <table className="min-w-full table-fixed text-left text-sm">
+            <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+                <table className="w-full min-w-[560px] table-fixed text-left text-sm">
                     <thead className="bg-gray-100 text-xs font-semibold text-gray-700">
                     <tr>
                         <th className="w-32 px-3 py-2">제품명</th>

@@ -78,7 +78,7 @@ export default function AyaanTasksPage() {
     };
     return (
         <div className="mx-auto max-w-6xl space-y-4 px-4">
-            <div className="flex items-end justify-between">
+            <div className="flex flex-wrap items-end justify-between gap-2">
                 <h1 className="text-2xl font-bold text-slate-900">Ayaan 작업</h1>
                 <div className="flex gap-2">
                     <button className={btnSecondary} onClick={() => setShowPlan(!showPlan)}>계획 실행</button>
@@ -176,7 +176,7 @@ export default function AyaanTasksPage() {
                     </ul>
                 </section>
             )}
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2">
                 <select aria-label="상태 필터" className={`${inputCls} max-w-48`} value={status} onChange={(e) => setStatus(e.target.value)}>
                     <option value="">전체 상태</option>
                     {TASK_STATUSES.map((s) => <option key={s}>{s}</option>)}
@@ -188,7 +188,8 @@ export default function AyaanTasksPage() {
                 <button className={btnSecondary} onClick={() => list.refetch()}>새로고침</button>
             </div>
             {list.isLoading ? <SkeletonRow/> : (
-                <table className="w-full rounded-xl border border-slate-200 bg-white text-sm">
+                <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+                <table className="w-full min-w-[560px] text-sm">
                     <thead className="text-left text-xs text-slate-500">
                     <tr><th className="p-2">이슈/ID</th><th>상태</th><th>Tool</th><th>재개 예정</th><th>생성</th></tr>
                     </thead>
@@ -205,6 +206,7 @@ export default function AyaanTasksPage() {
                     {list.data?.length === 0 && <tr><td colSpan={5} className="p-4 text-center text-slate-400">작업이 없습니다.</td></tr>}
                     </tbody>
                 </table>
+                </div>
             )}
             {ToastComponent}
         </div>

@@ -97,12 +97,12 @@ export default function GlobalSearch() {
     const showDropdown = open && (query.trim().length > 0 || loading);
 
     return (
-        <div ref={containerRef} className="relative w-64">
+        <div ref={containerRef} className="relative min-w-0 max-w-[16rem] flex-1 sm:w-64 sm:flex-none">
             {/* Search trigger / input */}
             <div
                 className={`flex h-8 items-center gap-2 rounded-lg border px-3 text-sm transition-colors ${
                     open
-                        ? "border-blue-400 bg-white shadow-sm"
+                        ? "border-d94-brand bg-white shadow-sm"
                         : "border-gray-200 bg-gray-50 hover:bg-gray-100 cursor-pointer"
                 }`}
                 onClick={openSearch}
@@ -114,10 +114,10 @@ export default function GlobalSearch() {
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         placeholder="검색..."
-                        className="flex-1 bg-transparent outline-none text-gray-800 placeholder:text-gray-400"
+                        className="min-w-0 flex-1 bg-transparent outline-none text-gray-800 placeholder:text-gray-400"
                     />
                 ) : (
-                    <span className="flex-1 text-gray-400">검색...</span>
+                    <span className="flex-1 truncate text-gray-400">검색...</span>
                 )}
                 <kbd
                     className="hidden sm:inline-flex h-5 items-center rounded border border-gray-200 bg-white px-1.5 text-[10px] font-mono text-gray-500">
@@ -139,7 +139,7 @@ export default function GlobalSearch() {
 
             {/* Dropdown */}
             {showDropdown && (
-                <div className="absolute left-0 top-10 z-50 w-80 rounded-xl border border-gray-200 bg-white shadow-lg">
+                <div className="fixed inset-x-3 top-14 z-50 rounded-xl sm:absolute sm:inset-x-auto sm:left-0 sm:top-10 sm:w-80 border border-gray-200 bg-white shadow-lg">
                     {loading ? (
                         <div className="px-4 py-3 text-sm text-gray-400">검색 중...</div>
                     ) : results.length === 0 ? (

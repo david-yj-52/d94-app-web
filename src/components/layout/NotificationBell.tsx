@@ -85,10 +85,10 @@ export default function NotificationBell() {
         unreadCount > 99 ? "99+" : unreadCount > 0 ? String(unreadCount) : null;
 
     return (
-        <div ref={containerRef} className="relative">
+        <div ref={containerRef} className="relative shrink-0">
             <button
                 onClick={() => setOpen((v) => !v)}
-                className="relative flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
+                className="relative flex h-10 w-10 items-center md:h-8 md:w-8 justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
                 aria-label="알림"
             >
                 <Bell className="h-[18px] w-[18px]"/>
@@ -101,7 +101,7 @@ export default function NotificationBell() {
             </button>
 
             {open && (
-                <div className="absolute right-0 top-10 z-50 w-80 rounded-xl border border-gray-200 bg-white shadow-lg">
+                <div className="fixed inset-x-3 top-14 z-50 rounded-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-10 sm:w-80 border border-gray-200 bg-white shadow-lg">
                     <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
                         <span className="text-sm font-semibold text-gray-800">알림</span>
                         <div className="flex items-center gap-2">

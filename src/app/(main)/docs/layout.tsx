@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import {useParams} from "next/navigation";
 import Link from "next/link";
-import {ListChecks} from "lucide-react";
+import {FolderTree, ListChecks} from "lucide-react";
 import DocsSidebar from "@/components/docs/DocsSidebar";
 import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import QuickSwitcher from "@/components/docs/QuickSwitcher";
@@ -34,6 +34,9 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
     const [switcher, setSwitcher] = useState(false);
     const [moving, setMoving] = useState<DocsFolder | null>(null);
     const [dialog, setDialog] = useState<DocsDialogSpec | null>(null);
+    // 모바일(< lg) 폴더 트리 펼침. 노트를 고르면 닫는다
+    const [treeOpen, setTreeOpen] = useState(false);
+    useEffect(() => setTreeOpen(false), [params.noteId]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
@@ -57,8 +60,12 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
     };
 
     return (
-        <div className="mx-auto flex max-w-[1400px] gap-4 px-4">
-            <div className="w-60 shrink-0 overflow-y-auto rounded-xl border border-slate-200 bg-white p-3 lg:h-[calc(100vh-7.5rem)]">
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-3 md:px-4 lg:flex-row">
+            <button type="button" onClick={() => setTreeOpen((v) => !v)} aria-expanded={treeOpen}
+                    className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 lg:hidden">
+                <FolderTree className="h-4 w-4"/> 폴더 · 노트 {treeOpen ? "닫기" : "열기"}
+            </button>
+            <div className={`${treeOpen ? "block" : "hidden"} max-h-[70vh] w-full shrink-0 overflow-y-auto lg:block lg:max-h-none lg:w-60 rounded-xl border border-slate-200 bg-white p-3 lg:h-[calc(100vh-7.5rem)]`}>
                 <button type="button" onClick={() => setSwitcher(true)}
                         className="mb-3 flex h-8 w-full items-center rounded-lg bg-slate-50 px-2 text-left text-xs text-slate-400 hover:bg-slate-100">
                     노트 찾기 <span className="ml-auto">⌘K</span>

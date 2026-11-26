@@ -5,7 +5,7 @@
 
 ## 1. 디자인 토큰
 
-`tailwind.config.js` theme가 비어 있으므로 Tailwind 기본 팔레트를 아래 규칙대로 씁니다.
+`tailwind.config.js` 에 서비스 공통 색 `d94.*`(`d94-brand`·`d94-bg`·`d94-border` 등, 값은 `globals.css` `:root`)가 있습니다 → [ADR 0008](../../../docs/decisions/0008-service-design-system.md). 강조색은 새 코드부터 `d94-brand` 를 쓰고, 나머지는 Tailwind 기본 팔레트를 아래 규칙대로 씁니다.
 
 | 토큰 | 값 | 용도 |
 |---|---|---|

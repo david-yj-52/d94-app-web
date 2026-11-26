@@ -57,7 +57,6 @@
 **인라인 `style={{}}`** (차트 크기·진행률 등 동적 수치 때문에 일부는 정당한 예외일 수 있음)
 - `src/app/(cira)/cira/dashboard/page.tsx`
 - `src/app/(cira)/cira/projects/[projectId]/reports/{burndown,cfd,velocity}/page.tsx`
-- `src/app/(cira)/cira/projects/[projectId]/wiki/page.tsx`
 - `src/components/issue/AttachmentSection.tsx`
 - `src/components/milestone/MilestoneCard.tsx`
 - `src/components/search/CqlEditor.tsx`

@@ -3,22 +3,43 @@
 @tailwind utilities;
 
 /* 여기에 추가하고 싶은 전역 스타일을 적을 수 있습니다. */
+:root {
+    /* D94 서비스 공통 디자인 토큰 (CIRA 기준 통합) */
+    --d94-brand: #4F46E5;
+    --d94-brand-hover: #4338CA;
+    --d94-brand-soft: #EEF2FF;
+    --d94-bg: #F4F5F7;
+    --d94-surface: #FFFFFF;
+    --d94-sidebar: #FAFAFA;
+    --d94-border: #E5E7EB;
+    --d94-text: #1F2937;
+    --d94-muted: #6B7280;
+    --d94-danger: #EF4444;
+    --d94-success: #22C55E;
+    --d94-warning: #F59E0B;
+}
+
+html,
 body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    overflow-x: clip;
+    font-size: 14px;
+    color: var(--d94-text);
+    background: var(--d94-bg);
 }
 
 /* CIRA 전용 디자인 토큰 → docs/decisions/0006-cira-design-layer.md (tailwind `cira.*` 로 사용) */
 .cira-root {
-    --cira-brand: #4F46E5;
-    --cira-brand-soft: #EEF2FF;
-    --cira-bg: #F4F5F7;
-    --cira-surface: #FFFFFF;
-    --cira-sidebar: #FAFAFA;
-    --cira-border: #E5E7EB;
-    --cira-text: #1F2937;
-    --cira-muted: #6B7280;
+    --cira-brand: var(--d94-brand);
+    --cira-brand-soft: var(--d94-brand-soft);
+    --cira-bg: var(--d94-bg);
+    --cira-surface: var(--d94-surface);
+    --cira-sidebar: var(--d94-sidebar);
+    --cira-border: var(--d94-border);
+    --cira-text: var(--d94-text);
+    --cira-muted: var(--d94-muted);
     font-size: 14px;
     color: var(--cira-text);
     background: var(--cira-bg);

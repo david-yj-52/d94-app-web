@@ -86,8 +86,8 @@ function TreeNode({node, selectedId, onSelect, onAddChild, onDelete, depth = 0}:
 
                 <span className="flex-1 truncate">{node.title}</span>
 
-                {/* hover actions */}
-                <span className="hidden group-hover:flex items-center gap-0.5">
+                {/* hover actions — 터치 기기(< md)는 항상 보임 */}
+                <span className="flex items-center gap-0.5 md:hidden md:group-hover:flex">
           <button
               title="하위 페이지 추가"
               className="p-0.5 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600"

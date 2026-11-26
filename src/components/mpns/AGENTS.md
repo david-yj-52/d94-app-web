@@ -18,6 +18,7 @@
   searchValue: string; onChangeSearch: (v: string) => void; onClickAdd: () => void; platformName: string; disabled?: boolean }
 ```
 - 플랫폼을 선택하지 않으면 `disabled` 상태가 됩니다.
+- 두 테이블 모두 `overflow-x-auto` 래퍼 + `min-w-[560px]` 이라 좁은 화면에서는 테이블 안에서 가로 스크롤됩니다.
 
 ### DetailPanel — `@/components/mpns/DetailPanel`
 ```ts

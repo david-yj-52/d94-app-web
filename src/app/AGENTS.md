@@ -6,7 +6,7 @@
 ## 1. 라우팅 구조
 
 ```
-app/layout.tsx           <html>·<body> + Providers(Query+Session) 만
+app/layout.tsx           <html>·<body>(bg-d94-bg) + Providers(Query+Session) + viewport(device-width, viewportFit cover)
 ├── page.tsx             "/" (로그인 시 /home, 아니면 /login 으로 redirect) ⚠️ (main)/page.tsx 와 경로 중복
 ├── (auth)/              비로그인 전용. layout: 가운데 정렬 + TshLogo + "CIRA"
 │   ├── login/                 → LoginForm
