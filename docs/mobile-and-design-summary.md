@@ -1,5 +1,15 @@
 # D94 Web 모바일 대응 및 공통 디자인 기준 정리
 
+## 0. 적용 내역 총정리 (2026-11-26)
+
+| 차수 | 커밋 | 범위 | 내용 |
+|---|---|---|---|
+| 1 | `830d669` feat | 모바일 레이아웃 | ApHeader 햄버거 메뉴 패널·검색/알림 드롭다운 화면 폭 맞춤 · Docs 폴더 트리 토글·노트 우측 패널 하단 · Wiki 높이(인라인 style 제거)·버전 오버레이·터치 액션 · MPMS/Ayaan 테이블 가로 스크롤 · Ayaan 상단 바 wrap · 루트 `viewport` · `d94-*` 토큰(ADR 0008) · 로그인/가입 브랜드 색 |
+| 2 | `8ed48f4` style | 색·배경 통일 | CIRA 전용·테스트 제외 84개 파일 363곳 `blue-600` 계열 → `d94-brand` 계열 · `(main)`/`(auth)` 배경 → `bg-d94-bg` · 375px 25개 화면 넘침 점검 |
+| 3 | (이번) feat | 테이블 카드화 | MPMS 플랫폼·제품(`MobileRowCards`)·Ayaan 작업 목록을 모바일 카드 목록으로 · MPMS 모바일 `min-h-[460px]` 제거 · MPMS 검정 버튼 → `d94-brand` |
+
+**남은 후보(미적용):** 모바일 메뉴를 슬라이드 서랍(`Dialog`)으로 바꾸려면 `cira/ui/Dialog` 를 `ui/` 로 승격해야 함(ADR 0006) · `ui/` 에 Button·Input primitive 가 없어 버튼 마크업이 화면마다 반복됨.
+
 ## 1. 모바일 환경 문제점 분석
 
 | 영역 | 대상 파일 | 원인 | 모바일 화면 증상 |
@@ -18,7 +28,7 @@
 
 > **적용 완료 (2026-11-26, `feat/mobile-responsive`)** — 1~3단계를 아래처럼 단순화해 반영했습니다.
 > - 헤더 모바일 메뉴는 `Dialog` 서랍 대신 헤더 아래 펼침 패널, Docs 폴더 트리는 [폴더 · 노트 열기] 토글 (Radix 를 CIRA 밖으로 끌어오지 않기 위함, ADR 0006).
-> - MPMS·Ayaan 테이블은 카드 리스트 분기 없이 `overflow-x-auto` + `min-w-[560px]` 만 적용.
+> - MPMS·Ayaan 테이블은 처음엔 `overflow-x-auto` 만 적용했고, 이후 `IssueTable` 처럼 모바일 카드 목록(`md:hidden`) + 데스크톱 테이블(`hidden md:block`)로 바꿨습니다.
 > - Wiki 높이는 인라인 style 을 Tailwind `min-h-[60vh] md:h-[calc(100vh-140px)]` 로 교체.
 
 ### 1단계: 공통 레이아웃·헤더 즉시 복구

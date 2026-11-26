@@ -89,7 +89,7 @@ export default function PlatformAddPopup({
                     </button>
                     <button
                         type="submit"
-                        className="rounded bg-black px-4 py-1 font-medium text-white hover:bg-gray-900"
+                        className="rounded bg-d94-brand px-4 py-1 font-medium text-white hover:bg-d94-brand-hover"
                     >
                         저장
                     </button>

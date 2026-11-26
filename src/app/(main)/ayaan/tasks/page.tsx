@@ -187,8 +187,26 @@ export default function AyaanTasksPage() {
                 </select>
                 <button className={btnSecondary} onClick={() => list.refetch()}>새로고침</button>
             </div>
-            {list.isLoading ? <SkeletonRow/> : (
-                <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+            {list.isLoading ? <SkeletonRow/> : (<>
+                {/* 모바일(< md) 카드 목록 */}
+                <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white md:hidden">
+                    {(list.data ?? []).map((t) => (
+                        <li key={t.id}>
+                            <Link href={`/ayaan/tasks/${t.id}`} className="block px-3 py-3 text-sm active:bg-slate-50">
+                                <span className="flex items-center gap-2">
+                                    <span className="font-medium text-d94-brand">{t.issueKey ?? t.id}</span>
+                                    <span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span>
+                                    <span className="ml-auto text-xs text-slate-500">{t.toolCd}</span>
+                                </span>
+                                <span className="mt-1 block text-xs text-slate-500">
+                                    생성 {fmtTime(t.createdAt)}{t.resumeAt && ` · 재개 예정 ${fmtTime(t.resumeAt)}`}
+                                </span>
+                            </Link>
+                        </li>
+                    ))}
+                    {list.data?.length === 0 && <li className="p-4 text-center text-sm text-slate-400">작업이 없습니다.</li>}
+                </ul>
+                <div className="hidden overflow-x-auto rounded-xl border border-slate-200 bg-white md:block">
                 <table className="w-full min-w-[560px] text-sm">
                     <thead className="text-left text-xs text-slate-500">
                     <tr><th className="p-2">이슈/ID</th><th>상태</th><th>Tool</th><th>재개 예정</th><th>생성</th></tr>
@@ -207,7 +225,7 @@ export default function AyaanTasksPage() {
                     </tbody>
                 </table>
                 </div>
-            )}
+            </>)}
             {ToastComponent}
         </div>
     );

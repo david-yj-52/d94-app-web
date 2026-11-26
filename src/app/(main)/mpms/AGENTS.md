@@ -12,8 +12,8 @@
 ## 화면 구성
 ```
 mpms/page.tsx  (상태: platforms, products, 선택 id 2개, 검색어 2개, 팝업 open 2개)
-├── PlatformTable  (검색·선택·추가)
-├── ProductTable   (선택한 플랫폼의 제품만, 미선택 시 disabled)
+├── PlatformTable  (검색·선택·추가, 모바일은 MobileRowCards 카드)
+├── ProductTable   (선택한 플랫폼의 제품만, 미선택 시 disabled, 모바일은 카드)
 ├── DetailPanel    (선택한 플랫폼·제품 상세)
 ├── PlatformAddPopup open={…}
 └── ProductAddPopup  open={…} platformName

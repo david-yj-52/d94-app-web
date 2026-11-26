@@ -8,7 +8,7 @@ type Props = {
 
 export default function DetailPanel({platform, product}: Props) {
     return (
-        <section className="w-full flex-shrink-0 rounded-2xl bg-white p-4 shadow-md min-h-[460px] lg:w-80">
+        <section className="w-full flex-shrink-0 rounded-2xl bg-white p-4 shadow-md md:min-h-[460px] lg:w-80">
             <h2 className="mb-4 text-lg font-semibold">상세 정보</h2>
 
             <div className="space-y-4 text-sm">

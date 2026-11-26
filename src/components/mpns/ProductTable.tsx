@@ -1,3 +1,5 @@
+import MobileRowCards from "./MobileRowCards";
+
 export type Product = {
     id: string;
     platformId: string;
@@ -31,7 +33,7 @@ export default function ProductTable({
                                          disabled,
                                      }: Props) {
     return (
-        <section className="flex-1 rounded-2xl bg-white p-4 shadow-md min-h-[460px]">
+        <section className="flex-1 rounded-2xl bg-white p-4 shadow-md md:min-h-[460px]">
             <header className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="text-lg font-semibold">
                     {platformName ? `${platformName} 제품 설정` : "제품 설정"}
@@ -47,7 +49,7 @@ export default function ProductTable({
                     <button
                         type="button"
                         disabled={disabled}
-                        className="h-8 rounded bg-black px-3 text-xs font-medium text-white disabled:cursor-not-allowed disabled:bg-gray-400"
+                        className="h-8 rounded bg-d94-brand px-3 text-xs font-medium text-white hover:bg-d94-brand-hover disabled:cursor-not-allowed disabled:bg-gray-400"
                     >
                         검색
                     </button>
@@ -62,7 +64,9 @@ export default function ProductTable({
                 </div>
             </header>
 
-            <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+            <MobileRowCards rows={products} selectedId={selectedProductId} onSelect={onSelectProduct} emptyText={disabled ? "플랫폼을 먼저 선택해 주세요." : "등록된 제품이 없습니다."}/>
+
+            <div className="hidden overflow-x-auto rounded-lg border border-gray-200 bg-white md:block">
                 <table className="w-full min-w-[560px] table-fixed text-left text-sm">
                     <thead className="bg-gray-100 text-xs font-semibold text-gray-700">
                     <tr>
@@ -80,7 +84,7 @@ export default function ProductTable({
                                 key={product.id}
                                 className={
                                     "cursor-pointer hover:bg-gray-50 " +
-                                    (isSelected ? "bg-blue-50" : "")
+                                    (isSelected ? "bg-d94-brand-soft" : "")
                                 }
                                 onClick={() => onSelectProduct(product.id)}
                             >

@@ -18,7 +18,13 @@
   searchValue: string; onChangeSearch: (v: string) => void; onClickAdd: () => void; platformName: string; disabled?: boolean }
 ```
 - 플랫폼을 선택하지 않으면 `disabled` 상태가 됩니다.
-- 두 테이블 모두 `overflow-x-auto` 래퍼 + `min-w-[560px]` 이라 좁은 화면에서는 테이블 안에서 가로 스크롤됩니다.
+- 두 테이블 모두 md(768px) 미만은 `MobileRowCards` 카드 목록, 이상은 테이블(`hidden md:block`, `overflow-x-auto` + `min-w-[560px]`)입니다. 선택 행 배경은 `bg-d94-brand-soft`, [검색] 버튼은 `bg-d94-brand`. 세 섹션의 `min-h-[460px]` 는 md 이상에서만.
+
+### MobileRowCards — `@/components/mpns/MobileRowCards` (PlatformTable·ProductTable 내부)
+```ts
+{ rows: { id: string; name: string; alias: string; url: string; note?: string }[]; selectedId: string | null; onSelect: (id: string) => void; emptyText: string }
+```
+- `md:hidden` 카드 목록(이름·별명 / URL / Note). 카드를 누르면 `onSelect(id)`, 비어 있으면 `emptyText`.
 
 ### DetailPanel — `@/components/mpns/DetailPanel`
 ```ts
