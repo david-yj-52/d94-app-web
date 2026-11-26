@@ -50,7 +50,7 @@ export default function AssignIssueModal({projectId, sprint, onClose, onSuccess}
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                     placeholder="Task 검색..."
-                    className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm mb-3 focus:outline-none focus:ring-2 focus:ring-d94-brand"
                 />
 
                 <div className="flex-1 overflow-y-auto min-h-0">
@@ -86,7 +86,7 @@ export default function AssignIssueModal({projectId, sprint, onClose, onSuccess}
                             <button
                                 onClick={() => handleAdd(issue.id)}
                                 disabled={adding === issue.id}
-                                className="ml-3 shrink-0 h-7 px-3 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 disabled:opacity-60"
+                                className="ml-3 shrink-0 h-7 px-3 rounded-lg bg-d94-brand text-white text-xs font-medium hover:bg-d94-brand-hover disabled:opacity-60"
                             >
                                 {adding === issue.id ? "..." : "추가"}
                             </button>

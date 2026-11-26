@@ -68,7 +68,7 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
                         disabled={isToggling}
                         aria-label={rule.isActive ? "비활성화" : "활성화"}
                         className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none disabled:opacity-60 ${
-                            rule.isActive ? "bg-blue-600" : "bg-slate-200"
+                            rule.isActive ? "bg-d94-brand" : "bg-slate-200"
                         }`}
                     >
             <span
@@ -101,7 +101,7 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
                     </button>
                     <button
                         onClick={() => onEdit(rule)}
-                        className="text-xs text-blue-500 hover:text-blue-700"
+                        className="text-xs text-blue-500 hover:text-d94-brand-hover"
                     >
                         수정
                     </button>

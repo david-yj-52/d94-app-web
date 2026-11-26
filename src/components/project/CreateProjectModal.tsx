@@ -76,7 +76,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                             <input
                                 {...register("key")}
                                 placeholder="PROJ"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                             {errors.key && (
                                 <p className="mt-0.5 text-xs text-red-500">
@@ -91,7 +91,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                             <input
                                 {...register("name")}
                                 placeholder="프로젝트 이름"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                             {errors.name && (
                                 <p className="mt-0.5 text-xs text-red-500">
@@ -109,7 +109,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                             {...register("description")}
                             rows={2}
                             placeholder="프로젝트 설명"
-                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -121,14 +121,14 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                             <Link
                                 href="/settings?group=cira"
                                 onClick={onClose}
-                                className="text-[11px] text-blue-600 hover:underline"
+                                className="text-[11px] text-d94-brand hover:underline"
                             >
                                 기준정보에서 관리
                             </Link>
                         </div>
                         <select
                             {...register("projectTypeId")}
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             {projectTypes.map((type) => (
                                 <option key={type.id} value={type.id}>
@@ -161,7 +161,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                         >
                             {isPending ? "생성 중..." : "생성"}
                         </button>

@@ -293,7 +293,7 @@ export default function DashboardPage() {
                     <div className="mt-4 text-center">
                         <Link
                             href="/cira/projects"
-                            className="text-sm text-blue-600 hover:text-blue-800 no-underline"
+                            className="text-sm text-d94-brand hover:text-d94-brand-hover no-underline"
                         >
                             전체 프로젝트 보기 →
                         </Link>

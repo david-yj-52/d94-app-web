@@ -11,7 +11,7 @@ function SubmitButton() {
         <button
             type="submit"
             disabled={pending}
-            className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors
+            className="bg-d94-brand text-white px-6 py-3 rounded-xl font-semibold hover:bg-d94-brand-hover transition-colors
      disabled:bg-blue-300 disabled:cursor-not-allowed min-w-[80px]"
         >
             {pending ? (
@@ -56,7 +56,7 @@ export default function AddTodoForm() {
                 type="text"
                 name="todoText"
                 placeholder="새로운 할 일을 입력하세요."
-                className="flex-1 px-4 py-3 rounded-xl border border-r-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl border border-r-gray-200 focus:outline-none focus:ring-2 focus:ring-d94-brand transition-all"
                 required
             />
             <SubmitButton/>

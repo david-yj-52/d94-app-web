@@ -149,7 +149,7 @@ function SprintCard({
             </span>
                         <button
                             onClick={() => setExpanded((v) => !v)}
-                            className="text-blue-500 hover:text-blue-700 font-medium"
+                            className="text-blue-500 hover:text-d94-brand-hover font-medium"
                         >
                             Task {issues.length}개 {expanded ? "▲" : "▼"}
                         </button>
@@ -169,7 +169,7 @@ function SprintCard({
                     {sprint.sprintStat === "Active" && (
                         <button
                             onClick={() => onComplete(sprint)}
-                            className="h-8 px-3 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700"
+                            className="h-8 px-3 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover"
                         >
                             완료
                         </button>
@@ -230,7 +230,7 @@ function SprintCard({
                                     <td className="py-2.5 text-slate-800">
                                         <Link
                                             href={`/cira/projects/${projectId}/issues/${issue.id}`}
-                                            className="hover:text-blue-600 hover:underline"
+                                            className="hover:text-d94-brand hover:underline"
                                         >
                                             {issue.title}
                                         </Link>
@@ -343,7 +343,7 @@ export default function SprintsPage({
                     <p className="text-sm mb-6">새 스프린트를 생성해서 작업을 계획하세요.</p>
                     <button
                         onClick={() => setShowCreate(true)}
-                        className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                        className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                     >
                         + 스프린트 생성
                     </button>

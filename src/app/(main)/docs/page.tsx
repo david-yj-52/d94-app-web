@@ -23,14 +23,14 @@ export default function DocsHomePage() {
                 if (title.trim()) openNote(title.trim()).catch((err) => show(docsError(err, "노트를 만들지 못했습니다."), "error"));
             }}>
                 <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="떠오른 아이디어를 한 줄로" aria-label="새 아이디어 제목"
-                       className="h-10 flex-1 rounded-lg border border-slate-200 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-                <button type="submit" className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700">기록</button>
+                       className="h-10 flex-1 rounded-lg border border-slate-200 px-3 focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
+                <button type="submit" className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover">기록</button>
             </form>
             <h2 className="mb-2 mt-8 text-xs font-medium text-slate-600">최근 노트</h2>
             <ul className="divide-y divide-slate-100">
                 {(recent.data ?? []).slice(0, 15).map((n) => (
                     <li key={n.id}>
-                        <Link href={`/docs/${n.id}`} className="flex items-center gap-2 py-2 text-sm hover:text-blue-600">
+                        <Link href={`/docs/${n.id}`} className="flex items-center gap-2 py-2 text-sm hover:text-d94-brand">
                             <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">{KIND_LABEL[n.kind]}</span>
                             <span className="truncate">{n.title}</span>
                             {n.modifiedAt && <span className="ml-auto shrink-0 text-xs text-slate-400">{new Date(n.modifiedAt).toLocaleDateString("ko-KR")}</span>}

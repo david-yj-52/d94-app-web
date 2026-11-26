@@ -91,12 +91,12 @@ function NoteContent() {
                                 <h1 className="truncate text-xl font-semibold md:text-2xl md:font-bold text-slate-900">{preview ? `${preview.title} (v${preview.version})` : n.title}</h1>
                             </div>
                             {preview ? (
-                                <button type="button" onClick={() => setPreview(null)} className="h-8 rounded-lg px-3 text-xs text-blue-600 hover:bg-blue-50">현재 버전으로</button>
+                                <button type="button" onClick={() => setPreview(null)} className="h-8 rounded-lg px-3 text-xs text-d94-brand hover:bg-d94-brand-soft">현재 버전으로</button>
                             ) : (
                                 <div className="flex items-center gap-1">
                                     <select value={n.kind} aria-label="종류 (승격)" disabled={changeKind.isPending}
                                             onChange={(e) => changeKind.mutate(e.target.value as NoteKind, {onError: (er) => show(docsError(er, "종류를 바꾸지 못했습니다."), "error")})}
-                                            className="h-8 rounded-lg border border-slate-200 px-2 text-xs text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            className="h-8 rounded-lg border border-slate-200 px-2 text-xs text-slate-600 focus:outline-none focus:ring-2 focus:ring-d94-brand">
                                         {KINDS.map((k) => <option key={k} value={k}>{KIND_LABEL[k]}</option>)}
                                     </select>
                                     <IconButton label="파생 노트 만들기" onClick={() => setDeriving(true)}><GitBranch className="h-4 w-4"/></IconButton>

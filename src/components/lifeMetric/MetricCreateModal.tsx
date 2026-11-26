@@ -7,7 +7,7 @@ import {useState} from "react";
 import FormulaEditor from "./FormulaEditor";
 import {formatValue} from "./formulaRef";
 
-const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
 const labelCls = "block text-xs font-medium text-slate-600 mb-1";
 const EMPTY_FIELD: InputField = {key: "", label: "", type: "NUMBER", mode: "BASELINE"};
 
@@ -107,7 +107,7 @@ export default function MetricCreateModal({onClose, onCreated}: {
                     </div>
 
                     {mode === "template" && templateId && (
-                        <button type="button" onClick={customize} className="text-sm text-blue-600 hover:underline">
+                        <button type="button" onClick={customize} className="text-sm text-d94-brand hover:underline">
                             이 템플릿의 수식 고치기 →
                         </button>
                     )}
@@ -139,7 +139,7 @@ export default function MetricCreateModal({onClose, onCreated}: {
                                                     onClick={() => setFields((fs) => fs.filter((_, j) => j !== i))}>✕</button>
                                         </div>
                                     ))}
-                                    <button type="button" className="text-sm text-blue-600 hover:underline"
+                                    <button type="button" className="text-sm text-d94-brand hover:underline"
                                             onClick={() => setFields((fs) => [...fs, EMPTY_FIELD])}>+ 입력 항목</button>
                                 </div>
                             </div>
@@ -185,7 +185,7 @@ export default function MetricCreateModal({onClose, onCreated}: {
                                 className="h-10 flex-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
                         <button type="button" onClick={submit}
                                 disabled={create.isPending || !code || (mode === "template" ? !templateId : !formula.trim())}
-                                className="h-10 flex-1 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+                                className="h-10 flex-1 rounded-lg bg-d94-brand text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
                             만들기
                         </button>
                     </div>

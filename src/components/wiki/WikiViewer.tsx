@@ -38,7 +38,7 @@ export default function WikiViewer({page, onEdit, onShowVersions}: WikiViewerPro
                     </button>
                     <button
                         onClick={onEdit}
-                        className="flex items-center gap-1.5 h-8 px-3 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"
+                        className="flex items-center gap-1.5 h-8 px-3 rounded-md bg-d94-brand text-white text-sm font-medium hover:bg-d94-brand-hover"
                     >
                         <Edit3 size={13}/>
                         편집

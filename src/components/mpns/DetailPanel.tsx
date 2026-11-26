@@ -86,7 +86,7 @@ function DetailRow({
                         href={value}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-blue-600 underline"
+                        className="text-d94-brand underline"
                     >
                         {value}
                     </a>

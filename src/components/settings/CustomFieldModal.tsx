@@ -5,7 +5,7 @@ import {CUSTOM_FIELD_TYPE_LABELS, type CustomFieldType, type FieldDef, type Save
 import {useState} from "react";
 
 const TYPES = Object.keys(CUSTOM_FIELD_TYPE_LABELS) as CustomFieldType[];
-const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60";
+const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
 
 /**
  * 사용자 정의 필드 생성/수정 (전역·프로젝트 공용). 저장은 부모가 onSubmit 으로.
@@ -57,7 +57,7 @@ export default function CustomFieldModal({editTarget, onSubmit, isPending, onClo
                     <div>
                         <label htmlFor="cf-options" className="mb-1 block text-xs font-medium text-slate-600">선택지 (한 줄에 하나)</label>
                         <textarea id="cf-options" rows={4} value={options} onChange={(e) => setOptions(e.target.value)}
-                                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                     </div>
                 )}
                 {typeOptions && !editTarget && typeOptions.length > 0 && (
@@ -85,7 +85,7 @@ export default function CustomFieldModal({editTarget, onSubmit, isPending, onClo
                     <button type="button" onClick={onClose}
                             className="h-10 flex-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
                     <button type="submit" disabled={!valid || isPending}
-                            className="h-10 flex-1 rounded-lg bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+                            className="h-10 flex-1 rounded-lg bg-d94-brand text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
                         {isPending ? "저장 중..." : "저장"}
                     </button>
                 </div>

@@ -57,7 +57,7 @@ export default function InterfaceRequestPanel({form, onChange, onCall, isPending
             onChange({...form, [key]: e.target.value});
 
     const fieldClass =
-        "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+        "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
 
     return (
         <section className="rounded-xl border border-slate-200 bg-white p-5">
@@ -85,7 +85,7 @@ export default function InterfaceRequestPanel({form, onChange, onCall, isPending
                 <div className="md:col-span-2">
                     <label className="mb-1 block text-xs font-medium text-slate-600">content</label>
                     <textarea value={form.content} onChange={set("content")} rows={2}
-                              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                 </div>
             </div>
 

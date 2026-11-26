@@ -28,10 +28,10 @@ export default function TaskBoard({tasks, onStatus}: TaskBoardProps) {
                                 <li key={`${t.noteId}:${t.lineNo}`} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
                                     <p className={c.status === "done" ? "text-slate-400 line-through" : "text-slate-800"}>{t.text}</p>
                                     <div className="mt-2 flex items-center gap-2 text-xs">
-                                        <Link href={`/docs/${t.noteId}`} className="min-w-0 flex-1 truncate text-blue-600 hover:underline">{t.noteTitle}</Link>
+                                        <Link href={`/docs/${t.noteId}`} className="min-w-0 flex-1 truncate text-d94-brand hover:underline">{t.noteTitle}</Link>
                                         {t.dueDt && <span className="shrink-0 text-slate-500">📅 {t.dueDt}</span>}
                                         <select value={t.status} aria-label={`${t.text} 상태`} onChange={(e) => onStatus(t, e.target.value as TaskStatus)}
-                                                className="h-7 shrink-0 rounded border border-slate-200 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                                className="h-7 shrink-0 rounded border border-slate-200 px-1 text-xs focus:outline-none focus:ring-2 focus:ring-d94-brand">
                                             {COLUMNS.map((o) => <option key={o.status} value={o.status}>{o.label}</option>)}
                                         </select>
                                     </div>

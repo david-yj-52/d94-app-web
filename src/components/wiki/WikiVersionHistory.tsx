@@ -63,7 +63,7 @@ export default function WikiVersionHistory({
                                 <p className="text-xs text-slate-500 mb-2">{v.createdBy}</p>
                                 <button
                                     onClick={() => onPreview(v)}
-                                    className="text-xs text-blue-600 hover:underline"
+                                    className="text-xs text-d94-brand hover:underline"
                                 >
                                     이 버전 보기
                                 </button>

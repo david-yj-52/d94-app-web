@@ -35,7 +35,7 @@ export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId
     const canCancel = t.status === "QUEUED" || t.status === "RUNNING" || t.status === "PAUSED";
     return (
         <div className="mx-auto max-w-5xl space-y-5 px-4">
-            <Link href="/ayaan/tasks" className="text-sm text-blue-600 hover:underline">← 작업 목록</Link>
+            <Link href="/ayaan/tasks" className="text-sm text-d94-brand hover:underline">← 작업 목록</Link>
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">
                     {t.issueKey ?? t.id} <span className={`ml-2 rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span>

@@ -101,7 +101,7 @@ export default function BurndownPage({
                 <select
                     value={sprintId ?? ""}
                     onChange={(e) => setSelectedSprintId(e.target.value || null)}
-                    className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand"
                     disabled={sprintsLoading}
                 >
                     {sprints?.map((s) => (
@@ -125,7 +125,7 @@ export default function BurndownPage({
                     <p className="text-sm mb-6">스프린트를 먼저 생성해주세요.</p>
                     <Link
                         href={`/cira/projects/${projectId}/sprints`}
-                        className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 flex items-center no-underline"
+                        className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover flex items-center no-underline"
                     >
                         스프린트 생성하러 가기
                     </Link>
@@ -148,7 +148,7 @@ export default function BurndownPage({
                         </div>
                         <div className="bg-white rounded-xl border border-slate-200 p-4">
                             <p className="text-xs text-slate-500 mb-1">완료 포인트</p>
-                            <p className="text-2xl font-bold text-blue-600">{completedPoints}pt</p>
+                            <p className="text-2xl font-bold text-d94-brand">{completedPoints}pt</p>
                         </div>
                         <div className="bg-white rounded-xl border border-slate-200 p-4">
                             <p className="text-xs text-slate-500 mb-1">남은 포인트</p>

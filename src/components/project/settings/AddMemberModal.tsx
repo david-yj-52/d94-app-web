@@ -60,7 +60,7 @@ export default function AddMemberModal({projectId, onClose, onSuccess}: Props) {
                             {...register("email")}
                             type="email"
                             placeholder="user@example.com"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.email && (
                             <p className="mt-0.5 text-xs text-red-500">{errors.email.message}</p>
@@ -73,7 +73,7 @@ export default function AddMemberModal({projectId, onClose, onSuccess}: Props) {
                         </label>
                         <select
                             {...register("role")}
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             <option value="MEMBER">Member</option>
                             <option value="ADMIN">Admin</option>
@@ -97,7 +97,7 @@ export default function AddMemberModal({projectId, onClose, onSuccess}: Props) {
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                         >
                             {isPending ? "추가 중..." : "추가"}
                         </button>

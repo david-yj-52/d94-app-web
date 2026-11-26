@@ -173,7 +173,7 @@ export default function GlobalSearch() {
                             </ul>
                             <div className="border-t border-gray-100">
                                 <button
-                                    className="flex w-full items-center justify-center px-4 py-2.5 text-sm text-blue-600 hover:bg-blue-50"
+                                    className="flex w-full items-center justify-center px-4 py-2.5 text-sm text-d94-brand hover:bg-d94-brand-soft"
                                     onClick={goToFullResults}
                                 >
                                     <Search className="mr-1.5 h-3.5 w-3.5"/>

@@ -48,7 +48,7 @@ export default function BoardDetailPage({
                                     `/cira/projects/${projectId}/boards/${e.target.value}`,
                                 )
                             }
-                            className="h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             {boards.map((b) => (
                                 <option key={b.id} value={b.id}>

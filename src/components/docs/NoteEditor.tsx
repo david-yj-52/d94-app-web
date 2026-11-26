@@ -126,8 +126,8 @@ export default function NoteEditor({note, fetchTitles, uploadImage, onError, onD
             )}
             <input value={title} onChange={(e) => setTitle(e.target.value)} onBlur={commitTitle} aria-label="제목"
                    onKeyDown={(e) => e.key === "Enter" && (e.currentTarget.blur())}
-                   className="h-10 rounded-lg border border-slate-200 px-3 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-            <div className="min-h-[50vh] flex-1 overflow-hidden rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-blue-500">
+                   className="h-10 rounded-lg border border-slate-200 px-3 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
+            <div className="min-h-[50vh] flex-1 overflow-hidden rounded-lg border border-slate-200 focus-within:ring-2 focus-within:ring-d94-brand">
                 <CodeMirror value={content} extensions={extensions} height="100%" minHeight="50vh" aria-label="본문"
                             onChange={(v) => {
                                 setContent(v);
@@ -139,7 +139,7 @@ export default function NoteEditor({note, fetchTitles, uploadImage, onError, onD
             <div className="flex items-center gap-3">
                 <button type="button" disabled={state === "saving"}
                         onClick={() => void flush().then((ok) => ok && onDone())}
-                        className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">완료</button>
+                        className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">완료</button>
                 <span aria-live="polite"
                       className={`text-xs ${state === "offline" || state === "conflict" || state === "error" ? "text-red-500" : "text-slate-400"}`}>
                     {STATE_LABEL[state]}

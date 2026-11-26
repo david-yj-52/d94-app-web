@@ -39,7 +39,7 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
     const [confirmDelete, setConfirmDelete] = useState(false);
 
     if (isLoading) return <div className="mx-auto max-w-5xl space-y-3 px-4 py-8"><Skeleton className="h-24"/><Skeleton className="h-64"/></div>;
-    if (error || !metric) return <div className="mx-auto max-w-5xl px-4 py-8 text-sm text-slate-500">지표를 찾을 수 없습니다. <Link href="/life-metric" className="text-blue-600">목록으로</Link></div>;
+    if (error || !metric) return <div className="mx-auto max-w-5xl px-4 py-8 text-sm text-slate-500">지표를 찾을 수 없습니다. <Link href="/life-metric" className="text-d94-brand">목록으로</Link></div>;
 
     const onError = (e: unknown) => show(messageOf(e), "error");
 
@@ -65,7 +65,7 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
                     {formula == null ? (
                         <div className="flex items-center gap-3">
                             <code className="min-w-0 flex-1 truncate rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">{metric.formula}</code>
-                            <button type="button" onClick={() => setFormula(metric.formula)} className="text-sm text-blue-600 hover:underline">수식 편집</button>
+                            <button type="button" onClick={() => setFormula(metric.formula)} className="text-sm text-d94-brand hover:underline">수식 편집</button>
                         </div>
                     ) : (
                         <div className="space-y-2">
@@ -73,7 +73,7 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
                             <div className="flex gap-2">
                                 <button type="button" disabled={update.isPending}
                                         onClick={() => update.mutate({formula}, {onSuccess: () => setFormula(null), onError})}
-                                        className="h-8 rounded-lg bg-blue-600 px-3 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">저장</button>
+                                        className="h-8 rounded-lg bg-d94-brand px-3 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">저장</button>
                                 <button type="button" onClick={() => setFormula(null)}
                                         className="h-8 rounded-lg border border-slate-200 px-3 text-sm text-slate-600 hover:bg-slate-50">취소</button>
                             </div>

@@ -100,7 +100,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                             onChange={(e) => setRuleName(e.target.value)}
                             placeholder="예: Task 생성 시 Slack 알림"
                             required
-                            className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -112,7 +112,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                         <select
                             value={triggerType}
                             onChange={(e) => setTriggerType(e.target.value as TriggerType)}
-                            className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             {TRIGGER_TYPES.map((t) => (
                                 <option key={t} value={t}>
@@ -134,7 +134,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                                 setActionType(next);
                                 setActionParamsStr(ACTION_PARAMS_PLACEHOLDER[next]);
                             }}
-                            className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             {ACTION_TYPES.map((a) => (
                                 <option key={a} value={a}>
@@ -157,7 +157,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                             }}
                             rows={5}
                             placeholder={ACTION_PARAMS_PLACEHOLDER[actionType]}
-                            className={`w-full rounded-lg border bg-slate-50 px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none ${
+                            className={`w-full rounded-lg border bg-slate-50 px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-d94-brand resize-none ${
                                 paramsError ? "border-red-300" : "border-slate-200"
                             }`}
                         />
@@ -172,7 +172,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                             type="button"
                             onClick={() => setIsActive((v) => !v)}
                             className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none ${
-                                isActive ? "bg-blue-600" : "bg-slate-200"
+                                isActive ? "bg-d94-brand" : "bg-slate-200"
                             }`}
                         >
               <span
@@ -198,7 +198,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="h-9 px-5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                            className="h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                         >
                             {isPending ? "저장 중..." : rule ? "수정 저장" : "규칙 추가"}
                         </button>

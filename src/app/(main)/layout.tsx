@@ -9,7 +9,7 @@ export default async function MainLayout({
 }) {
     const session = await auth();
     return (
-        <div className="bg-gray-50 min-h-screen">
+        <div className="min-h-screen bg-d94-bg">
             {session && <ApHeader user={session.user}/>}
             {session && <NotificationMount/>}
             <main className="py-6">{children}</main>

@@ -232,7 +232,7 @@ export default function AyaanSettingsPanel() {
             <div role="tablist" className="flex gap-2 border-b border-slate-200">
                 {TABS.map(([k, label]) => (
                     <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
-                            className={`px-4 py-2 text-sm ${tab === k ? "border-b-2 border-blue-600 font-semibold text-blue-600" : "text-slate-500"}`}>{label}</button>
+                            className={`px-4 py-2 text-sm ${tab === k ? "border-b-2 border-d94-brand font-semibold text-d94-brand" : "text-slate-500"}`}>{label}</button>
                 ))}
             </div>
             <div role="tabpanel">

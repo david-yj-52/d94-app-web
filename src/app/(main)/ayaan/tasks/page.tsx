@@ -147,7 +147,7 @@ export default function AyaanTasksPage() {
                     <button className={btnPrimary} disabled={create.isPending} onClick={submit}>등록</button>
                     {existingId && (
                         <p role="status" className="text-sm text-slate-700">
-                            이미 등록된 작업입니다. <Link href={`/ayaan/tasks/${existingId}`} className="text-blue-600 hover:underline">기존 작업 보기</Link>
+                            이미 등록된 작업입니다. <Link href={`/ayaan/tasks/${existingId}`} className="text-d94-brand hover:underline">기존 작업 보기</Link>
                         </p>
                     )}
                 </div>
@@ -196,7 +196,7 @@ export default function AyaanTasksPage() {
                     <tbody>
                     {(list.data ?? []).map((t) => (
                         <tr key={t.id} className="border-t border-slate-100">
-                            <td className="p-2"><Link href={`/ayaan/tasks/${t.id}`} className="text-blue-600 hover:underline">{t.issueKey ?? t.id}</Link></td>
+                            <td className="p-2"><Link href={`/ayaan/tasks/${t.id}`} className="text-d94-brand hover:underline">{t.issueKey ?? t.id}</Link></td>
                             <td><span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span></td>
                             <td>{t.toolCd}</td>
                             <td>{fmtTime(t.resumeAt)}</td>

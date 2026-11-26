@@ -81,7 +81,7 @@ export function IssueDocsSection({projectId, issueId}: { projectId: string; issu
                                    placeholder="문서 제목" aria-label="문서 제목"
                                    className="h-8 min-w-0 flex-1 rounded border border-slate-200 px-2 text-sm"/>
                             <button type="submit" disabled={!draft.title.trim() || derive.isPending}
-                                    className="h-8 rounded bg-blue-600 px-3 text-xs font-medium text-white hover:bg-blue-700 disabled:opacity-50">만들기</button>
+                                    className="h-8 rounded bg-d94-brand px-3 text-xs font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">만들기</button>
                             <button type="button" onClick={() => setDraft(null)} className="h-8 rounded px-2 text-xs text-slate-500 hover:bg-slate-100">취소</button>
                         </form>
                     )}

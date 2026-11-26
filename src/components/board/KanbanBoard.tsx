@@ -180,7 +180,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setShowAddColumn(true)}
-                        className="h-8 px-3 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 transition-colors"
+                        className="h-8 px-3 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover transition-colors"
                     >
                         + 컬럼 추가
                     </button>
@@ -245,7 +245,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                     <p className="text-sm mb-4">컬럼을 추가해서 보드를 구성하세요.</p>
                     <button
                         onClick={() => setShowAddColumn(true)}
-                        className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                        className="h-9 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                     >
                         + 첫 컬럼 추가
                     </button>
@@ -282,7 +282,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                     {/* Add column ghost */}
                     <button
                         onClick={() => setShowAddColumn(true)}
-                        className="w-[85vw] shrink-0 snap-start rounded-xl border-2 border-dashed md:w-72 border-slate-200 h-24 flex items-center justify-center text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-blue-50/30 transition-all text-sm font-medium"
+                        className="w-[85vw] shrink-0 snap-start rounded-xl border-2 border-dashed md:w-72 border-slate-200 h-24 flex items-center justify-center text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-d94-brand-soft/30 transition-all text-sm font-medium"
                     >
                         + 컬럼 추가
                     </button>

@@ -108,7 +108,7 @@ export default function MemberTable({
                                     onChange={(e) =>
                                         handleRoleChange(member.userId, e.target.value as ProjectRole)
                                     }
-                                    className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
+                                    className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60"
                                 >
                                     <option value="ADMIN">Admin</option>
                                     <option value="MEMBER">Member</option>

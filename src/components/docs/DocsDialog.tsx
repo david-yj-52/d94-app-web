@@ -32,12 +32,12 @@ export default function DocsDialog({spec, onClose}: { spec: DocsDialogSpec; onCl
                 {spec.input && (
                     <input autoFocus value={value} onChange={(e) => setValue(e.target.value)} placeholder={spec.input.placeholder}
                            aria-label={spec.title} onKeyDown={(e) => e.key === "Escape" && onClose()}
-                           className="mt-3 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                           className="mt-3 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                 )}
                 <div className="mt-4 flex justify-end gap-2">
                     <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
                     <button type="submit" autoFocus={!spec.input}
-                            className={`h-10 rounded-lg px-4 text-sm font-medium text-white ${spec.danger ? "bg-red-500 hover:bg-red-600" : "bg-blue-600 hover:bg-blue-700"}`}>
+                            className={`h-10 rounded-lg px-4 text-sm font-medium text-white ${spec.danger ? "bg-red-500 hover:bg-red-600" : "bg-d94-brand hover:bg-d94-brand-hover"}`}>
                         {spec.confirmLabel}
                     </button>
                 </div>

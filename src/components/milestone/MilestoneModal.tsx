@@ -95,7 +95,7 @@ export default function MilestoneModal({projectId, editTarget, onClose, onSucces
                         <input
                             {...register("name")}
                             placeholder="예: MVP 출시"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.name && (
                             <p className="mt-0.5 text-xs text-red-500">{errors.name.message}</p>
@@ -108,7 +108,7 @@ export default function MilestoneModal({projectId, editTarget, onClose, onSucces
                             {...register("description")}
                             rows={2}
                             placeholder="마일스톤에 대한 설명을 입력하세요"
-                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -117,7 +117,7 @@ export default function MilestoneModal({projectId, editTarget, onClose, onSucces
                         <input
                             {...register("dueDate")}
                             type="date"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -125,7 +125,7 @@ export default function MilestoneModal({projectId, editTarget, onClose, onSucces
                         <label className="block text-xs font-medium text-slate-600 mb-1">상태</label>
                         <select
                             {...register("status")}
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             <option value="OPEN">진행 중</option>
                             <option value="CLOSED">완료</option>
@@ -149,7 +149,7 @@ export default function MilestoneModal({projectId, editTarget, onClose, onSucces
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                         >
                             {isPending ? (isEdit ? "수정 중..." : "생성 중...") : isEdit ? "수정" : "생성"}
                         </button>

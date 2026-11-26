@@ -28,7 +28,7 @@ export default function FolderPickerModal({title, folders, disabledIds, initial,
             <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
                 <h2 className="mb-3 text-base font-semibold text-slate-900">{title}</h2>
                 <select value={value} onChange={(e) => setValue(e.target.value)} aria-label="대상 폴더" size={8}
-                        className="w-full rounded-lg border border-slate-200 p-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        className="w-full rounded-lg border border-slate-200 p-1 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand">
                     <option value="">/ (최상위)</option>
                     {rows.map(({f, depth}) => (
                         <option key={f.id} value={f.id} disabled={disabledIds?.has(f.id)}>{"  ".repeat(depth + 1)}{f.name}</option>
@@ -37,7 +37,7 @@ export default function FolderPickerModal({title, folders, disabledIds, initial,
                 <div className="mt-4 flex justify-end gap-2">
                     <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
                     <button type="button" onClick={() => onPick(value || null)}
-                            className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700">이동</button>
+                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover">이동</button>
                 </div>
             </div>
         </div>

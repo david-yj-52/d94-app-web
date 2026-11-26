@@ -36,7 +36,7 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
                 label: "프로젝트",
                 desc: "프로젝트 목록과 생성. Task · 보드 · 스프린트 · 리포트 · 위키로 들어갑니다.",
                 icon: FolderKanban,
-                iconClass: "bg-blue-50 text-blue-600",
+                iconClass: "bg-blue-50 text-d94-brand",
             },
             {
                 href: "/cira/dashboard",

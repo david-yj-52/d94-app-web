@@ -37,7 +37,7 @@ export default function ReportsLayout({
                             className={[
                                 "px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors no-underline",
                                 active
-                                    ? "border-blue-600 text-blue-600"
+                                    ? "border-d94-brand text-d94-brand"
                                     : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300",
                             ].join(" ")}
                         >

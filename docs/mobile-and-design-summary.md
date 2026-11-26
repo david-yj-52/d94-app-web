@@ -71,3 +71,9 @@
 ### 화면별 정렬 기준
 - **`(auth)` 로그인·회원가입 (`LoginForm.tsx`, `RegisterForm.tsx`)**: 기존 `blue-600` 버튼·포커스 링을 `d94-brand`(`#4F46E5`)로 통일, 입력·버튼 `h-11` 유지.
 - **`(main)` 홈·Docs·Study·Ayaan·MPMS**: `ApHeader` 모바일 드로어 전환과 함께 활성 탭·주요 버튼 색상을 `d94-brand`, 배경을 `d94-bg`로 통일.
+
+### 적용 현황 (2026-11-26)
+- 강조색 일괄 교체: CIRA 전용(`components/cira/`)과 테스트를 뺀 84개 파일에서 `bg-blue-600`·`hover:bg-blue-700`·`text-blue-600`·`hover:text-blue-700/800`·`focus:ring-blue-500`·`focus:border-blue-500`·`border-blue-600`·`ring-blue-500`·`hover:bg-blue-50` → `d94-brand` 계열(363곳). 상태 색(`tones.ts` 등)은 그대로.
+- 배경 통일: `(main)/layout.tsx` `bg-gray-50`, `(auth)/layout.tsx` `bg-slate-100` → `bg-d94-bg`.
+- 375px 점검: `(main)`·`(cira)` 주요 25개 화면에서 화면 밖으로 넘치는 요소 없음.
+

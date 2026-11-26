@@ -38,7 +38,7 @@ export default function SettingsMembersPage({
                 {isAdmin && (
                     <button
                         onClick={() => setShowAdd(true)}
-                        className="h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                        className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                     >
                         + 멤버 추가
                     </button>

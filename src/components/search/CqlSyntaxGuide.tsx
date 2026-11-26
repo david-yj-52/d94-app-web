@@ -168,12 +168,12 @@ export default function CqlSyntaxGuide({onInsert}: CqlSyntaxGuideProps) {
                                     key={query}
                                     type="button"
                                     onClick={() => handleInsert(query)}
-                                    className="flex w-full items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 px-3.5 py-2.5 text-left hover:border-blue-200 hover:bg-blue-50 transition-colors group"
+                                    className="flex w-full items-start gap-3 rounded-lg border border-gray-100 bg-gray-50 px-3.5 py-2.5 text-left hover:border-blue-200 hover:bg-d94-brand-soft transition-colors group"
                                 >
                                     <Clipboard
                                         className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-300 group-hover:text-blue-400"/>
                                     <div className="min-w-0">
-                                        <p className="text-xs font-medium text-gray-600 group-hover:text-blue-700">
+                                        <p className="text-xs font-medium text-gray-600 group-hover:text-d94-brand-hover">
                                             {label}
                                         </p>
                                         <code

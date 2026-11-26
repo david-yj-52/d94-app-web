@@ -74,7 +74,7 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
                     <ListChecks className="h-4 w-4"/> Task 모아보기
                 </Link>
                 <select value={validScope} onChange={(e) => setScope(e.target.value)} aria-label="vault 선택"
-                        className="mb-3 h-8 w-full rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        className="mb-3 h-8 w-full rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-d94-brand">
                     <option value="ALL">전체 통합</option>
                     {(vaults.data ?? []).map((v) => (
                         <option key={v.id} value={v.id}>{v.type === "PRIVATE" ? "🔒 " : "👥 "}{v.name}</option>

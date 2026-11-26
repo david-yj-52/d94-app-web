@@ -42,10 +42,10 @@ export default function NoteMarkdown({content, existing, onOpenTitle}: NoteMarkd
                                   className="my-2 max-h-[32rem] max-w-full rounded border border-slate-200"/>,
         a: ({href, children}) => {
             const title = titleFromHref(href);
-            if (title === null) return <a href={href} target="_blank" rel="noreferrer" className="text-blue-600 underline">{children}</a>;
+            if (title === null) return <a href={href} target="_blank" rel="noreferrer" className="text-d94-brand underline">{children}</a>;
             return (
                 <button type="button" onClick={() => onOpenTitle(title)}
-                        className={existing.has(title) ? "text-blue-600 hover:underline" : "text-slate-400 hover:underline"}
+                        className={existing.has(title) ? "text-d94-brand hover:underline" : "text-slate-400 hover:underline"}
                         title={existing.has(title) ? title : `${title} (없는 노트 — 클릭하면 만듭니다)`}>
                     {children}
                 </button>

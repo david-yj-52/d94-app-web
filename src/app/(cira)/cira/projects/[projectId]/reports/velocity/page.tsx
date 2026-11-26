@@ -73,7 +73,7 @@ export default function VelocityPage({
                     <select
                         value={lastN}
                         onChange={(e) => setLastN(Number(e.target.value))}
-                        className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand"
                     >
                         {LAST_N_OPTIONS.map((opt) => (
                             <option key={opt.value} value={opt.value}>
@@ -99,7 +99,7 @@ export default function VelocityPage({
                     <p className="text-sm mb-6">완료된 스프린트가 있어야 Velocity가 표시됩니다.</p>
                     <Link
                         href={`/cira/projects/${projectId}/sprints`}
-                        className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 flex items-center no-underline"
+                        className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover flex items-center no-underline"
                     >
                         스프린트 생성하러 가기
                     </Link>

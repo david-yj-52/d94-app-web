@@ -86,7 +86,7 @@ export default function ProductTable({
                             >
                                 <td className="px-3 py-2">{product.name}</td>
                                 <td className="px-3 py-2">{product.alias}</td>
-                                <td className="px-3 py-2 text-blue-600 underline">
+                                <td className="px-3 py-2 text-d94-brand underline">
                                     {product.url}
                                 </td>
                                 <td className="px-3 py-2 text-gray-600">

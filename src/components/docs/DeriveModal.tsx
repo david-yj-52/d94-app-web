@@ -27,23 +27,23 @@ export default function DeriveModal({originTitle, saving, onSubmit, onClose}: De
                 <p className="text-xs text-slate-500">원본: {originTitle}</p>
                 <label className="block text-xs font-medium text-slate-600">제목
                     <input autoFocus value={title} onChange={(e) => setTitle(e.target.value)}
-                           className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                           className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                 </label>
                 <label className="block text-xs font-medium text-slate-600">트랙 (관점)
                     <input value={stream} onChange={(e) => setStream(e.target.value)} list="docs-streams" placeholder="dev · design · knowledge …"
-                           className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                           className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                     <datalist id="docs-streams"><option value="dev"/><option value="design"/><option value="knowledge"/></datalist>
                 </label>
                 <label className="block text-xs font-medium text-slate-600">종류
                     <select value={kind} onChange={(e) => setKind(e.target.value as NoteKind)}
-                            className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            className="mt-1 h-10 w-full rounded-lg border border-slate-200 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand">
                         {KINDS.map((k) => <option key={k} value={k}>{KIND_LABEL[k]}</option>)}
                     </select>
                 </label>
                 <div className="flex justify-end gap-2 pt-1">
                     <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
                     <button type="submit" disabled={saving}
-                            className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">만들기</button>
+                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">만들기</button>
                 </div>
             </form>
         </div>

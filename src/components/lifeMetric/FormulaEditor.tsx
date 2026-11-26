@@ -37,7 +37,7 @@ export default function FormulaEditor({value, onChange, codes}: {
                               pick(suggestions[0]);
                           }
                       }}
-                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
             {suggestions.length > 0 && (
                 <ul role="listbox" aria-label="지표 코드 제안"
                     className="absolute z-20 mt-1 w-56 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">

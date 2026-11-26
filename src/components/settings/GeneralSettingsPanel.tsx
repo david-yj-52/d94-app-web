@@ -10,7 +10,7 @@ import {useSettings, useUpdateSettings} from "@/hooks/useSettings";
 import {DEFAULT_LOGO_TEXT, LOGO_FONT_KEY, LOGO_TEXT_KEY} from "@/types/settings";
 
 const LOGO_TEXT_MAX = 30; // d94-query SettingService.LOGO_TEXT_MAX
-const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60";
+const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
 
 /** General 그룹: 헤더 로고 글자·폰트 (모든 사용자·모든 페이지에 적용) */
 export default function GeneralSettingsPanel({readOnly}: { readOnly: boolean }) {
@@ -73,7 +73,7 @@ function LogoForm({readOnly, initialText, initialFont}: { readOnly: boolean; ini
             </div>
             <div className="mt-5 flex justify-end">
                 <button type="button" onClick={save} disabled={readOnly || !valid || update.isPending}
-                        className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+                        className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
                     저장
                 </button>
             </div>

@@ -5,14 +5,14 @@
 
 ## 1. 디자인 토큰
 
-`tailwind.config.js` 에 서비스 공통 색 `d94.*`(`d94-brand`·`d94-bg`·`d94-border` 등, 값은 `globals.css` `:root`)가 있습니다 → [ADR 0008](../../../docs/decisions/0008-service-design-system.md). 강조색은 새 코드부터 `d94-brand` 를 쓰고, 나머지는 Tailwind 기본 팔레트를 아래 규칙대로 씁니다.
+`tailwind.config.js` 에 서비스 공통 색 `d94.*`(`d94-brand`·`d94-bg`·`d94-border` 등, 값은 `globals.css` `:root`)가 있습니다 → [ADR 0008](../../../docs/decisions/0008-service-design-system.md). 강조색은 `d94-brand` 를 쓰고, 나머지는 Tailwind 기본 팔레트를 아래 규칙대로 씁니다.
 
 | 토큰 | 값 | 용도 |
 |---|---|---|
 | 배경 | `bg-white` (카드·모달), `bg-slate-50` (입력·hover) | |
 | 경계선 | `border-slate-200`, 구분선 `border-slate-100` | |
 | 텍스트 | 제목 `text-slate-900`, 본문 `text-slate-700`, 보조 `text-slate-500`, 라벨 `text-xs font-medium text-slate-600` | |
-| 강조 | `bg-blue-600` / hover `bg-blue-700`, 포커스 `focus:ring-2 focus:ring-blue-500` | 주요 버튼, 선택 상태 |
+| 강조 | `bg-d94-brand` / hover `bg-d94-brand-hover`, 텍스트·링크 `text-d94-brand`, 포커스 `focus:ring-2 focus:ring-d94-brand`, 선택·hover 배경 `bg-d94-brand-soft` | 주요 버튼, 선택 상태 (예전 `blue-600` 계열은 2026-11-26 일괄 교체) |
 | 위험 | `bg-red-500` / hover `bg-red-600`, 텍스트 `text-red-500`, 배경 `bg-red-50` | 삭제, 에러 |
 | 라운드 | `rounded-lg` 입력·버튼 / `rounded-xl` 카드·드롭다운 / `rounded-2xl` 모달 / `rounded-full` 배지 | |
 | 높이 | `h-10` 기본 버튼·입력 / `h-8` 소형 | |
@@ -74,7 +74,7 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 **버튼**
 ```tsx
 // primary
-<button className="h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60">저장</button>
+<button className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60">저장</button>
 // secondary
 <button className="h-10 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
 // danger
@@ -87,7 +87,7 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 <div>
     <label className="block text-xs font-medium text-slate-600 mb-1">이름 <span className="text-red-500">*</span></label>
     <input {...register("name")}
-           className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+           className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
     {errors.name && <p className="mt-0.5 text-xs text-red-500">{errors.name.message}</p>}
 </div>
 ```

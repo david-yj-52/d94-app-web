@@ -23,7 +23,7 @@ export default function HelpCard({helpKey, defaultOpen = false}: { helpKey: stri
             <div className="flex items-center gap-2">
                 <span className="group relative inline-flex">
                     <button type="button" aria-label={`${help.label} 도움말`} aria-describedby={tipId}
-                            className="h-5 w-5 rounded-full border border-slate-300 text-xs text-slate-500 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500">?
+                            className="h-5 w-5 rounded-full border border-slate-300 text-xs text-slate-500 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-d94-brand">?
                     </button>
                     <span id={tipId} role="tooltip"
                           className="pointer-events-none absolute left-6 top-0 z-20 hidden w-64 rounded-lg bg-slate-800 px-2 py-1 text-xs text-white shadow-lg group-focus-within:block group-hover:block">
@@ -31,7 +31,7 @@ export default function HelpCard({helpKey, defaultOpen = false}: { helpKey: stri
                     </span>
                 </span>
                 <button type="button" aria-expanded={open} aria-controls={cardId} onClick={() => setOpen(!open)}
-                        className="text-xs text-blue-600 hover:underline">
+                        className="text-xs text-d94-brand hover:underline">
                     {open ? "설명 접기" : "설명 펼치기"}
                 </button>
             </div>

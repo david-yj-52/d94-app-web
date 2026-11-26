@@ -109,7 +109,7 @@ export default function NotificationBell() {
                                 <button
                                     onClick={() => markAllMut.mutate()}
                                     disabled={markAllMut.isPending}
-                                    className="text-xs text-blue-600 hover:underline disabled:opacity-50"
+                                    className="text-xs text-d94-brand hover:underline disabled:opacity-50"
                                 >
                                     모두 읽음
                                 </button>
@@ -160,7 +160,7 @@ export default function NotificationBell() {
                     <div className="border-t border-gray-100 px-4 py-2.5">
                         <Link
                             href="/cira/notifications"
-                            className="block text-center text-xs text-blue-600 hover:underline"
+                            className="block text-center text-xs text-d94-brand hover:underline"
                             onClick={() => setOpen(false)}
                         >
                             전체 알림 보기

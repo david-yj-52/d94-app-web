@@ -198,7 +198,7 @@ export default function CqlEditor({
                     className={`relative w-full resize-none rounded-t-xl border bg-white px-3.5 py-2.5 font-mono text-[13px] leading-relaxed text-gray-900 focus:outline-none focus:ring-2 transition-colors ${
                         !isValid && value.trim()
                             ? "border-red-300 focus:ring-red-400"
-                            : "border-gray-200 focus:ring-blue-500"
+                            : "border-gray-200 focus:ring-d94-brand"
                     }`}
                     style={{
                         fontFamily:
@@ -220,7 +220,7 @@ export default function CqlEditor({
                                     e.preventDefault();
                                     applySuggestion(s);
                                 }}
-                                className={`block w-full px-3 py-2 text-left font-mono text-xs hover:bg-blue-50 ${
+                                className={`block w-full px-3 py-2 text-left font-mono text-xs hover:bg-d94-brand-soft ${
                                     i === selectedSuggestion ? "bg-blue-50 text-blue-700" : "text-gray-700"
                                 }`}
                             >
@@ -262,7 +262,7 @@ export default function CqlEditor({
                 type="button"
                 onClick={onSearch}
                 disabled={!value.trim() || (!isValid && !!validateResult)}
-                className="mt-3 flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-40 transition-colors"
+                className="mt-3 flex items-center gap-2 rounded-lg bg-d94-brand px-5 py-2 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-40 transition-colors"
             >
                 <Play className="h-3.5 w-3.5"/>
                 검색 실행

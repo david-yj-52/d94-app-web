@@ -181,7 +181,7 @@ export default function WikiEditor({
                 <button
                     onClick={handleSave}
                     disabled={isSaving || !title.trim()}
-                    className="h-8 px-4 rounded-md bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="h-8 px-4 rounded-md bg-d94-brand text-white text-sm font-medium hover:bg-d94-brand-hover disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isSaving ? "저장 중..." : "저장"}
                 </button>

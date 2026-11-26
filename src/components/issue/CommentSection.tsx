@@ -161,7 +161,7 @@ function CommentInput({
           }}
           placeholder={placeholder}
           rows={3}
-          className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 resize-none"
+          className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-blue-400 resize-none"
       />
 
             {mention.active && mention.results.length > 0 && (
@@ -195,7 +195,7 @@ function CommentInput({
                 <button
                     onClick={onSubmit}
                     disabled={isSubmitting || !value.trim()}
-                    className="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 disabled:opacity-50"
+                    className="px-3 py-1.5 rounded-lg bg-d94-brand text-white text-xs font-medium hover:bg-d94-brand-hover disabled:opacity-50"
                 >
                     {isSubmitting ? "등록 중..." : submitLabel}
                 </button>
@@ -359,13 +359,13 @@ function CommentItem({
                   }}
                   rows={3}
                   autoFocus
-                  className="w-full border border-blue-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full border border-blue-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand resize-none"
               />
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleSave}
                                     disabled={isUpdating || !draft.trim()}
-                                    className="px-3 py-1 rounded-lg bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 disabled:opacity-50"
+                                    className="px-3 py-1 rounded-lg bg-d94-brand text-white text-xs font-medium hover:bg-d94-brand-hover disabled:opacity-50"
                                 >
                                     {isUpdating ? "저장 중..." : "저장"}
                                 </button>

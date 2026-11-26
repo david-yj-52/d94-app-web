@@ -79,7 +79,7 @@ function WebhookModal({repo, onClose}: WebhookModalProps) {
                 <div className="mt-6 flex justify-end">
                     <button
                         onClick={onClose}
-                        className="h-9 px-5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                        className="h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                     >
                         확인했습니다
                     </button>
@@ -204,7 +204,7 @@ export default function SettingsGitPage({
                                 onChange={handleFormChange}
                                 placeholder="my-awesome-repo"
                                 required
-                                className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
                         <div>
@@ -215,7 +215,7 @@ export default function SettingsGitPage({
                                 name="provider"
                                 value={form.provider}
                                 onChange={handleFormChange}
-                                className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             >
                                 <option value="GITHUB">GitHub</option>
                                 <option value="GITLAB">GitLab</option>
@@ -234,7 +234,7 @@ export default function SettingsGitPage({
                             onChange={handleFormChange}
                             placeholder="https://github.com/org/repo"
                             required
-                            className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -249,7 +249,7 @@ export default function SettingsGitPage({
                             onChange={handleFormChange}
                             placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
                             required
-                            className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         <p className="mt-1 text-xs text-slate-400">
                             토큰은 암호화되어 저장되며 Webhook 인증에만 사용됩니다.
@@ -260,7 +260,7 @@ export default function SettingsGitPage({
                         <button
                             type="submit"
                             disabled={isRegistering}
-                            className="h-9 px-5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                            className="h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                         >
                             {isRegistering ? "등록 중..." : "저장소 등록"}
                         </button>

@@ -50,7 +50,7 @@ export default function FieldValue({field, issue, names = {}}: {
         case "URL":
             return (
                 <a href={String(v)} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}
-                   className="text-blue-600 hover:underline">{String(v)}</a>
+                   className="text-d94-brand hover:underline">{String(v)}</a>
             );
         case "CHECKBOX": return <>{v ? "✓" : ""}</>;
         default: return <>{String(v)}</>;

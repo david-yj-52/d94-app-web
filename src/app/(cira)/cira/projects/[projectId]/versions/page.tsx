@@ -95,7 +95,7 @@ export default function VersionsPage({
         [
             "px-4 py-2 text-sm font-medium rounded-lg transition-colors",
             activeTab === tab
-                ? "bg-blue-600 text-white"
+                ? "bg-d94-brand text-white"
                 : "text-slate-500 hover:text-slate-700 hover:bg-slate-100",
         ].join(" ");
 
@@ -115,7 +115,7 @@ export default function VersionsPage({
                 {activeTab === "versions" && (
                     <button
                         onClick={() => setShowCreateVersion(true)}
-                        className="h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                        className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                     >
                         + 새 버전
                     </button>
@@ -123,7 +123,7 @@ export default function VersionsPage({
                 {activeTab === "milestones" && (
                     <button
                         onClick={() => setShowCreateMilestone(true)}
-                        className="h-10 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                        className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                     >
                         + 새 마일스톤
                     </button>
@@ -148,7 +148,7 @@ export default function VersionsPage({
                             <p className="text-sm mb-6">새 버전을 생성해서 릴리즈를 관리하세요.</p>
                             <button
                                 onClick={() => setShowCreateVersion(true)}
-                                className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                                className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                             >
                                 + 새 버전
                             </button>
@@ -191,7 +191,7 @@ export default function VersionsPage({
                             <p className="text-sm mb-6">새 마일스톤을 생성해서 목표를 관리하세요.</p>
                             <button
                                 onClick={() => setShowCreateMilestone(true)}
-                                className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                                className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                             >
                                 + 새 마일스톤
                             </button>

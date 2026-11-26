@@ -71,7 +71,7 @@ export default function SettingsAutomationPage({
                 </div>
                 <button
                     onClick={openCreate}
-                    className="shrink-0 h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                    className="shrink-0 h-9 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                 >
                     + 새 규칙
                 </button>
@@ -96,7 +96,7 @@ export default function SettingsAutomationPage({
                     </p>
                     <button
                         onClick={openCreate}
-                        className="mt-4 h-9 px-5 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+                        className="mt-4 h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
                     >
                         첫 규칙 추가하기
                     </button>

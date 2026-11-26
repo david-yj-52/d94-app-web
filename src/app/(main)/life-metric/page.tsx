@@ -20,7 +20,7 @@ export default function LifeMetricPage() {
                     <p className="mt-1 text-sm text-slate-500">삶의 요소를 내가 정한 수식으로 숫자로 환산합니다. 다른 지표는 <code>@코드</code>로 참조하세요.</p>
                 </div>
                 <button type="button" onClick={() => setCreating(true)}
-                        className="h-10 shrink-0 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700">
+                        className="h-10 shrink-0 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover">
                     새 지표
                 </button>
             </div>

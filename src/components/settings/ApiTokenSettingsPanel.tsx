@@ -17,7 +17,7 @@ import type {ApiTokenAccess, IssuedApiToken, IssueApiTokenRequest} from "@/types
 
 const NAME_MAX = 100;
 const DAYS = [30, 90, 365] as const;
-const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60";
+const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
 const cardCls = "rounded-xl border border-slate-200 bg-white p-6";
 
 const errorMessage = (e: unknown, fallback: string) =>
@@ -154,7 +154,7 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                     {DAYS.map((d) => <option key={d} value={d}>{d}일</option>)}
                 </select>
                 <button type="button" onClick={submit} disabled={!canIssue}
-                        className="inline-flex h-10 items-center justify-center gap-1 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+                        className="inline-flex h-10 items-center justify-center gap-1 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
                     <KeyRound className="h-4 w-4"/> 발급
                 </button>
             </div>

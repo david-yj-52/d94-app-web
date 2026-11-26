@@ -76,7 +76,7 @@ export default function PlatformTable({
                             >
                                 <td className="px-3 py-2">{platform.name}</td>
                                 <td className="px-3 py-2">{platform.alias}</td>
-                                <td className="px-3 py-2 text-blue-600 underline">
+                                <td className="px-3 py-2 text-d94-brand underline">
                                     {platform.url}
                                 </td>
                                 <td className="px-3 py-2 text-gray-600">

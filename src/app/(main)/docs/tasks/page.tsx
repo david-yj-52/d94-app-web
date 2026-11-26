@@ -18,7 +18,7 @@ export default function DocsTasksPage() {
         <label className="text-xs font-medium text-slate-600">{label}
             <input type={type} value={filters[key] ?? ""} aria-label={label}
                    onChange={(e) => setFilters((f) => ({...f, [key]: e.target.value || undefined}))}
-                   className="mt-1 block h-8 w-36 rounded-lg border border-slate-200 px-2 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                   className="mt-1 block h-8 w-36 rounded-lg border border-slate-200 px-2 text-sm font-normal focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
         </label>
     );
     return (

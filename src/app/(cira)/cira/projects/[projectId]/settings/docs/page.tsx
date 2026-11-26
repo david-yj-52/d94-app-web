@@ -96,7 +96,7 @@ export default function ProjectDocRulesPage({params}: { params: Promise<{ projec
                     <button type="button" onClick={() => setRows((rs) => [...rs, blank()])}
                             className="h-10 rounded-lg border border-slate-200 px-4 text-sm text-slate-700 hover:bg-slate-50">+ 슬롯 추가</button>
                     <button type="button" onClick={submit} disabled={!current || save.isPending || rows.some((r) => !r.folderName.trim())}
-                            className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">저장</button>
+                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">저장</button>
                 </div>
             </section>
             {ToastComponent}

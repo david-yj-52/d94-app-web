@@ -209,7 +209,7 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                                     href={getDownloadUrl(att.id)}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="block text-xs font-medium text-slate-700 truncate hover:text-blue-600 hover:underline"
+                                    className="block text-xs font-medium text-slate-700 truncate hover:text-d94-brand hover:underline"
                                     title="새 탭에서 보기"
                                 >
                                     {att.fileName}
@@ -224,7 +224,7 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                                 <a
                                     href={getDownloadUrl(att.id)}
                                     download={att.fileName}
-                                    className="flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                                    className="flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:text-d94-brand hover:bg-d94-brand-soft transition-colors"
                                     title="다운로드"
                                 >
                                     <Download className="h-3.5 w-3.5"/>

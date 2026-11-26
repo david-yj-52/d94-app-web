@@ -81,7 +81,7 @@ export default function VersionCard({
                         {version.status === "RELEASED" && (
                             <button
                                 onClick={() => setShowReleaseNotes(true)}
-                                className="h-8 px-3 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700"
+                                className="h-8 px-3 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover"
                             >
                                 릴리즈 노트
                             </button>

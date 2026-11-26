@@ -29,7 +29,7 @@ export default function NoteSidePanel({note, backlinks, derived, onOpenTitle, on
                     <dt className="text-slate-500">트랙</dt><dd>{note.stream ?? "—"}</dd>
                     <dt className="text-slate-500">원본</dt>
                     <dd>{note.origin
-                        ? <button type="button" onClick={() => onOpenTitle(note.origin!)} className="text-blue-600 hover:underline">{note.origin}</button>
+                        ? <button type="button" onClick={() => onOpenTitle(note.origin!)} className="text-d94-brand hover:underline">{note.origin}</button>
                         : "—"}</dd>
                     <dt className="text-slate-500">버전</dt><dd>v{note.version}</dd>
                 </dl>
@@ -87,7 +87,7 @@ function NoteList({title, notes}: { title: string; notes: NoteSummary[] }) {
             {notes.length === 0 ? <Empty/> : (
                 <ul className="space-y-1">
                     {notes.map((n) => (
-                        <li key={n.id}><Link href={`/docs/${n.id}`} className="text-blue-600 hover:underline">{n.title}</Link></li>
+                        <li key={n.id}><Link href={`/docs/${n.id}`} className="text-d94-brand hover:underline">{n.title}</Link></li>
                     ))}
                 </ul>
             )}

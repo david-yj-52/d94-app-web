@@ -103,7 +103,7 @@ export default function AddColumnModal({
                         <input
                             {...register("columnNm")}
                             placeholder="예: In Review"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.columnNm && (
                             <p className="mt-0.5 text-xs text-red-500">
@@ -120,7 +120,7 @@ export default function AddColumnModal({
                             <input
                                 {...register("statusId")}
                                 placeholder="Task 상태 ID"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                             <p className="mt-0.5 text-[10px] text-slate-400">
                                 프로젝트 워크플로우의 상태 ID를 입력하세요.
@@ -142,7 +142,7 @@ export default function AddColumnModal({
                             type="number"
                             min={1}
                             placeholder="제한 없음"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -163,7 +163,7 @@ export default function AddColumnModal({
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                         >
                             {isPending ? "저장 중..." : isEdit ? "저장" : "추가"}
                         </button>

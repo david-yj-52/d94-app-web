@@ -4,7 +4,7 @@ import type {LogRequest, Metric, MetricLog} from "@/types/lifeMetric";
 import {useState} from "react";
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 
-const inputCls = "h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+const inputCls = "h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
 
 /** 기록(LOG) 빠른 입력 + 선택한 키의 추이 차트 + 최근 기록 목록(삭제) */
 export default function LogPanel({metric, logs, onAdd, onDelete, isPending}: {
@@ -42,7 +42,7 @@ export default function LogPanel({metric, logs, onAdd, onDelete, isPending}: {
                 <input className={`${inputCls} min-w-0 flex-1`} aria-label="메모" placeholder="메모 (선택)" value={note}
                        onChange={(e) => setNote(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()}/>
                 <button type="button" onClick={add} disabled={isPending}
-                        className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">기록</button>
+                        className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">기록</button>
             </div>
 
             {series.length > 1 && (

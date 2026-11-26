@@ -28,9 +28,9 @@ export default function AyaanDashboardPage() {
                     <p className="text-sm text-slate-500">AI Tool 한도와 작업 현황 (30초마다 갱신)</p>
                 </div>
                 <div className="flex flex-wrap gap-2 text-sm">
-                    <Link href="/ayaan/tasks" className="self-center text-blue-600 hover:underline">작업</Link>
-                    <Link href="/settings?group=ayaan" className="self-center text-blue-600 hover:underline">기준정보</Link>
-                    <Link href="/ayaan/setup" className="self-center text-blue-600 hover:underline">셋업</Link>
+                    <Link href="/ayaan/tasks" className="self-center text-d94-brand hover:underline">작업</Link>
+                    <Link href="/settings?group=ayaan" className="self-center text-d94-brand hover:underline">기준정보</Link>
+                    <Link href="/ayaan/setup" className="self-center text-d94-brand hover:underline">셋업</Link>
                     <button className={btnPrimary} disabled={refresh.isPending} onClick={() => refresh.mutate()}>지금 수집</button>
                 </div>
             </div>
@@ -60,7 +60,7 @@ export default function AyaanDashboardPage() {
                                                 </span>
                                             </div>
                                             <div className="my-1 h-2 rounded-full bg-slate-100" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${tool} ${q.windowCd} 사용률`}>
-                                                <div className={`h-2 rounded-full ${est ? "bg-slate-300" : "bg-blue-600"}`} style={{width: `${pct}%`}}/>
+                                                <div className={`h-2 rounded-full ${est ? "bg-slate-300" : "bg-d94-brand"}`} style={{width: `${pct}%`}}/>
                                             </div>
                                             <p className="text-xs">reset까지 {remaining(q.resetsAt)} · {q.source} · {fmtTime(q.observedAt)}</p>
                                         </div>
@@ -78,7 +78,7 @@ export default function AyaanDashboardPage() {
                     {active.map((t) => (
                         <li key={t.id} className="flex items-center gap-3 text-sm">
                             <span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span>
-                            <Link href={`/ayaan/tasks/${t.id}`} className="text-blue-600 hover:underline">{t.issueKey ?? t.id}</Link>
+                            <Link href={`/ayaan/tasks/${t.id}`} className="text-d94-brand hover:underline">{t.issueKey ?? t.id}</Link>
                             <span className="text-slate-500">{t.toolCd}{t.resumeAt ? ` · 재개 ${fmtTime(t.resumeAt)}` : ""}</span>
                         </li>
                     ))}

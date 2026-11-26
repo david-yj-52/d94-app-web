@@ -72,7 +72,7 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                         </label>
                         <input
                             {...register("sprintNm")}
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.sprintNm && (
                             <p className="mt-0.5 text-xs text-red-500">{errors.sprintNm.message}</p>
@@ -86,7 +86,7 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                         <textarea
                             {...register("goal")}
                             rows={2}
-                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -98,7 +98,7 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                             <input
                                 {...register("startDt")}
                                 type="date"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
                         <div>
@@ -108,7 +108,7 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                             <input
                                 {...register("endDt")}
                                 type="date"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
                     </div>
@@ -130,7 +130,7 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                         >
                             {isPending ? "수정 중..." : "수정"}
                         </button>

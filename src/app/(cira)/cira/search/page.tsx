@@ -91,7 +91,7 @@ function SaveFilterModal({
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && name.trim() && onSave(name.trim())}
                     placeholder="필터 이름 입력"
-                    className="mb-4 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mb-4 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                 />
                 <div className="flex justify-end gap-2">
                     <button
@@ -103,7 +103,7 @@ function SaveFilterModal({
                     <button
                         disabled={!name.trim()}
                         onClick={() => onSave(name.trim())}
-                        className="h-9 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-40"
+                        className="h-9 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-40"
                     >
                         저장
                     </button>
@@ -215,12 +215,12 @@ function SearchPageContent() {
                             if (e.key === "Enter") push({q: qInput, page: 0});
                         }}
                         placeholder="Task 검색..."
-                        className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                     />
                 </div>
                 <button
                     onClick={() => push({q: qInput, page: 0})}
-                    className="h-10 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700"
+                    className="h-10 rounded-lg bg-d94-brand px-5 text-sm font-semibold text-white hover:bg-d94-brand-hover"
                 >
                     검색
                 </button>
@@ -402,7 +402,7 @@ function SearchPageContent() {
                                 onChange={(e) =>
                                     push({dateFrom: e.target.value || undefined, page: 0})
                                 }
-                                className="h-8 w-full rounded-lg border border-gray-200 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="h-8 w-full rounded-lg border border-gray-200 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                             <input
                                 type="date"
@@ -410,7 +410,7 @@ function SearchPageContent() {
                                 onChange={(e) =>
                                     push({dateTo: e.target.value || undefined, page: 0})
                                 }
-                                className="h-8 w-full rounded-lg border border-gray-200 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="h-8 w-full rounded-lg border border-gray-200 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
                     </div>
@@ -438,7 +438,7 @@ function SearchPageContent() {
                                     page: 0,
                                 })
                             }
-                            className="h-8 rounded-lg border border-gray-200 bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="h-8 rounded-lg border border-gray-200 bg-white px-2 text-xs focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             {SORT_OPTIONS.map((o) => (
                                 <option key={o.value} value={o.value}>

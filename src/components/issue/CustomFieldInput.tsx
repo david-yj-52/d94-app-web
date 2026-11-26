@@ -4,7 +4,7 @@ import type {FieldDef} from "@/types/fields";
 import type {CustomFieldValue} from "@/types/issue";
 import type {ProjectMemberResponse} from "@/types/member";
 
-const cls = "w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+const cls = "w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
 
 /**
  * 사용자 정의 필드 입력 (타입별). onChange 는 값이 확정될 때 호출된다:

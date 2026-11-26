@@ -29,7 +29,7 @@ export default function IssueFilter({filters, onChange}: Props) {
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="Task 검색..."
-                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
+                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand w-48"
             />
 
             <select
@@ -41,7 +41,7 @@ export default function IssueFilter({filters, onChange}: Props) {
                         page: 0,
                     })
                 }
-                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
             >
                 <option value="">우선순위 전체</option>
                 {PRIORITIES.map((p) => (

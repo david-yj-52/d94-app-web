@@ -31,7 +31,7 @@ import {useState} from "react";
 import CustomFieldModal from "./CustomFieldModal";
 
 const TYPE_NAME_MAX = 30;
-const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60";
+const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
 const btnCls = "inline-flex h-9 shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50";
 const iconBtn = "flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30";
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
@@ -49,7 +49,7 @@ export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
             <div role="tablist" className="mb-4 flex gap-1 border-b border-slate-100">
                 {([["types", "프로젝트 타입"], ["fields", "사용자 정의 필드"]] as const).map(([id, label]) => (
                     <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
-                            className={`-mb-px h-10 border-b-2 px-3 text-sm ${tab === id ? "border-blue-600 font-semibold text-blue-700" : "border-transparent text-slate-500"}`}>
+                            className={`-mb-px h-10 border-b-2 px-3 text-sm ${tab === id ? "border-d94-brand font-semibold text-blue-700" : "border-transparent text-slate-500"}`}>
                         {label}
                     </button>
                 ))}

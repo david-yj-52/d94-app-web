@@ -34,7 +34,7 @@ export default function QuickSwitcher({onOpenTitle, onClose}: QuickSwitcherProps
                            if (e.key === "ArrowUp") setCursor((c) => Math.max(c - 1, 0));
                            if (e.key === "Enter") pick(cursor);
                        }}
-                       className="h-10 w-full rounded-lg border border-slate-200 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                       className="h-10 w-full rounded-lg border border-slate-200 px-3 focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                 <ul className="mt-2 max-h-80 overflow-y-auto">
                     {options.map((t, i) => (
                         <li key={t}>

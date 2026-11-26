@@ -30,11 +30,11 @@ export default function BaselineForm({metric, onSave, isPending}: {
                     </label>
                     <input aria-label={r.label} type={r.type === "DATE" ? "date" : "text"} inputMode={r.type === "NUMBER" ? "decimal" : undefined}
                            value={values[r.key] ?? ""} onChange={(e) => setValues((s) => ({...s, [r.key]: e.target.value}))}
-                           className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                           className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                 </div>
             ))}
             <button type="button" onClick={save} disabled={isPending}
-                    className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">
+                    className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
                 기준값 저장
             </button>
         </div>

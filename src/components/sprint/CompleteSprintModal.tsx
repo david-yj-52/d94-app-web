@@ -161,7 +161,7 @@ export default function CompleteSprintModal({
                                 <select
                                     value={nextSprintId}
                                     onChange={(e) => setNextSprintId(e.target.value)}
-                                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                                 >
                                     <option value="">스프린트 선택...</option>
                                     {nextSprints.map((s) => (
@@ -200,7 +200,7 @@ export default function CompleteSprintModal({
                     <button
                         onClick={handleConfirm}
                         disabled={isPending || !canConfirm}
-                        className="flex-1 h-10 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60"
+                        className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                     >
                         {isPending ? "처리 중..." : "완료"}
                     </button>

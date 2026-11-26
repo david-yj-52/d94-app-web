@@ -77,7 +77,7 @@ function InlineText({
                 if (e.key === "Escape") cancel();
             },
             className:
-                "w-full border border-blue-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 " +
+                "w-full border border-blue-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand " +
                 className,
         };
         return multiline ? (
@@ -261,7 +261,7 @@ export default function IssueDetailPage({
                                 onChange={(e) =>
                                     update({priority: (e.target.value as Priority) || undefined})
                                 }
-                                className="w-full h-8 rounded-lg border border-slate-200 bg-slate-50 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-8 rounded-lg border border-slate-200 bg-slate-50 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             >
                                 <option value="">-</option>
                                 {PRIORITIES.map((p) => (
@@ -311,7 +311,7 @@ export default function IssueDetailPage({
                                         update({dueDt: e.target.value || undefined});
                                     }
                                 }}
-                                className="w-full h-8 rounded-lg border border-slate-200 bg-slate-50 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-8 rounded-lg border border-slate-200 bg-slate-50 px-2 text-xs focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
 

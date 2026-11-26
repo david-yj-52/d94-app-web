@@ -129,14 +129,14 @@ export default function CfdPage({
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand"
                 />
                 <span className="text-slate-400 text-sm">~</span>
                 <input
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand"
                 />
 
                 {leadTime && (
@@ -161,7 +161,7 @@ export default function CfdPage({
                     <p className="text-sm mb-6">Task를 생성하고 스프린트를 시작하면 데이터가 표시됩니다.</p>
                     <Link
                         href={`/cira/projects/${projectId}/issues`}
-                        className="h-10 px-6 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 flex items-center no-underline"
+                        className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover flex items-center no-underline"
                     >
                         Task 생성하러 가기
                     </Link>

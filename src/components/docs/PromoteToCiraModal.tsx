@@ -22,7 +22,7 @@ export default function PromoteToCiraModal({noteTitle, projects, issueTypes, sav
     const [projectId, setProjectId] = useState(projects[0]?.id ?? "");
     const [issueTypeId, setIssueTypeId] = useState(issueTypes[0]?.id ?? "");
     const [title, setTitle] = useState(noteTitle);
-    const field = "mt-1 h-10 w-full rounded-lg border border-slate-200 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500";
+    const field = "mt-1 h-10 w-full rounded-lg border border-slate-200 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
             <form className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}
@@ -54,7 +54,7 @@ export default function PromoteToCiraModal({noteTitle, projects, issueTypes, sav
                 <div className="flex justify-end gap-2 pt-1">
                     <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
                     <button type="submit" disabled={saving || !projectId || !title.trim()}
-                            className="h-10 rounded-lg bg-blue-600 px-4 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">등록</button>
+                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">등록</button>
                 </div>
             </form>
         </div>

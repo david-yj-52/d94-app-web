@@ -57,12 +57,12 @@ function AddStatusForm({projectId, onSuccess, onError}: AddStatusFormProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="새 상태 이름"
-                className="flex-1 h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
             />
             <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as WorkflowCategory)}
-                className="h-9 rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-9 rounded-lg border border-slate-200 bg-slate-50 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
             >
                 <option value="TODO">할 일</option>
                 <option value="IN_PROGRESS">진행 중</option>
@@ -71,7 +71,7 @@ function AddStatusForm({projectId, onSuccess, onError}: AddStatusFormProps) {
             <button
                 type="submit"
                 disabled={isPending || !name.trim()}
-                className="h-9 px-4 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 disabled:opacity-60 shrink-0"
+                className="h-9 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60 shrink-0"
             >
                 {isPending ? "추가 중..." : "추가"}
             </button>
@@ -135,7 +135,7 @@ function TransitionMatrix({
                                 <td
                                     key={to.id}
                                     className={`border border-slate-200 p-2 text-center ${
-                                        isSelf ? "bg-slate-50" : "hover:bg-blue-50"
+                                        isSelf ? "bg-slate-50" : "hover:bg-d94-brand-soft"
                                     } ${isAdmin && !isSelf ? "cursor-pointer" : ""}`}
                                     onClick={() => !isSelf && toggle(from.id, to.id)}
                                 >
@@ -147,7 +147,7 @@ function TransitionMatrix({
                                             checked={checked}
                                             readOnly
                                             disabled={!isAdmin}
-                                            className="w-4 h-4 rounded text-blue-600 cursor-pointer disabled:cursor-default"
+                                            className="w-4 h-4 rounded text-d94-brand cursor-pointer disabled:cursor-default"
                                         />
                                     )}
                                 </td>
@@ -309,7 +309,7 @@ export default function SettingsWorkflowPage({
                                     <button
                                         onClick={handleSaveTransitions}
                                         disabled={isSaving}
-                                        className="h-8 px-4 rounded-lg bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 disabled:opacity-60"
+                                        className="h-8 px-4 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
                                     >
                                         {isSaving ? "저장 중..." : "저장"}
                                     </button>
