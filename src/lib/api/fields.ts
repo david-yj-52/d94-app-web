@@ -12,7 +12,9 @@ import type {
 
 // 기준정보 (쓰기는 ADMIN 아니면 403)
 export async function getFieldCatalog(): Promise<FieldCatalog> {
-    return (await apiClient.get("/v1/cira/field-catalog")).data.data;
+    const c = (await apiClient.get("/v1/cira/field-catalog")).data.data;
+    // 이전 백엔드(V600 이전)는 typeFields·copies 를 안 보낸다 — 웹이 먼저 배포돼도 화면이 깨지지 않게.
+    return {...c, typeFields: c.typeFields ?? {}, copies: c.copies ?? {}};
 }
 
 export async function getProjectTypes(): Promise<ProjectTypeResponse[]> {
