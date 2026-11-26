@@ -40,8 +40,8 @@
 ```ts
 { isAdmin: boolean }
 ```
-- 서비스 이름은 `serviceLabel`, 전역 토큰 코드는 `GLOBAL_TOKEN_SERVICE`("all"). 발급 직후 MCP 예시 경로는 서비스별(`EXAMPLE_PATH`).
-- 위: 서비스별 허용 체크박스(`isAdmin` 아니면 비활성 + 안내). 아래: 발급 폼(이름 1~100자, 허용된 서비스만, 권한, 만료) → 원문 1회 표시(복사·MCP 예시) → 목록·폐기.
+- 서비스 이름은 `serviceLabel`, 전역 토큰 코드는 `GLOBAL_TOKEN_SERVICE`("all"). 발급 직후 MCP 클라이언트 설정 예시(엔드포인트 `NEXT_PUBLIC_MCP_URL`, 없으면 `https://{UMD_HOST}/mcp`).
+- 위: 서비스별 허용 체크박스(`isAdmin` 아니면 비활성 + 안내). 아래: 발급 폼(이름 1~100자, 허용된 서비스만, 권한, 만료) → 원문 1회 표시(복사·MCP 설정 예시) → 목록·폐기.
 - 데이터 `hooks/useApiTokens` (`["apiTokens"]`, `["apiTokens","services"]`), API `@/lib/api/apiTokens`, 타입 `@/types/apiToken`, mock `lib/mock/apiToken.ts`.
 
 ### EmptyGroupPanel — `@/components/settings/EmptyGroupPanel`

@@ -20,11 +20,6 @@ const DAYS = [30, 90, 365] as const;
 const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60";
 const cardCls = "rounded-xl border border-slate-200 bg-white p-6";
 
-/** 발급 직후 보여 줄 MCP 호출 예시 경로 (서비스별 대표 조회 API) */
-const EXAMPLE_PATH: Record<string, string> = {
-    cira: "/projects", docs: "/docs/notes", study: "/study/documents", "interface-test": "/interface-tests",
-};
-
 const errorMessage = (e: unknown, fallback: string) =>
     (isAxiosError(e) && e.response?.data?.message) || fallback;
 
@@ -124,10 +119,13 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                             <Copy className="h-4 w-4"/> 복사
                         </button>
                     </div>
-                    <p className="mt-3 text-xs text-amber-900">MCP 설정 예시 (게이트웨이로 바로 호출):</p>
+                    <p className="mt-3 text-xs text-amber-900">
+                        MCP 설정 예시 (Claude Code · Cursor · Codex 등, Streamable HTTP). DOCS·CIRA 를 함께 쓰려면 전체(전역) 토큰:
+                    </p>
                     <pre className="mt-1 overflow-x-auto rounded bg-white px-3 py-2 text-xs text-slate-700">{
-                        `GET http://{게이트웨이}:10001/tsh/api/v1${EXAMPLE_PATH[issued.info.service] ?? "/projects"}\nAuthorization: Bearer ${issued.token}`
+                        mcpConfigExample(issued.token)
                     }</pre>
+                    <p className="mt-1 text-xs text-amber-900">새 토큰은 서버 반영까지 최대 1시간 걸릴 수 있습니다.</p>
                     <div className="mt-3 flex justify-end">
                         <button type="button" onClick={() => setIssued(null)}
                                 className="h-9 rounded-lg bg-amber-600 px-4 text-sm font-semibold text-white hover:bg-amber-700">
@@ -210,4 +208,13 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
             </div>
         </section>
     );
+}
+
+/** UMD 경유 MCP 엔드포인트. NEXT_PUBLIC_MCP_URL 없으면 자리표시자 */
+export const MCP_URL = process.env.NEXT_PUBLIC_MCP_URL || "https://{UMD_HOST}/mcp";
+
+function mcpConfigExample(token: string): string {
+    return JSON.stringify({
+        mcpServers: {d94: {type: "http", url: MCP_URL, headers: {Authorization: `Bearer ${token}`}}},
+    }, null, 2) + `\n\n# Claude Code\nclaude mcp add --transport http d94 ${MCP_URL} --header "Authorization: Bearer ${token}"`;
 }
