@@ -35,6 +35,8 @@ AGENTS.md (L1)
 │   ├── (main)/todo/AGENTS.md ............ [실험] Server Actions
 │   ├── (main)/interface-test/AGENTS.md .. [실험] REST 메서드별 통신 확인
 │   ├── (main)/ayaan/AGENTS.md ........... [실험] AI CLI 작업·토큰 관리 (대시보드·작업·기준정보·셋업)
+│   ├── (main)/life-metric/AGENTS.md ..... [실험] Life Metric 삶의 수치화 (지표 카드·생성)
+│   │   └── [metricId]/AGENTS.md ......... 지표 상세 (기준값·기록·추이)
 │   ├── (main)/docs/AGENTS.md ............ Docs 개인 vault (폴더 트리·노트·[[링크]]·버전·Cmd+K)
 │   │   └── tasks/AGENTS.md .............. Task 모아보기 (체크박스 줄 상태별)
 │   └── (main)/study/AGENTS.md ........... [실험] PDF 학습 뷰어 (문서 목록·업로드)
@@ -43,7 +45,7 @@ AGENTS.md (L1)
 ├── src/components/AGENTS.md (L2 ★컴포넌트 카탈로그)
 │   ├── ui/AGENTS.md ..................... Primitive + 디자인 토큰
 │   ├── cira/AGENTS.md ................... CIRA 전용 토큰·primitive(ui)·셸(shell) → ADR 0006
-│   └── {board,docs,interfaceTest,issue,layout,mpns,project,settings,sprint,study,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
+│   └── {board,docs,interfaceTest,issue,lifeMetric,layout,mpns,project,settings,sprint,study,version,wiki}/AGENTS.md  도메인 컴포넌트 카드
 ├── src/hooks/AGENTS.md (L2 Query 훅·queryKey)
 ├── src/lib/AGENTS.md (L2 API·mock·messaging)
 └── src/test/AGENTS.md (L2 테스트 공용 설정·MSW 백엔드 모양 → docs/testing.md)
@@ -64,6 +66,7 @@ AGENTS.md (L1)
 | **todo** | `/todo` | Server Actions + `revalidatePath` |
 | **인터페이스 테스트** | `/interface-test` | REST 메서드별 UI → UMD → 백엔드 → DB 통신 확인 |
 | **Docs** | `/docs` | 웹 버전 Obsidian형 개인 vault: Markdown 노트·폴더·`[[링크]]`·백링크·버전 (d94-query `/api/v1/docs`) |
+| **Life Metric** | `/life-metric` | 삶의 수치화: 템플릿·커스텀 수식(`@code` 참조)으로 지표 계산, 기준값·기록 (d94-query `/api/v1/life-metric`) |
 | **PDF 학습(Study)** | `/study` | PDF 분할 업로드, 구조화 뷰어, 단어장 툴팁, 마킹·노트 (d94-query `/api/v1/study` + d94-app-pdf 파서) |
 
 - `/home`은 로그인 후 첫 화면인 기능 대시보드입니다. 새 실험은 언제든 추가할 수 있습니다. 다만 아래 공통 규칙은 지켜야 합니다.

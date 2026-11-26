@@ -8,6 +8,7 @@ import {
     BookOpen,
     ChevronRight,
     FolderKanban,
+    Gauge,
     LayoutDashboard,
     ListTodo,
     type LucideIcon,
@@ -105,6 +106,13 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
                 desc: "AI CLI 도구의 한도를 보고, 한도가 풀리면 중단된 작업을 자동으로 이어 갑니다.",
                 icon: Bot,
                 iconClass: "bg-fuchsia-50 text-fuchsia-600",
+            },
+            {
+                href: "/life-metric",
+                label: "Life Metric",
+                desc: "남은 수명 · 내 시급 · km당 차량 비용처럼 삶의 요소를 수식으로 숫자로 환산하고 기록합니다.",
+                icon: Gauge,
+                iconClass: "bg-cyan-50 text-cyan-600",
             },
             {
                 href: "/interface-test",

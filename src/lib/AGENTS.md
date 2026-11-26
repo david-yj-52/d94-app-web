@@ -9,7 +9,7 @@
 | `crypto/` | 로그인·회원가입 자격 증명 암호화 (WebCrypto) | ✅ 표준 |
 | `mock/` | 개발용 in-memory mock 백엔드 (`DEV_MOCK_API`) | ✅ 임시 |
 | `messaging/solace/` | Solace WebSocket 설정·훅 | 🧪 Solace 실험 전용 |
-| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"`, 로그인 뒤 복귀 경로 검증 `safeCallbackUrl(raw)`(내부 경로만, 아니면 `/home`), `SESSION_EXPIRED_REASON`. 보호 접두사 `/cira`·`/interface-test`·`/study`·`/ayaan`·`/settings`·`/docs` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
+| `routeAccess.ts` | 미들웨어 경로 판정 `classifyPath(pathname)` → `"protected" \| "publicOnly" \| "open"`, 로그인 뒤 복귀 경로 검증 `safeCallbackUrl(raw)`(내부 경로만, 아니면 `/home`), `SESSION_EXPIRED_REASON`. 보호 접두사 `/cira`·`/interface-test`·`/study`·`/ayaan`·`/settings`·`/docs`·`/life-metric` ([architecture](../../docs/architecture.md)) | ✅ 표준 |
 | `api.ts` | 구 fetch 래퍼 (서버·클라이언트 겸용) | 🧪 todo 실험 전용, 새 코드에서 사용 금지 |
 
 ## 1. API 함수 (`api/{domain}.ts`)
@@ -27,6 +27,7 @@
 - `api/fields.ts`: CIRA 프로젝트 타입·필드(d94-query `CiraFieldController`). 기준정보(쓰기 ADMIN): `getFieldCatalog` `GET /v1/cira/field-catalog`, `get/create/update/deleteProjectType` `/v1/cira/project-types[/{id}]`(쓰는 프로젝트가 있으면 삭제 409), `replaceProjectTypeFields` `PUT /{id}/fields`(배열 순서 = 순서), `create/update/deleteGlobalField` `/v1/cira/custom-fields[/{id}]`, `getFieldUsage` `GET /{id}/usage`. 프로젝트(쓰기 프로젝트 ADMIN): `getProjectFields`·`replaceProjectFields` `/v1/projects/{id}/fields`, `create/update/deleteProjectField` `/v1/projects/{id}/custom-fields[/{cfId}]`, `getColumnPref`·`saveColumnPref`·`resetColumnPref` `GET·PUT·DELETE /v1/projects/{id}/column-pref`(→ `fieldKeys`). 필드 키는 `sys:<name>` / `cf:<id>`. 라이브러리(전역·타입 필드는 가져가면 복사본): `create/update/deleteTypeField` `/v1/cira/project-types/{id}/custom-fields[/{cfId}]`, `importToType` `POST …/custom-fields/import`(ADMIN), `getFieldLibrary` `GET /v1/projects/{id}/field-library`(→ `LibraryItem[]`, `importedAs` = 이미 가져온 복사본), `importToProject` `POST /v1/projects/{id}/custom-fields/import`(멤버). 본문 `{sourceFieldId}`
 - `api/issues.ts` `getIssues`: `filters.sort`(`"sys:dueDate,asc"`)를 `sort` 로 보냅니다. Task 생성·수정 본문의 `customFields` 는 `{"cf:<id>": 값}`(null = 삭제)
 - `api/apiTokens.ts`: API 토큰(MCP·AI 도구용). `getApiTokens` `GET /v1/api-tokens`, `issueApiToken` `POST`(201, `{token, info}` — 원문은 이 응답 1회), `revokeApiToken` `DELETE /{id}`(204), `getApiTokenServices` `GET /services`, `setApiTokenService` `PUT /services/{service}` `{enabled}`(ADMIN 아니면 403)
+- `api/lifeMetric.ts`: Life Metric(d94-query `LifeMetricController`). `getMetricTemplates` `GET /v1/life-metric/templates`, `getMetrics`·`getMetric`·`createMetric`·`updateMetric`·`deleteMetric` `/v1/life-metric/metrics[/{id}]`, `putMetricInputs(id, values)` `PUT …/{id}/inputs` `{values}`(null·"" = 삭제), `getMetricLogs(id, key?)` `GET …/{id}/logs?limit=500`, `addMetricLog`·`deleteMetricLog` `POST·DELETE …/{id}/logs[/{logId}]`, `previewFormula(formula, inputs)` `POST /v1/life-metric/preview`. mock: `mock/lifeMetric.ts` `registerLifeMetricMock(on)` — 수식은 계산하지 않고 `value=null` + 안내 error
 - `api/users.ts`: `searchUsers(keyword)`, `getMe()` → `GET /v1/users/me` (`Me`, `roles` 는 `ROLE_` 접두사 없음)
 
 ## 1-1. 자격 증명 암호화 (`crypto/credential.ts`)
@@ -64,7 +65,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
 - mock: `mock/fields.ts`의 `registerFieldsMock(on, projectTypeId)` (타입 SCRUM·KANBAN 시드, 유효 필드·기본 컬럼 계산과 소속·복사 가져오기·`importedAs`·`copies` 만 흉내, 이름 중복 외 검증 없음). 프로젝트 생성·수정 mock 은 `mockTypeOf` 로 `projectTypeId` 를 채우고, Task mock 은 `customFields` 를 병합합니다(null = 삭제).
-- mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `all`·`cira`·`docs`·`study`·`interface-test`, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
+- mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `all`·`cira`·`docs`·`study`·`interface-test`·`life-metric`, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
 ### Docs: `api/docs.ts` · `docs/`
 - `api/docs.ts`: d94-query `/api/v1/docs` 와 짝. 폴더 `getDocsFolders`·`create/rename/move/deleteDocsFolder`, 노트 `getNotes(filters)`(`folderId=""` 최상위만)·`getNoteTitles`·`getNoteByTitle`·`getNote`·`create/update/move/deleteNote`(수정은 `version` 필수, 불일치 409)·`getNoteVersions`·`getBacklinks`, 진화 `deriveNote`·`changeNoteKind`·`getLineage`, Task `getDocsTasks`·`setDocsTaskStatus`·`promoteDocsTask`, 이미지 `uploadDocsImage(blob)`(`application/octet-stream`, 형식은 서버가 앞 바이트로 판별)·`docsImageUrl(id)`(`/api/proxy/v1/docs/images/{id}`).
