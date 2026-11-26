@@ -325,9 +325,10 @@ on("GET", "/v1/projects/:projectId/issues", ({params, query}) => {
     const items = filterIssues(getStore().issues.filter((i) => i.projectId === params.projectId), query);
     return ok(paginate(sortNewest(items), query));
 });
-on("POST", "/v1/projects/:projectId/issues", ({params, body}) => {
+on("POST", "/v1/projects/:projectId/issues", ({params, body}) => createMockIssue(params.projectId, body));
+function createMockIssue(projectId: string, body: Record<string, unknown>): MockResult {
     const s = getStore();
-    const p = s.projects.find((x) => x.id === params.projectId);
+    const p = s.projects.find((x) => x.id === projectId);
     if (!p) return notFound("project");
     p.issueSequence += 1;
     const first = s.statuses[p.id][0];
@@ -340,7 +341,9 @@ on("POST", "/v1/projects/:projectId/issues", ({params, body}) => {
     applyIssuePatch(issue, body);
     s.issues.push(issue);
     return ok(issue);
-});
+}
+// Docs 노트 → Task. ponytail: mock 은 Task 만 만들고 메인 노트·origin 연결은 하지 않는다
+on("POST", "/v1/projects/:projectId/docs/notes/:noteId/promote-to-cira", ({params, body}) => createMockIssue(params.projectId, body));
 on("GET", "/v1/issues/:issueId", ({params}) => {
     const i = getStore().issues.find((x) => x.id === params.issueId || x.issueKey === params.issueId);
     return i ? ok(i) : notFound("issue");

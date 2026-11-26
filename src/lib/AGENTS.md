@@ -73,7 +73,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - `docs/image.ts` `shrinkImage(blob)` — 900KB 이하·허용 형식이면 그대로, 아니면 긴 변 1920→800px·WebP 품질을 낮춰 가며 줄임(UMD 1MB 상한).
 - `docs/error.ts` `docsError(e, fallback)` — 서버 오류 메시지(409 등) 또는 fallback.
 - `docs/markdown.ts`: 서버 `DocsMarkdownIndexer` 와 같은 규칙의 화면용 도우미 — `stripFrontmatter`·`readFrontmatter`(단순 `key: value`)·`extractLinks/Tags/Tasks`, `toMarkdownLinks`(`[[A|별칭]]` → `[별칭](#note:A)`)·`titleFromHref`. 테스트 `docs/markdown.test.ts`.
-- `api/ciraDocs.ts`: d94-query `CiraDocsController`·`/v1/issue-types` 와 짝. `getIssueTypes`, `getDocRules`·`saveDocRules(projectId, issueTypeId, rules)`(통째 교체), `getIssueDocs`·`ensureIssueMainDoc`·`deriveIssueDoc`, `promoteNoteToCira`. mock(`router.ts`): 기준정보만 메모리 저장, Task 문서는 항상 "메인 없음".
+- `api/ciraDocs.ts`: d94-query `CiraDocsController`·`/v1/issue-types` 와 짝. `getIssueTypes`, `getDocRules`·`saveDocRules(projectId, issueTypeId, rules)`(통째 교체), `getIssueDocs`·`ensureIssueMainDoc`·`deriveIssueDoc`, `promoteNoteToCira`. mock(`router.ts`): 기준정보만 메모리 저장, Task 문서는 항상 "메인 없음", 승격은 Task 만 생성(`createMockIssue` 재사용).
 - mock: `mock/docs.ts`의 `registerDocsMock(on)` (vault 는 `mock-private` 하나, 시드 폴더 `가이드`·노트 `시작하기`, 409·404·이름 변경 링크 치환·진화·Task·5분 버전 병합까지 백엔드 규칙과 같게, 이미지는 앞 바이트 판별 후 메모리 보관·`raw` 응답, dev 서버 재시작 시 초기화).
 
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`

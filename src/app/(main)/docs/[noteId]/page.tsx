@@ -2,7 +2,7 @@
 
 import {Suspense, useState} from "react";
 import {useParams, useRouter, useSearchParams} from "next/navigation";
-import {FolderInput, GitBranch, Pencil, Trash2} from "lucide-react";
+import {FolderInput, GitBranch, Pencil, SquareKanban, Trash2} from "lucide-react";
 import NoteEditor from "@/components/docs/NoteEditor";
 import NoteMarkdown from "@/components/docs/NoteMarkdown";
 import NoteSidePanel from "@/components/docs/NoteSidePanel";
@@ -10,6 +10,9 @@ import NoteVersionHistory from "@/components/docs/NoteVersionHistory";
 import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import DocsDialog, {type DocsDialogSpec} from "@/components/docs/DocsDialog";
 import DeriveModal from "@/components/docs/DeriveModal";
+import PromoteToCiraModal from "@/components/docs/PromoteToCiraModal";
+import {useIssueTypes, usePromoteNoteToCira} from "@/hooks/useCiraDocs";
+import {useProjects} from "@/hooks/useProjects";
 import {useOpenNote} from "@/components/docs/useOpenNote";
 import {useBacklinks, useChangeNoteKind, useDeriveNote, usePromoteDocsTask, useSetDocsTaskStatus, useDeleteNote, useDocsFolders, useMoveNote, useNote, useNotes, useNoteTitleFetcher, useNoteVersions, useInvalidateDocs, useUploadDocsImage} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
@@ -38,6 +41,11 @@ function NoteContent() {
     const [moving, setMoving] = useState(false);
     const [dialog, setDialog] = useState<DocsDialogSpec | null>(null);
     const [deriving, setDeriving] = useState(false);
+    const [promoting, setPromoting] = useState(false);
+    // 등록 창의 프로젝트·타입 선택지 (캐시는 CIRA 화면과 공유)
+    const projects = useProjects();
+    const issueTypes = useIssueTypes();
+    const toCira = usePromoteNoteToCira();
     const changeKind = useChangeNoteKind(noteId);
     const derive = useDeriveNote(noteId);
     const setTask = useSetDocsTaskStatus();
@@ -92,6 +100,7 @@ function NoteContent() {
                                         {KINDS.map((k) => <option key={k} value={k}>{KIND_LABEL[k]}</option>)}
                                     </select>
                                     <IconButton label="파생 노트 만들기" onClick={() => setDeriving(true)}><GitBranch className="h-4 w-4"/></IconButton>
+                                    <IconButton label="CIRA Task로 등록" onClick={() => setPromoting(true)}><SquareKanban className="h-4 w-4"/></IconButton>
                                     <IconButton label="편집" onClick={() => setMode("edit")}><Pencil className="h-4 w-4"/></IconButton>
                                     <IconButton label="폴더 이동" onClick={() => setMoving(true)}><FolderInput className="h-4 w-4"/></IconButton>
                                     <IconButton label="삭제" onClick={() => setDialog({
@@ -151,6 +160,18 @@ function NoteContent() {
                                  },
                                  onError: (e) => show(docsError(e, "파생 노트를 만들지 못했습니다."), "error"),
                              })}/>
+            )}
+            {promoting && (
+                <PromoteToCiraModal noteTitle={n.title} saving={toCira.isPending} onClose={() => setPromoting(false)}
+                                    projects={(projects.data ?? []).map((p) => ({id: p.id, label: `[${p.key}] ${p.name}`}))}
+                                    issueTypes={(issueTypes.data ?? []).map((t) => ({id: t.id, label: t.typeNm}))}
+                                    onSubmit={({projectId, issueTypeId, title}) => toCira.mutate({projectId, noteId: n.id, issueTypeId, title}, {
+                                        onSuccess: (issue) => {
+                                            setPromoting(false);
+                                            router.push(`/cira/projects/${projectId}/issues/${issue.id}`);
+                                        },
+                                        onError: (e) => show(docsError(e, "CIRA Task로 등록하지 못했습니다."), "error"),
+                                    })}/>
             )}
             {ToastComponent}
         </div>

@@ -50,8 +50,8 @@ export function useDeriveIssueDoc(projectId: string, issueId: string) {
 export function usePromoteNoteToCira() {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: ({projectId, noteId, issueTypeId}: { projectId: string; noteId: string; issueTypeId?: string }) =>
-            promoteNoteToCira(projectId, noteId, issueTypeId),
+        mutationFn: ({projectId, noteId, issueTypeId, title}: { projectId: string; noteId: string; issueTypeId?: string; title?: string }) =>
+            promoteNoteToCira(projectId, noteId, issueTypeId, title),
         onSuccess: () => {
             invalidateDocs(qc);
             qc.invalidateQueries({queryKey: ["issues"]});
