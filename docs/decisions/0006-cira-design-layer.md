@@ -20,3 +20,9 @@ CIRA 를 팀의 Jira 대용으로 쓰려면 Jira Cloud 식 레이아웃(통합 �
 
 - 기존 모듈 화면은 바뀌지 않습니다. `ProjectNav` 는 셸 사이드바가 대신하여 삭제했습니다.
 - CIRA 화면의 새 UI 는 `components/cira` 카드([AGENTS](../../src/components/cira/AGENTS.md))를 먼저 확인합니다.
+
+## 변경 (2026-11-26)
+
+- `Dialog` 를 `components/cira/ui` → `components/ui` 로 승격했습니다. `(main)` 공통 헤더(`ApHeader`)의 모바일 메뉴 서랍에도 필요해져 L1 §5 "두 곳 이상이면 `ui/` 로 승격" 규칙을 따른 것입니다. 따라서 `@radix-ui/react-dialog` 는 CIRA 전용이 아니라 공용 primitive 의존성입니다. `Menu`(`react-dropdown-menu`)·`Badges`·`PageHeader` 는 그대로 CIRA 전용입니다.
+- 서비스 공통 토큰(`d94-*`)이 생겨 `.cira-root` 변수는 그 값을 참조합니다 → [ADR 0008](./0008-service-design-system.md)
+

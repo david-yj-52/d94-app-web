@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import Menu from "@/components/cira/ui/Menu";
 import {Avatar} from "@/components/cira/ui/Badges";
 import GlobalSearch from "@/components/layout/GlobalSearch";

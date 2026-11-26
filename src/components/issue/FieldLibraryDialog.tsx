@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import {CUSTOM_FIELD_TYPE_LABELS, type LibraryItem} from "@/types/fields";
 
 const GROUPS = [["global", "전역 필드"], ["type", "이 타입의 필드"]] as const;

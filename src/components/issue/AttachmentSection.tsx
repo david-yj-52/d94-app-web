@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import {useToast} from "@/components/ui/Toast";
 import {useAttachments, useDeleteAttachment, useUploadAttachment,} from "@/hooks/useAttachments";
 import {formatFileSize, getDownloadUrl} from "@/lib/api/attachments";

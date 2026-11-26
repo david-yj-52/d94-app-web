@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import CreateIssueModal from "@/components/issue/CreateIssueModal";
 import {useProjects} from "@/hooks/useProjects";
 import {Plus} from "lucide-react";

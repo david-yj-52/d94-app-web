@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import {ALWAYS_SHOWN_KEYS, type FieldDef} from "@/types/fields";
 import {ArrowDown, ArrowUp, Settings2} from "lucide-react";
 import {useState} from "react";

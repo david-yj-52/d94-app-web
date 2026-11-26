@@ -37,7 +37,7 @@
 | **터치 타겟 (버튼·아이콘)** | 최소 `h-10` (40px) | `h-9` (36px) ~ `h-10` (40px) | 아이콘 버튼은 `h-10 w-10` 권장 |
 | **입력 필드 (`input`/`select`)** | `h-10` (40px), `text-base` or `text-sm` | `h-9` (36px) ~ `h-10` (40px) | 모서리 `rounded-md` / `rounded-lg` |
 | **카드·패널** | `rounded-xl` (12px), `p-4` | `rounded-xl` (12px), `p-5`~`p-6` | `border border-d94-border bg-d94-surface` |
-| **모달 / 다이얼로그** | 전체 화면 시트 (`inset-0`) | 중앙 모달 (`max-w-lg rounded-md`) | `cira/ui/Dialog` 기준 |
+| **모달 / 다이얼로그** | 전체 화면 시트 (`inset-0`) | 중앙 모달 (`max-w-lg rounded-md`) | `ui/Dialog` 기준 |
 | **데이터 테이블** | 카드 리스트(`md:hidden`) 또는 `overflow-x-auto` | 테이블(`hidden md:block`) | `IssueTable` 패턴 준수 |
 
 ## 3. 브레이크포인트 & 레이아웃 규칙

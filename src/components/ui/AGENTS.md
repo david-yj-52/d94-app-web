@@ -55,6 +55,15 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 - 로고 글자용 폰트. `next/font/google` 로 빌드할 때 내려받아 앱에 포함합니다(`preload: false`, 실행 중 CDN 호출 없음). id 는 d94-query `SettingService.LOGO_FONTS` 와 같아야 합니다.
 - 사용처: `layout/ApHeader`, `settings/GeneralSettingsPanel`. 테스트에서는 `vi.mock("next/font/google", …)` 로 가짜 className 을 줍니다(`logoFonts.test.ts`).
 
+### Dialog — `import Dialog from "@/components/ui/Dialog"`
+```ts
+{ open: boolean; onOpenChange: (open: boolean) => void; title: string; children: ReactNode; side?: "left"; hideTitle?: boolean }
+```
+- Radix Dialog(`@radix-ui/react-dialog`). 모바일은 전체 화면 시트, `md` 이상은 가운데 모달(최대 `max-w-lg`). `side="left"` 는 왼쪽 서랍(`w-72 max-w-[85vw]`, 모바일 메뉴).
+- 바깥 클릭·Esc·✕ 로 닫히고 포커스를 가둡니다. 부모가 `open` 상태를 갖습니다.
+- 내용 패널에 `cira-root` 클래스가 붙습니다(포털이 `.cira-root` 밖에 그려져도 CIRA 자식의 `cira-*` 색이 살도록, 값은 d94 토큰과 같음).
+- 사용처: `layout/ApHeader`(모바일 메뉴 서랍), `cira/shell/CiraShell`·`CreateIssueButton`, issue(`ColumnPicker`·`FieldLibraryDialog`·`AttachmentSection`), settings(`CiraSettingsPanel`·`CustomFieldModal`), CIRA issues·settings/fields 화면. 2026-11-26 `cira/ui` 에서 승격([ADR 0006](../../../docs/decisions/0006-cira-design-layer.md) 갱신).
+
 ## 3. 표준 마크업 (primitive가 생기기 전까지 복사해서 사용)
 
 아래 마크업은 `sprint/CreateSprintModal` 등 기존 코드에서 가장 많이 쓰이는 형태를 그대로 옮긴 것입니다.
@@ -98,7 +107,7 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 
 | 예정 primitive | 대체 대상 | 근거 |
 |---|---|---|
-| `Modal` (`open`, `onClose`, `title`, `size`, ESC 닫기) | 모달 overlay 21곳 | 위 모달 마크업 반복 |
+| `Modal` (`open`, `onClose`, `title`, `size`, ESC 닫기) | 모달 overlay 21곳 | 위 모달 마크업 반복 — **새 모달은 `ui/Dialog` 를 쓰세요**(승격 완료) |
 | `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`, `loading`) | `<button>` 171곳 | 위 버튼 마크업 반복 |
 | `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | 위 폼 필드 반복 |
 | `ConfirmDialog` | 브라우저 `confirm()` 8곳 + issue 상세 삭제 다이얼로그 | sprints, versions, wiki, settings 등 |

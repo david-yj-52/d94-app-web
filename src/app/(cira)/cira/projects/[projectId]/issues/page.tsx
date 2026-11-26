@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import PageHeader from "@/components/cira/ui/PageHeader";
 import ColumnPicker from "@/components/issue/ColumnPicker";
 import FieldLibraryDialog from "@/components/issue/FieldLibraryDialog";

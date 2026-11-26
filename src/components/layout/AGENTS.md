@@ -11,7 +11,7 @@
 - 메뉴는 홈, 프로젝트, Tasks(`/todo`), MPMS입니다. **새 실험 모듈을 헤더에 노출하려면 `NAV_ITEMS`에 추가**하세요.
 - 로고 글자·폰트는 기준정보 설정(`useSettings`)의 `general.logo.text`(없으면 `TSHInc`)·`general.logo.font`(`ui/logoFonts` 의 `logoFontClass`)를 씁니다. 바꾸는 곳은 `/settings` General.
 - `useIsAdmin()` 이 true 면 Log Out 왼쪽에 **[기준정보]** 링크(`/settings`)를 보입니다(표시만, 권한 검사는 백엔드).
-- **반응형:** md(768px) 미만은 로고·`GlobalSearch`(남은 폭만큼 줄어듦)·`NotificationBell`·햄버거 버튼만 보이고, 햄버거를 누르면 헤더 아래 펼침 패널(`menuOpen` 상태)에 메뉴·사용자명·[기준정보]·Log Out 이 나옵니다. 링크를 누르면 닫힙니다. 활성 메뉴 색은 `d94-brand`/`d94-brand-soft`.
+- **반응형:** md(768px) 미만은 로고·`GlobalSearch`(남은 폭만큼 줄어듦)·`NotificationBell`·햄버거 버튼만 보이고, 햄버거를 누르면 왼쪽 서랍(`ui/Dialog side="left"`, `menuOpen` 상태)에 메뉴·사용자명·[기준정보]·Log Out 이 나옵니다. 링크를 누르거나 바깥 클릭·Esc·✕ 로 닫힙니다. 활성 메뉴 색은 `d94-brand`/`d94-brand-soft`.
 
 ### GlobalSearch — `@/components/layout/GlobalSearch` (ApHeader 내부)
 - props가 없습니다. **Ctrl/⌘+K**를 누르면 열리고 ESC를 누르면 닫힙니다. 입력은 debounce한 뒤 `searchIssues`를 호출하고, 결과를 클릭하면 이슈로 이동합니다.

@@ -6,9 +6,11 @@
 |---|---|---|---|
 | 1 | `830d669` feat | 모바일 레이아웃 | ApHeader 햄버거 메뉴 패널·검색/알림 드롭다운 화면 폭 맞춤 · Docs 폴더 트리 토글·노트 우측 패널 하단 · Wiki 높이(인라인 style 제거)·버전 오버레이·터치 액션 · MPMS/Ayaan 테이블 가로 스크롤 · Ayaan 상단 바 wrap · 루트 `viewport` · `d94-*` 토큰(ADR 0008) · 로그인/가입 브랜드 색 |
 | 2 | `8ed48f4` style | 색·배경 통일 | CIRA 전용·테스트 제외 84개 파일 363곳 `blue-600` 계열 → `d94-brand` 계열 · `(main)`/`(auth)` 배경 → `bg-d94-bg` · 375px 25개 화면 넘침 점검 |
-| 3 | (이번) feat | 테이블 카드화 | MPMS 플랫폼·제품(`MobileRowCards`)·Ayaan 작업 목록을 모바일 카드 목록으로 · MPMS 모바일 `min-h-[460px]` 제거 · MPMS 검정 버튼 → `d94-brand` |
+| 3 | `ef48e9b` feat | 테이블 카드화 | MPMS 플랫폼·제품(`MobileRowCards`)·Ayaan 작업 목록을 모바일 카드 목록으로 · MPMS 모바일 `min-h-[460px]` 제거 · MPMS 검정 버튼 → `d94-brand` |
 
-**남은 후보(미적용):** 모바일 메뉴를 슬라이드 서랍(`Dialog`)으로 바꾸려면 `cira/ui/Dialog` 를 `ui/` 로 승격해야 함(ADR 0006) · `ui/` 에 Button·Input primitive 가 없어 버튼 마크업이 화면마다 반복됨.
+| 4 | (이번) feat | 모바일 메뉴 서랍 | `cira/ui/Dialog` → `ui/Dialog` 승격(ADR 0006 갱신, import 9곳) · ApHeader 모바일 메뉴를 펼침 패널 → 왼쪽 서랍(`Dialog side="left"`, 바깥 클릭·Esc·✕ 닫힘) |
+
+**남은 후보(미적용):** `ui/` 에 Button·Input primitive 가 없어 버튼 마크업이 화면마다 반복됨 · Docs 폴더 트리도 서랍으로 바꿀 수 있음(현재 토글).
 
 ## 1. 모바일 환경 문제점 분석
 
@@ -75,7 +77,7 @@
 | **버튼 · 터치 타겟** | 최소 `h-10` (아이콘 `h-10 w-10`) | `h-9` (36px) ~ `h-10` (40px) | 40px 이상 터치 영역 |
 | **입력 · 셀렉트** | `h-10`, `rounded-lg` | `h-9`~`h-10`, `rounded-md`/`rounded-lg` | |
 | **카드 · 패널** | `rounded-xl`, `p-4` | `rounded-xl`, `p-5`~`p-6` | `border-d94-border bg-d94-surface` |
-| **모달 / 다이얼로그** | 전체 화면 시트 (`inset-0`) | 중앙 모달 (`max-w-lg`) | `cira/ui/Dialog` 패턴 |
+| **모달 / 다이얼로그** | 전체 화면 시트 (`inset-0`) | 중앙 모달 (`max-w-lg`) | `ui/Dialog` 패턴 |
 | **테이블 / 목록** | 카드 리스트(`md:hidden`) 또는 `overflow-x-auto` | 테이블(`hidden md:block`) | `IssueTable` 패턴 |
 
 ### 화면별 정렬 기준

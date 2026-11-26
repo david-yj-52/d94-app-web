@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import FieldLibraryDialog from "@/components/issue/FieldLibraryDialog";
 import CustomFieldModal from "@/components/settings/CustomFieldModal";
 import {useToast} from "@/components/ui/Toast";

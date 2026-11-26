@@ -32,12 +32,8 @@ Avatar({name?: string | null; size?: "sm" | "md"})                // 이름 첫 
 { breadcrumbs?: {label: string; href?: string}[]; title: string; actions?: ReactNode }
 ```
 
-### Dialog — `@/components/cira/ui/Dialog`
-```ts
-{ open: boolean; onOpenChange: (open: boolean) => void; title: string; children: ReactNode; side?: "left"; hideTitle?: boolean }
-```
-- Radix Dialog. 모바일은 전체 화면, `md` 이상은 가운데 모달(최대 `max-w-lg`). `side="left"`는 왼쪽 서랍(모바일 메뉴).
-- 바깥 클릭·Esc 로 닫힙니다. 부모가 `open` 상태를 갖습니다(기존 `{open && <Modal/>}` 규약의 CIRA 버전).
+### Dialog — `ui/Dialog` 로 승격됨 (2026-11-26)
+- ApHeader 모바일 서랍에서도 쓰게 되어 `@/components/ui/Dialog` 로 옮겼습니다. 카드는 [ui](../ui/AGENTS.md) §2.
 
 ### Menu — `@/components/cira/ui/Menu`
 ```ts

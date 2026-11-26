@@ -4,7 +4,8 @@ import * as RD from "@radix-ui/react-dialog";
 import {X} from "lucide-react";
 import type {ReactNode} from "react";
 
-// 모바일(<768px)은 전체 화면 시트, 그 이상은 가운데 모달. side="left" 는 모바일 메뉴 서랍
+// 모바일(<768px)은 전체 화면 시트, 그 이상은 가운데 모달. side="left" 는 모바일 메뉴 서랍 (ApHeader·CiraShell)
+// cira-root: 포털이 .cira-root 밖에 그려지므로 CIRA 자식의 cira-* 색이 살도록 붙인다(값은 d94 토큰과 같음)
 export default function Dialog({open, onOpenChange, title, children, side, hideTitle}: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -24,9 +25,9 @@ export default function Dialog({open, onOpenChange, title, children, side, hideT
                     aria-describedby={undefined}
                     className={`cira-root fixed z-50 flex flex-col overflow-y-auto bg-white shadow-xl focus:outline-none ${panel}`}
                 >
-                    <div className={`flex items-center justify-between border-b border-cira-border px-4 py-3 ${hideTitle ? "sr-only" : ""}`}>
+                    <div className={`flex items-center justify-between border-b border-d94-border px-4 py-3 ${hideTitle ? "sr-only" : ""}`}>
                         <RD.Title className="text-base font-semibold">{title}</RD.Title>
-                        <RD.Close className="flex h-10 w-10 items-center justify-center rounded text-cira-muted hover:bg-gray-100"
+                        <RD.Close className="flex h-10 w-10 items-center justify-center rounded text-d94-muted hover:bg-gray-100"
                                   aria-label="닫기">
                             <X className="h-4 w-4"/>
                         </RD.Close>

@@ -1,6 +1,6 @@
 "use client";
 
-import Dialog from "@/components/cira/ui/Dialog";
+import Dialog from "@/components/ui/Dialog";
 import {CUSTOM_FIELD_TYPE_LABELS, type CustomFieldType, type FieldDef, type SaveCustomField} from "@/types/fields";
 import {useState} from "react";
 
