@@ -25,7 +25,7 @@ StatusLozenge({label?: string | null; category?: string | null})   // category: 
 IssueTypeIcon({typeName?: string | null})                         // 버그/Bug 빨강, 스토리/Story 초록, 그 외 작업(파랑)
 PriorityIcon({priority?: string | null})                          // 모르는 값이면 렌더링 안 함
 Avatar({name?: string | null; size?: "sm" | "md"})                // 이름 첫 글자, 없으면 "?"
-CommonFeatureBadge({feature: {issueKey: string; title: string}})  // "공통 · KEY" 보라 배지 — 공통 Feature 에 연결된 Task (설계 3.2)
+CommonFeatureBadge({feature: {issueKey: string; title: string}})  // "공통 · KEY" — ui/Badge + d94-brand-soft, 공통 Feature 에 연결된 Task (설계 3.2)
 ```
 
 ### PageHeader — `@/components/cira/ui/PageHeader`
