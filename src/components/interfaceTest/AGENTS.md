@@ -27,6 +27,12 @@ export interface InterfaceRequestForm { itemId: string; name: string; content: s
 ```
 - 로딩은 `SkeletonRow` 3개, 오류는 `errorMessage` 를 빨간 띠로, 빈 목록은 안내 문구.
 
+### PumpControlPanel — `@/components/interfaceTest/PumpControlPanel`
+```ts
+{ onCommand: (action: "ON" | "OFF") => void; isPending: boolean }
+```
+- PUMP1 ON/OFF 버튼. 요청 중 중복 클릭을 막습니다. 권한은 서버 ADMIN API가 강제합니다.
+
 ### MethodBadge — `@/components/interfaceTest/MethodBadge`
 ```ts
 { method: InterfaceTestMethod }        // + export const METHOD_COLOR: Record<InterfaceTestMethod, string>

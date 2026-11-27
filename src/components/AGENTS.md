@@ -76,7 +76,7 @@
 | issue | ColumnPicker, FieldLibraryDialog, FieldValue, CustomFieldInput | 사람별 컬럼 선택·순서·만들기·가져오기 · 라이브러리 가져오기 창 · 필드 값 표시 · 사용자 정의 필드 입력 | `issues`, `issues/[issueId]`, `settings/fields` | [issue](issue/AGENTS.md) |
 | issue | CommentSection, AttachmentSection | 댓글(멘션·이모지·답글)·첨부(DnD 업로드) | `issues/[issueId]` | [issue](issue/AGENTS.md) |
 | issue | IssueDocsSection | Task 연결 Docs(메인 노트·슬롯 파생·계보) | `issues/[issueId]` | [issue](issue/AGENTS.md) |
-| interfaceTest | InterfaceRequestPanel, InterfaceCallLog, InterfaceItemTable, MethodBadge | REST 메서드별 통신 확인 (요청 폼·호출 기록·DB 목록) | `/interface-test` 🧪 | [interfaceTest](interfaceTest/AGENTS.md) |
+| interfaceTest | InterfaceRequestPanel, InterfaceCallLog, InterfaceItemTable, MethodBadge, PumpControlPanel | REST 메서드별 통신 확인 + Admin 전용 PUMP1 MQTT 제어 | `/interface-test` 🧪 | [interfaceTest](interfaceTest/AGENTS.md) |
 | lifeMetric | MetricCard, MetricCreateModal, FormulaEditor, BaselineForm, LogPanel | 삶의 수치화 지표 카드·생성(템플릿/수식 빌더)·기준값·기록 | `/life-metric` 🧪 | [lifeMetric](lifeMetric/AGENTS.md) |
 | study | DocumentList, UploadDropzone, TocTree, PageView, SelectionToolbar, AnnotationPopover, TermEditModal, TermsPanel, NoteList, AutoScroll, DictionaryPopover, DictionaryKeyModal | PDF 학습 뷰어 (업로드·목차·본문 렌더링·마킹·단어장·노트·자동 스크롤) | `/study/**` 🧪 | [study](study/AGENTS.md) |
 | docs | DocsSidebar, NoteMarkdown, CodeBlock, MermaidDiagram, NoteEditor, livePreview, useNoteAutosave, NoteSidePanel, DeriveModal, PromoteToCiraModal, TaskBoard, NoteVersionHistory, QuickSwitcher, FolderPickerModal, DocsDialog, useOpenNote | Docs 다중 vault (vault 섹션별 폴더 트리·[[링크]] 렌더링·편집·백링크·버전·Cmd+K) | `/docs/**` | [docs](docs/AGENTS.md) |

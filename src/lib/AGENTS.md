@@ -79,6 +79,8 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 ### 예외: `api/interfaceTests.ts`의 `callInterfaceTest`
 통신 확인 화면 전용입니다. `res.data.data` 대신 `InterfaceCallResult`(상태·소요시간·`X-Trace-Id`·`Location`·본문)를 돌려주고, `validateStatus: () => true` 로 4xx·5xx 도 throw 하지 않습니다(따라서 401 에서도 refresh·재로그인을 하지 않음). 목록 조회 `getInterfaceTestItems` 는 표준 규칙을 따릅니다.
 
+- 같은 모듈의 `sendPumpCommand("ON" | "OFF")` 는 `POST /v1/smartfarm/pumps/PUMP1/command` 를 호출합니다. d94-query 에서 ADMIN 인가 후 MQTT publish를 수행합니다.
+
 ### 타입
 `src/types/{domain}.ts`에 `XxxResponse`, `CreateXxxRequest`, `UpdateXxxRequest`로 정의합니다. 페이지네이션은 `PageResponse<T>`(`types/issue.ts`)를 사용합니다.
 CIRA 타입은 d94-query DTO 필드 이름·값 그대로입니다(스프린트 `sprintStat`, 댓글 반응 `reactionType`, 답글 `parentId`, 멤버 `userNm`). 예외는 알림(`api/notifications.ts` 변환)뿐입니다. `apiClient` 는 배열 파라미터를 반복 키(`status=a&status=b`, `paramsSerializer: {indexes: null}`)로 보냅니다 → [docs/test-report.md](../../docs/test-report.md)

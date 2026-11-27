@@ -3,10 +3,14 @@
 import InterfaceCallLog from "@/components/interfaceTest/InterfaceCallLog";
 import InterfaceItemTable from "@/components/interfaceTest/InterfaceItemTable";
 import InterfaceRequestPanel, {type InterfaceRequestForm} from "@/components/interfaceTest/InterfaceRequestPanel";
+import PumpControlPanel from "@/components/interfaceTest/PumpControlPanel";
 import {useToast} from "@/components/ui/Toast";
 import {useInterfaceCall, useInterfaceTestItems} from "@/hooks/useInterfaceTests";
+import {useIsAdmin} from "@/hooks/useSettings";
+import {sendPumpCommand} from "@/lib/api/interfaceTests";
 import type {InterfaceCallRequest, InterfaceCallResult, InterfaceTestItemResponse} from "@/types/interfaceTest";
 import {isAxiosError} from "axios";
+import {useMutation} from "@tanstack/react-query";
 import {useState} from "react";
 
 const MAX_LOGS = 50;
@@ -25,6 +29,13 @@ export default function InterfaceTestPage() {
 
     const {data: items = [], isLoading, error, refetch} = useInterfaceTestItems();
     const {mutate: call, isPending} = useInterfaceCall();
+    const isAdmin = useIsAdmin();
+    const pumpCommand = useMutation({mutationFn: sendPumpCommand});
+
+    const handlePumpCommand = (action: "ON" | "OFF") => pumpCommand.mutate(action, {
+        onSuccess: () => show(`PUMP1 ${action} 명령을 MQTT 브로커에 전달했습니다. 실제 동작 확인 응답은 없습니다.`, "success"),
+        onError: (e) => show(`PUMP1 ${action} 전송 실패: ${e instanceof Error ? e.message : String(e)}`, "error"),
+    });
 
     const listError = error
         ? `목록 조회 실패 (${isAxiosError(error) ? error.response?.status ?? "응답 없음" : error.message})`
@@ -61,6 +72,8 @@ export default function InterfaceTestPage() {
                 <InterfaceRequestPanel form={form} onChange={setForm} onCall={handleCall} isPending={isPending}/>
                 <InterfaceCallLog logs={logs} onClear={() => setLogs([])}/>
             </div>
+
+            <PumpControlPanel onCommand={handlePumpCommand} isPending={pumpCommand.isPending} isAdmin={isAdmin}/>
 
             <InterfaceItemTable
                 items={items}

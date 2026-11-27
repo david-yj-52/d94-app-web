@@ -15,6 +15,7 @@ interface-test/page.tsx   (form · logs 상태 보관, 조립)
 ├── 2열 (lg)
 │   ├── InterfaceRequestPanel   대상 ID·name·status·content 입력 + 메서드 버튼 7개
 │   └── InterfaceCallLog        호출 기록 (최신순, 최대 50건, 펼치면 Trace ID·요청/응답 본문)
+├── PumpControlPanel            PUMP1 MQTT ON/OFF (Admin API)
 ├── InterfaceItemTable          DB 데이터 목록 (행 클릭 → 폼 채움)
 └── {ToastComponent}
 ```
@@ -38,6 +39,7 @@ interface-test/page.tsx   (form · logs 상태 보관, 조립)
 
 - 백엔드: d94-query `InterfaceTestController` (`/api/v1/interface-tests`, 테이블 `SN_IF_TEST_ITEM`). `BACKEND_URL` 에 `/tsh/api` 까지 포함합니다.
 - `callInterfaceTest` 는 4xx·5xx 도 throw 하지 않고 결과로 돌려줍니다(규칙 예외 → [conventions §7](../../../../docs/conventions.md)). `validateStatus` 를 모두 통과시키므로 401 이어도 refresh·재로그인을 하지 않습니다.
+- 펌프 제어: `sendPumpCommand` → `POST /v1/smartfarm/pumps/PUMP1/command` `{action: "ON"|"OFF"}`. d94-query 는 ADMIN 만 허용하고 `smartfarm/esp32/cmd` 에 QoS 1, retain=false 로 publish 합니다. 비-ADMIN 은 버튼 클릭 시 API 403 을 받습니다.
 
 ## 기능 (L4)
 ### 메서드 호출
@@ -49,6 +51,10 @@ interface-test/page.tsx   (form · logs 상태 보관, 조립)
 
 ### 목록에서 선택
 - 행 클릭 → 대상 ID·name·content·status 를 폼에 채웁니다. 선택한 행은 `bg-blue-50`.
+
+### PUMP1 제어
+- ON/OFF 버튼은 펌프 API mutation 을 호출합니다. 성공 알림은 브로커가 MQTT publish 를 수락했음을 뜻하며 ESP32/릴레이의 실제 동작 ACK 는 아닙니다.
+- 펌프는 OFF 명령 전까지 켜져 있습니다. ESP32 재부팅 시 꺼집니다.
 
 ## 주의·예외
 - 호출 기록은 화면 상태(useState)라 새로고침하면 사라집니다.

@@ -7,6 +7,10 @@ import type {
 
 const BASE = "/v1/interface-tests";
 
+export async function sendPumpCommand(action: "ON" | "OFF"): Promise<void> {
+    await apiClient.post("/v1/smartfarm/pumps/PUMP1/command", {action});
+}
+
 let callSeq = 0;
 
 export async function getInterfaceTestItems(): Promise<InterfaceTestItemResponse[]> {
