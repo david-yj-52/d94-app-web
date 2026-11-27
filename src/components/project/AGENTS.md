@@ -15,7 +15,7 @@
 ```ts
 { onClose: () => void; onSuccess?: () => void }
 ```
-- 키·이름·설명·첫 작업 공간(이름 `defaultSpaceName`, 비우면 General · 프리셋 `presetTypeId`). 프리셋 목록은 `useProjectTypes`(기준정보 › CIRA 작업 공간 프리셋), 첫 프리셋이 기본값. 프리셋의 상태·필드·보드가 첫 공간에 1회 복사됩니다(V650).
+- 키·이름·설명·**작업 공간 구성**: 공간 행(이름 + 프리셋 select, 첫 옵션 "빈 공간") 목록, `[+ 작업 공간 추가]`(최대 10)·행 빼기(첫 행은 "기본" 고정). 첫 행이 기본 공간, 기본값 "General · 빈 공간". 이름 중복이면 "작업 공간 이름이 겹칩니다." 로 막음. 보내는 값 `spaces: [{name, presetTypeId|null}]`(관리자 = 만든 사람, 나중에 지정). 프리셋 목록은 `useProjectTypes`. 프로젝트에는 타입이 없다(V660). 테스트 `CreateProjectModal.test.tsx`.
 
 ### CreateSpaceModal — `@/components/project/CreateSpaceModal`
 ```ts

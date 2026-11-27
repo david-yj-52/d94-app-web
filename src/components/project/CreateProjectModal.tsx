@@ -3,13 +3,16 @@
 import {useCreateProject} from "@/hooks/useProjects";
 import {useProjectTypes} from "@/hooks/useFields";
 import {zodResolver} from "@hookform/resolvers/zod";
+import {Plus, X} from "lucide-react";
 import Link from "next/link";
 import {useEffect} from "react";
-import {useForm} from "react-hook-form";
+import {useFieldArray, useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input, Select, Textarea} from "@/components/ui/Input";
 import FormField from "@/components/ui/FormField";
+
+const MAX_SPACES = 10;
 
 const schema = z.object({
     key: z
@@ -21,8 +24,12 @@ const schema = z.object({
         .regex(/^[A-Z0-9]+$/, "대문자 영문/숫자만 입력 가능합니다."),
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
-    presetTypeId: z.string().min(1, "작업 공간 프리셋을 선택해주세요."),
-    defaultSpaceName: z.string().trim().max(60).optional(),
+    /** 처음 만들 작업 공간들. 첫 번째 = 기본 공간. presetTypeId "" = 빈 공간 */
+    spaces: z.array(z.object({
+        name: z.string().trim().min(1, "공간 이름을 입력해주세요.").max(60),
+        presetTypeId: z.string(),
+    })).min(1).max(MAX_SPACES)
+        .refine((rows) => new Set(rows.map((r) => r.name.trim())).size === rows.length, "작업 공간 이름이 겹칩니다."),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -32,26 +39,24 @@ interface Props {
     onSuccess?: () => void;
 }
 
+/**
+ * 프로젝트 생성 (V650·V660): 프로젝트에는 타입이 없다. 대신 처음 작업 공간들(예: Hardware · Software · 별도 공간)을
+ * 여기서 한 번에 구성하고, 공간마다 프리셋(상태·필드·보드 1회 복사) 또는 빈 공간을 고른다.
+ */
 export default function CreateProjectModal({onClose, onSuccess}: Props) {
     const {mutate, isPending, isSuccess, isError} = useCreateProject();
-    const {data: projectTypes = []} = useProjectTypes();
+    const {data: presets = []} = useProjectTypes();
 
     const {
         register,
         handleSubmit,
-        getValues,
-        setValue,
+        control,
         formState: {errors},
     } = useForm<FormData>({
         resolver: zodResolver(schema),
-        defaultValues: {presetTypeId: ""},
+        defaultValues: {spaces: [{name: "General", presetTypeId: ""}]},
     });
-
-    useEffect(() => {
-        if (projectTypes.length && !projectTypes.some((t) => t.id === getValues("presetTypeId"))) {
-            setValue("presetTypeId", projectTypes[0].id);
-        }
-    }, [projectTypes, getValues, setValue]);
+    const {fields, append, remove} = useFieldArray({control, name: "spaces"});
 
     useEffect(() => {
         if (isSuccess) {
@@ -60,7 +65,12 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
         }
     }, [isSuccess, onClose, onSuccess]);
 
-    const onSubmit = (data: FormData) => mutate(data);
+    const onSubmit = (data: FormData) => mutate({
+        key: data.key,
+        name: data.name,
+        description: data.description,
+        spaces: data.spaces.map((s) => ({name: s.name.trim(), presetTypeId: s.presetTypeId || null})),
+    });
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -68,7 +78,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                 onClick={onClose}
             />
-            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 max-h-[calc(100dvh-2rem)] overflow-y-auto">
+            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 p-6 max-h-[calc(100dvh-2rem)] overflow-y-auto">
                 <h2 className="text-lg font-bold text-slate-900 mb-5">프로젝트 생성</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -104,39 +114,49 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                         />
                     </FormField>
 
-                    <div>
+                    <fieldset>
                         <div className="flex items-center justify-between mb-1">
-                            <label className="block text-xs font-medium text-slate-600">
-                                첫 작업 공간
-                            </label>
-                            <Link
-                                href="/settings?group=cira"
-                                onClick={onClose}
-                                className="text-[11px] text-d94-brand hover:underline"
-                            >
-                                기준정보에서 관리
+                            <legend className="block text-xs font-medium text-slate-600">작업 공간 구성</legend>
+                            <Link href="/settings?group=cira" onClick={onClose} className="text-[11px] text-d94-brand hover:underline">
+                                프리셋 관리
                             </Link>
                         </div>
-                        <div className="grid grid-cols-2 gap-2">
-                        <Input {...register("defaultSpaceName")} placeholder="General" aria-label="첫 작업 공간 이름"/>
-                        <Select
-                            {...register("presetTypeId")}
-                            aria-label="작업 공간 프리셋"
-                        >
-                            {projectTypes.map((type) => (
-                                <option key={type.id} value={type.id}>
-                                    {type.typeNm}
-                                </option>
-                            ))}
-                        </Select>
-                        </div>
-                        <p className="mt-1 text-[11px] text-slate-400">
-                            프리셋의 상태·필드·보드가 첫 작업 공간에 복사됩니다. Hardware·Software 같은 공간은 만든 뒤 사이드바에서 추가합니다.
+                        <p className="mb-2 text-[11px] text-slate-400">
+                            팀·영역마다 공간을 나눕니다(예: Hardware · Software · 별도 공간). 공간마다 워크플로·필드·보드를 따로 운영하고,
+                            프리셋을 고르면 그 상태·필드·보드가 한 번 복사됩니다. 공간 관리자는 만든 뒤 지정합니다.
                         </p>
-                        {errors.presetTypeId && (
-                            <p className="mt-0.5 text-xs text-red-500">{errors.presetTypeId.message}</p>
-                        )}
-                    </div>
+                        <ul className="space-y-2">
+                            {fields.map((f, i) => (
+                                <li key={f.id} className="flex items-start gap-2">
+                                    <div className="grid flex-1 grid-cols-2 gap-2">
+                                        <div>
+                                            <Input {...register(`spaces.${i}.name`)} placeholder="공간 이름" aria-label={`작업 공간 ${i + 1} 이름`}/>
+                                            {errors.spaces?.[i]?.name && (
+                                                <p className="mt-0.5 text-xs text-red-500">{errors.spaces[i]?.name?.message}</p>
+                                            )}
+                                        </div>
+                                        <Select {...register(`spaces.${i}.presetTypeId`)} aria-label={`작업 공간 ${i + 1} 프리셋`}>
+                                            <option value="" title="To Do → In Progress → Done">빈 공간</option>
+                                            {presets.map((t) => <option key={t.id} value={t.id}>{t.typeNm}</option>)}
+                                        </Select>
+                                    </div>
+                                    {i === 0 ? (
+                                        <span className="mt-2.5 w-9 shrink-0 text-center text-[11px] text-slate-400" title="Task 를 처음 등록하는 공간">기본</span>
+                                    ) : (
+                                        <Button type="button" variant="ghost" size="icon" aria-label={`작업 공간 ${i + 1} 빼기`} onClick={() => remove(i)}>
+                                            <X className="h-4 w-4"/>
+                                        </Button>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                        {errors.spaces?.root?.message && <p className="mt-1 text-xs text-red-500">{errors.spaces.root.message}</p>}
+                        {errors.spaces?.message && <p className="mt-1 text-xs text-red-500">{errors.spaces.message}</p>}
+                        <Button type="button" variant="link" size="sm" className="mt-2" disabled={fields.length >= MAX_SPACES}
+                                onClick={() => append({name: "", presetTypeId: ""})}>
+                            <Plus className="h-3.5 w-3.5"/>작업 공간 추가
+                        </Button>
+                    </fieldset>
 
                     {isError && (
                         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">

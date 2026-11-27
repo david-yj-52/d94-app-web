@@ -84,7 +84,7 @@
 | docs | DocsSidebar, NoteMarkdown, CodeBlock, MermaidDiagram, NoteEditor, livePreview, useNoteAutosave, NoteSidePanel, DeriveModal, PromoteToCiraModal, TaskBoard, NoteVersionHistory, QuickSwitcher, FolderPickerModal, DocsDialog, useOpenNote | Docs 다중 vault (vault 섹션별 폴더 트리·[[링크]] 렌더링·편집·백링크·버전·Cmd+K) | `/docs/**` | [docs](docs/AGENTS.md) |
 | milestone | MilestoneCard, MilestoneModal | 마일스톤 카드·생성/편집 | `versions` | §5 |
 | mpns | PlatformTable, ProductTable, MobileRowCards, DetailPanel, PlatformAddPopup, ProductAddPopup | MPMS 마스터-디테일 (모바일 카드 목록) | `/mpms` 🧪 | [mpns](mpns/AGENTS.md) |
-| project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성(첫 작업 공간 이름·프리셋) | `/cira/projects` | [project](project/AGENTS.md) |
+| project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성(작업 공간 여러 개 구성 — 공간마다 프리셋 또는 빈 공간) | `/cira/projects` | [project](project/AGENTS.md) |
 | project | CreateSpaceModal | 작업 공간 추가(이름·프리셋/빈 공간·공간 관리자) | CiraSidebar | [project](project/AGENTS.md) |
 | project/settings | MemberTable, AddMemberModal | 멤버 관리 | `settings/*` | [project](project/AGENTS.md) |
 | project/settings/automation | AutomationRuleCard, AutomationRuleModal | 자동화 규칙 | `settings/automation` | [project](project/AGENTS.md) |

@@ -291,7 +291,15 @@ on("POST", "/v1/projects", ({body}) => {
         issueSequence: 0
     };
     s.projects.push(p);
-    mockPreset[p.id] = mockTypeOf(body.presetTypeId).id;
+    const initial = (body.spaces as {name: string; presetTypeId?: string | null}[] | undefined) ?? [];
+    mockPreset[p.id] = initial.length ? (initial[0].presetTypeId ?? "") : mockTypeOf(body.presetTypeId).id;
+    if (initial.length) {
+        mockSpaces[p.id] = initial.map((sp, i) => ({
+            id: i === 0 ? `space-${p.id}` : nextId("space"), projectId: p.id, name: sp.name || "General",
+            key: i === 0 ? "DEFAULT" : sp.name.toUpperCase(), description: null, presetTypeId: sp.presetTypeId || null,
+            adminUserId: "mock-user", adminNm: "나", isDefault: i === 0, sortOrd: i, canManage: true,
+        }));
+    }
     s.statuses[p.id] = structuredClone(s.statuses["1"]);
     s.transitions[p.id] = structuredClone(s.transitions["1"]);
     s.members[p.id] = [{userId: ME.userId, email: ME.email, userNm: ME.name, role: "ADMIN"}];
