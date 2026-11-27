@@ -18,9 +18,11 @@
 
 | 8 | `3321b95` feat | ConfirmDialog | `ui/ConfirmDialog` `useConfirm()` → `Promise<boolean>` (`Dialog compact` 카드, danger 빨간 버튼) · 브라우저 `confirm()` 15곳(12개 파일) 교체 |
 
-| 9 | (이번) refactor | Task·댓글 삭제 확인 | CIRA Task 상세 삭제·댓글 삭제의 손 마크업 다이얼로그 → `useConfirm`(중복 삭제 방지 유지) |
+| 9 | `5de3515` refactor | Task·댓글 삭제 확인 | CIRA Task 상세 삭제·댓글 삭제의 손 마크업 다이얼로그 → `useConfirm`(중복 삭제 방지 유지) |
 
-**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로 · `FormField`(라벨+오류 묶음) · KanbanBoard 컬럼·보드 삭제, Life Metric 상세 삭제의 손 마크업 다이얼로그.
+| 10 | (이번) refactor | 보드·지표 삭제 확인 | KanbanBoard 컬럼·보드 삭제, Life Metric 지표 삭제의 손 마크업 다이얼로그 → `useConfirm` (손 마크업 삭제 모달 0개 — 프로젝트 설정의 인라인 2단계 삭제·CIRA 타입 삭제 Dialog 는 의도된 형태로 유지) |
+
+**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로 · `FormField`(라벨+오류 묶음).
 
 ## 1. 모바일 환경 문제점 분석
 

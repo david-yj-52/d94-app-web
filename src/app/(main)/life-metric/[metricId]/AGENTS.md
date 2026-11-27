@@ -15,7 +15,7 @@
 ├── 2열 (lg: 20rem | 1fr)
 │   ├── BaselineForm (key=modifiedAt — 저장 후 새 값으로 다시 그림)
 │   └── LogPanel     (빠른 입력 · 추이 LineChart · 최근 기록 목록)
-├── 삭제 확인 다이얼로그 (ui 표준 마크업, max-w-sm)
+├── 삭제 버튼 → `useConfirm`("지표 삭제", 참조 지표 경고) → 성공 시 목록으로
 └── {ToastComponent}
 ```
 컴포넌트 카드: [lifeMetric](../../../../components/lifeMetric/AGENTS.md)

@@ -20,6 +20,7 @@ import {isAxiosError} from "axios";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {use, useState} from "react";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 const messageOf = (e: unknown) => (isAxiosError(e) ? e.response?.data?.message ?? e.message : String(e));
 
@@ -36,7 +37,7 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
     const update = useUpdateMetric(metricId);
     const remove = useDeleteMetric();
     const [formula, setFormula] = useState<string | null>(null); // null = 편집 안 함
-    const [confirmDelete, setConfirmDelete] = useState(false);
+    const {confirm, ConfirmComponent} = useConfirm();
 
     if (isLoading) return <div className="mx-auto max-w-5xl space-y-3 px-4 py-8"><Skeleton className="h-24"/><Skeleton className="h-64"/></div>;
     if (error || !metric) return <div className="mx-auto max-w-5xl px-4 py-8 text-sm text-slate-500">지표를 찾을 수 없습니다. <Link href="/life-metric" className="text-d94-brand">목록으로</Link></div>;
@@ -53,8 +54,12 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
                         <h1 className="text-2xl font-bold text-slate-900">{metric.name}</h1>
                         <code className="text-sm text-slate-400">@{metric.code}</code>
                     </div>
-                    <button type="button" onClick={() => setConfirmDelete(true)}
-                            className="h-8 rounded-lg border border-slate-200 px-3 text-sm text-red-500 hover:bg-red-50">삭제</button>
+                    <button type="button" disabled={remove.isPending} onClick={async () => {
+                        if (!(await confirm(`‘${metric.name}’과 기준값·기록이 모두 지워집니다. @${metric.code} 를 참조하던 지표는 계산할 수 없게 됩니다.`,
+                            {title: "지표 삭제", confirmLabel: "삭제", danger: true}))) return;
+                        remove.mutate(metric.id, {onSuccess: () => router.push("/life-metric"), onError});
+                    }}
+                            className="h-8 rounded-lg border border-slate-200 px-3 text-sm text-red-500 hover:bg-red-50 disabled:opacity-50">삭제</button>
                 </div>
                 {metric.error ? <p className="mt-4 text-amber-600">{metric.error}</p> : (
                     <p className="mt-4 text-4xl font-bold tabular-nums text-slate-900">
@@ -96,23 +101,8 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
                 </section>
             </div>
 
-            {confirmDelete && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setConfirmDelete(false)}/>
-                    <div className="relative mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto">
-                        <h2 className="mb-2 text-lg font-bold text-slate-900">지표 삭제</h2>
-                        <p className="mb-5 text-sm text-slate-600">&lsquo;{metric.name}&rsquo;과 기준값·기록이 모두 지워집니다. <code>@{metric.code}</code>를 참조하던 지표는 계산할 수 없게 됩니다.</p>
-                        <div className="flex gap-3">
-                            <button type="button" onClick={() => setConfirmDelete(false)}
-                                    className="h-10 flex-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
-                            <button type="button" disabled={remove.isPending}
-                                    onClick={() => remove.mutate(metric.id, {onSuccess: () => router.push("/life-metric"), onError})}
-                                    className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60">삭제</button>
-                        </div>
-                    </div>
-                </div>
-            )}
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }

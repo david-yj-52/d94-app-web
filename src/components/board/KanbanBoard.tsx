@@ -10,6 +10,7 @@ import {useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 import Button from "@/components/ui/Button";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 interface DragState {
     issueId: string;
@@ -42,8 +43,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
         BoardColumnResponse | undefined
     >(undefined);
     const [showBoardMenu, setShowBoardMenu] = useState(false);
-    const [showDeleteBoardConfirm, setShowDeleteBoardConfirm] = useState(false);
-    const [deletingColumnId, setDeletingColumnId] = useState<string | null>(null);
+    const {confirm, ConfirmComponent} = useConfirm();
     const {data: session} = useSession();
     const [mineOnly, setMineOnly] = useState(false);
     const [keyword, setKeyword] = useState("");
@@ -127,15 +127,18 @@ export default function KanbanBoard({boardId, projectId}: Props) {
         setDragOver(null);
     };
 
-    const handleDeleteColumn = (columnId: string) => {
+    const handleDeleteColumn = async (columnId: string) => {
+        if (!(await confirm("이 컬럼을 삭제하시겠습니까? 컬럼의 Task는 삭제되지 않습니다.",
+            {title: "컬럼 삭제", confirmLabel: "삭제", danger: true}))) return;
         deleteColumnMutation(columnId, {
             onSuccess: () => show("컬럼이 삭제되었습니다."),
             onError: () => show("컬럼 삭제에 실패했습니다.", "error"),
         });
-        setDeletingColumnId(null);
     };
 
-    const handleDeleteBoard = () => {
+    const handleDeleteBoard = async () => {
+        if (!(await confirm(`보드 ${board?.boardNm ?? ""}를 삭제하시겠습니까?`,
+            {title: "보드 삭제", confirmLabel: "삭제", danger: true}))) return;
         deleteBoard(boardId, {
             onSuccess: () => {
                 show("보드가 삭제되었습니다.");
@@ -143,7 +146,6 @@ export default function KanbanBoard({boardId, projectId}: Props) {
             },
             onError: () => show("보드 삭제에 실패했습니다.", "error"),
         });
-        setShowDeleteBoardConfirm(false);
     };
 
     if (isLoading) {
@@ -204,7 +206,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                                     <button
                                         onClick={() => {
                                             setShowBoardMenu(false);
-                                            setShowDeleteBoardConfirm(true);
+                                            void handleDeleteBoard();
                                         }}
                                         className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
                                     >
@@ -274,7 +276,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                                 setEditingColumn(col);
                                 setShowAddColumn(true);
                             }}
-                            onDeleteColumn={(colId) => setDeletingColumnId(colId)}
+                            onDeleteColumn={(colId) => void handleDeleteColumn(colId)}
                             moveTargets={board.columns.filter((c) => c.id !== column.id).map((c) => ({id: c.id, columnNm: c.columnNm}))}
                             onMoveTo={handleMoveTo}
                         />
@@ -305,71 +307,8 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                 />
             )}
 
-            {/* Delete Column Confirm */}
-            {deletingColumnId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div
-                        className="absolute inset-0 bg-black/40"
-                        onClick={() => setDeletingColumnId(null)}
-                    />
-                    <div className="relative bg-white rounded-2xl shadow-xl p-6 max-w-sm mx-4">
-                        <h3 className="text-base font-bold text-slate-900 mb-2">
-                            컬럼 삭제
-                        </h3>
-                        <p className="text-sm text-slate-600 mb-5">
-                            이 컬럼을 삭제하시겠습니까? 컬럼의 Task는 삭제되지 않습니다.
-                        </p>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setDeletingColumnId(null)}
-                                className="flex-1 h-10 rounded-lg border border-slate-200 text-sm hover:bg-slate-50"
-                            >
-                                취소
-                            </button>
-                            <button
-                                onClick={() => handleDeleteColumn(deletingColumnId)}
-                                className="flex-1 h-10 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600"
-                            >
-                                삭제
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Delete Board Confirm */}
-            {showDeleteBoardConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div
-                        className="absolute inset-0 bg-black/40"
-                        onClick={() => setShowDeleteBoardConfirm(false)}
-                    />
-                    <div className="relative bg-white rounded-2xl shadow-xl p-6 max-w-sm mx-4">
-                        <h3 className="text-base font-bold text-slate-900 mb-2">
-                            보드 삭제
-                        </h3>
-                        <p className="text-sm text-slate-600 mb-5">
-                            보드 <strong>{board.boardNm}</strong>를 삭제하시겠습니까?
-                        </p>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setShowDeleteBoardConfirm(false)}
-                                className="flex-1 h-10 rounded-lg border border-slate-200 text-sm hover:bg-slate-50"
-                            >
-                                취소
-                            </button>
-                            <Button
-                                onClick={handleDeleteBoard}
-                                variant="danger" className="flex-1"
-                            >
-                                삭제
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }

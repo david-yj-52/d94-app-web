@@ -93,7 +93,7 @@
 | `components/layout/NotificationBell.tsx` | 95.12 | 91.48 | 94.59 | 87.5 |
 | `lib/mock/router.ts` | 38.82 | 34.21 | 20.09 | 23.93 |
 
-`KanbanBoard` 의 나머지는 컬럼·보드 삭제 확인 모달과 컬럼 추가 모달 경로입니다(테스트 안 함).
+`KanbanBoard` 의 나머지는 컬럼·보드 삭제(`useConfirm` 확인 창)와 컬럼 추가 모달 경로입니다(테스트 안 함).
 
 ## 4. 결함 목록
 
