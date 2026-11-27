@@ -4,6 +4,7 @@ import type {
     DocsFolder,
     DocsVault,
     DocsTask,
+    GraphData,
     LineageNode,
     Note,
     NoteFilters,
@@ -108,6 +109,12 @@ export async function deriveNote(id: string, req: DeriveRequest): Promise<Note> 
 
 export async function changeNoteKind(id: string, kind: NoteKind): Promise<Note> {
     const res = await apiClient.put(`${BASE}/notes/${id}/kind`, {kind});
+    return res.data.data;
+}
+
+/** noteId 가 있으면 그 노트 주변 depth 단계(로컬), 없으면 접근 가능한 vault 전체 */
+export async function getDocsGraph(params: { noteId?: string; depth?: number }): Promise<GraphData> {
+    const res = await apiClient.get(`${BASE}/graph`, {params});
     return res.data.data;
 }
 

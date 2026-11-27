@@ -3,7 +3,7 @@
 import {useEffect, useState} from "react";
 import {useParams, usePathname} from "next/navigation";
 import Link from "next/link";
-import {FolderTree, ListChecks} from "lucide-react";
+import {FolderTree, ListChecks, Waypoints} from "lucide-react";
 import DocsSidebar from "@/components/docs/DocsSidebar";
 import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import QuickSwitcher from "@/components/docs/QuickSwitcher";
@@ -72,6 +72,9 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
             </Button>
             <Link href="/docs/tasks" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
                 <ListChecks className="h-4 w-4"/> Task 모아보기
+            </Link>
+            <Link href="/docs/graph" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
+                <Waypoints className="h-4 w-4"/> 그래프
             </Link>
             <select value={validScope} onChange={(e) => setScope(e.target.value)} aria-label="vault 선택"
                     className="mb-3 h-8 w-full rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-d94-brand">

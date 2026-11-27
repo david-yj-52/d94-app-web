@@ -36,6 +36,7 @@
     "next-auth": "^5.0.0-beta.30",
     "react": "19.0.1",
     "react-dom": "19.0.1",
+    "react-force-graph-2d": "^1.29.3",
     "react-hook-form": "^7.76.1",
     "react-markdown": "^10.1.0",
     "recharts": "^3.8.1",

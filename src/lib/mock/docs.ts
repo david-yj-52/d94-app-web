@@ -1,7 +1,7 @@
 // Docs(Obsidian형 개인 vault) mock — router.ts 가 registerDocsMock(on) 으로 등록한다. dev 서버 재시작 시 초기화.
 // 규칙은 d94-query DocsNoteService·DocsFolderService 와 같게(409·404·링크 치환) 맞춘다.
 import type {MockResult} from "./router";
-import type {DocsFolder, DocsTask, LineageNode, Note, NoteKind, NoteSummary, NoteVersion, TaskStatus} from "@/types/docs";
+import type {DocsFolder, DocsTask, GraphLink, GraphNode, LineageNode, Note, NoteKind, NoteSummary, NoteVersion, TaskStatus} from "@/types/docs";
 import {extractLinks, extractTags, extractTasks, KINDS, linkTitle, markOf, readFrontmatter, TASK_LINE} from "@/lib/docs/markdown";
 
 type Ctx = { params: Record<string, string>; query: URLSearchParams; body: Record<string, unknown> };
@@ -214,6 +214,36 @@ export function registerDocsMock(on: On) {
             : `---\nkind: ${kind}\n---\n${n.content}`;
         write(n, n.title, c);
         return ok(full(n));
+    });
+    // 서버 DocsNoteService.graph 와 같은 규칙 (vault 하나뿐인 mock)
+    on("GET", "/v1/docs/graph", ({query}) => {
+        const s = store();
+        const byTitle = new Map(s.notes.map((n) => [n.title, n.id]));
+        const links: GraphLink[] = [];
+        for (const n of s.notes) for (const l of linksOf(n)) {
+            const to = byTitle.get(l.title);
+            if (to && to !== n.id && !links.some((x) => x.source === n.id && x.target === to && x.rel === l.rel)) links.push({source: n.id, target: to, rel: l.rel});
+        }
+        const noteId = query.get("noteId");
+        let keep: Set<string> | null = null;
+        if (noteId) {
+            if (!find(noteId)) return notFound;
+            keep = new Set([noteId]);
+            let frontier = new Set([noteId]);
+            for (let d = 0; d < Math.max(1, Math.min(Number(query.get("depth") ?? 1), 5)) && frontier.size; d++) {
+                const next = new Set<string>();
+                for (const l of links) {
+                    if (frontier.has(l.source)) next.add(l.target);
+                    if (frontier.has(l.target)) next.add(l.source);
+                }
+                frontier = new Set([...next].filter((id) => !keep!.has(id)));
+                frontier.forEach((id) => keep!.add(id));
+            }
+        }
+        const nodes: GraphNode[] = s.notes.filter((n) => !keep || keep.has(n.id))
+            .map((n) => ({id: n.id, vaultId: MOCK_VAULT, title: n.title, kind: kindOf(n.content), stream: streamOf(n.content)}));
+        const ids = new Set(nodes.map((n) => n.id));
+        return ok({nodes, links: links.filter((l) => ids.has(l.source) && ids.has(l.target))});
     });
     on("GET", "/v1/docs/notes/:id/lineage", ({params}) => {
         const s = store();

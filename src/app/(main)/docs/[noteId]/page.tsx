@@ -2,7 +2,7 @@
 
 import {Suspense, useState} from "react";
 import {useParams, useRouter, useSearchParams} from "next/navigation";
-import {FolderInput, GitBranch, Network, Pencil, SquareKanban, Trash2} from "lucide-react";
+import {FolderInput, GitBranch, Network, Pencil, SquareKanban, Trash2, Waypoints} from "lucide-react";
 import NoteEditor from "@/components/docs/NoteEditor";
 import NoteMarkdown from "@/components/docs/NoteMarkdown";
 import NoteSidePanel from "@/components/docs/NoteSidePanel";
@@ -103,6 +103,7 @@ function NoteContent() {
                                     </select>
                                     <IconButton label="파생 노트 만들기" onClick={() => setDeriving(true)}><GitBranch className="h-4 w-4"/></IconButton>
                                     <IconButton label="계보 보기" onClick={() => router.push(`/docs/${n.id}/lineage`)}><Network className="h-4 w-4"/></IconButton>
+                                    <IconButton label="주변 그래프" onClick={() => router.push(`/docs/graph?noteId=${n.id}`)}><Waypoints className="h-4 w-4"/></IconButton>
                                     <IconButton label="CIRA Task로 등록" onClick={() => setPromoting(true)}><SquareKanban className="h-4 w-4"/></IconButton>
                                     <IconButton label="편집" onClick={() => setMode("edit")}><Pencil className="h-4 w-4"/></IconButton>
                                     <IconButton label="폴더 이동" onClick={() => setMoving(true)}><FolderInput className="h-4 w-4"/></IconButton>

@@ -12,14 +12,14 @@
 컴포넌트 카드: [docs](../../../components/docs/AGENTS.md)
 ```
 docs/layout.tsx
-├── "노트 찾기 ⌘K" 버튼 → QuickSwitcher · "Task 모아보기" → [tasks](./tasks/AGENTS.md)
+├── "노트 찾기 ⌘K" 버튼 → QuickSwitcher · "Task 모아보기" → [tasks](./tasks/AGENTS.md) · "그래프" → [graph](./graph/AGENTS.md)
 ├── vault select ("전체 통합" | vault 하나 — layout 상태, 새로고침하면 통합)
 ├── DocsSidebar   (vault 섹션별 폴더 트리·폴더별 노트, 폴더 ··· 메뉴: 새 노트·하위 폴더·이름 변경·이동·삭제, 노트·폴더 끌어 놓기 → useMoveNote·useMoveDocsFolder)
 ├── {children}
 ├── FolderPickerModal (폴더 이동)  ·  DocsDialog (이름 입력·삭제 확인)  ·  {ToastComponent}
 docs/page.tsx            아이디어 빠른 기록(제목 한 줄) + 최근 노트 15개
 docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIRA 위키와 같은 패턴)
-├── 가운데: 폴더 경로·제목·[종류▾(승격)][파생][계보 보기 → [lineage](./[noteId]/lineage/AGENTS.md)][CIRA Task로 등록][편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
+├── 가운데: 폴더 경로·제목·[종류▾(승격)][파생][계보 보기 → [lineage](./[noteId]/lineage/AGENTS.md)][주변 그래프 → graph?noteId=][CIRA Task로 등록][편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
 ├── 오른쪽(lg 미만은 본문 아래): NoteSidePanel(속성·태그·Task·백링크·파생 노트) | NoteVersionHistory
 └── DeriveModal (파생) · PromoteToCiraModal (CIRA Task로 등록)
 ```

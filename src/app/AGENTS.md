@@ -54,6 +54,7 @@ app/layout.tsx           <html>·<body>(bg-d94-bg) + Providers(Query+Session) + 
 | 인터페이스 테스트 | `/interface-test` | 🧪 | REST 메서드별 UI→UMD→백엔드→DB 통신 확인 | [interface-test](./(main)/interface-test/AGENTS.md) |
 | Docs | `/docs`, `/docs/[noteId]` | 공통 | 다중 vault(Private·Team): 폴더 트리·Markdown 노트·[[링크]]·백링크·버전·Cmd+K | [docs](./(main)/docs/AGENTS.md) |
 | Docs 계보 | `/docs/[noteId]/lineage` | 공통 | 루트 아이디어 기준 stream(트랙)별 열 계보 | [docs/lineage](./(main)/docs/[noteId]/lineage/AGENTS.md) |
+| Docs 그래프 | `/docs/graph[?noteId=&depth=]` | 공통 | 노트·[[링크]]·파생 그래프 (전체 또는 노트 주변) | [docs/graph](./(main)/docs/graph/AGENTS.md) |
 | Docs Task | `/docs/tasks` | 공통 | 모든 노트의 체크박스 줄 상태별 모아보기·필터·상태 변경 | [docs/tasks](./(main)/docs/tasks/AGENTS.md) |
 | Life Metric | `/life-metric` | 🧪 | 지표 카드 대시보드 · 템플릿/커스텀 수식으로 지표 생성 | [life-metric](./(main)/life-metric/AGENTS.md) |
 | Life Metric 상세 | `/life-metric/[metricId]` | 🧪 | 현재 값·수식 편집·기준값·기록(추이 차트) | [[metricId]](./(main)/life-metric/[metricId]/AGENTS.md) |

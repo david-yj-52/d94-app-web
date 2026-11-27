@@ -42,7 +42,8 @@ AGENTS.md (L1)
 │   │   └── [nodeKey]/AGENTS.md .......... 노드 상세 (스펙·접속 가이드·추이·Top-N·서비스)
 │   ├── (main)/docs/AGENTS.md ............ Docs 다중 vault (Private·Team, 폴더 트리·노트·[[링크]]·버전·Cmd+K)
 │   │   ├── tasks/AGENTS.md .............. Task 모아보기 (체크박스 줄 상태별)
-│   │   └── [noteId]/lineage/AGENTS.md ... 계보 (stream별 열)
+│   │   ├── [noteId]/lineage/AGENTS.md ... 계보 (stream별 열)
+│   │   └── graph/AGENTS.md .............. 그래프 뷰 (전체·로컬)
 │   └── (main)/study/AGENTS.md ........... [실험] PDF 학습 뷰어 (문서 목록·업로드)
 │       ├── [documentId]/AGENTS.md ....... 3단 뷰어 (목차·본문·이 페이지 내용)
 │       └── notes/AGENTS.md .............. 노트 모아보기
@@ -87,7 +88,7 @@ AGENTS.md (L1)
 | 인증          | next-auth v5 beta (Credentials → JWT, `src/auth.ts`)               |
 | 폼            | react-hook-form + zod                                              |
 | 스타일        | Tailwind CSS v3 + `clsx` / `tailwind-merge`, 아이콘 `lucide-react` |
-| 기타          | Recharts(차트), Tiptap(리치 텍스트), react-markdown, CodeMirror 6(`@uiw/react-codemirror`·`@codemirror/{lang-markdown,language,language-data,view,state,autocomplete}`·`@lezer/highlight` — Docs 노트 편집 전용), Docs 보기: `remark-gfm`·`highlight.js`(코드 하이라이트)·`mermaid`(다이어그램, dynamic import) |
+| 기타          | Recharts(차트), Tiptap(리치 텍스트), react-markdown, CodeMirror 6(`@uiw/react-codemirror`·`@codemirror/{lang-markdown,language,language-data,view,state,autocomplete}`·`@lezer/highlight` — Docs 노트 편집 전용), Docs 보기: `remark-gfm`·`highlight.js`(코드 하이라이트)·`mermaid`(다이어그램, dynamic import), Docs 그래프: `react-force-graph-2d`(dynamic import, ssr 끔) |
 | 테스트        | Vitest 4 + jsdom, React Testing Library, MSW 2, coverage-v8 → [docs/testing.md](docs/testing.md) |
 | UI(Radix)     | Radix UI — `@radix-ui/react-dialog` → 공용 `ui/Dialog`, `react-dropdown-menu` → 공용 `ui/DropdownMenu` → [ADR 0006](docs/decisions/0006-cira-design-layer.md) |
 | 패키지 매니저 | npm (`package-lock.json`)                                          |
