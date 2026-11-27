@@ -30,7 +30,7 @@ AGENTS.md (L1)
 │   │       ├── settings/AGENTS.md ....... 기본정보·필드·문서 관리·멤버·워크플로우·자동화·Git
 │   │       ├── versions/AGENTS.md ....... 버전·마일스톤
 │   │       ├── wiki/AGENTS.md ........... 위키
-│   │       └── features/AGENTS.md ....... Feature 전체 통합 (공통 Feature 최상위 · 단위 Feature, V630)
+│   │       └── features/AGENTS.md ....... Feature 전체 통합 (공통 Feature 최상위 · 단위 Feature, V650)
 │   ├── (main)/mpms/AGENTS.md ............ [실험] 플랫폼·제품 관리
 │   ├── (main)/solace/AGENTS.md .......... [실험] Solace 메시징
 │   ├── (main)/todo/AGENTS.md ............ [실험] Server Actions

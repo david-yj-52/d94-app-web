@@ -45,7 +45,7 @@ export default function IssueListPage({
         size: PAGE_SIZE,
     });
     const {show, ToastComponent} = useToast();
-    // V630: Task 목록·필드·컬럼은 지금 작업 공간(?space=) 기준
+    // V650: Task 목록·필드·컬럼은 지금 작업 공간(?space=) 기준
     const {spaceId} = useCurrentSpace(projectId);
 
     const {data: project} = useProject(projectId);

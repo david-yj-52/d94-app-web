@@ -2,7 +2,7 @@ import apiClient from "./client";
 import type {DocRule} from "@/types/ciraDocs";
 import type {FeatureNode, SaveSpace, Space} from "@/types/space";
 
-// 작업 공간 (V630). 공간별 설정(워크플로·필드·보드·컬럼)은 기존 함수에 spaceId 를 넘긴다 (= /projects/{id}/...?spaceId=)
+// 작업 공간 (V650). 공간별 설정(워크플로·필드·보드·컬럼)은 기존 함수에 spaceId 를 넘긴다 (= /projects/{id}/...?spaceId=)
 
 export async function getSpaces(projectId: string): Promise<Space[]> {
     return (await apiClient.get(`/v1/projects/${projectId}/spaces`)).data.data;

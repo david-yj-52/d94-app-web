@@ -475,7 +475,7 @@ on("GET", "/v1/attachments/:id/download", ({params}) => {
 const docRules: Record<string, Array<Record<string, unknown>>> = {};
 on("GET", "/v1/issue-types", () => ok([{id: "type-issue", typeNm: "Issue"}, {id: "type-bug", typeNm: "Bug"}, {id: "type-feature", typeNm: "Feature"}]));
 
-// 작업 공간 (V630) — ponytail: 프로젝트마다 기본 공간 "General" 을 처음 조회할 때 만든다. 공간별 워크플로·필드는 흉내 내지 않음(spaceId 무시)
+// 작업 공간 (V650) — ponytail: 프로젝트마다 기본 공간 "General" 을 처음 조회할 때 만든다. 공간별 워크플로·필드는 흉내 내지 않음(spaceId 무시)
 const mockSpaces: Record<string, Array<Record<string, unknown>>> = {};
 const spacesOf = (projectId: string) => (mockSpaces[projectId] ??= [{
     id: `space-${projectId}`, projectId, name: "General", key: "DEFAULT", description: null, presetTypeId: null,

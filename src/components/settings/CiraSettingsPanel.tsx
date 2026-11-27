@@ -42,7 +42,7 @@ const iconBtn = "flex h-8 w-8 items-center justify-center rounded text-slate-500
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
 
 /**
- * 기준정보 › CIRA: 작업 공간 프리셋(구 프로젝트 타입)과 프리셋별 필드 세트, 전역 사용자 정의 필드, 공통 산출물 규칙(V630).
+ * 기준정보 › CIRA: 작업 공간 프리셋(구 프로젝트 타입)과 프리셋별 필드 세트, 전역 사용자 정의 필드, 공통 산출물 규칙(V650).
  * 프리셋은 작업 공간을 만들 때 1회 복사된다. ADMIN 아니면 읽기 전용
  */
 export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {

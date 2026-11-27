@@ -53,7 +53,7 @@ issues/[issueId]/page.tsx
 - [컬럼] → [+ 새 컬럼 만들기] → `CustomFieldModal` → 프로젝트 필드 생성, 성공하면 내 컬럼 끝에 바로 추가.
 - [+ 라이브러리에서 가져오기] → `FieldLibraryDialog`(전역 + 이 타입의 필드) → 복사본 생성, 내 컬럼 끝에 추가. 같은 이름이 있으면 서버 400 메시지 토스트.
 - 내가 만든(또는 ADMIN 이면 모든) 프로젝트 필드는 [수정]·[삭제] — 삭제는 확인 창, 모든 Task 값도 삭제.
-### 작업 공간 · Feature (V630)
+### 작업 공간 · Feature (V650)
 - 목록·필드·컬럼은 지금 작업 공간(`?space=`) 기준: `useIssues(projectId, {...filters, spaceId})`, `useProjectFields`·`useColumnPref`·`useSaveColumnPref`·`useSaveProjectField`·`useImportToProject` 에 `spaceId`. Task 생성 모달에도 지금 공간을 넘깁니다.
 - 상세 상단에 `공통 Feature › 단위 Feature` 경로(`useFeatures` 트리에서 `featureId` 를 찾음, 각 항목은 그 Feature 상세로 링크).
 ### Task 생성
@@ -65,7 +65,7 @@ issues/[issueId]/page.tsx
 ### 사용자 정의 필드 (상세)
 - 세부 정보의 사용자 정의 필드는 blur·선택 즉시 `update({customFields: {[key]: 값}})` 로 저장합니다(빈 값 = 삭제). 타입이 바뀌어 유효 필드에서 빠진 필드는 보이지 않지만 값은 서버에 보관됩니다.
 ### 인라인 편집 (상세)
-- **설명 = Docs 메인 노트 본문**(V630 단일 원본): `GET /issues/{id}` 가 메인 노트의 frontmatter·진행 경과를 뺀 본문을 `content` 로, `mainNoteId` 와 함께 줍니다(옛 CONTENT 만 있던 Task 는 이때 노트로 옮겨짐). 여기서 고치면 백엔드가 메인 노트 본문만 바꿉니다. 라벨 옆 "Docs 에서 열기"(`/docs/{mainNoteId}`) → 버전·링크·파생.
+- **설명 = Docs 메인 노트 본문**(V650 단일 원본): `GET /issues/{id}` 가 메인 노트의 frontmatter·진행 경과를 뺀 본문을 `content` 로, `mainNoteId` 와 함께 줍니다(옛 CONTENT 만 있던 Task 는 이때 노트로 옮겨짐). 여기서 고치면 백엔드가 메인 노트 본문만 바꿉니다. 라벨 옆 "Docs 에서 열기"(`/docs/{mainNoteId}`) → 버전·링크·파생.
 - 제목, 설명, 스토리 포인트는 `InlineText`로 편집합니다. 클릭하면 편집 모드가 되고, blur나 Enter로 저장합니다(`update({field})`).
 - 우선순위는 select를 바꾸면 바로 저장되고, 마감일은 date input에서 blur할 때 저장됩니다. 결과는 "저장되었습니다." 또는 "저장에 실패했습니다." 토스트로 알립니다.
 ### 상태 전이 (워크플로우)

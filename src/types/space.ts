@@ -1,4 +1,4 @@
-// CIRA 작업 공간(Space) · 2단계 Feature — d94-query SpaceDto / IssueService.FeatureNode 와 필드명이 같다 (V630).
+// CIRA 작업 공간(Space) · 2단계 Feature — d94-query SpaceDto / IssueService.FeatureNode 와 필드명이 같다 (V650).
 import type {IssueResponse} from "@/types/issue";
 
 export interface Space {

@@ -56,7 +56,7 @@ export async function getFieldUsage(id: string): Promise<FieldUsage> {
 }
 
 // 프로젝트 (쓰기는 프로젝트 ADMIN)
-/** spaceId 없음 = 기본 작업 공간 (V630: 필드 세트는 공간 소유) */
+/** spaceId 없음 = 기본 작업 공간 (V650: 필드 세트는 공간 소유) */
 export async function getProjectFields(projectId: string, spaceId?: string | null): Promise<FieldDef[]> {
     return (await apiClient.get(`/v1/projects/${projectId}/fields`, {params: spaceId ? {spaceId} : {}})).data.data;
 }

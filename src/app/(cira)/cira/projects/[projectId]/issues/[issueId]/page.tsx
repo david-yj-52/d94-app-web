@@ -120,7 +120,7 @@ export default function IssueDetailPage({
     const {confirm, ConfirmComponent} = useConfirm();
     // 유효 필드 중 사용자 정의 필드 (타입이 바뀌어 빠진 필드의 값은 서버에 보관만 되고 여기 안 보인다)
     const {data: fields = []} = useProjectFields(projectId, issue?.spaceId);
-    // V630: 상단 경로 "공통 Feature > 단위 Feature"
+    // V650: 상단 경로 "공통 Feature > 단위 Feature"
     const {data: featureTree = []} = useFeatures(projectId);
     const featurePath = (() => {
         if (!issue?.featureId) return [];
@@ -223,7 +223,7 @@ export default function IssueDetailPage({
                         </p>
                     )}
 
-                    {/* 설명 = Docs 메인 노트 본문 (V630 단일 원본). 여기서 고치면 메인 노트가 바뀐다 */}
+                    {/* 설명 = Docs 메인 노트 본문 (V650 단일 원본). 여기서 고치면 메인 노트가 바뀐다 */}
                     <div className="mb-6">
                         <p className="text-xs font-medium text-slate-500 mb-1 px-3">
                             설명

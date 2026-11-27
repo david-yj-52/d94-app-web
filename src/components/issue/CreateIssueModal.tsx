@@ -53,7 +53,7 @@ export default function CreateIssueModal({
                                          }: Props) {
     const {mutate, isPending, isSuccess, isError} = useCreateIssue(projectId);
     const {data: members = []} = useProjectMembers(projectId);
-    // V630: 작업 공간 · 유형 · Feature(공통/단위)
+    // V650: 작업 공간 · 유형 · Feature(공통/단위)
     const {data: spaces = []} = useSpaces(projectId);
     const {data: issueTypes = []} = useIssueTypes();
     const {data: featureTree = []} = useFeatures(projectId);

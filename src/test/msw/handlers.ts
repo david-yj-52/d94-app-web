@@ -58,7 +58,7 @@ export const handlers = [
     http.get(`${API}/docs/vaults`, () => json(fx.ok([{id: "v-private", type: "PRIVATE", name: "Private", projectId: null}]))),
     http.get(`${API}/issue-types`, () => json(fx.ok([{id: "type-issue", typeNm: "Issue", icon: null, colorCd: null, descr: null}]))),
     http.get(`${API}/projects/:projectId/doc-rules`, () => json(fx.ok([]))),
-    // SpaceController · IssueController features (V630, 백엔드 모양: SpaceDto.Space · IssueService.FeatureNode)
+    // SpaceController · IssueController features (V650, 백엔드 모양: SpaceDto.Space · IssueService.FeatureNode)
     http.get(`${API}/projects/:projectId/spaces`, ({params}) => json(fx.ok([{id: "SPACE-1", projectId: params.projectId, name: "General",
         key: "DEFAULT", description: null, presetTypeId: null, adminUserId: "USER-1", adminNm: "김개발", isDefault: true, sortOrd: 0, canManage: true}]))),
     http.get(`${API}/projects/:projectId/features`, () => json(fx.ok([]))),

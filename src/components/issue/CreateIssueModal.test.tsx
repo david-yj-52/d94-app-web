@@ -48,7 +48,7 @@ describe("CreateIssueModal", () => {
             path: "/v1/projects/PRJ-1/issues",
             body: {title: "제목만", statusId: "ST-TODO", customFields: {"cf:CF-1": "리드"}},
         });
-        // spaceId = 기본 작업 공간 (V630)
+        // spaceId = 기본 작업 공간 (V650)
         expect(Object.keys(lastRequest("POST")!.body as object).sort()).toEqual(["customFields", "spaceId", "statusId", "title"]);
     });
 

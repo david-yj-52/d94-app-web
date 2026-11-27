@@ -175,7 +175,7 @@ export default function SettingsWorkflowPage({
     const {projectId} = use(params);
     const {data: session} = useSession();
     const {data: members} = useProjectMembers(projectId);
-    // V630: 워크플로는 작업 공간 소유 — 지금 공간(?space=)의 상태·전이
+    // V650: 워크플로는 작업 공간 소유 — 지금 공간(?space=)의 상태·전이
     const {space, spaceId} = useCurrentSpace(projectId);
     const {
         data: statuses,

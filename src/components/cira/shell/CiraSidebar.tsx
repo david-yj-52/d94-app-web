@@ -83,7 +83,7 @@ function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
     const {data: members} = useProjectMembers(projectId ?? "");
     // 설정은 프로젝트 ADMIN 만 (기존 ProjectNav 규칙)
     const isAdmin = !!session?.user?.email && members?.some((m) => m.email === session.user?.email && m.role === "ADMIN") === true;
-    // V630: 프로젝트 하위 작업 공간. 보드·Task·설정(워크플로·필드·문서)은 지금 공간 기준
+    // V650: 프로젝트 하위 작업 공간. 보드·Task·설정(워크플로·필드·문서)은 지금 공간 기준
     const {space, spaces, setSpace, withSpace} = useCurrentSpace(projectId);
     const [addingSpace, setAddingSpace] = useState(false);
 

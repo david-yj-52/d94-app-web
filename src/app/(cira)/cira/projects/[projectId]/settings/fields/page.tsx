@@ -29,7 +29,7 @@ const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?
 export default function ProjectFieldsPage({params}: { params: Promise<{ projectId: string }> }) {
     const {projectId} = use(params);
     const {data: project} = useProject(projectId);
-    // V630: 필드 세트는 작업 공간 소유 — 지금 공간(?space=). 고정 필드 외에는 프리셋에서 온 필드도 뺄 수 있다
+    // V650: 필드 세트는 작업 공간 소유 — 지금 공간(?space=). 고정 필드 외에는 프리셋에서 온 필드도 뺄 수 있다
     const {space, spaceId} = useCurrentSpace(projectId);
     const {data: fields = []} = useProjectFields(projectId, spaceId);
     const {data: catalog} = useFieldCatalog();

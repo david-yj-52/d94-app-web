@@ -41,7 +41,7 @@ export async function removeProjectMember(
     await apiClient.delete(`/v1/projects/${projectId}/members/${userId}`);
 }
 
-/** spaceId 없음 = 기본 작업 공간 (V630: 워크플로는 공간 소유) */
+/** spaceId 없음 = 기본 작업 공간 (V650: 워크플로는 공간 소유) */
 export async function getWorkflowStatuses(
     projectId: string,
     spaceId?: string | null,
