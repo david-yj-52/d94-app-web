@@ -105,6 +105,8 @@ export interface BackendProjectType {
     sortOrd: number;
     spaceCount: number;
     fields: { fieldKey: string; defaultVisible: boolean }[];
+    boardType: string;
+    statuses: { name: string; category: string }[];
 }
 
 export interface BackendBoard {
@@ -128,6 +130,7 @@ export interface BackendBoardIssue {
     statusNm: string | null;
     assignee: BackendUser | null;
     rankStr: string | null;
+    featureId?: string | null;
 }
 
 export interface BackendBoardColumn {

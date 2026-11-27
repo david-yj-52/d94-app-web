@@ -10,6 +10,9 @@ import {STATUS_TONE_CLASS, statusTone} from "@/components/cira/ui/tones";
 import {useToast} from "@/components/ui/Toast";
 import {useProjectFields} from "@/hooks/useFields";
 import {useFeatures} from "@/hooks/useSpaces";
+import NoteMarkdown from "@/components/docs/NoteMarkdown";
+import {useOpenNote} from "@/components/docs/useOpenNote";
+import {useNote} from "@/hooks/useDocs";
 import Link from "next/link";
 import {useProjectMembers} from "@/hooks/useProjectSettings";
 import {
@@ -34,6 +37,47 @@ const PRIORITY_LABELS: Record<Priority, string> = {
 };
 
 const PRIORITIES: Priority[] = ["HIGHEST", "HIGH", "MEDIUM", "LOW", "LOWEST"];
+
+/**
+ * 설명 = Docs 메인 노트 본문 (설계 5, V650 단일 원본). 보기는 Docs 와 같은 렌더링([[링크]] 이동·없는 노트 흐리게),
+ * [편집] 은 본문만 고쳐 메인 노트에 저장한다(버전 이력·파생은 Docs 화면/연결 문서 섹션).
+ */
+function IssueDescription({content, mainNoteId, onSave}: { content: string; mainNoteId?: string; onSave: (v: string) => void }) {
+    const {data: note} = useNote(mainNoteId ?? "");
+    const openNote = useOpenNote();
+    const [editing, setEditing] = useState(false);
+    const [draft, setDraft] = useState(content);
+    useEffect(() => setDraft(content), [content]);
+    const existing = new Set((note?.links ?? []).filter((l) => l.exists).map((l) => l.title));
+
+    if (editing) {
+        return (
+            <div className="px-3">
+                <textarea aria-label="설명 편집" value={draft} onChange={(e) => setDraft(e.target.value)} rows={10}
+                          className="w-full rounded-lg border border-slate-200 p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
+                <div className="mt-2 flex gap-2">
+                    <Button type="button" size="sm" onClick={() => {
+                        if (draft !== content) onSave(draft);
+                        setEditing(false);
+                    }}>저장</Button>
+                    <Button type="button" size="sm" variant="secondary" onClick={() => {
+                        setDraft(content);
+                        setEditing(false);
+                    }}>취소</Button>
+                </div>
+            </div>
+        );
+    }
+    return (
+        <div className="group relative min-h-[80px] rounded-lg px-3 py-1 text-sm text-slate-700 hover:bg-slate-50">
+            {content.trim()
+                ? <NoteMarkdown content={content} existing={existing} onOpenTitle={(t) => openNote(t, null, note?.vaultId)}/>
+                : <p className="text-slate-400">설명이 없습니다.</p>}
+            <Button type="button" size="sm" variant="secondary" aria-label="설명 편집하기"
+                    className="absolute right-2 top-1 opacity-0 group-hover:opacity-100 focus:opacity-100" onClick={() => setEditing(true)}>편집</Button>
+        </div>
+    );
+}
 
 function InlineText({
                         value,
@@ -233,12 +277,8 @@ export default function IssueDetailPage({
                                 </Link>
                             )}
                         </p>
-                        <InlineText
-                            value={issue.content ?? ""}
-                            onSave={(v) => update({content: v})}
-                            multiline
-                            className="text-sm text-slate-700 whitespace-pre-wrap min-h-[80px]"
-                        />
+                        <IssueDescription content={issue.content ?? ""} mainNoteId={issue.mainNoteId ?? undefined}
+                                          onSave={(v) => update({content: v})}/>
                     </div>
 
                     {/* Attachments */}

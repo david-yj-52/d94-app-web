@@ -169,7 +169,7 @@ function NoteContent() {
                 <PromoteToCiraModal noteTitle={n.title} saving={toCira.isPending} onClose={() => setPromoting(false)}
                                     projects={(projects.data ?? []).map((p) => ({id: p.id, label: `[${p.key}] ${p.name}`}))}
                                     issueTypes={(issueTypes.data ?? []).map((t) => ({id: t.id, label: t.typeNm}))}
-                                    onSubmit={({projectId, issueTypeId, title}) => toCira.mutate({projectId, noteId: n.id, issueTypeId, title}, {
+                                    onSubmit={({projectId, issueTypeId, title, spaceId}) => toCira.mutate({projectId, noteId: n.id, issueTypeId, title, spaceId}, {
                                         onSuccess: (issue) => {
                                             setPromoting(false);
                                             router.push(`/cira/projects/${projectId}/issues/${issue.id}`);

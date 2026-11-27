@@ -35,14 +35,15 @@
   onDragStart: (e) => void; onDragOver: (e, issueId: string) => void;
   moveTargets?: {id: string; columnNm: string}[]; onMoveTo?: (targetColumnId: string) => void }
 ```
-- 이슈 카드입니다(제목 → 유형 아이콘·키·우선순위·담당자 아바타, `cira/ui/Badges`). 제목을 누르면 이슈 상세로 이동합니다. `onMoveTo` 가 있으면 모바일에서 "이동" 메뉴(`ui/DropdownMenu`)를 보여 줍니다. `showDropBefore`가 true면 카드 위에 삽입 위치선이 표시됩니다.
+- 이슈 카드입니다(제목 → 유형 아이콘·키·우선순위·담당자 아바타, `cira/ui/Badges`). 공통 Feature 에 연결된 카드는 제목 위에 `CommonFeatureBadge`("공통 · KEY", `useCommonFeatures`) — 순서(rank)는 바꾸지 않습니다. 제목을 누르면 이슈 상세로 이동합니다. `onMoveTo` 가 있으면 모바일에서 "이동" 메뉴(`ui/DropdownMenu`)를 보여 줍니다. `showDropBefore`가 true면 카드 위에 삽입 위치선이 표시됩니다.
 
 ### CreateBoardModal — `@/components/board/CreateBoardModal`
 ```ts
-{ projectId: string; onClose: () => void; onSuccess?: (boardId: string) => void }
+{ projectId: string; spaceId?: string; onClose: () => void; onSuccess?: (boardId: string) => void }
 ```
+- 이름 + 보드 유형(칸반·스크럼) select. `spaceId` 의 작업 공간에 만듭니다(없으면 기본 공간 — 화면은 지금 공간을 넘깁니다).
 - 생성에 성공하면 `onSuccess(newBoardId)`를 호출하고, 부모가 새 보드로 이동합니다.
-- 사용처: `boards/page.tsx`(보드가 없을 때), `boards/[boardId]/page.tsx`
+- 사용처: `boards/page.tsx`(보드가 없을 때), `boards/[boardId]/page.tsx`, `settings/boards`
 
 ### AddColumnModal — `@/components/board/AddColumnModal`
 ```ts

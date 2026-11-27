@@ -25,6 +25,8 @@ export interface BoardIssueResponse {
         avatarUrl?: string;
     };
     rankStr?: string;
+    /** 연결된 Feature (V650). 공통 Feature 면 우선 배지 */
+    featureId?: string | null;
 }
 
 export interface BoardColumnResponse {

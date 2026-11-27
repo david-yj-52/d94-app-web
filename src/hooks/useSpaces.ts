@@ -13,9 +13,10 @@ import {
     updateSpace,
 } from "@/lib/api/spaces";
 import type {DocRule} from "@/types/ciraDocs";
-import type {SaveSpace, Space} from "@/types/space";
+import type {FeatureNode, SaveSpace, Space} from "@/types/space";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import {useMemo} from "react";
 
 export function useSpaces(projectId?: string) {
     return useQuery({queryKey: ["spaces", projectId], queryFn: () => getSpaces(projectId!), enabled: !!projectId});
@@ -80,6 +81,20 @@ export function useFeatures(projectId?: string, spaceId?: string | null) {
         queryFn: () => getFeatures(projectId!, spaceId),
         enabled: !!projectId,
     });
+}
+
+/** 공통 Feature id → Feature (설계 3.2: 공간 보드·목록에서 공통 Feature 에 연결된 Task 를 우선 배지로 먼저 드러낸다) */
+export function useCommonFeatures(projectId?: string): Map<string, FeatureNode["feature"]> {
+    const {data: tree} = useFeatures(projectId);
+    return useMemo(() => {
+        const map = new Map<string, FeatureNode["feature"]>();
+        const walk = (nodes: FeatureNode[]) => nodes.forEach((n) => {
+            if (n.feature.featureScope === "COMMON") map.set(n.feature.id, n.feature);
+            walk(n.children);
+        });
+        walk(tree ?? []);
+        return map;
+    }, [tree]);
 }
 
 // ── 산출물 규칙 3단계 ──
