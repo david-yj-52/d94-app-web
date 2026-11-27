@@ -7,6 +7,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     boardNm: z.string().min(1, "보드 이름을 입력해주세요.").max(100),
@@ -57,20 +58,12 @@ export default function CreateBoardModal({
                 <h2 className="text-lg font-bold text-slate-900 mb-5">보드 생성</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            보드 이름 <span className="text-red-500">*</span>
-                        </label>
+                    <FormField label="보드 이름" required error={errors.boardNm?.message}>
                         <Input
                             {...register("boardNm")}
                             placeholder="예: 개발 보드"
                         />
-                        {errors.boardNm && (
-                            <p className="mt-0.5 text-xs text-red-500">
-                                {errors.boardNm.message}
-                            </p>
-                        )}
-                    </div>
+                    </FormField>
 
                     {isError && (
                         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">

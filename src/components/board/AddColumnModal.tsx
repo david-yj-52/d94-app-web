@@ -8,6 +8,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     columnNm: z.string().min(1, "컬럼 이름을 입력해주세요."),
@@ -98,20 +99,12 @@ export default function AddColumnModal({
                 </h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            컬럼 이름 <span className="text-red-500">*</span>
-                        </label>
+                    <FormField label="컬럼 이름" required error={errors.columnNm?.message}>
                         <Input
                             {...register("columnNm")}
                             placeholder="예: In Review"
                         />
-                        {errors.columnNm && (
-                            <p className="mt-0.5 text-xs text-red-500">
-                                {errors.columnNm.message}
-                            </p>
-                        )}
-                    </div>
+                    </FormField>
 
                     {!isEdit && (
                         <div>
@@ -133,17 +126,14 @@ export default function AddColumnModal({
                         </div>
                     )}
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            WIP 제한 (선택)
-                        </label>
+                    <FormField label="WIP 제한 (선택)">
                         <Input
                             {...register("wipLimitStr")}
                             type="number"
                             min={1}
                             placeholder="제한 없음"
                         />
-                    </div>
+                    </FormField>
 
                     {isError && (
                         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">

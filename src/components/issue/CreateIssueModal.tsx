@@ -11,6 +11,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input, Select, Textarea} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const PRIORITIES: Priority[] = ["HIGHEST", "HIGH", "MEDIUM", "LOW", "LOWEST"];
 
@@ -96,37 +97,23 @@ export default function CreateIssueModal({
                 <h2 className="text-lg font-bold text-slate-900 mb-5">Task 생성</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            제목 <span className="text-red-500">*</span>
-                        </label>
+                    <FormField label="제목" required error={errors.title?.message}>
                         <Input
                             {...register("title")}
                             placeholder="Task 제목을 입력하세요"
                         />
-                        {errors.title && (
-                            <p className="mt-0.5 text-xs text-red-500">
-                                {errors.title.message}
-                            </p>
-                        )}
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            설명
-                        </label>
+                    <FormField label="설명">
                         <Textarea
                             {...register("content")}
                             rows={4}
                             placeholder="Task 설명을 입력하세요..."
                         />
-                    </div>
+                    </FormField>
 
                     <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                우선순위
-                            </label>
+                        <FormField label="우선순위">
                             <select
                                 {...register("priority", {setValueAs: (v: string) => v || undefined})}
                                 aria-label="우선순위"
@@ -139,12 +126,9 @@ export default function CreateIssueModal({
                                     </option>
                                 ))}
                             </select>
-                        </div>
+                        </FormField>
 
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                스토리 포인트
-                            </label>
+                        <FormField label="스토리 포인트">
                             <input
                                 {...register("storyPnt", {
                                     // 빈 칸이면 NaN 대신 undefined (z.number().optional() 은 NaN 을 거부한다)
@@ -155,14 +139,11 @@ export default function CreateIssueModal({
                                 placeholder="0"
                                 className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
-                        </div>
+                        </FormField>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                담당자
-                            </label>
+                        <FormField label="담당자">
                             {/* 값은 사용자 objId(userId). d94-query assigneeId 는 이메일이 아니다 */}
                             <Select
                                 {...register("assigneeId")}
@@ -175,17 +156,14 @@ export default function CreateIssueModal({
                                     </option>
                                 ))}
                             </Select>
-                        </div>
+                        </FormField>
 
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                마감일
-                            </label>
+                        <FormField label="마감일">
                             <Input
                                 {...register("dueDt")}
                                 type="date"
                             />
-                        </div>
+                        </FormField>
                     </div>
 
                     {requiredFields.map((f) => (

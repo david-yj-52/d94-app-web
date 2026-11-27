@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input, Textarea} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     sprintNm: z.string().min(1, "스프린트 이름을 입력해주세요.").max(100),
@@ -68,47 +69,32 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                 <h2 className="text-lg font-bold text-slate-900 mb-5">스프린트 수정</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            스프린트 이름 <span className="text-red-500">*</span>
-                        </label>
+                    <FormField label="스프린트 이름" required error={errors.sprintNm?.message}>
                         <Input
                             {...register("sprintNm")}
                         />
-                        {errors.sprintNm && (
-                            <p className="mt-0.5 text-xs text-red-500">{errors.sprintNm.message}</p>
-                        )}
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            스프린트 목표
-                        </label>
+                    <FormField label="스프린트 목표">
                         <Textarea
                             {...register("goal")}
                             rows={2}
                         />
-                    </div>
+                    </FormField>
 
                     <div className="grid grid-cols-2 gap-3">
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                시작일
-                            </label>
+                        <FormField label="시작일">
                             <Input
                                 {...register("startDt")}
                                 type="date"
                             />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                종료일
-                            </label>
+                        </FormField>
+                        <FormField label="종료일">
                             <Input
                                 {...register("endDt")}
                                 type="date"
                             />
-                        </div>
+                        </FormField>
                     </div>
 
                     {isError && (

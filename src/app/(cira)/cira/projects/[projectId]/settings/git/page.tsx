@@ -5,6 +5,7 @@ import {useDeleteGitRepo, useGitActivity, useGitRepos, useRegisterGitRepo,} from
 import type {GitRepoResponse} from "@/lib/api/git";
 import {use, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import FormField from "@/components/ui/FormField";
 
 const PROVIDER_LABEL: Record<string, string> = {
     GITHUB: "GitHub",
@@ -196,10 +197,7 @@ export default function SettingsGitPage({
                     className="rounded-xl border border-slate-200 p-5 space-y-4 bg-slate-50"
                 >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                저장소 이름
-                            </label>
+                        <FormField label="저장소 이름">
                             <input
                                 name="repoName"
                                 value={form.repoName}
@@ -208,11 +206,8 @@ export default function SettingsGitPage({
                                 required
                                 className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                제공자
-                            </label>
+                        </FormField>
+                        <FormField label="제공자">
                             <select
                                 name="provider"
                                 value={form.provider}
@@ -223,13 +218,10 @@ export default function SettingsGitPage({
                                 <option value="GITLAB">GitLab</option>
                                 <option value="BITBUCKET">Bitbucket</option>
                             </select>
-                        </div>
+                        </FormField>
                     </div>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            저장소 URL
-                        </label>
+                    <FormField label="저장소 URL">
                         <input
                             name="repoUrl"
                             value={form.repoUrl}
@@ -238,7 +230,7 @@ export default function SettingsGitPage({
                             required
                             className="w-full h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
-                    </div>
+                    </FormField>
 
                     <div>
                         <label className="block text-xs font-medium text-slate-600 mb-1">

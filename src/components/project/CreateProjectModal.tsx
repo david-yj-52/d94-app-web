@@ -9,6 +9,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input, Select, Textarea} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     key: z
@@ -71,21 +72,13 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="grid grid-cols-3 gap-3">
-                        <div>
-                            <label className="block text-xs font-medium text-slate-600 mb-1">
-                                키 (Key)
-                            </label>
+                        <FormField label="키 (Key)" error={errors.key?.message}>
                             <input
                                 {...register("key")}
                                 placeholder="PROJ"
                                 className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm uppercase focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
-                            {errors.key && (
-                                <p className="mt-0.5 text-xs text-red-500">
-                                    {errors.key.message}
-                                </p>
-                            )}
-                        </div>
+                        </FormField>
                         <div className="col-span-2">
                             <label className="block text-xs font-medium text-slate-600 mb-1">
                                 이름
@@ -102,16 +95,13 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                         </div>
                     </div>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            설명 (선택)
-                        </label>
+                    <FormField label="설명 (선택)">
                         <Textarea
                             {...register("description")}
                             rows={2}
                             placeholder="프로젝트 설명"
                         />
-                    </div>
+                    </FormField>
 
                     <div>
                         <div className="flex items-center justify-between mb-1">

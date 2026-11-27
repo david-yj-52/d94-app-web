@@ -2,6 +2,7 @@
 
 import type {InterfaceCallRequest, InterfaceTestItemRequest, InterfaceTestMethod} from "@/types/interfaceTest";
 import MethodBadge from "./MethodBadge";
+import FormField from "@/components/ui/FormField";
 
 export interface InterfaceRequestForm {
     itemId: string;
@@ -71,17 +72,15 @@ export default function InterfaceRequestPanel({form, onChange, onCall, isPending
                     <input value={form.itemId} onChange={set("itemId")} placeholder="단건 메서드에 사용"
                            className={`${fieldClass} font-mono`}/>
                 </div>
-                <div>
-                    <label className="mb-1 block text-xs font-medium text-slate-600">name</label>
+                <FormField label="name">
                     <input value={form.name} onChange={set("name")} placeholder="POST·PUT 필수" className={fieldClass}/>
-                </div>
-                <div>
-                    <label className="mb-1 block text-xs font-medium text-slate-600">status</label>
+                </FormField>
+                <FormField label="status">
                     <select value={form.status} onChange={set("status")} className={fieldClass}>
                         <option value="">(보내지 않음)</option>
                         {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
-                </div>
+                </FormField>
                 <div className="md:col-span-2">
                     <label className="mb-1 block text-xs font-medium text-slate-600">content</label>
                     <textarea value={form.content} onChange={set("content")} rows={2}

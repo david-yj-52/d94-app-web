@@ -3,6 +3,7 @@
 import type {ActionType, AutomationRule, CreateAutomationRuleRequest, TriggerType} from "@/lib/api/automation";
 import {ACTION_LABEL, TRIGGER_LABEL} from "./AutomationRuleCard";
 import {useEffect, useState} from "react";
+import FormField from "@/components/ui/FormField";
 
 const TRIGGER_TYPES: TriggerType[] = [
     "ISSUE_CREATED",
@@ -91,10 +92,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* 규칙 이름 */}
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            규칙 이름
-                        </label>
+                    <FormField label="규칙 이름">
                         <input
                             value={ruleName}
                             onChange={(e) => setRuleName(e.target.value)}
@@ -102,13 +100,10 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                             required
                             className="w-full h-9 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
-                    </div>
+                    </FormField>
 
                     {/* 트리거 타입 */}
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            트리거
-                        </label>
+                    <FormField label="트리거">
                         <select
                             value={triggerType}
                             onChange={(e) => setTriggerType(e.target.value as TriggerType)}
@@ -120,13 +115,10 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    </FormField>
 
                     {/* 액션 타입 */}
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            액션
-                        </label>
+                    <FormField label="액션">
                         <select
                             value={actionType}
                             onChange={(e) => {
@@ -142,7 +134,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                                 </option>
                             ))}
                         </select>
-                    </div>
+                    </FormField>
 
                     {/* 액션 파라미터 */}
                     <div>

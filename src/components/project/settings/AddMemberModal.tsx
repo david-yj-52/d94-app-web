@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input, Select} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     email: z.string().email("유효한 이메일을 입력해주세요."),
@@ -54,31 +55,22 @@ export default function AddMemberModal({projectId, onClose, onSuccess}: Props) {
                 <h2 className="text-lg font-bold text-slate-900 mb-5">멤버 추가</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            이메일
-                        </label>
+                    <FormField label="이메일" error={errors.email?.message}>
                         <Input
                             {...register("email")}
                             type="email"
                             placeholder="user@example.com"
                         />
-                        {errors.email && (
-                            <p className="mt-0.5 text-xs text-red-500">{errors.email.message}</p>
-                        )}
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            역할
-                        </label>
+                    <FormField label="역할">
                         <Select
                             {...register("role")}
                         >
                             <option value="MEMBER">Member</option>
                             <option value="ADMIN">Admin</option>
                         </Select>
-                    </div>
+                    </FormField>
 
                     {isError && (
                         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">

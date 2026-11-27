@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input, Textarea} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     versionName: z.string().min(1, "버전 이름을 입력해주세요.").max(100),
@@ -79,37 +80,27 @@ export default function VersionModal({projectId, editTarget, onClose, onSuccess}
                 </h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            버전 이름 <span className="text-red-500">*</span>
-                        </label>
+                    <FormField label="버전 이름" required error={errors.versionName?.message}>
                         <Input
                             {...register("versionName")}
                             placeholder="예: v1.0.0"
                         />
-                        {errors.versionName && (
-                            <p className="mt-0.5 text-xs text-red-500">{errors.versionName.message}</p>
-                        )}
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">설명</label>
+                    <FormField label="설명">
                         <Textarea
                             {...register("description")}
                             rows={2}
                             placeholder="버전에 대한 설명을 입력하세요"
                         />
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            예정 릴리즈 날짜
-                        </label>
+                    <FormField label="예정 릴리즈 날짜">
                         <Input
                             {...register("plannedReleaseDate")}
                             type="date"
                         />
-                    </div>
+                    </FormField>
 
                     {isError && (
                         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">

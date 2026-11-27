@@ -91,6 +91,20 @@ Input(InputHTMLAttributes<HTMLInputElement>)  Select(SelectHTMLAttributes<HTMLSe
 - React 19 라 `ref` 가 일반 prop → `{...register()}` 를 그대로 펼치면 됩니다.
 - 2026-11-26 표준 마크업과 같은 버튼 39개·입력 31개(25개 파일)를 이 컴포넌트로 교체했습니다. 모양이 다른 버튼(아이콘·링크형·배지형 등)은 그대로 둡니다.
 
+### FormField — `import FormField from "@/components/ui/FormField"`
+```ts
+{ label: ReactNode; required?: boolean; error?: ReactNode; className?: string; children: ReactNode }
+```
+```tsx
+<FormField label="스프린트 이름" required error={errors.sprintNm?.message}>
+    <Input {...register("sprintNm")} placeholder="예: Sprint 1"/>
+</FormField>
+```
+- 라벨(`text-xs font-medium text-slate-600`, `required` 면 빨간 `*`) + 입력 1개 + 오류(`text-xs text-red-500`).
+- `<label>` 로 감싸 라벨과 입력이 연결됩니다(라벨을 누르면 입력에 포커스, 스크린리더가 라벨을 읽음). 오류는 라벨 밖이라 입력 이름에 섞이지 않습니다.
+- 입력이 여러 개(체크박스 묶음·수식 편집기 등)면 쓰지 말고 직접 마크업합니다.
+- 2026-11-26 표준 라벨 마크업 + 입력 1개인 36곳(12개 파일: sprint·milestone·version·issue 생성·project·board·member·automation·git·interfaceTest)을 교체했습니다.
+
 ### ConfirmDialog / useConfirm — `import {useConfirm} from "@/components/ui/ConfirmDialog"`
 ```ts
 useConfirm(): { confirm: (message: string, opts?: { title?: string; confirmLabel?: string; danger?: boolean }) => Promise<boolean>; ConfirmComponent: JSX.Element | null }
@@ -127,14 +141,7 @@ return (<div>... {ConfirmComponent}</div>);
 
 **버튼** → `ui/Button` (`variant="primary|secondary|ghost|danger"`). 모달 하단의 버튼 쌍은 `className="flex-1"` 로 같은 너비로 맞춥니다.
 
-**폼 필드** (react-hook-form)
-```tsx
-<div>
-    <label className="block text-xs font-medium text-slate-600 mb-1">이름 <span className="text-red-500">*</span></label>
-    <Input {...register("name")}/>
-    {errors.name && <p className="mt-0.5 text-xs text-red-500">{errors.name.message}</p>}
-</div>
-```
+**폼 필드** → `ui/FormField` + `ui/Input` (위 카드).
 
 **삭제 확인**은 `useConfirm` 을 쓰세요(위 카드).
 
@@ -144,7 +151,7 @@ return (<div>... {ConfirmComponent}</div>);
 |---|---|---|
 | `Modal` (`open`, `onClose`, `title`, `size`, ESC 닫기) | 모달 overlay 21곳 | 위 모달 마크업 반복 — **새 모달은 `ui/Dialog` 를 쓰세요**(승격 완료) |
 | `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`) | `<button>` 171곳 | ✅ **완료**(2026-11-26, 표준형 39곳 교체). `loading` 은 필요해질 때 |
-| `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | ✅ Input·Select·Textarea **완료**(표준형 31곳 교체). `FormField`(라벨+오류) 는 후보 |
+| `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | ✅ **완료** — Input·Select·Textarea(표준형 31곳), FormField(라벨+입력+오류 36곳) |
 | `ConfirmDialog` | 브라우저 `confirm()` 15곳 + 손 마크업 삭제 다이얼로그 | ✅ **완료**(2026-11-26 `useConfirm` — `confirm()` 15곳, 손 마크업 삭제 확인 5곳: Task·댓글·컬럼·보드·지표) |
 | `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | |
 | `EmptyState` | "~이 없습니다" 빈 화면 | |

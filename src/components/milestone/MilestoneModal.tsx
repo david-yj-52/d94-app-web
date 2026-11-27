@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
 import {Input, Select, Textarea} from "@/components/ui/Input";
+import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     name: z.string().min(1, "마일스톤 이름을 입력해주세요.").max(100),
@@ -90,45 +91,36 @@ export default function MilestoneModal({projectId, editTarget, onClose, onSucces
                 </h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">
-                            마일스톤 이름 <span className="text-red-500">*</span>
-                        </label>
+                    <FormField label="마일스톤 이름" required error={errors.name?.message}>
                         <Input
                             {...register("name")}
                             placeholder="예: MVP 출시"
                         />
-                        {errors.name && (
-                            <p className="mt-0.5 text-xs text-red-500">{errors.name.message}</p>
-                        )}
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">설명</label>
+                    <FormField label="설명">
                         <Textarea
                             {...register("description")}
                             rows={2}
                             placeholder="마일스톤에 대한 설명을 입력하세요"
                         />
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">마감일</label>
+                    <FormField label="마감일">
                         <Input
                             {...register("dueDate")}
                             type="date"
                         />
-                    </div>
+                    </FormField>
 
-                    <div>
-                        <label className="block text-xs font-medium text-slate-600 mb-1">상태</label>
+                    <FormField label="상태">
                         <Select
                             {...register("status")}
                         >
                             <option value="OPEN">진행 중</option>
                             <option value="CLOSED">완료</option>
                         </Select>
-                    </div>
+                    </FormField>
 
                     {isError && (
                         <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">
