@@ -112,6 +112,26 @@ export interface TaskFilters {
     dueBefore?: string;
 }
 
+export interface GraphNode {
+    id: string;
+    vaultId: string;
+    title: string;
+    kind: NoteKind;
+    stream: string | null;
+}
+
+/** source → target (노트 id). rel: link = [[링크]], origin = 파생 원본 */
+export interface GraphLink {
+    source: string;
+    target: string;
+    rel: "link" | "origin";
+}
+
+export interface GraphData {
+    nodes: GraphNode[];
+    links: GraphLink[];
+}
+
 export interface LineageNode {
     id: string;
     title: string;

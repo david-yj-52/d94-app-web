@@ -1,5 +1,5 @@
 // Docs 노트 Markdown 도우미. 규칙은 d94-query DocsMarkdownIndexer 와 짝(화면 표시·mock 용, 원본 색인은 서버).
-import type {NoteKind, TaskStatus} from "@/types/docs";
+import type {LineageNode, NoteKind, TaskStatus} from "@/types/docs";
 
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/;
 const WIKILINK = /\[\[([^[\]|#\n]+)(?:#[^[\]|\n]*)?(?:\|([^[\]\n]*))?]]/g;
@@ -72,4 +72,24 @@ export function toMarkdownLinks(body: string): string {
 
 export function titleFromHref(href: string | undefined): string | null {
     return href?.startsWith(NOTE_HREF) ? decodeURIComponent(href.slice(NOTE_HREF.length)) : null;
+}
+
+/** stream 별 열. 열 순서는 응답(루트부터) 첫 등장 순, 열 안은 세대 → 제목 순 */
+export function groupByStream(nodes: LineageNode[]) {
+    const byTitle = new Map(nodes.map((n) => [n.title, n]));
+    const depthOf = (n: LineageNode) => {
+        let d = 0;
+        // ponytail: 순환 방지 상한 50 (서버 lineage 와 같은 수준)
+        for (let o = n.origin; o && d < 50; o = byTitle.get(o)?.origin ?? null) d++;
+        return d;
+    };
+    const cols = new Map<string | null, { n: LineageNode; depth: number }[]>();
+    for (const n of nodes) {
+        if (!cols.has(n.stream)) cols.set(n.stream, []);
+        cols.get(n.stream)!.push({n, depth: depthOf(n)});
+    }
+    return [...cols].map(([stream, items]) => ({
+        stream,
+        items: items.sort((a, b) => a.depth - b.depth || a.n.title.localeCompare(b.n.title)),
+    }));
 }

@@ -1,11 +1,12 @@
 # L2 · docs 컴포넌트
 
 > 계층: [L1](../../../AGENTS.md) › [L2 components](../AGENTS.md) › **docs**
-> 사용 화면: [docs](../../app/(main)/docs/AGENTS.md), [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md). 이 모듈 밖에서 import 하지 않습니다.
+> 사용 화면: [docs](../../app/(main)/docs/AGENTS.md), [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md), [docs/graph](../../app/(main)/docs/graph/AGENTS.md). 이 모듈 밖에서 import 하지 않습니다.
 
 ### DocsSidebar — `@/components/docs/DocsSidebar`
-`{ vaults: DocsVault[]; folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null, vaultId: string) => void; onNewFolder: (parentId | null, vaultId: string) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void }`
+`{ vaults: DocsVault[]; folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null, vaultId: string) => void; onNewFolder: (parentId | null, vaultId: string) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void; onDropItem: (item: DragItem, folderId: string | null) => void }`, `DragItem = { kind: "note" | "folder"; id; vaultId; parentId }`
 - `vaults` 마다 섹션(🔒 Private · 👥 Team 이름, 접기, 섹션별 [새 노트][새 폴더])을 그리고, 그 안에 `vaultId` 가 같은 폴더·노트만. `parentId` 로 폴더 트리, 폴더마다 그 폴더의 노트(제목순). 접힘은 로컬 상태. 폴더 `···` 메뉴는 `ui/DropdownMenu`(새 노트·하위 폴더·이름 변경·이동·삭제, md 이상은 hover 시 표시·모바일은 항상 표시). 들여쓰기만 인라인 style.
+- 끌어 놓기: HTML5 DnD(CIRA 칸반과 같은 방식). 폴더 줄·노트가 끌 수 있고, 폴더 줄·vault 헤더가 놓을 자리(강조 `bg-d94-brand-soft ring`). 같은 vault·자기 하위 아님·지금 위치 아님일 때만 놓기 허용 → `onDropItem`.
 
 ### NoteMarkdown — `@/components/docs/NoteMarkdown`
 `{ content: string; existing: Set<string>; onOpenTitle: (title: string) => void }`
@@ -45,6 +46,9 @@
 
 ### TaskBoard — `@/components/docs/TaskBoard`
 `{ tasks: DocsTask[]; onStatus: (task: DocsTask, status: TaskStatus) => void }` — 할 일·진행 중·완료 3열, 카드 = 내용·원 노트 링크·마감·상태 선택. 사용: [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md)
+
+### NoteGraph — `@/components/docs/NoteGraph`
+`{ data: GraphData; focusId: string | null; onOpen: (id: string) => void }`, `KIND_COLOR: Record<NoteKind, string>` — `react-force-graph-2d`(dynamic import, ssr 끔), 부모 크기를 `ResizeObserver` 로 따라감. 점 색 = 종류, 중심 노트는 크게·굵은 제목, origin 링크는 점선, 화살표 = 링크 방향, 클릭 → `onOpen`. `data` 는 복사해서 넘김(라이브러리가 links 를 바꿔 씀). 사용: [docs/graph](../../app/(main)/docs/graph/AGENTS.md)
 
 ### NoteVersionHistory — `@/components/docs/NoteVersionHistory`
 `{ versions: NoteVersion[]; isLoading: boolean; selected: number | null; onPreview: (v) => void; onClose: () => void }` — 최신 먼저.

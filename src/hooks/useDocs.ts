@@ -15,6 +15,7 @@ import {
     getDocsVaults,
     indexDocsNoteKnowledge,
     getLineage,
+    getDocsGraph,
     getNote,
     getNoteTitles,
     getNoteVersions,
@@ -172,6 +173,13 @@ export function useDeriveNote(id: string) {
 export function useChangeNoteKind(id: string) {
     const qc = useQueryClient();
     return useMutation({mutationFn: (kind: NoteKind) => changeNoteKind(id, kind), onSuccess: () => invalidateDocs(qc)});
+}
+
+export function useDocsGraph(noteId: string | null, depth: number) {
+    return useQuery({
+        queryKey: ["docsGraph", noteId, depth],
+        queryFn: () => getDocsGraph(noteId ? {noteId, depth} : {}),
+    });
 }
 
 export function useLineage(id: string) {

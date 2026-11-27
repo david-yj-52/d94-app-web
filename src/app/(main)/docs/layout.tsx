@@ -3,13 +3,13 @@
 import {useEffect, useState} from "react";
 import {useParams, usePathname} from "next/navigation";
 import Link from "next/link";
-import {FolderTree, ListChecks} from "lucide-react";
+import {FolderTree, ListChecks, Waypoints} from "lucide-react";
 import DocsSidebar from "@/components/docs/DocsSidebar";
 import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import QuickSwitcher from "@/components/docs/QuickSwitcher";
 import DocsDialog, {type DocsDialogSpec} from "@/components/docs/DocsDialog";
 import {useOpenNote} from "@/components/docs/useOpenNote";
-import {useCreateDocsFolder, useDeleteDocsFolder, useDocsFolders, useDocsVaults, useMoveDocsFolder, useNotes, useRenameDocsFolder} from "@/hooks/useDocs";
+import {useCreateDocsFolder, useDeleteDocsFolder, useDocsFolders, useDocsVaults, useMoveDocsFolder, useMoveNote, useNotes, useRenameDocsFolder} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
 import Dialog from "@/components/ui/Dialog";
 import {Skeleton} from "@/components/ui/Skeleton";
@@ -32,6 +32,7 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
     const renameFolder = useRenameDocsFolder();
     const deleteFolder = useDeleteDocsFolder();
     const moveFolder = useMoveDocsFolder();
+    const moveNote = useMoveNote();
     const {show, ToastComponent} = useToast();
     const [switcher, setSwitcher] = useState(false);
     const [moving, setMoving] = useState<DocsFolder | null>(null);
@@ -72,6 +73,9 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
             <Link href="/docs/tasks" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
                 <ListChecks className="h-4 w-4"/> Task 모아보기
             </Link>
+            <Link href="/docs/graph" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
+                <Waypoints className="h-4 w-4"/> 그래프
+            </Link>
             <select value={validScope} onChange={(e) => setScope(e.target.value)} aria-label="vault 선택"
                     className="mb-3 h-8 w-full rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-d94-brand">
                 <option value="ALL">전체 통합</option>
@@ -100,6 +104,9 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
                         onConfirm: () => deleteFolder.mutate(f.id, {onError: fail("폴더를 삭제하지 못했습니다.")}),
                     })}
                     onMoveFolder={setMoving}
+                    onDropItem={(item, folderId) => item.kind === "note"
+                        ? moveNote.mutate({id: item.id, folderId}, {onError: fail("노트를 옮기지 못했습니다.")})
+                        : moveFolder.mutate({id: item.id, parentId: folderId}, {onError: fail("폴더를 옮기지 못했습니다.")})}
                 />
             )}
         </>
