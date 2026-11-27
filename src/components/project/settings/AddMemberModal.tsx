@@ -6,6 +6,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+import Button from "@/components/ui/Button";
+import {Input, Select} from "@/components/ui/Input";
 
 const schema = z.object({
     email: z.string().email("유효한 이메일을 입력해주세요."),
@@ -56,11 +58,10 @@ export default function AddMemberModal({projectId, onClose, onSuccess}: Props) {
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             이메일
                         </label>
-                        <input
+                        <Input
                             {...register("email")}
                             type="email"
                             placeholder="user@example.com"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.email && (
                             <p className="mt-0.5 text-xs text-red-500">{errors.email.message}</p>
@@ -71,13 +72,12 @@ export default function AddMemberModal({projectId, onClose, onSuccess}: Props) {
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             역할
                         </label>
-                        <select
+                        <Select
                             {...register("role")}
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
                             <option value="MEMBER">Member</option>
                             <option value="ADMIN">Admin</option>
-                        </select>
+                        </Select>
                     </div>
 
                     {isError && (
@@ -87,20 +87,20 @@ export default function AddMemberModal({projectId, onClose, onSuccess}: Props) {
                     )}
 
                     <div className="flex gap-3 pt-2">
-                        <button
+                        <Button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 h-10 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50"
+                            variant="secondary" className="flex-1"
                         >
                             취소
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                            className="flex-1"
                         >
                             {isPending ? "추가 중..." : "추가"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

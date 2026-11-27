@@ -2,6 +2,7 @@
 
 import type {Metric} from "@/types/lifeMetric";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 /** 기준값 편집. 스키마의 BASELINE 항목 + 스키마 밖에 저장된 값도 보여 준다. 빈 칸 저장 = 삭제 */
 export default function BaselineForm({metric, onSave, isPending}: {
@@ -33,10 +34,9 @@ export default function BaselineForm({metric, onSave, isPending}: {
                            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                 </div>
             ))}
-            <button type="button" onClick={save} disabled={isPending}
-                    className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
+            <Button type="button" onClick={save} disabled={isPending}>
                 기준값 저장
-            </button>
+            </Button>
         </div>
     );
 }

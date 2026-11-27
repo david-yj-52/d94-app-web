@@ -6,6 +6,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+import Button from "@/components/ui/Button";
+import {Input, Textarea} from "@/components/ui/Input";
 
 const schema = z.object({
     sprintNm: z.string().min(1, "스프린트 이름을 입력해주세요.").max(100),
@@ -70,9 +72,8 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             스프린트 이름 <span className="text-red-500">*</span>
                         </label>
-                        <input
+                        <Input
                             {...register("sprintNm")}
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.sprintNm && (
                             <p className="mt-0.5 text-xs text-red-500">{errors.sprintNm.message}</p>
@@ -83,10 +84,9 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             스프린트 목표
                         </label>
-                        <textarea
+                        <Textarea
                             {...register("goal")}
                             rows={2}
-                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -95,20 +95,18 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                             <label className="block text-xs font-medium text-slate-600 mb-1">
                                 시작일
                             </label>
-                            <input
+                            <Input
                                 {...register("startDt")}
                                 type="date"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">
                                 종료일
                             </label>
-                            <input
+                            <Input
                                 {...register("endDt")}
                                 type="date"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
                     </div>
@@ -120,20 +118,20 @@ export default function EditSprintModal({projectId, sprint, onClose, onSuccess}:
                     )}
 
                     <div className="flex gap-3 pt-2">
-                        <button
+                        <Button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 h-10 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50"
+                            variant="secondary" className="flex-1"
                         >
                             취소
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                            className="flex-1"
                         >
                             {isPending ? "수정 중..." : "수정"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

@@ -4,6 +4,7 @@ import {useState} from "react";
 import {useCompleteSprint, useSprints} from "@/hooks/useSprints";
 import {useIssues} from "@/hooks/useIssues";
 import type {CompleteSprintIncompleteAction, SprintResponse} from "@/types/sprint";
+import Button from "@/components/ui/Button";
 
 interface CompleteSprintModalProps {
     projectId: string;
@@ -191,19 +192,19 @@ export default function CompleteSprintModal({
                 )}
 
                 <div className="flex gap-3">
-                    <button
+                    <Button
                         onClick={onClose}
-                        className="flex-1 h-10 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50"
+                        variant="secondary" className="flex-1"
                     >
                         취소
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         onClick={handleConfirm}
                         disabled={isPending || !canConfirm}
-                        className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                        className="flex-1"
                     >
                         {isPending ? "처리 중..." : "완료"}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

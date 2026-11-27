@@ -8,6 +8,8 @@ import {useRouter} from "next/navigation";
 import {use, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+import Button from "@/components/ui/Button";
+import {Input, Select, Textarea} from "@/components/ui/Input";
 
 const schema = z.object({
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
@@ -109,9 +111,8 @@ export default function SettingsGeneralPage({
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
                         프로젝트 이름 <span className="text-red-500">*</span>
                     </label>
-                    <input
+                    <Input
                         {...register("name")}
-                        className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                     />
                     {errors.name && (
                         <p className="mt-0.5 text-xs text-red-500">{errors.name.message}</p>
@@ -122,10 +123,9 @@ export default function SettingsGeneralPage({
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
                         설명
                     </label>
-                    <textarea
+                    <Textarea
                         {...register("description")}
                         rows={3}
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-d94-brand"
                     />
                 </div>
 
@@ -133,29 +133,28 @@ export default function SettingsGeneralPage({
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
                         프로젝트 타입
                     </label>
-                    <select
+                    <Select
                         {...register("projectTypeId")}
-                        className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                     >
                         {(projectTypes ?? []).map((type) => (
                             <option key={type.id} value={type.id}>
                                 {type.typeNm}
                             </option>
                         ))}
-                    </select>
+                    </Select>
                     <p className="mt-1 text-xs text-slate-400">
                         타입을 바꾸면 물려받는 필드 세트가 새 타입 기준으로 바뀝니다. 빠진 필드의 값은 지워지지 않고 보관됩니다.
                     </p>
                 </div>
 
                 <div className="pt-2">
-                    <button
+                    <Button
                         type="submit"
                         disabled={isPending || !isDirty}
-                        className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                        className="px-6"
                     >
                         {isPending ? "저장 중..." : "저장"}
-                    </button>
+                    </Button>
                 </div>
             </form>
 

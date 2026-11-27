@@ -6,6 +6,8 @@ import {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
+import Button from "@/components/ui/Button";
+import {Input} from "@/components/ui/Input";
 
 const schema = z.object({
     columnNm: z.string().min(1, "컬럼 이름을 입력해주세요."),
@@ -100,10 +102,9 @@ export default function AddColumnModal({
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             컬럼 이름 <span className="text-red-500">*</span>
                         </label>
-                        <input
+                        <Input
                             {...register("columnNm")}
                             placeholder="예: In Review"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.columnNm && (
                             <p className="mt-0.5 text-xs text-red-500">
@@ -117,10 +118,9 @@ export default function AddColumnModal({
                             <label className="block text-xs font-medium text-slate-600 mb-1">
                                 상태 ID <span className="text-red-500">*</span>
                             </label>
-                            <input
+                            <Input
                                 {...register("statusId")}
                                 placeholder="Task 상태 ID"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                             <p className="mt-0.5 text-[10px] text-slate-400">
                                 프로젝트 워크플로우의 상태 ID를 입력하세요.
@@ -137,12 +137,11 @@ export default function AddColumnModal({
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             WIP 제한 (선택)
                         </label>
-                        <input
+                        <Input
                             {...register("wipLimitStr")}
                             type="number"
                             min={1}
                             placeholder="제한 없음"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -153,20 +152,20 @@ export default function AddColumnModal({
                     )}
 
                     <div className="flex gap-3 pt-2">
-                        <button
+                        <Button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 h-10 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50"
+                            variant="secondary" className="flex-1"
                         >
                             취소
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                            className="flex-1"
                         >
                             {isPending ? "저장 중..." : isEdit ? "저장" : "추가"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

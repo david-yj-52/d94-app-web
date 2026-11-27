@@ -14,6 +14,7 @@ import {
 } from "@/hooks/useApiTokens";
 import {GLOBAL_TOKEN_SERVICE, serviceLabel} from "@/types/apiToken";
 import type {ApiTokenAccess, IssuedApiToken, IssueApiTokenRequest} from "@/types/apiToken";
+import Button from "@/components/ui/Button";
 
 const NAME_MAX = 100;
 const DAYS = [30, 90, 365] as const;
@@ -153,10 +154,10 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                         onChange={(e) => setForm({...form, expiresInDays: Number(e.target.value) as 30 | 90 | 365})}>
                     {DAYS.map((d) => <option key={d} value={d}>{d}일</option>)}
                 </select>
-                <button type="button" onClick={submit} disabled={!canIssue}
-                        className="inline-flex h-10 items-center justify-center gap-1 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
+                <Button type="button" onClick={submit} disabled={!canIssue}
+                        className="inline-flex items-center justify-center gap-1">
                     <KeyRound className="h-4 w-4"/> 발급
-                </button>
+                </Button>
             </div>
 
             {service === GLOBAL_TOKEN_SERVICE && (

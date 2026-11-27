@@ -3,6 +3,7 @@
 import Dialog from "@/components/ui/Dialog";
 import {CUSTOM_FIELD_TYPE_LABELS, type CustomFieldType, type FieldDef, type SaveCustomField} from "@/types/fields";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 const TYPES = Object.keys(CUSTOM_FIELD_TYPE_LABELS) as CustomFieldType[];
 const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
@@ -82,12 +83,12 @@ export default function CustomFieldModal({editTarget, onSubmit, isPending, onClo
                     필수 입력 (Task 생성 시 입력해야 함)
                 </label>
                 <div className="flex gap-3 pt-2">
-                    <button type="button" onClick={onClose}
-                            className="h-10 flex-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
-                    <button type="submit" disabled={!valid || isPending}
-                            className="h-10 flex-1 rounded-lg bg-d94-brand text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
+                    <Button type="button" onClick={onClose}
+                            variant="secondary" className="flex-1">취소</Button>
+                    <Button type="submit" disabled={!valid || isPending}
+                            className="flex-1">
                         {isPending ? "저장 중..." : "저장"}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </Dialog>

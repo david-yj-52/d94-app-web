@@ -2,6 +2,7 @@
 
 import {useState} from "react";
 import type {DocsFolder} from "@/types/docs";
+import Button from "@/components/ui/Button";
 
 interface FolderPickerModalProps {
     title: string;
@@ -35,7 +36,7 @@ export default function FolderPickerModal({title, folders, disabledIds, initial,
                     ))}
                 </select>
                 <div className="mt-4 flex justify-end gap-2">
-                    <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
+                    <Button type="button" onClick={onClose} variant="ghost">취소</Button>
                     <button type="button" onClick={() => onPick(value || null)}
                             className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover">이동</button>
                 </div>

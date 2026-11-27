@@ -3,6 +3,7 @@
 import type {LogRequest, Metric, MetricLog} from "@/types/lifeMetric";
 import {useState} from "react";
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import Button from "@/components/ui/Button";
 
 const inputCls = "h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
 
@@ -41,8 +42,7 @@ export default function LogPanel({metric, logs, onAdd, onDelete, isPending}: {
                        onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()}/>
                 <input className={`${inputCls} min-w-0 flex-1`} aria-label="메모" placeholder="메모 (선택)" value={note}
                        onChange={(e) => setNote(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()}/>
-                <button type="button" onClick={add} disabled={isPending}
-                        className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">기록</button>
+                <Button type="button" onClick={add} disabled={isPending}>기록</Button>
             </div>
 
             {series.length > 1 && (

@@ -64,7 +64,34 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 - 내용 패널에 `cira-root` 클래스가 붙습니다(포털이 `.cira-root` 밖에 그려져도 CIRA 자식의 `cira-*` 색이 살도록, 값은 d94 토큰과 같음).
 - 사용처: `layout/ApHeader`(모바일 메뉴 서랍), `(main)/docs/layout`(모바일 폴더 트리 서랍), `cira/shell/CiraShell`·`CreateIssueButton`, issue(`ColumnPicker`·`FieldLibraryDialog`·`AttachmentSection`), settings(`CiraSettingsPanel`·`CustomFieldModal`), CIRA issues·settings/fields 화면. 2026-11-26 `cira/ui` 에서 승격([ADR 0006](../../../docs/decisions/0006-cira-design-layer.md) 갱신).
 
-## 3. 표준 마크업 (primitive가 생기기 전까지 복사해서 사용)
+### Button — `import Button from "@/components/ui/Button"`
+```ts
+ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "md" | "sm" }  // 기본 primary·md
+```
+```tsx
+<div className="flex gap-3 pt-2">
+    <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>취소</Button>
+    <Button type="submit" className="flex-1" disabled={isPending}>저장</Button>
+</div>
+```
+- md = `h-10 px-4 text-sm`, sm = `h-8 px-3 text-xs`, `rounded-lg`, `disabled:opacity-60`. primary `bg-d94-brand`, secondary 흰 바탕 + `border-slate-200`, ghost 테두리 없음, danger `bg-red-500`.
+- `className` 은 `tailwind-merge` 로 합쳐져 뒤에 준 값이 이깁니다(`flex-1`, `w-full`, `px-5` 등).
+- `type` 기본값을 바꾸지 않습니다(네이티브와 같음: 폼 안에서는 submit). 폼 안의 취소·보조 버튼은 `type="button"` 을 주세요.
+
+### Input / Select / Textarea — `import {Input, Select, Textarea} from "@/components/ui/Input"`
+```ts
+Input(InputHTMLAttributes<HTMLInputElement>)  Select(SelectHTMLAttributes<HTMLSelectElement>)  Textarea(TextareaHTMLAttributes<HTMLTextAreaElement>)
+```
+```tsx
+<Input {...register("name")} placeholder="이름"/>
+<Select value={v} onChange={(e) => setV(e.target.value)}>{options}</Select>
+<Textarea {...register("goal")} rows={2}/>
+```
+- 공통 모양 `w-full rounded-lg border-slate-200 bg-slate-50 px-3 text-sm focus:ring-2 focus:ring-d94-brand`, Input·Select `h-10`, Textarea `py-2 resize-none`. `className` 은 tailwind-merge 로 덮어씀.
+- React 19 라 `ref` 가 일반 prop → `{...register()}` 를 그대로 펼치면 됩니다.
+- 2026-11-26 표준 마크업과 같은 버튼 39개·입력 31개(25개 파일)를 이 컴포넌트로 교체했습니다. 모양이 다른 버튼(아이콘·링크형·배지형 등)은 그대로 둡니다.
+
+## 3. 표준 마크업 (모달 — 버튼·입력은 위 Button·Input 을 쓰세요)
 
 > 모바일 공통 규칙: 손으로 만든 모달 패널에는 `max-h-[calc(100dvh-2rem)] overflow-y-auto` 를 붙여 낮은 화면에서도 버튼까지 스크롤되게 합니다(2026-11-26 기존 20개 모달에 일괄 적용). 입력란 글자는 `globals.css` 가 모바일(< 768px)에서 16px 로 올려 iOS 확대를 막으므로 따로 지정하지 않습니다.
 
@@ -82,23 +109,13 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 </div>
 ```
 
-**버튼**
-```tsx
-// primary
-<button className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60">저장</button>
-// secondary
-<button className="h-10 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
-// danger
-<button className="h-10 px-4 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-60">삭제</button>
-```
-모달 하단의 버튼 쌍은 `flex-1`을 붙여 같은 너비로 맞춥니다.
+**버튼** → `ui/Button` (`variant="primary|secondary|ghost|danger"`). 모달 하단의 버튼 쌍은 `className="flex-1"` 로 같은 너비로 맞춥니다.
 
 **폼 필드** (react-hook-form)
 ```tsx
 <div>
     <label className="block text-xs font-medium text-slate-600 mb-1">이름 <span className="text-red-500">*</span></label>
-    <input {...register("name")}
-           className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
+    <Input {...register("name")}/>
     {errors.name && <p className="mt-0.5 text-xs text-red-500">{errors.name.message}</p>}
 </div>
 ```
@@ -110,8 +127,8 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 | 예정 primitive | 대체 대상 | 근거 |
 |---|---|---|
 | `Modal` (`open`, `onClose`, `title`, `size`, ESC 닫기) | 모달 overlay 21곳 | 위 모달 마크업 반복 — **새 모달은 `ui/Dialog` 를 쓰세요**(승격 완료) |
-| `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`, `loading`) | `<button>` 171곳 | 위 버튼 마크업 반복 |
-| `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | 위 폼 필드 반복 |
+| `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`) | `<button>` 171곳 | ✅ **완료**(2026-11-26, 표준형 39곳 교체). `loading` 은 필요해질 때 |
+| `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | ✅ Input·Select·Textarea **완료**(표준형 31곳 교체). `FormField`(라벨+오류) 는 후보 |
 | `ConfirmDialog` | 브라우저 `confirm()` 8곳 + issue 상세 삭제 다이얼로그 | sprints, versions, wiki, settings 등 |
 | `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | |
 | `EmptyState` | "~이 없습니다" 빈 화면 | |

@@ -28,6 +28,7 @@
 ## 3. 현재 상태 요약 (2026-10-15 기준)
 
 - 파일은 53개입니다. 그중 여러 화면에서 재사용되는 것은 **Toast(15곳)·Skeleton(9곳)** 뿐입니다.
+- (2026-11-26 갱신) `ui/Dialog`·`ui/Button`·`ui/Input` 이 생겼습니다. 새 코드는 이것을 쓰고, 아래는 그 전 상태 기록입니다.
 - **Modal, Button, Input 같은 primitive가 아직 없습니다.**
   - 모달 overlay(`fixed inset-0`)는 21개 파일에서 각자 구현합니다.
   - `<button>` 171개와 `<input|select|textarea>` 94개를 Tailwind 클래스로 직접 작성합니다.
@@ -54,6 +55,8 @@
 | AuthCheck / LoginButton | `AuthCheck`, `LoginButton` | 초기 인증 데모 | — | ⛔ |
 | StatusLozenge, IssueTypeIcon, PriorityIcon, Avatar | `cira/ui/Badges` | CIRA 상태 배지·유형·우선순위 아이콘·아바타 | CIRA 셸·화면 | ✅ |
 | PageHeader | `cira/ui/PageHeader` | CIRA 화면 머리(경로·제목·버튼) | CIRA 화면 | ✅ |
+| Button | `ui/Button` | 공통 버튼 (primary·secondary·ghost·danger, md·sm) | 25개 파일(모달·폼·설정) | 🔁 |
+| Input / Select / Textarea | `ui/Input` | 공통 입력 필드 (react-hook-form register 그대로) | 모달·폼 | 🔁 |
 | Dialog | `ui/Dialog` | Radix 모달 (모바일 전체 화면·왼쪽 서랍) | ApHeader, CIRA 셸·화면·issue·settings | 🔁 |
 | Menu | `cira/ui/Menu` | Radix 드롭다운 메뉴 | CIRA 셸·화면 | ✅ |
 | CiraShell › CiraSidebar, CreateIssueButton | `cira/shell/*` | CIRA 셸 (상단 바·통합 사이드바·모바일 서랍·이슈 만들기) | `(cira)/cira/layout.tsx` | ✅ |

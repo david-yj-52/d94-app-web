@@ -3,6 +3,7 @@
 import {useState} from "react";
 import type {DeriveRequest, NoteKind} from "@/types/docs";
 import {KIND_LABEL, KINDS} from "@/lib/docs/markdown";
+import Button from "@/components/ui/Button";
 
 interface DeriveModalProps {
     originTitle: string;
@@ -41,9 +42,9 @@ export default function DeriveModal({originTitle, saving, onSubmit, onClose}: De
                     </select>
                 </label>
                 <div className="flex justify-end gap-2 pt-1">
-                    <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
-                    <button type="submit" disabled={saving}
-                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">만들기</button>
+                    <Button type="button" onClick={onClose} variant="ghost">취소</Button>
+                    <Button type="submit" disabled={saving}
+                            className="font-medium">만들기</Button>
                 </div>
             </form>
         </div>

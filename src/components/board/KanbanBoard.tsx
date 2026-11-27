@@ -9,6 +9,7 @@ import type {BoardColumnResponse, BoardIssueResponse} from "@/types/board";
 import {useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 interface DragState {
     issueId: string;
@@ -357,12 +358,12 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                             >
                                 취소
                             </button>
-                            <button
+                            <Button
                                 onClick={handleDeleteBoard}
-                                className="flex-1 h-10 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600"
+                                variant="danger" className="flex-1"
                             >
                                 삭제
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

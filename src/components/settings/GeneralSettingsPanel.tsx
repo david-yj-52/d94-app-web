@@ -8,6 +8,7 @@ import {useToast} from "@/components/ui/Toast";
 import {LOGO_FONTS, logoFontClass} from "@/components/ui/logoFonts";
 import {useSettings, useUpdateSettings} from "@/hooks/useSettings";
 import {DEFAULT_LOGO_TEXT, LOGO_FONT_KEY, LOGO_TEXT_KEY} from "@/types/settings";
+import Button from "@/components/ui/Button";
 
 const LOGO_TEXT_MAX = 30; // d94-query SettingService.LOGO_TEXT_MAX
 const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
@@ -72,10 +73,9 @@ function LogoForm({readOnly, initialText, initialFont}: { readOnly: boolean; ini
                 </div>
             </div>
             <div className="mt-5 flex justify-end">
-                <button type="button" onClick={save} disabled={readOnly || !valid || update.isPending}
-                        className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
+                <Button type="button" onClick={save} disabled={readOnly || !valid || update.isPending}>
                     저장
-                </button>
+                </Button>
             </div>
             {ToastComponent}
         </section>

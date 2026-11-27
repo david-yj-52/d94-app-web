@@ -4,6 +4,7 @@ import {useAddIssueToSprint} from "@/hooks/useSprints";
 import {useIssues} from "@/hooks/useIssues";
 import type {SprintResponse} from "@/types/sprint";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 interface Props {
     projectId: string;
@@ -95,12 +96,12 @@ export default function AssignIssueModal({projectId, sprint, onClose, onSuccess}
                 </div>
 
                 <div className="pt-4">
-                    <button
+                    <Button
                         onClick={onClose}
-                        className="w-full h-10 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50"
+                        variant="secondary" className="w-full"
                     >
                         닫기
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

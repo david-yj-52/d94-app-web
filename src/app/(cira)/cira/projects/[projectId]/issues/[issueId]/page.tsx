@@ -20,6 +20,7 @@ import {
 import type {Priority, UpdateIssueRequest} from "@/types/issue";
 import {useRouter} from "next/navigation";
 import {use, useEffect, useRef, useState} from "react";
+import Button from "@/components/ui/Button";
 
 const PRIORITY_LABELS: Record<Priority, string> = {
     HIGHEST: "⬆⬆ HIGHEST",
@@ -364,13 +365,13 @@ export default function IssueDetailPage({
                             >
                                 취소
                             </button>
-                            <button
+                            <Button
                                 onClick={handleDelete}
                                 disabled={isDeleting}
-                                className="flex-1 h-10 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-60"
+                                variant="danger" className="flex-1"
                             >
                                 {isDeleting ? "삭제 중..." : "삭제"}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

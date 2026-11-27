@@ -7,6 +7,7 @@ import {useNotes} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
 import {KIND_LABEL} from "@/lib/docs/markdown";
 import {docsError} from "@/lib/docs/error";
+import Button from "@/components/ui/Button";
 
 /** Docs 첫 화면: 아이디어 빠른 기록(제목 한 줄 → 아이디어 노트) + 최근 노트 */
 export default function DocsHomePage() {
@@ -24,7 +25,7 @@ export default function DocsHomePage() {
             }}>
                 <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="떠오른 아이디어를 한 줄로" aria-label="새 아이디어 제목"
                        className="h-10 flex-1 rounded-lg border border-slate-200 px-3 focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
-                <button type="submit" className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover">기록</button>
+                <Button type="submit" className="font-medium">기록</Button>
             </form>
             <h2 className="mb-2 mt-8 text-xs font-medium text-slate-600">최근 노트</h2>
             <ul className="divide-y divide-slate-100">

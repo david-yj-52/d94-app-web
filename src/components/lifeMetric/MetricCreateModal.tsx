@@ -6,6 +6,7 @@ import {isAxiosError} from "axios";
 import {useState} from "react";
 import FormulaEditor from "./FormulaEditor";
 import {formatValue} from "./formulaRef";
+import Button from "@/components/ui/Button";
 
 const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
 const labelCls = "block text-xs font-medium text-slate-600 mb-1";
@@ -181,13 +182,13 @@ export default function MetricCreateModal({onClose, onCreated}: {
                     {error && <p className="text-sm text-red-500">{error}</p>}
 
                     <div className="flex gap-3 pt-2">
-                        <button type="button" onClick={onClose}
-                                className="h-10 flex-1 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50">취소</button>
-                        <button type="button" onClick={submit}
+                        <Button type="button" onClick={onClose}
+                                variant="secondary" className="flex-1">취소</Button>
+                        <Button type="button" onClick={submit}
                                 disabled={create.isPending || !code || (mode === "template" ? !templateId : !formula.trim())}
-                                className="h-10 flex-1 rounded-lg bg-d94-brand text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">
+                                className="flex-1">
                             만들기
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 interface Option {
     id: string;
@@ -52,9 +53,9 @@ export default function PromoteToCiraModal({noteTitle, projects, issueTypes, sav
                     </>
                 )}
                 <div className="flex justify-end gap-2 pt-1">
-                    <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
-                    <button type="submit" disabled={saving || !projectId || !title.trim()}
-                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">등록</button>
+                    <Button type="button" onClick={onClose} variant="ghost">취소</Button>
+                    <Button type="submit" disabled={saving || !projectId || !title.trim()}
+                            className="font-medium">등록</Button>
                 </div>
             </form>
         </div>

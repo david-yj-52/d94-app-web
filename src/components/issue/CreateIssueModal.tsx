@@ -9,6 +9,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {useEffect, useMemo, useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+import Button from "@/components/ui/Button";
+import {Input, Select, Textarea} from "@/components/ui/Input";
 
 const PRIORITIES: Priority[] = ["HIGHEST", "HIGH", "MEDIUM", "LOW", "LOWEST"];
 
@@ -98,10 +100,9 @@ export default function CreateIssueModal({
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             제목 <span className="text-red-500">*</span>
                         </label>
-                        <input
+                        <Input
                             {...register("title")}
                             placeholder="Task 제목을 입력하세요"
-                            className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                         {errors.title && (
                             <p className="mt-0.5 text-xs text-red-500">
@@ -114,11 +115,10 @@ export default function CreateIssueModal({
                         <label className="block text-xs font-medium text-slate-600 mb-1">
                             설명
                         </label>
-                        <textarea
+                        <Textarea
                             {...register("content")}
                             rows={4}
                             placeholder="Task 설명을 입력하세요..."
-                            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         />
                     </div>
 
@@ -164,10 +164,9 @@ export default function CreateIssueModal({
                                 담당자
                             </label>
                             {/* 값은 사용자 objId(userId). d94-query assigneeId 는 이메일이 아니다 */}
-                            <select
+                            <Select
                                 {...register("assigneeId")}
                                 aria-label="담당자"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             >
                                 <option value="">담당자 없음</option>
                                 {members.map((m) => (
@@ -175,17 +174,16 @@ export default function CreateIssueModal({
                                         {m.userNm || m.email}
                                     </option>
                                 ))}
-                            </select>
+                            </Select>
                         </div>
 
                         <div>
                             <label className="block text-xs font-medium text-slate-600 mb-1">
                                 마감일
                             </label>
-                            <input
+                            <Input
                                 {...register("dueDt")}
                                 type="date"
-                                className="w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                             />
                         </div>
                     </div>
@@ -208,20 +206,20 @@ export default function CreateIssueModal({
                     )}
 
                     <div className="flex gap-3 pt-2">
-                        <button
+                        <Button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 h-10 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50"
+                            variant="secondary" className="flex-1"
                         >
                             취소
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
                             disabled={isPending}
-                            className="flex-1 h-10 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                            className="flex-1"
                         >
                             {isPending ? "생성 중..." : "Task 생성"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

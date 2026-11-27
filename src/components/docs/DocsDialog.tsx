@@ -1,6 +1,7 @@
 "use client";
 
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 export interface DocsDialogSpec {
     title: string;
@@ -35,7 +36,7 @@ export default function DocsDialog({spec, onClose}: { spec: DocsDialogSpec; onCl
                            className="mt-3 h-10 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
                 )}
                 <div className="mt-4 flex justify-end gap-2">
-                    <button type="button" onClick={onClose} className="h-10 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-50">취소</button>
+                    <Button type="button" onClick={onClose} variant="ghost">취소</Button>
                     <button type="submit" autoFocus={!spec.input}
                             className={`h-10 rounded-lg px-4 text-sm font-medium text-white ${spec.danger ? "bg-red-500 hover:bg-red-600" : "bg-d94-brand hover:bg-d94-brand-hover"}`}>
                         {spec.confirmLabel}

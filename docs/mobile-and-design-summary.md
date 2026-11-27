@@ -12,9 +12,11 @@
 
 | 5 | `c15611f` feat | Docs 트리 서랍 | Docs 폴더 트리 토글 → `ui/Dialog side="left"` 서랍(트리 JSX 한 벌을 데스크톱 aside·서랍이 함께 씀), 화면 이동·다른 창 열림 시 자동 닫힘 |
 
-| 6 | (이번) fix | 모바일 사용성 | iOS 입력 확대 방지(모바일 입력 16px, `globals.css`) · 손 모달 20개 `max-h-[calc(100dvh-2rem)] overflow-y-auto`(낮은 화면에서 버튼까지 스크롤) · Toast safe-area·폭 제한·닫기 aria-label · 아이콘 버튼 aria-label 2곳 · 선택 강조(Docs·Wiki 트리, 빠른 전환, 버전 이력, CQL 자동완성, CIRA 설정, 인터페이스 테스트, Life Metric 템플릿) `blue-50/700` → `d94-brand-soft/brand` |
+| 6 | `e4fc61d` fix | 모바일 사용성 | iOS 입력 확대 방지(모바일 입력 16px, `globals.css`) · 손 모달 20개 `max-h-[calc(100dvh-2rem)] overflow-y-auto`(낮은 화면에서 버튼까지 스크롤) · Toast safe-area·폭 제한·닫기 aria-label · 아이콘 버튼 aria-label 2곳 · 선택 강조(Docs·Wiki 트리, 빠른 전환, 버전 이력, CQL 자동완성, CIRA 설정, 인터페이스 테스트, Life Metric 템플릿) `blue-50/700` → `d94-brand-soft/brand` |
 
-**남은 후보(미적용):** `ui/` 에 Button·Input primitive 가 없어 버튼 마크업이 화면마다 반복됨.
+| 7 | (이번) feat | 공통 Button·Input | `ui/Button`(primary·secondary·ghost·danger, md·sm, tailwind-merge) · `ui/Input`(Input·Select·Textarea) 추가, 표준형 버튼 39개·입력 31개(25개 파일) 교체 |
+
+**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로 · `FormField`(라벨+오류 묶음) · `ConfirmDialog`(브라우저 `confirm()` 대체).
 
 ## 1. 모바일 환경 문제점 분석
 
