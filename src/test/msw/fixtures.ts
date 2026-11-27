@@ -58,9 +58,6 @@ export const project: BackendProject = {
     key: "CIRA",
     name: "CIRA 프로젝트",
     description: null,
-    projectType: "KANBAN",
-    projectTypeId: "PT-KANBAN",
-    projectTypeNm: "KANBAN",
     ownerId: "USR-0001",
     issueSequence: 2,
 };
@@ -94,7 +91,7 @@ export const importedCopy = (sourceFieldId: string): BackendField => ({
 });
 
 export const projectTypes: BackendProjectType[] = [
-    {id: "PT-KANBAN", typeNm: "KANBAN", descr: null, sortOrd: 1, projectCount: 1,
+    {id: "PT-KANBAN", typeNm: "KANBAN", descr: null, sortOrd: 1, spaceCount: 1,
         fields: [{fieldKey: "sys:priority", defaultVisible: true}, {fieldKey: "sys:assignee", defaultVisible: true},
             {fieldKey: "sys:modifiedAt", defaultVisible: true}]},
 ];

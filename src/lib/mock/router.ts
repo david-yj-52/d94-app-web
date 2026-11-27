@@ -127,7 +127,7 @@ function boardDetail(boardId: string): BoardDetailResponse | undefined {
     const project = s.projects.find((p) => p.id === board.projectId);
     // 스크럼 보드는 활성 스프린트 이슈만, 칸반은 전체
     let pool = s.issues.filter((i) => i.projectId === board.projectId);
-    if (project?.projectType === "SCRUM" && board.boardType === "SCRUM" && activeSprint) {
+    if (board.boardType === "SCRUM" && activeSprint) {
         pool = pool.filter((i) => i.sprintId === activeSprint.id);
     }
     if (board.boardNm.includes("버그")) pool = pool.filter((i) => i.issueTypeNm === "Bug");
@@ -207,7 +207,9 @@ registerAyaanMock(on);
 
 // API 토큰(MCP·AI 도구용) → ./apiToken.ts
 registerApiTokenMock(on);
-registerFieldsMock(on, (projectId) => getStore().projects.find((x) => x.id === projectId)?.projectTypeId);
+// 프로젝트에는 타입이 없다 (V660): 기본 공간이 만들 때 고른 프리셋만 기억한다
+const mockPreset: Record<string, string> = {"1": "PT-SCRUM", "2": "PT-KANBAN"};
+registerFieldsMock(on, (projectId) => mockPreset[projectId]);
 
 // Docs(Obsidian형 개인 vault) → ./docs.ts
 registerDocsMock(on);
@@ -285,13 +287,11 @@ on("POST", "/v1/projects", ({body}) => {
         key: String(body.key),
         name: String(body.name),
         description: String(body.description ?? ""),
-        projectType: mockTypeOf(body.projectTypeId ?? body.projectType).typeNm,
-        projectTypeId: mockTypeOf(body.projectTypeId ?? body.projectType).id,
-        projectTypeNm: mockTypeOf(body.projectTypeId ?? body.projectType).typeNm,
         ownerId: ME.userId,
         issueSequence: 0
     };
     s.projects.push(p);
+    mockPreset[p.id] = mockTypeOf(body.presetTypeId).id;
     s.statuses[p.id] = structuredClone(s.statuses["1"]);
     s.transitions[p.id] = structuredClone(s.transitions["1"]);
     s.members[p.id] = [{userId: ME.userId, email: ME.email, userNm: ME.name, role: "ADMIN"}];
@@ -308,10 +308,6 @@ on("PUT", "/v1/projects/:projectId", ({params, body}) => {
         name: body.name ?? p.name,
         description: body.description ?? p.description,
     });
-    if (body.projectTypeId) {
-        const t = mockTypeOf(body.projectTypeId);
-        Object.assign(p, {projectTypeId: t.id, projectTypeNm: t.typeNm, projectType: t.typeNm});
-    }
     return ok(p);
 });
 on("DELETE", "/v1/projects/:projectId", ({params}) => {
@@ -480,7 +476,7 @@ on("GET", "/v1/issue-types", () => ok([{id: "type-issue", typeNm: "Issue"}, {id:
 // 작업 공간 (V650) — ponytail: 프로젝트마다 기본 공간 "General" 을 처음 조회할 때 만든다. 공간별 워크플로·필드는 흉내 내지 않음(spaceId 무시)
 const mockSpaces: Record<string, Array<Record<string, unknown>>> = {};
 const spacesOf = (projectId: string) => (mockSpaces[projectId] ??= [{
-    id: `space-${projectId}`, projectId, name: "General", key: "DEFAULT", description: null, presetTypeId: null,
+    id: `space-${projectId}`, projectId, name: "General", key: "DEFAULT", description: null, presetTypeId: mockPreset[projectId] ?? null,
     adminUserId: "mock-user", adminNm: "나", isDefault: true, sortOrd: 0, canManage: true,
 }]);
 on("GET", "/v1/projects/:projectId/spaces", ({params}) => ok(spacesOf(params.projectId)));

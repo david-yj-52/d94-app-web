@@ -14,21 +14,18 @@ import {
     useReplaceProjectFields,
     useSaveProjectField,
 } from "@/hooks/useFields";
-import {useProject} from "@/hooks/useProjects";
 import {CUSTOM_FIELD_TYPE_LABELS, type FieldDef} from "@/types/fields";
 import {isAxiosError} from "axios";
 import {ArrowDown, ArrowUp, Lock} from "lucide-react";
-import Link from "next/link";
 import {use, useState} from "react";
 import EmptyState from "@/components/ui/EmptyState";
 import Button from "@/components/ui/Button";
 
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
 
-/** 프로젝트 설정 › 필드: 타입이 물려준 필드(잠김) + 이 프로젝트가 추가한 필드 */
+/** 프로젝트 설정 › 필드: 고정 필드(잠김) + 지금 작업 공간의 필드 세트 (V650·V660: 프로젝트 타입 없음) */
 export default function ProjectFieldsPage({params}: { params: Promise<{ projectId: string }> }) {
     const {projectId} = use(params);
-    const {data: project} = useProject(projectId);
     // V650: 필드 세트는 작업 공간 소유 — 지금 공간(?space=). 고정 필드 외에는 프리셋에서 온 필드도 뺄 수 있다
     const {space, spaceId} = useCurrentSpace(projectId);
     const {data: fields = []} = useProjectFields(projectId, spaceId);
@@ -67,12 +64,8 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
 
             <section className="mb-8 max-w-2xl">
                 <div className="mb-2 flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-slate-800">
-                        타입({project?.projectTypeNm ?? project?.projectType ?? "-"})에서 물려받은 필드
-                    </h3>
-                    <Link href="/settings?group=cira" className="inline-flex items-center gap-1 text-xs text-slate-500 hover:underline">
-                        <Lock className="h-3 w-3"/>기준정보에서 관리
-                    </Link>
+                    <h3 className="text-sm font-semibold text-slate-800">고정 필드</h3>
+                    <span className="inline-flex items-center gap-1 text-xs text-slate-500"><Lock className="h-3 w-3"/>모든 작업 공간에 항상 있음</span>
                 </div>
                 <div className="flex flex-wrap gap-2 rounded-lg border border-slate-100 bg-slate-50 p-3">
                     {inherited.map((f) => (
@@ -82,8 +75,8 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
             </section>
 
             <section className="max-w-2xl">
-                <h3 className="mb-2 text-sm font-semibold text-slate-800">이 프로젝트에 추가한 필드</h3>
-                {added.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">추가한 필드가 없습니다.</EmptyState>}
+                <h3 className="mb-2 text-sm font-semibold text-slate-800">{space ? `${space.name} 작업 공간의 필드` : "작업 공간의 필드"}</h3>
+                {added.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">필드가 없습니다.</EmptyState>}
                 <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
                     {added.map((f, i) => (
                         <li key={f.fieldKey} className="flex min-h-11 items-center gap-2 px-3 text-sm">

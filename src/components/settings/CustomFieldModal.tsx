@@ -17,7 +17,7 @@ export default function CustomFieldModal({editTarget, onSubmit, isPending, onClo
     onSubmit: (data: SaveCustomField) => void;
     isPending?: boolean;
     onClose: () => void;
-    /** 전역 필드를 새로 만들 때만: 바로 복사해 넣을 타입 목록 */
+    /** 전역 필드를 새로 만들 때만: 바로 복사해 넣을 프리셋 목록 */
     typeOptions?: { id: string; typeNm: string }[];
 }) {
     const [copyTo, setCopyTo] = useState<string[]>([]);
@@ -63,7 +63,7 @@ export default function CustomFieldModal({editTarget, onSubmit, isPending, onClo
                 )}
                 {typeOptions && !editTarget && typeOptions.length > 0 && (
                     <fieldset>
-                        <legend className="mb-1 block text-xs font-medium text-slate-600">넣을 타입 (선택)</legend>
+                        <legend className="mb-1 block text-xs font-medium text-slate-600">넣을 프리셋 (선택)</legend>
                         <div className="flex flex-wrap gap-x-4 gap-y-1">
                             {typeOptions.map((t) => (
                                 <label key={t.id} className="flex items-center gap-1.5 text-sm text-slate-700">

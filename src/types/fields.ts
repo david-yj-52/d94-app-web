@@ -50,7 +50,8 @@ export interface ProjectTypeResponse {
     typeNm: string;
     descr?: string | null;
     sortOrd: number;
-    projectCount: number;
+    /** 이 프리셋으로 만든 작업 공간 수 (참고용 — 만든 뒤에는 연결이 없다) */
+    spaceCount: number;
     fields: TypeField[];
 }
 

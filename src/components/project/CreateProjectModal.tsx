@@ -21,7 +21,7 @@ const schema = z.object({
         .regex(/^[A-Z0-9]+$/, "대문자 영문/숫자만 입력 가능합니다."),
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
-    projectTypeId: z.string().min(1, "작업 공간 프리셋을 선택해주세요."),
+    presetTypeId: z.string().min(1, "작업 공간 프리셋을 선택해주세요."),
     defaultSpaceName: z.string().trim().max(60).optional(),
 });
 
@@ -44,12 +44,12 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
         formState: {errors},
     } = useForm<FormData>({
         resolver: zodResolver(schema),
-        defaultValues: {projectTypeId: ""},
+        defaultValues: {presetTypeId: ""},
     });
 
     useEffect(() => {
-        if (projectTypes.length && !projectTypes.some((t) => t.id === getValues("projectTypeId"))) {
-            setValue("projectTypeId", projectTypes[0].id);
+        if (projectTypes.length && !projectTypes.some((t) => t.id === getValues("presetTypeId"))) {
+            setValue("presetTypeId", projectTypes[0].id);
         }
     }, [projectTypes, getValues, setValue]);
 
@@ -120,7 +120,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                         <div className="grid grid-cols-2 gap-2">
                         <Input {...register("defaultSpaceName")} placeholder="General" aria-label="첫 작업 공간 이름"/>
                         <Select
-                            {...register("projectTypeId")}
+                            {...register("presetTypeId")}
                             aria-label="작업 공간 프리셋"
                         >
                             {projectTypes.map((type) => (
@@ -133,8 +133,8 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                         <p className="mt-1 text-[11px] text-slate-400">
                             프리셋의 상태·필드·보드가 첫 작업 공간에 복사됩니다. Hardware·Software 같은 공간은 만든 뒤 사이드바에서 추가합니다.
                         </p>
-                        {errors.projectTypeId && (
-                            <p className="mt-0.5 text-xs text-red-500">{errors.projectTypeId.message}</p>
+                        {errors.presetTypeId && (
+                            <p className="mt-0.5 text-xs text-red-500">{errors.presetTypeId.message}</p>
                         )}
                     </div>
 

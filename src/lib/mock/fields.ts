@@ -25,9 +25,9 @@ const BASE: TypeField[] = [
 ];
 
 const types: ProjectTypeResponse[] = [
-    {id: "PT-SCRUM", typeNm: "SCRUM", sortOrd: 1, projectCount: 0, fields: [...BASE,
+    {id: "PT-SCRUM", typeNm: "SCRUM", sortOrd: 1, spaceCount: 0, fields: [...BASE,
             {fieldKey: "sys:sprint", defaultVisible: false}, {fieldKey: "sys:storyPoints", defaultVisible: false}]},
-    {id: "PT-KANBAN", typeNm: "KANBAN", sortOrd: 2, projectCount: 0, fields: [...BASE]},
+    {id: "PT-KANBAN", typeNm: "KANBAN", sortOrd: 2, spaceCount: 0, fields: [...BASE]},
 ];
 const customFields: FieldDef[] = [];
 /** 타입 필드의 소속 타입 (FieldDef 에는 타입 id 칸이 없다) */
@@ -99,7 +99,8 @@ const removeField = (id: string) => {
     Object.keys(projectFieldKeys).forEach((p) => (projectFieldKeys[p] = projectFieldKeys[p].filter((k) => k !== key)));
 };
 
-export function registerFieldsMock(on: On, projectTypeId: (projectId: string) => string | null | undefined) {
+/** presetOf = 그 프로젝트 기본 공간의 프리셋 (ponytail: mock 은 공간별 필드를 흉내 내지 않고 기본 공간 프리셋으로 계산) */
+export function registerFieldsMock(on: On, presetOf: (projectId: string) => string | null | undefined) {
     on("GET", "/v1/cira/field-catalog", () => ok({
         system: SYSTEM,
         custom: customFields.filter(isGlobal),
@@ -119,7 +120,7 @@ export function registerFieldsMock(on: On, projectTypeId: (projectId: string) =>
         return src ? ok(copyField(src, null, params.id)) : fail(404, "원본 없음");
     });
     on("GET", "/v1/projects/:projectId/field-library", ({params}) => {
-        const typeId = projectTypeId(params.projectId);
+        const typeId = presetOf(params.projectId);
         const inSet = new Set(mockTypeOf(typeId).fields.map((f) => f.fieldKey));
         const mine = customFields.filter((f) => f.projectId === params.projectId);
         return ok(customFields
@@ -140,7 +141,7 @@ export function registerFieldsMock(on: On, projectTypeId: (projectId: string) =>
     on("POST", "/v1/cira/project-types", ({body}) => {
         const typeNm = String(body.typeNm ?? "").trim();
         if (!typeNm || types.some((t) => t.typeNm === typeNm)) return fail(400, "이미 있는 타입 이름입니다");
-        const t: ProjectTypeResponse = {id: `PT-${++seq}`, typeNm, sortOrd: types.length + 1, projectCount: 0, fields: [...BASE]};
+        const t: ProjectTypeResponse = {id: `PT-${++seq}`, typeNm, sortOrd: types.length + 1, spaceCount: 0, fields: [...BASE]};
         types.push(t);
         return ok(t);
     });
@@ -174,10 +175,10 @@ export function registerFieldsMock(on: On, projectTypeId: (projectId: string) =>
     });
     on("GET", "/v1/cira/custom-fields/:id/usage", () => ok({projects: 0, issues: 0}));
 
-    on("GET", "/v1/projects/:projectId/fields", ({params}) => ok(effective(params.projectId, projectTypeId(params.projectId))));
+    on("GET", "/v1/projects/:projectId/fields", ({params}) => ok(effective(params.projectId, presetOf(params.projectId))));
     on("PUT", "/v1/projects/:projectId/fields", ({params, body}) => {
         projectFieldKeys[params.projectId] = (body.fieldKeys as string[]).filter((k) => !FIXED.includes(k));
-        return ok(effective(params.projectId, projectTypeId(params.projectId)));
+        return ok(effective(params.projectId, presetOf(params.projectId)));
     });
     on("POST", "/v1/projects/:projectId/custom-fields", ({params, body}) => {
         const f = saveField(body, params.projectId);
@@ -192,7 +193,7 @@ export function registerFieldsMock(on: On, projectTypeId: (projectId: string) =>
     });
 
     const defaults = (projectId: string) =>
-        effective(projectId, projectTypeId(projectId)).filter((f) => f.defaultVisible).map((f) => f.fieldKey);
+        effective(projectId, presetOf(projectId)).filter((f) => f.defaultVisible).map((f) => f.fieldKey);
     on("GET", "/v1/projects/:projectId/column-pref", ({params}) => ok({fieldKeys: prefs[params.projectId] ?? defaults(params.projectId)}));
     on("PUT", "/v1/projects/:projectId/column-pref", ({params, body}) => {
         const keys = (body.fieldKeys as string[]).filter((k) => !["sys:key", "sys:summary"].includes(k));

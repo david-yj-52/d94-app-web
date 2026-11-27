@@ -74,9 +74,6 @@ export interface BackendProject {
     key: string;
     name: string;
     description: string | null;
-    projectType: string;
-    projectTypeId: string | null;
-    projectTypeNm: string | null;
     ownerId: string;
     issueSequence: number;
 }
@@ -106,7 +103,7 @@ export interface BackendProjectType {
     typeNm: string;
     descr: string | null;
     sortOrd: number;
-    projectCount: number;
+    spaceCount: number;
     fields: { fieldKey: string; defaultVisible: boolean }[];
 }
 
