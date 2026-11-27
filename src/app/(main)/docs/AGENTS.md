@@ -14,12 +14,12 @@
 docs/layout.tsx
 ├── "노트 찾기 ⌘K" 버튼 → QuickSwitcher · "Task 모아보기" → [tasks](./tasks/AGENTS.md)
 ├── vault select ("전체 통합" | vault 하나 — layout 상태, 새로고침하면 통합)
-├── DocsSidebar   (vault 섹션별 폴더 트리·폴더별 노트, 폴더 ··· 메뉴: 새 노트·하위 폴더·이름 변경·이동·삭제)
+├── DocsSidebar   (vault 섹션별 폴더 트리·폴더별 노트, 폴더 ··· 메뉴: 새 노트·하위 폴더·이름 변경·이동·삭제, 노트·폴더 끌어 놓기 → useMoveNote·useMoveDocsFolder)
 ├── {children}
 ├── FolderPickerModal (폴더 이동)  ·  DocsDialog (이름 입력·삭제 확인)  ·  {ToastComponent}
 docs/page.tsx            아이디어 빠른 기록(제목 한 줄) + 최근 노트 15개
 docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIRA 위키와 같은 패턴)
-├── 가운데: 폴더 경로·제목·[종류▾(승격)][파생][CIRA Task로 등록][편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
+├── 가운데: 폴더 경로·제목·[종류▾(승격)][파생][계보 보기 → [lineage](./[noteId]/lineage/AGENTS.md)][CIRA Task로 등록][편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
 ├── 오른쪽(lg 미만은 본문 아래): NoteSidePanel(속성·태그·Task·백링크·파생 노트) | NoteVersionHistory
 └── DeriveModal (파생) · PromoteToCiraModal (CIRA Task로 등록)
 ```
@@ -54,6 +54,7 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 - 제목·폴더 이름 유일, `[[링크]]`·백링크·계보·파생·폴더 이동은 모두 vault 안에서만(다른 vault 폴더로 노트 이동은 서버 400, 폴더 이동 선택 목록도 같은 vault 만).
 ### 폴더
 - 같은 상위 안 이름 중복 409, 자기 하위로 이동은 선택 목록에서 비활성(서버도 400), 비어 있지 않은 폴더 삭제 409.
+- **끌어 놓기(데스크톱):** 노트·폴더를 다른 폴더 줄이나 vault 헤더(최상위)에 놓으면 이동. 다른 vault·자기 하위·지금 있는 곳은 놓을 자리로 표시되지 않습니다. 터치 기기는 ··· 메뉴의 "이동".
 ### 빠른 전환
 - Cmd/Ctrl+K → 제목 접두어 검색, ↑↓·Enter, 일치하는 노트가 없으면 "만들기".
 ### 보기 (Markdown 렌더링)

@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {extractLinks, extractTags, extractTasks, linkTitle, readFrontmatter, stripFrontmatter, titleFromHref, toMarkdownLinks} from "./markdown";
+import {extractLinks, groupByStream, extractTags, extractTasks, linkTitle, readFrontmatter, stripFrontmatter, titleFromHref, toMarkdownLinks} from "./markdown";
 
 const NOTE = `---
 kind: doc
@@ -32,5 +32,14 @@ describe("docs markdown", () => {
         expect(md).toBe("[별칭](#note:%EB%85%B8%ED%8A%B8%20C) [A B](#note:A%20B)");
         expect(titleFromHref("#note:%EB%85%B8%ED%8A%B8%20C")).toBe("노트 C");
         expect(titleFromHref("https://x")).toBeNull();
+    });
+});
+
+describe("groupByStream (계보 화면 열)", () => {
+    it("stream 별 첫 등장 순 열, 열 안은 세대 → 제목", () => {
+        const n = (title: string, stream: string | null, origin: string | null) => ({id: title, title, kind: "doc" as const, stream, origin});
+        const cols = groupByStream([n("루트", null, null), n("D2", "dev", "D1"), n("D1", "dev", "루트"), n("디자인", "design", "루트"), n("B", "dev", "루트")]);
+        expect(cols.map((c) => c.stream)).toEqual([null, "dev", "design"]);
+        expect(cols[1].items.map((i) => [i.n.title, i.depth])).toEqual([["B", 1], ["D1", 1], ["D2", 2]]);
     });
 });

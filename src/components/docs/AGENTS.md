@@ -4,8 +4,9 @@
 > 사용 화면: [docs](../../app/(main)/docs/AGENTS.md), [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md). 이 모듈 밖에서 import 하지 않습니다.
 
 ### DocsSidebar — `@/components/docs/DocsSidebar`
-`{ vaults: DocsVault[]; folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null, vaultId: string) => void; onNewFolder: (parentId | null, vaultId: string) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void }`
+`{ vaults: DocsVault[]; folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null, vaultId: string) => void; onNewFolder: (parentId | null, vaultId: string) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void; onDropItem: (item: DragItem, folderId: string | null) => void }`, `DragItem = { kind: "note" | "folder"; id; vaultId; parentId }`
 - `vaults` 마다 섹션(🔒 Private · 👥 Team 이름, 접기, 섹션별 [새 노트][새 폴더])을 그리고, 그 안에 `vaultId` 가 같은 폴더·노트만. `parentId` 로 폴더 트리, 폴더마다 그 폴더의 노트(제목순). 접힘은 로컬 상태. 폴더 `···` 메뉴는 `ui/DropdownMenu`(새 노트·하위 폴더·이름 변경·이동·삭제, md 이상은 hover 시 표시·모바일은 항상 표시). 들여쓰기만 인라인 style.
+- 끌어 놓기: HTML5 DnD(CIRA 칸반과 같은 방식). 폴더 줄·노트가 끌 수 있고, 폴더 줄·vault 헤더가 놓을 자리(강조 `bg-d94-brand-soft ring`). 같은 vault·자기 하위 아님·지금 위치 아님일 때만 놓기 허용 → `onDropItem`.
 
 ### NoteMarkdown — `@/components/docs/NoteMarkdown`
 `{ content: string; existing: Set<string>; onOpenTitle: (title: string) => void }`

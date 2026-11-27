@@ -9,7 +9,7 @@ import FolderPickerModal from "@/components/docs/FolderPickerModal";
 import QuickSwitcher from "@/components/docs/QuickSwitcher";
 import DocsDialog, {type DocsDialogSpec} from "@/components/docs/DocsDialog";
 import {useOpenNote} from "@/components/docs/useOpenNote";
-import {useCreateDocsFolder, useDeleteDocsFolder, useDocsFolders, useDocsVaults, useMoveDocsFolder, useNotes, useRenameDocsFolder} from "@/hooks/useDocs";
+import {useCreateDocsFolder, useDeleteDocsFolder, useDocsFolders, useDocsVaults, useMoveDocsFolder, useMoveNote, useNotes, useRenameDocsFolder} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
 import Dialog from "@/components/ui/Dialog";
 import {Skeleton} from "@/components/ui/Skeleton";
@@ -32,6 +32,7 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
     const renameFolder = useRenameDocsFolder();
     const deleteFolder = useDeleteDocsFolder();
     const moveFolder = useMoveDocsFolder();
+    const moveNote = useMoveNote();
     const {show, ToastComponent} = useToast();
     const [switcher, setSwitcher] = useState(false);
     const [moving, setMoving] = useState<DocsFolder | null>(null);
@@ -100,6 +101,9 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
                         onConfirm: () => deleteFolder.mutate(f.id, {onError: fail("폴더를 삭제하지 못했습니다.")}),
                     })}
                     onMoveFolder={setMoving}
+                    onDropItem={(item, folderId) => item.kind === "note"
+                        ? moveNote.mutate({id: item.id, folderId}, {onError: fail("노트를 옮기지 못했습니다.")})
+                        : moveFolder.mutate({id: item.id, parentId: folderId}, {onError: fail("폴더를 옮기지 못했습니다.")})}
                 />
             )}
         </>
