@@ -8,9 +8,11 @@
 | 2 | `8ed48f4` style | 색·배경 통일 | CIRA 전용·테스트 제외 84개 파일 363곳 `blue-600` 계열 → `d94-brand` 계열 · `(main)`/`(auth)` 배경 → `bg-d94-bg` · 375px 25개 화면 넘침 점검 |
 | 3 | `ef48e9b` feat | 테이블 카드화 | MPMS 플랫폼·제품(`MobileRowCards`)·Ayaan 작업 목록을 모바일 카드 목록으로 · MPMS 모바일 `min-h-[460px]` 제거 · MPMS 검정 버튼 → `d94-brand` |
 
-| 4 | (이번) feat | 모바일 메뉴 서랍 | `cira/ui/Dialog` → `ui/Dialog` 승격(ADR 0006 갱신, import 9곳) · ApHeader 모바일 메뉴를 펼침 패널 → 왼쪽 서랍(`Dialog side="left"`, 바깥 클릭·Esc·✕ 닫힘) |
+| 4 | `32f917a` feat | 모바일 메뉴 서랍 | `cira/ui/Dialog` → `ui/Dialog` 승격(ADR 0006 갱신, import 9곳) · ApHeader 모바일 메뉴를 펼침 패널 → 왼쪽 서랍(`Dialog side="left"`, 바깥 클릭·Esc·✕ 닫힘) |
 
-**남은 후보(미적용):** `ui/` 에 Button·Input primitive 가 없어 버튼 마크업이 화면마다 반복됨 · Docs 폴더 트리도 서랍으로 바꿀 수 있음(현재 토글).
+| 5 | (이번) feat | Docs 트리 서랍 | Docs 폴더 트리 토글 → `ui/Dialog side="left"` 서랍(트리 JSX 한 벌을 데스크톱 aside·서랍이 함께 씀), 화면 이동·다른 창 열림 시 자동 닫힘 |
+
+**남은 후보(미적용):** `ui/` 에 Button·Input primitive 가 없어 버튼 마크업이 화면마다 반복됨.
 
 ## 1. 모바일 환경 문제점 분석
 

@@ -6,7 +6,7 @@
 - **URL:** `/docs`, `/docs/[noteId]` (`?edit=1` 이면 편집으로 엶) · **파일:** `layout.tsx`, `page.tsx`, `[noteId]/page.tsx` (모두 클라이언트 컴포넌트)
 - **목적:** 웹 버전 Obsidian형 **다중 vault** — 내 Private vault + 소속 CIRA 프로젝트의 Team vault(멤버 공유, 프로젝트에 첫 Task 가 생길 때 서버가 만듦). Markdown 노트를 폴더로 정리하고 `[[제목]]` 으로 잇습니다. 노트 본문(frontmatter `kind`·`stream`·`origin`, `#태그`, `- [ ]` 체크박스)이 원천이고 서버가 저장할 때 색인합니다. 계획: d94-note `docs/superpowers/plans/2026-11-21-docs-service.md`
 - **진입:** 홈 "Docs" 카드 · **접근:** 보호 경로(`routeAccess.ts` `/docs`)
-- **layout:** (lg 미만은 [폴더 · 노트 열기] 버튼으로 펼침, 노트를 고르면 닫힘) 왼쪽 vault 선택(전체 통합·🔒 Private·👥 프로젝트) + vault 섹션별 폴더 트리 + Cmd/Ctrl+K 빠른 전환. 가운데·오른쪽은 각 page 가 그립니다.
+- **layout:** (lg 미만은 [폴더 · 노트] 버튼 → `ui/Dialog side="left"` 서랍. 화면을 옮기거나 빠른 전환·이름 입력·폴더 이동 창을 열면 닫힘 — 서랍의 포커스 가둠이 그 창들을 막지 않도록) 왼쪽 vault 선택(전체 통합·🔒 Private·👥 프로젝트) + vault 섹션별 폴더 트리 + Cmd/Ctrl+K 빠른 전환. 가운데·오른쪽은 각 page 가 그립니다.
 
 ## 화면 구성
 컴포넌트 카드: [docs](../../../components/docs/AGENTS.md)

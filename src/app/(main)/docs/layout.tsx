@@ -1,7 +1,7 @@
 "use client";
 
 import {useEffect, useState} from "react";
-import {useParams} from "next/navigation";
+import {useParams, usePathname} from "next/navigation";
 import Link from "next/link";
 import {FolderTree, ListChecks} from "lucide-react";
 import DocsSidebar from "@/components/docs/DocsSidebar";
@@ -11,6 +11,7 @@ import DocsDialog, {type DocsDialogSpec} from "@/components/docs/DocsDialog";
 import {useOpenNote} from "@/components/docs/useOpenNote";
 import {useCreateDocsFolder, useDeleteDocsFolder, useDocsFolders, useDocsVaults, useMoveDocsFolder, useNotes, useRenameDocsFolder} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
+import Dialog from "@/components/ui/Dialog";
 import {Skeleton} from "@/components/ui/Skeleton";
 import type {DocsFolder, VaultScope} from "@/types/docs";
 import {docsError} from "@/lib/docs/error";
@@ -34,9 +35,11 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
     const [switcher, setSwitcher] = useState(false);
     const [moving, setMoving] = useState<DocsFolder | null>(null);
     const [dialog, setDialog] = useState<DocsDialogSpec | null>(null);
-    // 모바일(< lg) 폴더 트리 펼침. 노트를 고르면 닫는다
+    // 모바일(< lg) 폴더 트리 서랍. 화면을 옮기거나 다른 창(빠른 전환·이름 입력·폴더 이동)을 열면 닫는다
+    // (Radix 서랍이 포커스를 가둬 서랍 밖에 그려지는 그 창들을 막지 않도록)
+    const pathname = usePathname();
     const [treeOpen, setTreeOpen] = useState(false);
-    useEffect(() => setTreeOpen(false), [params.noteId]);
+    useEffect(() => setTreeOpen(false), [pathname, switcher, moving, dialog]);
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
@@ -59,51 +62,60 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
         return out;
     };
 
+    const tree = (
+        <>
+            <button type="button" onClick={() => setSwitcher(true)}
+                    className="mb-3 flex h-8 w-full items-center rounded-lg bg-slate-50 px-2 text-left text-xs text-slate-400 hover:bg-slate-100">
+                노트 찾기 <span className="ml-auto">⌘K</span>
+            </button>
+            <Link href="/docs/tasks" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
+                <ListChecks className="h-4 w-4"/> Task 모아보기
+            </Link>
+            <select value={validScope} onChange={(e) => setScope(e.target.value)} aria-label="vault 선택"
+                    className="mb-3 h-8 w-full rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-d94-brand">
+                <option value="ALL">전체 통합</option>
+                {(vaults.data ?? []).map((v) => (
+                    <option key={v.id} value={v.id}>{v.type === "PRIVATE" ? "🔒 " : "👥 "}{v.name}</option>
+                ))}
+            </select>
+            {folders.isLoading || notes.isLoading || vaults.isLoading ? <Skeleton className="h-40"/> : (
+                <DocsSidebar
+                    vaults={(vaults.data ?? []).filter((v) => validScope === "ALL" || v.id === validScope)}
+                    folders={folders.data ?? []} notes={notes.data ?? []} selectedNoteId={params.noteId ?? null}
+                    onNewNote={(folderId, vaultId) => setDialog({
+                        title: "새 노트", input: {placeholder: "노트 제목"}, confirmLabel: "만들기",
+                        onConfirm: (title) => openNote(title, folderId, vaultId).catch(fail("노트를 만들지 못했습니다.")),
+                    })}
+                    onNewFolder={(parentId, vaultId) => setDialog({
+                        title: "새 폴더", input: {placeholder: "폴더 이름"}, confirmLabel: "만들기",
+                        onConfirm: (name) => createFolder.mutate({name, parentId, vaultId}, {onError: fail("폴더를 만들지 못했습니다.")}),
+                    })}
+                    onRenameFolder={(f) => setDialog({
+                        title: "폴더 이름 변경", input: {initial: f.name}, confirmLabel: "변경",
+                        onConfirm: (name) => name !== f.name && renameFolder.mutate({id: f.id, name}, {onError: fail("이름을 바꾸지 못했습니다.")}),
+                    })}
+                    onDeleteFolder={(f) => setDialog({
+                        title: "폴더 삭제", message: `"${f.name}" 폴더를 삭제할까요? 비어 있는 폴더만 삭제됩니다.`, confirmLabel: "삭제", danger: true,
+                        onConfirm: () => deleteFolder.mutate(f.id, {onError: fail("폴더를 삭제하지 못했습니다.")}),
+                    })}
+                    onMoveFolder={setMoving}
+                />
+            )}
+        </>
+    );
+
     return (
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-3 md:px-4 lg:flex-row">
-            <button type="button" onClick={() => setTreeOpen((v) => !v)} aria-expanded={treeOpen}
+            <button type="button" onClick={() => setTreeOpen(true)}
                     className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 lg:hidden">
-                <FolderTree className="h-4 w-4"/> 폴더 · 노트 {treeOpen ? "닫기" : "열기"}
+                <FolderTree className="h-4 w-4"/> 폴더 · 노트
             </button>
-            <div className={`${treeOpen ? "block" : "hidden"} max-h-[70vh] w-full shrink-0 overflow-y-auto lg:block lg:max-h-none lg:w-60 rounded-xl border border-slate-200 bg-white p-3 lg:h-[calc(100vh-7.5rem)]`}>
-                <button type="button" onClick={() => setSwitcher(true)}
-                        className="mb-3 flex h-8 w-full items-center rounded-lg bg-slate-50 px-2 text-left text-xs text-slate-400 hover:bg-slate-100">
-                    노트 찾기 <span className="ml-auto">⌘K</span>
-                </button>
-                <Link href="/docs/tasks" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
-                    <ListChecks className="h-4 w-4"/> Task 모아보기
-                </Link>
-                <select value={validScope} onChange={(e) => setScope(e.target.value)} aria-label="vault 선택"
-                        className="mb-3 h-8 w-full rounded-lg border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-d94-brand">
-                    <option value="ALL">전체 통합</option>
-                    {(vaults.data ?? []).map((v) => (
-                        <option key={v.id} value={v.id}>{v.type === "PRIVATE" ? "🔒 " : "👥 "}{v.name}</option>
-                    ))}
-                </select>
-                {folders.isLoading || notes.isLoading || vaults.isLoading ? <Skeleton className="h-40"/> : (
-                    <DocsSidebar
-                        vaults={(vaults.data ?? []).filter((v) => validScope === "ALL" || v.id === validScope)}
-                        folders={folders.data ?? []} notes={notes.data ?? []} selectedNoteId={params.noteId ?? null}
-                        onNewNote={(folderId, vaultId) => setDialog({
-                            title: "새 노트", input: {placeholder: "노트 제목"}, confirmLabel: "만들기",
-                            onConfirm: (title) => openNote(title, folderId, vaultId).catch(fail("노트를 만들지 못했습니다.")),
-                        })}
-                        onNewFolder={(parentId, vaultId) => setDialog({
-                            title: "새 폴더", input: {placeholder: "폴더 이름"}, confirmLabel: "만들기",
-                            onConfirm: (name) => createFolder.mutate({name, parentId, vaultId}, {onError: fail("폴더를 만들지 못했습니다.")}),
-                        })}
-                        onRenameFolder={(f) => setDialog({
-                            title: "폴더 이름 변경", input: {initial: f.name}, confirmLabel: "변경",
-                            onConfirm: (name) => name !== f.name && renameFolder.mutate({id: f.id, name}, {onError: fail("이름을 바꾸지 못했습니다.")}),
-                        })}
-                        onDeleteFolder={(f) => setDialog({
-                            title: "폴더 삭제", message: `"${f.name}" 폴더를 삭제할까요? 비어 있는 폴더만 삭제됩니다.`, confirmLabel: "삭제", danger: true,
-                            onConfirm: () => deleteFolder.mutate(f.id, {onError: fail("폴더를 삭제하지 못했습니다.")}),
-                        })}
-                        onMoveFolder={setMoving}
-                    />
-                )}
+            <div className="hidden w-60 shrink-0 overflow-y-auto rounded-xl border border-slate-200 bg-white p-3 lg:block lg:h-[calc(100vh-7.5rem)]">
+                {tree}
             </div>
+            <Dialog open={treeOpen} onOpenChange={setTreeOpen} title="폴더 · 노트" side="left">
+                <div className="p-3">{tree}</div>
+            </Dialog>
             <div className="min-w-0 flex-1">{children}</div>
             {switcher && <QuickSwitcher onClose={() => setSwitcher(false)}
                                         onOpenTitle={(t) => openNote(t).catch(fail("노트를 열지 못했습니다."))}/>}
