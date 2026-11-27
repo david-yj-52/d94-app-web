@@ -7,8 +7,10 @@ import {SkeletonCard} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {cancelTask, cleanTaskWorkspace, getTask, resumeTask} from "@/lib/api/ayaan";
 import {btnPrimary, btnSecondary, canCleanWorkspace, cleanError, fmtNum, fmtTime, STATUS_CLASS} from "../../format";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId: string }> }) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const {taskId} = use(params);
     const qc = useQueryClient();
     const {show, ToastComponent} = useToast();
@@ -43,9 +45,9 @@ export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId
                 <div className="flex gap-2">
                     <button className={btnPrimary} disabled={!canResume || resume.isPending} onClick={() => resume.mutate()}>재개</button>
                     {canClean && <button className={btnSecondary} disabled={clean.isPending}
-                            onClick={() => window.confirm("작업공간을 정리할까요?") && clean.mutate()}>작업공간 정리</button>}
+                            onClick={async () => (await confirm("작업공간을 정리할까요?", {confirmLabel: "정리", danger: true})) && clean.mutate()}>작업공간 정리</button>}
                     <button className={btnSecondary} disabled={!canCancel || cancel.isPending}
-                            onClick={() => window.confirm("작업을 취소할까요?") && cancel.mutate()}>취소</button>
+                            onClick={async () => (await confirm("작업을 취소할까요?", {confirmLabel: "작업 취소", danger: true})) && cancel.mutate()}>취소</button>
                 </div>
             </div>
             <dl className="grid grid-cols-2 gap-2 rounded-2xl border border-slate-200 bg-white p-5 text-sm">
@@ -83,6 +85,7 @@ export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId
                 <pre className="max-h-96 overflow-auto rounded-xl bg-slate-900 p-3 text-xs text-slate-100">{t.logTail || "(없음)"}</pre>
             </section>
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }

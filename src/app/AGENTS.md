@@ -99,5 +99,5 @@ app/layout.tsx           <html>·<body>(bg-d94-bg) + Providers(Query+Session) + 
 
 - **페이지에서 `lib/api`를 직접 import하는 곳:** notifications, search, wiki, settings/automation, settings/git
 - **400줄이 넘는 페이지:** `search/page.tsx`(567), `issues/[issueId]/page.tsx`(398). 내부에 컴포넌트를 함께 정의하고 있습니다(`InlineText`, `SaveFilterModal` 등).
-- **브라우저 `confirm()`으로 삭제 확인하는 곳:** sprints, versions, wiki, settings/git·workflow, MemberTable, AutomationRuleCard. 새 코드는 [ui 표준 삭제 다이얼로그](../components/ui/AGENTS.md)를 쓰세요.
+- ~~브라우저 `confirm()`~~ → 2026-11-26 모두 `ui/ConfirmDialog`(`useConfirm`)로 교체했습니다. 새 코드도 [useConfirm](../components/ui/AGENTS.md)을 쓰세요.
 - **`/` 경로 중복:** `app/page.tsx`와 `app/(main)/page.tsx`가 같은 URL을 가집니다 → [known-issues](../../docs/known-issues.md)

@@ -54,7 +54,7 @@ settings/layout.tsx
 ### 멤버
 - 현재 사용자가 ADMIN일 때만 역할 변경과 제거를 할 수 있습니다(`isAdmin` prop). MemberTable은 결과 메시지를 `onSuccess`/`onError`로 페이지에 넘기고, 페이지가 토스트를 띄웁니다.
 ### 워크플로우
-- **상태:** 이름과 카테고리로 추가하고, `confirm()`으로 확인한 뒤 삭제합니다.
+- **상태:** 이름과 카테고리로 추가하고, `useConfirm` 확인 창으로 확인한 뒤 삭제합니다.
 - **전이 매트릭스:** from 상태 × to 상태 체크박스로 허용할 전이를 정하고 한 번에 저장합니다(`enabledPairs`). 여기서 정한 규칙이 [이슈 상세](../issues/AGENTS.md)의 상태 버튼을 결정합니다.
 - ADMIN만 편집할 수 있습니다.
 ### Git 연동
@@ -66,5 +66,5 @@ settings/layout.tsx
 
 ## 주의·예외
 - automation과 git 페이지는 `lib/api`를 직접 import합니다(타입·상수 목적 포함).
-- 삭제 확인에 브라우저 `confirm()`을 씁니다(git, workflow, MemberTable, AutomationRuleCard).
+- 삭제 확인은 `ui/ConfirmDialog` 의 `useConfirm`(git, workflow, MemberTable, AutomationRuleCard).
 - git과 workflow 페이지는 300줄이 넘고 내부 컴포넌트를 여러 개 가지고 있습니다. 분리 대상입니다.

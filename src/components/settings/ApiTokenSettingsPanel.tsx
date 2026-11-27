@@ -15,6 +15,7 @@ import {
 import {GLOBAL_TOKEN_SERVICE, serviceLabel} from "@/types/apiToken";
 import type {ApiTokenAccess, IssuedApiToken, IssueApiTokenRequest} from "@/types/apiToken";
 import Button from "@/components/ui/Button";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 const NAME_MAX = 100;
 const DAYS = [30, 90, 365] as const;
@@ -69,6 +70,7 @@ function ServicesCard({isAdmin, onError}: { isAdmin: boolean; onError: (m: strin
 }
 
 function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error") => void }) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const services = useApiTokenServices().data?.filter((s) => s.enabled) ?? [];
     const {data: tokens} = useApiTokens();
     const issue = useIssueApiToken();
@@ -91,8 +93,8 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
         onError: (e) => onToast(errorMessage(e, "발급하지 못했습니다"), "error"),
     });
 
-    const remove = (id: string, label: string) => {
-        if (!window.confirm(`'${label}' 토큰을 폐기할까요? 이 토큰을 쓰는 도구는 바로 호출이 막힙니다.`)) return;
+    const remove = async (id: string, label: string) => {
+        if (!(await confirm(`'${label}' 토큰을 폐기할까요? 이 토큰을 쓰는 도구는 바로 호출이 막힙니다.`, {confirmLabel: "폐기", danger: true}))) return;
         revoke.mutate(id, {
             onSuccess: () => onToast("폐기했습니다"),
             onError: (e) => onToast(errorMessage(e, "폐기하지 못했습니다"), "error"),
@@ -207,6 +209,7 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                     </table>
                 )}
             </div>
+            {ConfirmComponent}
         </section>
     );
 }

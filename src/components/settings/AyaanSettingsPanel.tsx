@@ -11,6 +11,7 @@ import {btnPrimary, btnSecondary, inputCls} from "@/app/(main)/ayaan/format";
 import {validateConfigField} from "@/app/(main)/ayaan/settings/validate";
 import {toToolBody, toToolForm, toWorkspaceBody, type ToolForm} from "@/app/(main)/ayaan/settings/toolBody";
 import {TOOLS, type AyaanRepo, type AyaanTool, type AyaanWorkspace, type ToolCd} from "@/types/ayaan";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 type Errors = Record<string, string>;
 
@@ -142,6 +143,7 @@ const WS_FIELDS: [keyof AyaanWorkspace, string, Kind, string[]?][] = [
 ];
 
 function WorkspacesTab() {
+    const {confirm, ConfirmComponent} = useConfirm();
     const qc = useQueryClient();
     const {show, ToastComponent} = useToast();
     const q = useQuery({queryKey: ["ayaanWorkspaces"], queryFn: getWorkspaces});
@@ -183,7 +185,7 @@ function WorkspacesTab() {
                         <span><b>{w.projectKey}</b> 저장소 {w.repos.length}개 · {w.defaultTool}</span>
                         <span className="flex gap-2">
                             <button className={btnSecondary} onClick={() => setForm({...w, promptTemplate: w.promptTemplate ?? ""})}>편집</button>
-                            <button className={btnSecondary} onClick={() => window.confirm(`${w.projectKey} 작업공간을 삭제할까요?`) && remove.mutate(w.projectKey)}>삭제</button>
+                            <button className={btnSecondary} onClick={async () => (await confirm(`${w.projectKey} 작업공간을 삭제할까요?`, {confirmLabel: "삭제", danger: true})) && remove.mutate(w.projectKey)}>삭제</button>
                         </span>
                     </li>
                 ))}
@@ -217,6 +219,7 @@ function WorkspacesTab() {
                 </section>
             )}
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }

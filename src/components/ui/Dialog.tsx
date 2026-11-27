@@ -6,16 +6,20 @@ import type {ReactNode} from "react";
 
 // 모바일(<768px)은 전체 화면 시트, 그 이상은 가운데 모달. side="left" 는 모바일 메뉴 서랍 (ApHeader·CiraShell)
 // cira-root: 포털이 .cira-root 밖에 그려지므로 CIRA 자식의 cira-* 색이 살도록 붙인다(값은 d94 토큰과 같음)
-export default function Dialog({open, onOpenChange, title, children, side, hideTitle}: {
+export default function Dialog({open, onOpenChange, title, children, side, hideTitle, compact}: {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     title: string;
     children: ReactNode;
     side?: "left";
     hideTitle?: boolean;
+    /** 모든 화면에서 가운데 작은 카드(확인 창 등). 기본은 모바일 전체 화면 시트 */
+    compact?: boolean;
 }) {
     const panel = side === "left"
         ? "inset-y-0 left-0 w-72 max-w-[85vw]"
+        : compact
+        ? "left-1/2 top-1/2 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-xl max-h-[85dvh]"
         : "inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:w-full md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-md md:max-h-[85vh]";
     return (
         <RD.Root open={open} onOpenChange={onOpenChange}>

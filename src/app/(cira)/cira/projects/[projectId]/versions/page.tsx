@@ -11,6 +11,7 @@ import {useDeleteMilestone, useMilestones} from "@/hooks/useMilestones";
 import type {MilestoneResponse} from "@/types/milestone";
 import type {VersionResponse} from "@/types/version";
 import {use, useState} from "react";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 type Tab = "versions" | "milestones";
 
@@ -19,6 +20,7 @@ export default function VersionsPage({
                                      }: {
     params: Promise<{ projectId: string }>;
 }) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const {projectId} = use(params);
     const {show, ToastComponent} = useToast();
 
@@ -71,8 +73,8 @@ export default function VersionsPage({
         });
     };
 
-    const handleDeleteVersion = (versionId: string) => {
-        if (!confirm("버전을 삭제하시겠습니까?")) return;
+    const handleDeleteVersion = async (versionId: string) => {
+        if (!(await confirm("버전을 삭제하시겠습니까?", {confirmLabel: "삭제", danger: true}))) return;
         setActionVersionId(versionId);
         deleteVersion(versionId, {
             onSuccess: () => show("버전이 삭제되었습니다."),
@@ -81,8 +83,8 @@ export default function VersionsPage({
         });
     };
 
-    const handleDeleteMilestone = (milestoneId: string) => {
-        if (!confirm("마일스톤을 삭제하시겠습니까?")) return;
+    const handleDeleteMilestone = async (milestoneId: string) => {
+        if (!(await confirm("마일스톤을 삭제하시겠습니까?", {confirmLabel: "삭제", danger: true}))) return;
         setActionMilestoneId(milestoneId);
         deleteMilestone(milestoneId, {
             onSuccess: () => show("마일스톤이 삭제되었습니다."),
@@ -247,6 +249,7 @@ export default function VersionsPage({
             )}
 
             {ToastComponent}
+            {ConfirmComponent}
         </>
     );
 }

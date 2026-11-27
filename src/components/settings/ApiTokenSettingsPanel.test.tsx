@@ -76,10 +76,11 @@ describe("ApiTokenSettingsPanel", () => {
 
     it("확인 후 폐기를 요청한다", async () => {
         tokens = [token()];
-        vi.spyOn(window, "confirm").mockReturnValue(true);
         const user = userEvent.setup();
         renderWithClient(<ApiTokenSettingsPanel isAdmin={false}/>);
         await user.click(await screen.findByRole("button", {name: "노트북 폐기"}));
+        // ui/ConfirmDialog 확인 창에서 [폐기]
+        await user.click(within(await screen.findByRole("dialog")).getByRole("button", {name: "폐기"}));
         await waitFor(() => expect(sent.find((r) => r.method === "DELETE")?.path).toBe("/v1/api-tokens/t1"));
         expect(await screen.findByText("발급한 토큰이 없습니다.")).toBeInTheDocument();
     });

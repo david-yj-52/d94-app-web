@@ -22,6 +22,7 @@ import {useProject} from "@/hooks/useProjects";
 import type {SprintResponse, SprintStatus} from "@/types/sprint";
 import Link from "next/link";
 import {use, useState} from "react";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 const STATUS_LABEL: Record<SprintStatus, string> = {
     Planned: "대기",
@@ -274,6 +275,7 @@ export default function SprintsPage({
                                     }: {
     params: Promise<{ projectId: string }>;
 }) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const {projectId} = use(params);
     const {show, ToastComponent} = useToast();
 
@@ -298,8 +300,8 @@ export default function SprintsPage({
         });
     };
 
-    const handleDelete = (sprintId: string) => {
-        if (!confirm("스프린트를 삭제하시겠습니까?")) return;
+    const handleDelete = async (sprintId: string) => {
+        if (!(await confirm("스프린트를 삭제하시겠습니까?", {confirmLabel: "삭제", danger: true}))) return;
         setActionId(sprintId);
         deleteSprint(sprintId, {
             onSuccess: () => show("스프린트가 삭제되었습니다."),
@@ -413,6 +415,7 @@ export default function SprintsPage({
             )}
 
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }

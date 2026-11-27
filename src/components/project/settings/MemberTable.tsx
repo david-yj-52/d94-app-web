@@ -2,6 +2,7 @@
 
 import {useRemoveProjectMember, useUpdateProjectMemberRole,} from "@/hooks/useProjectSettings";
 import type {ProjectMemberResponse, ProjectRole} from "@/types/member";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 interface Props {
     projectId: string;
@@ -38,6 +39,7 @@ export default function MemberTable({
                                         onSuccess,
                                         onError,
                                     }: Props) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const {mutate: updateRole, isPending: isUpdatingRole} =
         useUpdateProjectMemberRole(projectId);
     const {mutate: removeMember, isPending: isRemoving} =
@@ -53,8 +55,8 @@ export default function MemberTable({
         );
     };
 
-    const handleRemove = (userId: string, name: string) => {
-        if (!confirm(`${name} 멤버를 제거하시겠습니까?`)) return;
+    const handleRemove = async (userId: string, name: string) => {
+        if (!(await confirm(`${name} 멤버를 제거하시겠습니까?`, {confirmLabel: "제거", danger: true}))) return;
         removeMember(userId, {
             onSuccess: () => onSuccess("멤버가 제거되었습니다."),
             onError: () => onError("멤버 제거에 실패했습니다."),
@@ -142,6 +144,7 @@ export default function MemberTable({
                 ))}
                 </tbody>
             </table>
+            {ConfirmComponent}
         </div>
     );
 }

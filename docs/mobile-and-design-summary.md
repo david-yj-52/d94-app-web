@@ -14,9 +14,11 @@
 
 | 6 | `e4fc61d` fix | 모바일 사용성 | iOS 입력 확대 방지(모바일 입력 16px, `globals.css`) · 손 모달 20개 `max-h-[calc(100dvh-2rem)] overflow-y-auto`(낮은 화면에서 버튼까지 스크롤) · Toast safe-area·폭 제한·닫기 aria-label · 아이콘 버튼 aria-label 2곳 · 선택 강조(Docs·Wiki 트리, 빠른 전환, 버전 이력, CQL 자동완성, CIRA 설정, 인터페이스 테스트, Life Metric 템플릿) `blue-50/700` → `d94-brand-soft/brand` |
 
-| 7 | (이번) feat | 공통 Button·Input | `ui/Button`(primary·secondary·ghost·danger, md·sm, tailwind-merge) · `ui/Input`(Input·Select·Textarea) 추가, 표준형 버튼 39개·입력 31개(25개 파일) 교체 |
+| 7 | `2e7f65f` feat | 공통 Button·Input | `ui/Button`(primary·secondary·ghost·danger, md·sm, tailwind-merge) · `ui/Input`(Input·Select·Textarea) 추가, 표준형 버튼 39개·입력 31개(25개 파일) 교체 |
 
-**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로 · `FormField`(라벨+오류 묶음) · `ConfirmDialog`(브라우저 `confirm()` 대체).
+| 8 | (이번) feat | ConfirmDialog | `ui/ConfirmDialog` `useConfirm()` → `Promise<boolean>` (`Dialog compact` 카드, danger 빨간 버튼) · 브라우저 `confirm()` 15곳(12개 파일) 교체 |
+
+**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로 · `FormField`(라벨+오류 묶음) · issue 상세·댓글의 손 마크업 삭제 다이얼로그 → `useConfirm`.
 
 ## 1. 모바일 환경 문제점 분석
 

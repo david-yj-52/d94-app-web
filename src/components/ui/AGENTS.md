@@ -57,9 +57,9 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 
 ### Dialog — `import Dialog from "@/components/ui/Dialog"`
 ```ts
-{ open: boolean; onOpenChange: (open: boolean) => void; title: string; children: ReactNode; side?: "left"; hideTitle?: boolean }
+{ open: boolean; onOpenChange: (open: boolean) => void; title: string; children: ReactNode; side?: "left"; hideTitle?: boolean; compact?: boolean }
 ```
-- Radix Dialog(`@radix-ui/react-dialog`). 모바일은 전체 화면 시트, `md` 이상은 가운데 모달(최대 `max-w-lg`). `side="left"` 는 왼쪽 서랍(`w-72 max-w-[85vw]`, 모바일 메뉴).
+- Radix Dialog(`@radix-ui/react-dialog`). 모바일은 전체 화면 시트, `md` 이상은 가운데 모달(최대 `max-w-lg`). `side="left"` 는 왼쪽 서랍(`w-72 max-w-[85vw]`, 모바일 메뉴). `compact` 는 모든 화면에서 가운데 작은 카드(`max-w-sm`, 확인 창).
 - 바깥 클릭·Esc·✕ 로 닫히고 포커스를 가둡니다. 부모가 `open` 상태를 갖습니다. ⚠️ 서랍 안에서 서랍 밖에 그려지는 다른 모달(`{open && <XxxModal/>}`)을 열 때는 서랍을 먼저 닫아야 그 모달에 입력할 수 있습니다(Docs layout 참고).
 - 내용 패널에 `cira-root` 클래스가 붙습니다(포털이 `.cira-root` 밖에 그려져도 CIRA 자식의 `cira-*` 색이 살도록, 값은 d94 토큰과 같음).
 - 사용처: `layout/ApHeader`(모바일 메뉴 서랍), `(main)/docs/layout`(모바일 폴더 트리 서랍), `cira/shell/CiraShell`·`CreateIssueButton`, issue(`ColumnPicker`·`FieldLibraryDialog`·`AttachmentSection`), settings(`CiraSettingsPanel`·`CustomFieldModal`), CIRA issues·settings/fields 화면. 2026-11-26 `cira/ui` 에서 승격([ADR 0006](../../../docs/decisions/0006-cira-design-layer.md) 갱신).
@@ -91,6 +91,22 @@ Input(InputHTMLAttributes<HTMLInputElement>)  Select(SelectHTMLAttributes<HTMLSe
 - React 19 라 `ref` 가 일반 prop → `{...register()}` 를 그대로 펼치면 됩니다.
 - 2026-11-26 표준 마크업과 같은 버튼 39개·입력 31개(25개 파일)를 이 컴포넌트로 교체했습니다. 모양이 다른 버튼(아이콘·링크형·배지형 등)은 그대로 둡니다.
 
+### ConfirmDialog / useConfirm — `import {useConfirm} from "@/components/ui/ConfirmDialog"`
+```ts
+useConfirm(): { confirm: (message: string, opts?: { title?: string; confirmLabel?: string; danger?: boolean }) => Promise<boolean>; ConfirmComponent: JSX.Element | null }
+```
+```tsx
+const {confirm, ConfirmComponent} = useConfirm();
+const handleDelete = async (id: string) => {
+    if (!(await confirm("스프린트를 삭제하시겠습니까?", {confirmLabel: "삭제", danger: true}))) return;
+    remove.mutate(id);
+};
+return (<div>... {ConfirmComponent}</div>);
+```
+- 브라우저 `confirm()` 대체. `useToast` 처럼 훅을 부른 컴포넌트 안에 `{ConfirmComponent}` 를 렌더링합니다(Dialog 포털이라 위치는 상관없음).
+- `Dialog compact` + 취소 버튼(secondary)·confirmLabel 버튼(danger 면 빨강). 취소·바깥 클릭·Esc·✕ → `false`. 첫 포커스는 ✕(Enter 로 실수 삭제 방지).
+- 사용처(2026-11-26 `confirm()` 15곳 교체): CIRA sprints·versions·wiki·settings/git·workflow, MemberTable, AutomationRuleCard, ApiTokenSettingsPanel, AyaanSettingsPanel, study 문서 목록, ayaan 작업 목록·상세. 테스트 `ApiTokenSettingsPanel.test.tsx`("확인 후 폐기").
+
 ## 3. 표준 마크업 (모달 — 버튼·입력은 위 Button·Input 을 쓰세요)
 
 > 모바일 공통 규칙: 손으로 만든 모달 패널에는 `max-h-[calc(100dvh-2rem)] overflow-y-auto` 를 붙여 낮은 화면에서도 버튼까지 스크롤되게 합니다(2026-11-26 기존 20개 모달에 일괄 적용). 입력란 글자는 `globals.css` 가 모바일(< 768px)에서 16px 로 올려 iOS 확대를 막으므로 따로 지정하지 않습니다.
@@ -120,7 +136,7 @@ Input(InputHTMLAttributes<HTMLInputElement>)  Select(SelectHTMLAttributes<HTMLSe
 </div>
 ```
 
-**삭제 확인 다이얼로그**는 `issues/[issueId]/page.tsx` 하단의 마크업을 따릅니다. 모달 + `max-w-sm` + 취소/danger 버튼 쌍입니다.
+**삭제 확인**은 `useConfirm` 을 쓰세요(위 카드). `issues/[issueId]/page.tsx` 하단의 손 마크업 다이얼로그는 예전 방식입니다.
 
 ## 4. 승격 계획 (Phase 2)
 
@@ -129,7 +145,7 @@ Input(InputHTMLAttributes<HTMLInputElement>)  Select(SelectHTMLAttributes<HTMLSe
 | `Modal` (`open`, `onClose`, `title`, `size`, ESC 닫기) | 모달 overlay 21곳 | 위 모달 마크업 반복 — **새 모달은 `ui/Dialog` 를 쓰세요**(승격 완료) |
 | `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`) | `<button>` 171곳 | ✅ **완료**(2026-11-26, 표준형 39곳 교체). `loading` 은 필요해질 때 |
 | `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | ✅ Input·Select·Textarea **완료**(표준형 31곳 교체). `FormField`(라벨+오류) 는 후보 |
-| `ConfirmDialog` | 브라우저 `confirm()` 8곳 + issue 상세 삭제 다이얼로그 | sprints, versions, wiki, settings 등 |
+| `ConfirmDialog` | 브라우저 `confirm()` 15곳 + issue 상세 삭제 다이얼로그 | ✅ **완료**(2026-11-26 `useConfirm`, `confirm()` 15곳 교체). issue 상세·댓글의 손 마크업 다이얼로그는 후보 |
 | `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | |
 | `EmptyState` | "~이 없습니다" 빈 화면 | |
 | `DropdownMenu` | `···` 더보기 메뉴 (issue 상세 등) | |

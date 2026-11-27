@@ -12,8 +12,10 @@ import {TASK_STATUSES, TOOLS, type CreateTaskRequest} from "@/types/ayaan";
 import {toCreateBody} from "./taskBody";
 import {planStageLabel} from "./planStage";
 import {ayaanError, btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 export default function AyaanTasksPage() {
+    const {confirm, ConfirmComponent} = useConfirm();
     const qc = useQueryClient();
     const {show, ToastComponent} = useToast();
     const [status, setStatus] = useState("");
@@ -168,7 +170,7 @@ export default function AyaanTasksPage() {
                                     <span className="flex shrink-0 gap-2">
                                         {p.stage === "HALTED" && <button className={btnPrimary} disabled={resumeP.isPending} onClick={() => resumeP.mutate(p.id)}>재개</button>}
                                         {active && <button className={btnSecondary} disabled={cancelP.isPending}
-                                                           onClick={() => window.confirm("계획을 취소할까요?") && cancelP.mutate(p.id)}>취소</button>}
+                                                           onClick={async () => (await confirm("계획을 취소할까요?", {confirmLabel: "계획 취소", danger: true})) && cancelP.mutate(p.id)}>취소</button>}
                                     </span>
                                 </li>
                             );
@@ -227,6 +229,7 @@ export default function AyaanTasksPage() {
                 </div>
             </>)}
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }

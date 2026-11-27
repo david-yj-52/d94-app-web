@@ -3,6 +3,7 @@
 import {useDeleteAutomationRule, useRuleExecutions, useUpdateAutomationRule} from "@/hooks/useAutomation";
 import type {ActionType, AutomationRule, TriggerType} from "@/lib/api/automation";
 import {useState} from "react";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 export const TRIGGER_LABEL: Record<TriggerType, string> = {
     ISSUE_CREATED: "Task 생성됨",
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}: Props) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const [showExecutions, setShowExecutions] = useState(false);
     const {data: executions, isLoading: execLoading} = useRuleExecutions(
         showExecutions ? rule.id : "",
@@ -53,8 +55,8 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
         );
     };
 
-    const handleDelete = () => {
-        if (!confirm(`"${rule.ruleName}" 규칙을 삭제하시겠습니까?`)) return;
+    const handleDelete = async () => {
+        if (!(await confirm(`"${rule.ruleName}" 규칙을 삭제하시겠습니까?`, {confirmLabel: "삭제", danger: true}))) return;
         deleteRule(rule.id, {onSuccess: onDeleted});
     };
 
@@ -157,6 +159,7 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
                     </div>
                 </div>
             )}
+            {ConfirmComponent}
         </div>
     );
 }

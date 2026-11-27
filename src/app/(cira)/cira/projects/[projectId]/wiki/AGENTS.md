@@ -37,7 +37,7 @@ wiki/page.tsx  (WikiPageContent를 Suspense로 감쌈 — useSearchParams 사용
 ### 편집
 - 뷰어의 편집 버튼을 누르면 `mode="edit"`가 됩니다. WikiEditor가 HTML을 저장하고 `mode="view"`로 돌아갑니다.
 ### 삭제
-- `confirm()`으로 하위 페이지까지 모두 삭제되는지 확인한 뒤 삭제하고, 위키 첫 화면으로 이동합니다.
+- `useConfirm` 확인 창으로 하위 페이지까지 모두 삭제되는지 확인한 뒤 삭제하고, 위키 첫 화면으로 이동합니다.
 ### 버전 이력
 - 이력 패널에서 버전을 고르면 `mode="version-preview"`로 해당 시점의 내용을 봅니다.
 

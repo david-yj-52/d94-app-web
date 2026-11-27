@@ -12,6 +12,7 @@ import {
 import type {WorkflowCategory, WorkflowStatusResponse} from "@/types/workflow";
 import {useSession} from "next-auth/react";
 import {use, useEffect, useState} from "react";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 const CATEGORY_LABEL: Record<WorkflowCategory, string> = {
     TODO: "할 일",
@@ -166,6 +167,7 @@ export default function SettingsWorkflowPage({
                                              }: {
     params: Promise<{ projectId: string }>;
 }) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const {projectId} = use(params);
     const {data: session} = useSession();
     const {data: members} = useProjectMembers(projectId);
@@ -200,8 +202,8 @@ export default function SettingsWorkflowPage({
         }
     }, [transitions]);
 
-    const handleDeleteStatus = (statusId: string, name: string) => {
-        if (!confirm(`"${name}" 상태를 삭제하시겠습니까?`)) return;
+    const handleDeleteStatus = async (statusId: string, name: string) => {
+        if (!(await confirm(`"${name}" 상태를 삭제하시겠습니까?`, {confirmLabel: "삭제", danger: true}))) return;
         deleteStatus(statusId, {
             onSuccess: () => show("상태가 삭제되었습니다."),
             onError: () => show("상태 삭제에 실패했습니다.", "error"),
@@ -330,6 +332,7 @@ export default function SettingsWorkflowPage({
             )}
 
             {ToastComponent}
+            {ConfirmComponent}
         </>
     );
 }

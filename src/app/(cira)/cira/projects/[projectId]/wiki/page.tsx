@@ -16,10 +16,12 @@ import type {WikiVersionResponse} from "@/lib/api/wiki";
 import {FileText} from "lucide-react";
 import {Suspense, use, useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 type Mode = "view" | "edit" | "create" | "version-preview";
 
 function WikiPageContent({projectId}: { projectId: string }) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const router = useRouter();
     const searchParams = useSearchParams();
     const pageId = searchParams.get("pageId");
@@ -52,8 +54,8 @@ function WikiPageContent({projectId}: { projectId: string }) {
         setShowVersions(false);
     }
 
-    function handleDeletePage(id: string, title: string) {
-        if (!confirm(`"${title}" 페이지와 하위 페이지를 모두 삭제하시겠습니까?`)) return;
+    async function handleDeletePage(id: string, title: string) {
+        if (!(await confirm(`"${title}" 페이지와 하위 페이지를 모두 삭제하시겠습니까?`, {confirmLabel: "삭제", danger: true}))) return;
         deleteMutation.mutate(id, {
             onSuccess: () => {
                 if (pageId === id) {
@@ -210,6 +212,7 @@ function WikiPageContent({projectId}: { projectId: string }) {
                     />
                 )}
             </div>
+            {ConfirmComponent}
         </div>
     );
 }

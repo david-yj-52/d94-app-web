@@ -4,6 +4,7 @@ import {useToast} from "@/components/ui/Toast";
 import {useDeleteGitRepo, useGitActivity, useGitRepos, useRegisterGitRepo,} from "@/hooks/useGitIntegration";
 import type {GitRepoResponse} from "@/lib/api/git";
 import {use, useState} from "react";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 const PROVIDER_LABEL: Record<string, string> = {
     GITHUB: "GitHub",
@@ -94,6 +95,7 @@ export default function SettingsGitPage({
                                         }: {
     params: Promise<{ projectId: string }>;
 }) {
+    const {confirm, ConfirmComponent} = useConfirm();
     const {projectId} = use(params);
     const {data: repos, isLoading: reposLoading} = useGitRepos(projectId);
     const {data: activity, isLoading: activityLoading} = useGitActivity(projectId);
@@ -129,8 +131,8 @@ export default function SettingsGitPage({
         });
     };
 
-    const handleDelete = (repoId: string, repoName: string) => {
-        if (!confirm(`"${repoName}" 저장소를 삭제하시겠습니까?`)) return;
+    const handleDelete = async (repoId: string, repoName: string) => {
+        if (!(await confirm(`"${repoName}" 저장소를 삭제하시겠습니까?`, {confirmLabel: "삭제", danger: true}))) return;
         deleteRepo(repoId, {
             onSuccess: () => show("저장소가 삭제되었습니다."),
             onError: () => show("삭제에 실패했습니다.", "error"),
@@ -324,6 +326,7 @@ export default function SettingsGitPage({
             )}
 
             {ToastComponent}
+            {ConfirmComponent}
         </>
     );
 }

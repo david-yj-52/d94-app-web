@@ -46,5 +46,5 @@ sprints/page.tsx
 - 모든 액션은 성공하거나 실패하면 토스트를 띄웁니다("스프린트가 시작되었습니다." 등).
 
 ## 주의·예외
-- 삭제 확인에 브라우저 `confirm()`을 씁니다. 새 코드는 표준 삭제 다이얼로그를 쓰세요.
+- 삭제 확인은 `ui/ConfirmDialog` 의 `useConfirm`(빨간 [삭제] 버튼)입니다.
 - `SprintCard`가 페이지 안에 정의되어 있습니다. 재사용할 경우 `components/sprint/SprintCard.tsx`로 분리하세요.
