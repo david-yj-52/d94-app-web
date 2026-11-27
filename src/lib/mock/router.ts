@@ -15,6 +15,7 @@ import {registerApiTokenMock} from "./apiToken";
 import {mockTypeOf, registerFieldsMock} from "./fields";
 import {registerDocsMock} from "./docs";
 import {registerLifeMetricMock} from "./lifeMetric";
+import {registerInfraMock} from "./infra";
 
 type Params = Record<string, string>;
 type Body = Record<string, unknown>;
@@ -211,6 +212,7 @@ registerFieldsMock(on, (projectId) => getStore().projects.find((x) => x.id === p
 // Docs(Obsidian형 개인 vault) → ./docs.ts
 registerDocsMock(on);
 registerLifeMetricMock(on);
+registerInfraMock(on);
 
 // ── 기준정보 설정 ──────────────────────────────────────────────────────
 const settings: Record<string, string> = {};
