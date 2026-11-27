@@ -9,13 +9,13 @@
 ```ts
 { project: ProjectResponse }
 ```
-- 프로젝트 카드입니다. 클릭하면 `/cira/projects/{id}/issues`로 이동합니다.
+- 프로젝트 카드(키·이름·설명)입니다. 프로젝트에는 타입이 없어 타입 배지는 없습니다(V660). 클릭하면 `/cira/projects/{id}/issues`로 이동합니다.
 
 ### CreateProjectModal — `@/components/project/CreateProjectModal`
 ```ts
 { onClose: () => void; onSuccess?: () => void }
 ```
-- 키·이름·설명·첫 작업 공간(이름 `defaultSpaceName`, 비우면 General · 프리셋 `projectTypeId`). 프리셋 목록은 `useProjectTypes`(기준정보 › CIRA 작업 공간 프리셋), 첫 프리셋이 기본값. 프리셋의 상태·필드·보드가 첫 공간에 1회 복사됩니다(V650).
+- 키·이름·설명·첫 작업 공간(이름 `defaultSpaceName`, 비우면 General · 프리셋 `presetTypeId`). 프리셋 목록은 `useProjectTypes`(기준정보 › CIRA 작업 공간 프리셋), 첫 프리셋이 기본값. 프리셋의 상태·필드·보드가 첫 공간에 1회 복사됩니다(V650).
 
 ### CreateSpaceModal — `@/components/project/CreateSpaceModal`
 ```ts

@@ -7,7 +7,7 @@ export interface Space {
     name: string;
     key: string;
     description: string | null;
-    /** 만들 때 고른 프리셋(기준정보 프로젝트 타입). 참고용 — 이후 프리셋과 연결 없음 */
+    /** 만들 때 고른 프리셋(기준정보 작업 공간 프리셋). 참고용 — 이후 프리셋과 연결 없음 */
     presetTypeId: string | null;
     adminUserId: string;
     adminNm: string | null;

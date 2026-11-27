@@ -12,7 +12,7 @@ describe("기준정보 › CIRA — 필드 라이브러리", () => {
         expect(within(row).getByText("아직 어디에도 적용되지 않음")).toBeInTheDocument();
     });
 
-    it("전역 필드를 만들 때 넣을 타입을 고르면 copyToTypeIds 로 보낸다", async () => {
+    it("전역 필드를 만들 때 넣을 프리셋을 고르면 copyToTypeIds 로 보낸다", async () => {
         renderWithClient(<CiraSettingsPanel readOnly={false}/>);
         await userEvent.click(await screen.findByRole("tab", {name: "사용자 정의 필드"}));
         await userEvent.click(screen.getByRole("button", {name: "새 필드"}));
@@ -23,9 +23,9 @@ describe("기준정보 › CIRA — 필드 라이브러리", () => {
         expect(lastRequest("POST")).toMatchObject({path: "/v1/cira/custom-fields", body: {fieldNm: "계약 금액", copyToTypeIds: ["PT-KANBAN"]}});
     });
 
-    it("타입 화면의 '이 타입의 필드' [+ 새 필드] 는 타입 경로로 만든다", async () => {
+    it("프리셋 화면의 '이 프리셋의 필드' [+ 새 필드] 는 타입 경로로 만든다", async () => {
         renderWithClient(<CiraSettingsPanel readOnly={false}/>);
-        await userEvent.click(await screen.findByRole("button", {name: "이 타입에 새 필드"}));
+        await userEvent.click(await screen.findByRole("button", {name: "이 프리셋에 새 필드"}));
         await userEvent.type(screen.getByLabelText("이름"), "단계");
         await userEvent.click(screen.getByRole("button", {name: "저장"}));
         expect((await screen.findAllByText(/저장했습니다/)).length).toBeGreaterThan(0);

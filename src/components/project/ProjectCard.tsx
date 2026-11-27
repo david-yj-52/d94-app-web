@@ -1,15 +1,9 @@
 import type {ProjectResponse} from "@/types/project";
 import Link from "next/link";
-import Badge from "@/components/ui/Badge";
 
 interface Props {
     project: ProjectResponse;
 }
-
-const TYPE_COLORS: Record<string, string> = {
-    SCRUM: "bg-blue-100 text-blue-700",
-    KANBAN: "bg-purple-100 text-purple-700",
-};
 
 export default function ProjectCard({project}: Props) {
     return (
@@ -20,9 +14,6 @@ export default function ProjectCard({project}: Props) {
           <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-widest">
             {project.key}
           </span>
-                    <Badge className={TYPE_COLORS[project.projectType] ?? "bg-slate-100 text-slate-600"}>
-            {project.projectType}
-          </Badge>
                 </div>
                 <h3 className="text-base font-semibold text-slate-900 group-hover:text-d94-brand mb-1">
                     {project.name}

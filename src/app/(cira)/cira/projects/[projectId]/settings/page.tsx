@@ -2,19 +2,17 @@
 
 import {useToast} from "@/components/ui/Toast";
 import {useDeleteProject, useProject, useUpdateProject} from "@/hooks/useProjects";
-import {useProjectTypes} from "@/hooks/useFields";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useRouter} from "next/navigation";
 import {use, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
-import {Input, Select, Textarea} from "@/components/ui/Input";
+import {Input, Textarea} from "@/components/ui/Input";
 
 const schema = z.object({
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
-    projectTypeId: z.string().min(1, "프로젝트 타입을 선택해주세요."),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -27,7 +25,6 @@ export default function SettingsGeneralPage({
     const {projectId} = use(params);
     const router = useRouter();
     const {data: project, isLoading} = useProject(projectId);
-    const {data: projectTypes} = useProjectTypes();
     const {mutate: updateProject, isPending, isSuccess, isError} =
         useUpdateProject(projectId);
     const {mutate: deleteProject, isPending: isDeleting} = useDeleteProject();
@@ -41,20 +38,15 @@ export default function SettingsGeneralPage({
         formState: {errors, isDirty},
     } = useForm<FormData>({
         resolver: zodResolver(schema),
-        defaultValues: {name: "", description: "", projectTypeId: ""},
+        defaultValues: {name: "", description: ""},
     });
 
-    // 타입 목록이 오기 전에 reset 하면 select 에 해당 option 이 없어 브라우저가 첫 타입을 고르고,
-    // 목록이 와도 react-hook-form 은 값을 다시 넣지 않는다 → 둘 다 온 뒤에 채운다
+    // 프로젝트에는 타입이 없다 (V660): 워크플로·필드는 작업 공간마다, 프리셋은 공간을 만들 때만 고른다
     useEffect(() => {
-        if (project && projectTypes) {
-            reset({
-                name: project.name,
-                description: project.description ?? "",
-                projectTypeId: project.projectTypeId ?? "",
-            });
+        if (project) {
+            reset({name: project.name, description: project.description ?? ""});
         }
-    }, [project, projectTypes, reset]);
+    }, [project, reset]);
 
     useEffect(() => {
         if (isSuccess) show("프로젝트 정보가 저장되었습니다.");
@@ -127,24 +119,6 @@ export default function SettingsGeneralPage({
                         {...register("description")}
                         rows={3}
                     />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                        프로젝트 타입
-                    </label>
-                    <Select
-                        {...register("projectTypeId")}
-                    >
-                        {(projectTypes ?? []).map((type) => (
-                            <option key={type.id} value={type.id}>
-                                {type.typeNm}
-                            </option>
-                        ))}
-                    </Select>
-                    <p className="mt-1 text-xs text-slate-400">
-                        타입을 바꾸면 물려받는 필드 세트가 새 타입 기준으로 바뀝니다. 빠진 필드의 값은 지워지지 않고 보관됩니다.
-                    </p>
                 </div>
 
                 <div className="pt-2">

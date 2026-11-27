@@ -6,7 +6,7 @@
 ## 개요
 | URL | 파일 | 설명 |
 |---|---|---|
-| `/cira/projects/:id/settings` | `page.tsx` | 기본 정보 (이름·설명·프로젝트 타입 수정, 키는 변경 불가) |
+| `/cira/projects/:id/settings` | `page.tsx` | 기본 정보 (이름·설명 수정, 키는 변경 불가) |
 | `…/settings/fields` | `fields/page.tsx` | 지금 작업 공간의 필드 세트 — 고정 필드(잠김) · 공간 필드(프리셋에서 온 것 포함, 순서·제거·출처) · 프로젝트 필드 생성·라이브러리 가져오기·수정·삭제 |
 | `…/settings/docs` | `docs/page.tsx` | 문서 관리(산출물 규칙): 🔒 기준정보에서 가져온 공통 규칙 · 프로젝트 공통 슬롯 · (`?space=` 면) 공간 슬롯 — 이름·기본 종류·트랙·템플릿·Task 생성 때 폴더 만들기 |
 | `…/settings/members` | `members/page.tsx` | 멤버 목록·추가·역할 변경·제거 |
@@ -24,7 +24,7 @@ settings/layout.tsx
 ├── (설정 메뉴는 CIRA 셸 사이드바: 기본 정보 / 필드 / 문서 관리 / 멤버 / 워크플로우 / Git 연동 / 자동화)
 └── {children}
     ├── (기본)     폼: 이름·설명·타입 select + [저장]  (react-hook-form)
-    ├── fields     물려받은 필드 칩 · 추가 필드 목록 · [+ 제공 필드 추가] select(기본 필드만) · [+ 라이브러리에서 가져오기] → issue/FieldLibraryDialog · [+ 새 필드 만들기] → settings/CustomFieldModal · 삭제 Dialog
+    ├── fields     고정 필드 칩(모든 공간 공통) · "{공간 이름} 작업 공간의 필드" 목록 · [+ 제공 필드 추가] select(기본 필드만) · [+ 라이브러리에서 가져오기] → issue/FieldLibraryDialog · [+ 새 필드 만들기] → settings/CustomFieldModal · 삭제 Dialog
     ├── docs       Task 타입 select · 슬롯 행(폴더 이름·종류·트랙·자동 생성·위/아래·삭제·템플릿) · [+ 슬롯 추가] [저장]
     ├── members    MemberTable + {showAdd && <AddMemberModal/>}           → project 카드
     ├── workflow   AddStatusForm · 상태 목록 · TransitionMatrix (페이지 내부 컴포넌트)
@@ -46,7 +46,7 @@ settings/layout.tsx
 
 ## 기능 (L4)
 ### 기본 정보
-- 이름(필수)·설명·프로젝트 타입(`projectTypeId`)을 수정합니다. 프로젝트 키는 읽기 전용입니다. 타입을 바꾸면 물려받는 필드 세트가 통째로 바뀌고, 빠진 필드의 값은 보관됩니다. 저장 결과는 토스트로 알립니다.
+- 이름(필수)·설명을 수정합니다. 프로젝트 키는 읽기 전용입니다. 프로젝트에는 타입이 없습니다(V660) — 워크플로·필드·보드는 작업 공간마다, 프리셋은 공간을 만들 때만 고릅니다. 저장 결과는 토스트로 알립니다. 테스트 `page.test.tsx`.
 ### 필드
 - 고정 4개만 끌 수 없습니다. 프리셋에서 복사된 필드도 공간 필드라 빼고 순서를 바꿀 수 있습니다(V650, 기준정보 프리셋을 바꿔도 이 공간에는 반영되지 않음). 목록에서 숨기는 것은 각자 Task 목록의 [컬럼]입니다.
 - 추가 필드: 기본 필드를 고르거나(`replaceProjectFields`, 전체 교체), 라이브러리(전역 + 이 타입의 필드)에서 가져오거나(복사본 생성), 프로젝트 필드를 새로 만듭니다(만들면 바로 추가 필드). 위/아래로 순서, 기본 필드는 [제거], 사용자 정의 필드는 `canEdit`(만든 사람·프로젝트 ADMIN)일 때만 [수정]·[삭제] — 모든 Task 의 값도 삭제, 확인 다이얼로그. 가져온 필드는 "'원본'에서 가져옴"(원본이 지워졌으면 "원본 삭제됨"). 서버 오류 메시지는 토스트로.

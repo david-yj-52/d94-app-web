@@ -29,7 +29,7 @@ export async function updateProjectType(id: string, data: SaveProjectType): Prom
     return (await apiClient.put(`/v1/cira/project-types/${id}`, data)).data.data;
 }
 
-/** 쓰는 프로젝트가 있으면 409 */
+/** 이 프리셋으로 만든 공간이 있어도 지운다 (공간 설정은 그대로) */
 export async function deleteProjectType(id: string): Promise<void> {
     await apiClient.delete(`/v1/cira/project-types/${id}`);
 }

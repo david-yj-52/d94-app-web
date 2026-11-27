@@ -110,7 +110,7 @@ function TypesTab({types, catalog, readOnly, show}: {
         setFields(next);
     };
     const inSet = new Set([...FIXED_FIELD_KEYS, ...(selected?.fields.map((f) => f.fieldKey) ?? [])]);
-    // 세트에는 기본 필드와 이 타입의 필드만 (전역 필드는 먼저 "전역에서 가져오기")
+    // 세트에는 기본 필드와 이 프리셋의 필드만 (전역 필드는 먼저 "전역에서 가져오기")
     const addable = [...catalog.system, ...ownFields].filter((f) => !inSet.has(f.fieldKey));
 
     return (
@@ -121,16 +121,16 @@ function TypesTab({types, catalog, readOnly, show}: {
                         <li key={t.id}>
                             <Button variant="unstyled" onClick={() => setSelectedId(t.id)}
                                     className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3 text-left text-sm ${t.id === selected?.id ? "bg-d94-brand-soft font-semibold text-d94-brand" : "text-slate-700 hover:bg-slate-50"}`}>
-                                {t.typeNm}<span className="text-xs text-slate-400">{t.projectCount}</span>
+                                {t.typeNm}<span className="text-xs text-slate-400" title="이 프리셋으로 만든 작업 공간">{t.spaceCount}</span>
                             </Button>
                         </li>
                     ))}
                 </ul>
                 {!readOnly && (
                     <div className="flex gap-2">
-                        <input aria-label="새 타입 이름" className={inputCls} value={draft} maxLength={TYPE_NAME_MAX}
+                        <input aria-label="새 프리셋 이름" className={inputCls} value={draft} maxLength={TYPE_NAME_MAX}
                                placeholder="예: 영업" onChange={(e) => setDraft(e.target.value)}/>
-                        <Button variant="unstyled" type="button" aria-label="타입 추가" disabled={!canAdd || create.isPending} className={btnCls}
+                        <Button variant="unstyled" type="button" aria-label="프리셋 추가" disabled={!canAdd || create.isPending} className={btnCls}
                                 onClick={() => create.mutate({typeNm: name}, {
                                     onSuccess: (t) => {
                                         setDraft("");
@@ -149,7 +149,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                     <div className="mb-3 flex flex-wrap items-center gap-2">
                         {rename !== null ? (
                             <>
-                                <input aria-label="타입 이름" className={`${inputCls} max-w-xs`} value={rename} maxLength={TYPE_NAME_MAX}
+                                <input aria-label="프리셋 이름" className={`${inputCls} max-w-xs`} value={rename} maxLength={TYPE_NAME_MAX}
                                        onChange={(e) => setRename(e.target.value)}/>
                                 <Button variant="unstyled" type="button" className={btnCls} disabled={!rename.trim()}
                                         onClick={() => update.mutate({id: selected.id, data: {typeNm: rename.trim(), descr: selected.descr ?? undefined}}, {
@@ -171,7 +171,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                         )}
                     </div>
                     <p className="mb-2 text-xs text-slate-500">
-                        이 타입의 프로젝트가 물려받는 필드입니다. 바꾸면 기존 프로젝트({selected.projectCount}개)에도 바로 반영됩니다.
+                        이 프리셋으로 새 작업 공간을 만들 때 복사되는 필드입니다. 바꿔도 이미 만든 작업 공간({selected.spaceCount}개)에는 반영되지 않습니다.
                     </p>
                     <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
                         <li className="flex min-h-10 items-center gap-2 px-3 text-sm text-slate-500">
@@ -183,7 +183,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                                 <li key={tf.fieldKey} className="flex min-h-10 items-center gap-2 px-3 text-sm">
                                     <span className="flex-1">
                                         {f?.name ?? tf.fieldKey}
-                                        {f?.kind === "cf" && <span className="ml-2 text-xs text-slate-400">타입 필드 · {CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}</span>}
+                                        {f?.kind === "cf" && <span className="ml-2 text-xs text-slate-400">프리셋 필드 · {CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}</span>}
                                     </span>
                                     <label className="flex items-center gap-1 text-xs text-slate-500">
                                         <input type="checkbox" checked={tf.defaultVisible} disabled={readOnly}
@@ -205,15 +205,15 @@ function TypesTab({types, catalog, readOnly, show}: {
                                 onChange={(e) => e.target.value && setFields([...selected.fields, {fieldKey: e.target.value, defaultVisible: true}])}
                                 className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm">
                             <option value="">+ 필드 추가</option>
-                            {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}{f.kind === "cf" ? " (이 타입의 필드)" : ""}</option>)}
+                            {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}{f.kind === "cf" ? " (이 프리셋의 필드)" : ""}</option>)}
                         </select>
                     )}
 
-                    <h4 className="mb-1 mt-6 text-sm font-semibold text-slate-800">이 타입의 필드</h4>
+                    <h4 className="mb-1 mt-6 text-sm font-semibold text-slate-800">이 프리셋의 필드</h4>
                     <p className="mb-2 text-xs text-slate-500">
-                        기본 세트에 넣으면 이 타입의 모든 프로젝트에 적용되고, 넣지 않으면 이 타입 프로젝트들이 라이브러리에서 골라 가져갑니다.
+                        기본 세트에 넣으면 새 작업 공간에 복사본으로 들어가고, 넣지 않으면 어느 작업 공간이든 라이브러리에서 골라 가져갑니다.
                     </p>
-                    {ownFields.length === 0 && <EmptyState size="sm" className="mb-2 p-0 text-left">이 타입의 필드가 없습니다.</EmptyState>}
+                    {ownFields.length === 0 && <EmptyState size="sm" className="mb-2 p-0 text-left">이 프리셋의 필드가 없습니다.</EmptyState>}
                     <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
                         {ownFields.map((f) => (
                             <li key={f.fieldKey} aria-label={f.name} className="flex min-h-10 items-center gap-2 px-3 text-sm">
@@ -236,12 +236,12 @@ function TypesTab({types, catalog, readOnly, show}: {
                     </ul>
                     {!readOnly && (
                         <div className="flex flex-wrap gap-2">
-                            <Button variant="unstyled" type="button" aria-label="이 타입에 새 필드" className={btnCls} onClick={() => setEditingField(null)}>
+                            <Button variant="unstyled" type="button" aria-label="이 프리셋에 새 필드" className={btnCls} onClick={() => setEditingField(null)}>
                                 <Plus className="h-4 w-4"/>새 필드
                             </Button>
                             <select aria-label="전역에서 가져오기" value="" disabled={importable.length === 0 || importField.isPending}
                                     onChange={(e) => e.target.value && importField.mutate({typeId: selected.id, sourceFieldId: e.target.value}, {
-                                        onSuccess: (f) => show(`'${f.name}' 필드를 이 타입으로 가져왔습니다.`),
+                                        onSuccess: (f) => show(`'${f.name}' 필드를 이 프리셋으로 가져왔습니다.`),
                                         onError: (err) => show(errMsg(err, "가져오지 못했습니다."), "error"),
                                     })}
                                     className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm">
@@ -266,11 +266,11 @@ function TypesTab({types, catalog, readOnly, show}: {
                         />
                     )}
 
-                    <Dialog open={!!deletingField} onOpenChange={(o) => !o && setDeletingField(null)} title="타입 필드 삭제">
+                    <Dialog open={!!deletingField} onOpenChange={(o) => !o && setDeletingField(null)} title="프리셋 필드 삭제">
                         <div className="p-4">
                             <p className="mb-5 text-sm text-slate-600">
                                 <strong>{deletingField?.name}</strong> 필드를 삭제하면{" "}
-                                {deletingUsage ? `이 타입 프로젝트 ${deletingUsage.projects}개, Task ${deletingUsage.issues}개의 값이 함께 삭제됩니다.` : "값이 함께 삭제됩니다."}{" "}
+                                {deletingUsage ? `이 필드를 직접 쓰는 프로젝트 ${deletingUsage.projects}개, Task ${deletingUsage.issues}개의 값이 함께 삭제됩니다. 작업 공간에 복사된 필드는 남습니다.` : "값이 함께 삭제됩니다."}{" "}
                                 가져간 복사본은 남습니다.
                             </p>
                             <div className="flex gap-3">
@@ -285,16 +285,15 @@ function TypesTab({types, catalog, readOnly, show}: {
                         </div>
                     </Dialog>
 
-                    <Dialog open={confirmDelete} onOpenChange={setConfirmDelete} title="타입 삭제">
+                    <Dialog open={confirmDelete} onOpenChange={setConfirmDelete} title="프리셋 삭제">
                         <div className="p-4">
                             <p className="mb-5 text-sm text-slate-600">
-                                {selected.projectCount > 0
-                                    ? `이 타입을 쓰는 프로젝트가 ${selected.projectCount}개 있어 삭제할 수 없습니다. 먼저 프로젝트의 타입을 바꾸세요.`
-                                    : `"${selected.typeNm}" 타입을 삭제합니다.`}
+                                {`"${selected.typeNm}" 프리셋을 삭제합니다.`}
+                                {selected.spaceCount > 0 && ` 이 프리셋으로 만든 작업 공간 ${selected.spaceCount}개의 워크플로·필드·보드는 그대로 남습니다.`}
                             </p>
                             <div className="flex gap-3">
                                 <Button variant="unstyled" type="button" onClick={() => setConfirmDelete(false)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</Button>
-                                <Button type="button" disabled={selected.projectCount > 0 || remove.isPending}
+                                <Button type="button" disabled={remove.isPending}
                                         onClick={() => remove.mutate(selected.id, {
                                             onSuccess: () => {
                                                 setConfirmDelete(false);
@@ -328,7 +327,7 @@ function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
     return (
         <>
             <p className="mb-3 text-xs text-slate-500">
-                라이브러리 필드입니다. 타입으로 가져가거나(만들 때 "넣을 타입") 프로젝트가 가져가야 적용되고, 가져가면 복사본이 생깁니다.
+                라이브러리 필드입니다. 프리셋으로 가져가거나(만들 때 "넣을 프리셋") 작업 공간이 가져가야 적용되고, 가져가면 복사본이 생깁니다.
             </p>
             {fields.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">전역 사용자 정의 필드가 없습니다.</EmptyState>}
             <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
@@ -371,7 +370,7 @@ function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
                 <div className="p-4">
                     <p className="mb-5 text-sm text-slate-600">
                         <strong>{deleting?.name}</strong> 필드를 라이브러리에서 삭제합니다.{" "}
-                        가져간 프로젝트·타입의 복사본{usage ? `(${usage.copies}개)` : ""}은 남습니다. 되돌릴 수 없습니다.
+                        가져간 작업 공간·프리셋의 복사본{usage ? `(${usage.copies}개)` : ""}은 남습니다. 되돌릴 수 없습니다.
                     </p>
                     <div className="flex gap-3">
                         <Button variant="unstyled" type="button" onClick={() => setDeleting(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</Button>

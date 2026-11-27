@@ -14,12 +14,12 @@ describe("useProjects", () => {
     it("useCreateProject → [\"projects\"], useUpdateProject → 단건 + 목록, useDeleteProject → 단건 제거 + 목록", async () => {
         const create = renderHookWithClient(() => useCreateProject());
         const spy = vi.spyOn(create.client, "invalidateQueries");
-        await act(() => create.result.current.mutateAsync({key: "N", name: "n", projectTypeId: "PT-SCRUM"}));
+        await act(() => create.result.current.mutateAsync({key: "N", name: "n", presetTypeId: "PT-SCRUM"}));
         expect(spy.mock.calls.map((c) => c[0]?.queryKey)).toEqual([["projects"]]);
 
         const update = renderHookWithClient(() => useUpdateProject("PRJ-1"));
         const spy2 = vi.spyOn(update.client, "invalidateQueries");
-        await act(() => update.result.current.mutateAsync({name: "n", projectTypeId: "PT-SCRUM"}));
+        await act(() => update.result.current.mutateAsync({name: "n"}));
         expect(spy2.mock.calls.map((c) => c[0]?.queryKey)).toEqual([["projects", "PRJ-1"], ["projects"]]);
 
         const del = renderHookWithClient(() => useDeleteProject());
