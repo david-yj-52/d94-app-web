@@ -14,6 +14,7 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. 하나의 Next.js 앱 �
 | **Docs** | `/docs` | 웹 버전 Obsidian형 개인 vault (폴더·Markdown 노트·[[링크]]·백링크·버전) | axios + TanStack Query + `/api/proxy` (+ mock), react-markdown | 개발 중 (d94-query `/api/v1/docs`, CIRA DOCS 프로젝트) | [docs](../src/app/(main)/docs/AGENTS.md) |
 | **PDF 학습(Study)** | `/study` | PDF 구조화 뷰어·단어장·마킹·노트 | axios + TanStack Query + `/api/proxy` (+ mock), 분할 업로드(768KB) | 동작 (d94-query `/api/v1/study`, 파서 d94-app-pdf) | [study](../src/app/(main)/study/AGENTS.md) |
 | **Life Metric** | `/life-metric` | 삶의 수치화 지표 (템플릿·커스텀 수식·기준값·기록) | axios + TanStack Query + Recharts + `/api/proxy` (+ mock, 계산 없음) | 동작 (d94-query `/api/v1/life-metric`) | [life-metric](../src/app/(main)/life-metric/AGENTS.md) |
+| **인프라** | `/infra` | 장비 스펙·사용량·유휴 자원·프로세스 Top-N 통합 대시보드 | axios + TanStack Query + Recharts + `/api/proxy` (+ mock) | 동작 (d94-query `/api/v1/infra` + `d94-infra-agent`) | [infra](../src/app/(main)/infra/AGENTS.md) |
 | **인터페이스 테스트** | `/interface-test` | REST 메서드별 UI → UMD → 백엔드 → DB 통신 확인 | axios + TanStack Query + `/api/proxy` (+ mock) | 동작 (d94-query `/api/v1/interface-tests`) | [interface-test](../src/app/(main)/interface-test/AGENTS.md) |
 
 허브(첫 화면 대시보드): [/home](../src/app/(main)/home/AGENTS.md)
@@ -27,6 +28,7 @@ web-plate는 UI 학습과 웹 기능 실험장입니다. 하나의 Next.js 앱 �
 | Solace | `src/app/(main)/solace/`, `src/lib/messaging/solace/` |
 | todo | `src/app/(main)/todo/`, `src/app/page.tsx`, `src/app/actions.ts`, `src/lib/api.ts`, `src/components/{AddTodoForm,TodoItem}.tsx` |
 | Life Metric | `src/app/(main)/life-metric/`, `src/components/lifeMetric/`, `src/hooks/useLifeMetric.ts`, `src/lib/api/lifeMetric.ts`, `src/types/lifeMetric.ts`, mock: `src/lib/mock/lifeMetric.ts` |
+| 인프라 | `src/app/(main)/infra/`, `src/components/infra/`, `src/hooks/useInfra.ts`, `src/lib/api/infra.ts`, `src/types/infra.ts`, mock: `src/lib/mock/infra.ts` |
 | 인터페이스 테스트 | `src/app/(main)/interface-test/`, `src/components/interfaceTest/`, `src/hooks/useInterfaceTests.ts`, `src/lib/api/interfaceTests.ts`, `src/types/interfaceTest.ts`, mock: `src/lib/mock/router.ts` 인터페이스 테스트 절 |
 | Docs | `src/app/(main)/docs/`, `src/components/docs/`, `src/hooks/useDocs.ts`, `src/lib/api/docs.ts`, `src/lib/docs/`, `src/types/docs.ts`, mock: `src/lib/mock/docs.ts` |
 | PDF 학습(Study) | `src/app/(main)/study/`, `src/components/study/`, `src/hooks/useStudy.ts`, `src/lib/api/study.ts`, `src/lib/study/`, `src/types/study.ts`, mock: `src/lib/mock/study.ts` |

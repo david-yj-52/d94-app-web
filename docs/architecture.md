@@ -68,7 +68,7 @@ UMD ui-guide §5 정비안을 따른 투명 프록시입니다.
 | `src/middleware.ts` | 로그인 여부에 따른 리다이렉트. next-auth `auth()` 래퍼를 쓰지 않고 `readSessionToken` 으로 판정(쿠키를 다시 쓰지 않음 — refresh 로 회전된 쿠키를 덮지 않도록) |
 
 `src/middleware.ts` 규칙 (판정은 `src/lib/routeAccess.ts`의 `classifyPath`, 테스트 `routeAccess.test.ts`):
-- **보호 경로**: `/cira/**`, `/interface-test`, `/study/**`, `/ayaan/**`, `/settings`, `/docs/**`, `/life-metric/**`. 비로그인 상태면 `/login?callbackUrl={경로+쿼리}`로 보내고, 세션 쿠키가 남아 있었으면(만료) `reason=expired` 도 붙입니다. 로그인 뒤 `safeCallbackUrl`(내부 경로만)로 검증한 경로로 돌아갑니다. 단 `/cira/register`(예전 가입 경로)는 열어 둡니다.
+- **보호 경로**: `/cira/**`, `/interface-test`, `/study/**`, `/ayaan/**`, `/settings`, `/docs/**`, `/life-metric/**`, `/infra/**`. 비로그인 상태면 `/login?callbackUrl={경로+쿼리}`로 보내고, 세션 쿠키가 남아 있었으면(만료) `reason=expired` 도 붙입니다. 로그인 뒤 `safeCallbackUrl`(내부 경로만)로 검증한 경로로 돌아갑니다. 단 `/cira/register`(예전 가입 경로)는 열어 둡니다.
 - **비로그인 전용**: `/login`, `/register`. 로그인 상태면 `/home`으로 보냅니다.
 - **예전 CIRA 경로**(`/projects/**`, `/dashboard`, `/search/**`, `/notifications`)는 `next.config.mjs`의 `redirects()`가 미들웨어보다 먼저 `/cira/...`로 영구 redirect합니다(쿼리 유지). d94-query 위키가 만드는 `/issues/{key}` 링크는 `/cira/search?q={key}`로 보냅니다.
 - 정적 확장자(png, svg, css, js 등)는 통과시킵니다. `public/` 이미지가 리다이렉트되지 않게 하기 위함입니다.

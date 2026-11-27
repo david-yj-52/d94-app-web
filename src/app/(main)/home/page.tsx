@@ -16,6 +16,7 @@ import {
     Package,
     Radio,
     Search,
+    Server,
 } from "lucide-react";
 
 type FeatureItem = {
@@ -113,6 +114,13 @@ const FEATURE_GROUPS: { title: string; desc: string; items: FeatureItem[] }[] = 
                 desc: "남은 수명 · 내 시급 · km당 차량 비용처럼 삶의 요소를 수식으로 숫자로 환산하고 기록합니다.",
                 icon: Gauge,
                 iconClass: "bg-cyan-50 text-cyan-600",
+            },
+            {
+                href: "/infra",
+                label: "인프라",
+                desc: "delap · OCI VM · Jetson · ESP32 · Vercel 의 스펙과 메모리 · CPU 사용량, 유휴 자원과 프로세스를 한곳에서 봅니다.",
+                icon: Server,
+                iconClass: "bg-slate-100 text-slate-700",
             },
             {
                 href: "/interface-test",
