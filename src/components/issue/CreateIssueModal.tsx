@@ -2,6 +2,9 @@
 
 import {useProjectFields} from "@/hooks/useFields";
 import {useCreateIssue} from "@/hooks/useIssues";
+import {useIssueTypes} from "@/hooks/useCiraDocs";
+import {useFeatures, useSpaces} from "@/hooks/useSpaces";
+import type {FeatureNode} from "@/types/space";
 import {useProjectMembers, useWorkflowStatuses} from "@/hooks/useProjectSettings";
 import type {CustomFieldValue, Priority} from "@/types/issue";
 import CustomFieldInput from "./CustomFieldInput";
@@ -31,20 +34,41 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
     projectId: string;
+    /** 처음 고를 작업 공간 (없으면 기본 공간) */
+    spaceId?: string;
     onClose: () => void;
     onSuccess?: () => void;
 }
 
+/** 트리를 평평하게: 공통 먼저(트리 순서 그대로) */
+function flatten(nodes: FeatureNode[]): FeatureNode["feature"][] {
+    return nodes.flatMap((n) => [n.feature, ...flatten(n.children)]);
+}
+
 export default function CreateIssueModal({
                                              projectId,
+                                             spaceId: initialSpaceId,
                                              onClose,
                                              onSuccess,
                                          }: Props) {
     const {mutate, isPending, isSuccess, isError} = useCreateIssue(projectId);
     const {data: members = []} = useProjectMembers(projectId);
-    const {data: statuses = []} = useWorkflowStatuses(projectId);
+    // V630: 작업 공간 · 유형 · Feature(공통/단위)
+    const {data: spaces = []} = useSpaces(projectId);
+    const {data: issueTypes = []} = useIssueTypes();
+    const {data: featureTree = []} = useFeatures(projectId);
+    const [spaceId, setSpaceId] = useState(initialSpaceId ?? "");
+    const effectiveSpaceId = spaceId || spaces.find((sp) => sp.isDefault)?.id || "";
+    const [issueTypeId, setIssueTypeId] = useState("");
+    const isFeature = issueTypes.find((t) => t.id === issueTypeId)?.typeNm === "Feature";
+    const [common, setCommon] = useState(false);
+    const [featureId, setFeatureId] = useState("");
+    // 고를 수 있는 Feature: 공통 + (Task 면) 같은 공간 단위. 단위 Feature 는 공통 아래에만, 공통 Feature 는 연결 없음
+    const featureOptions = flatten(featureTree).filter((f) =>
+        isFeature ? !common && f.featureScope === "COMMON" : f.featureScope === "COMMON" || f.spaceId === effectiveSpaceId);
+    const {data: statuses = []} = useWorkflowStatuses(projectId, isFeature && common ? null : effectiveSpaceId || null);
     // 필수 사용자 정의 필드만 여기서 받는다. 나머지는 상세에서
-    const {data: fields = []} = useProjectFields(projectId);
+    const {data: fields = []} = useProjectFields(projectId, effectiveSpaceId || null);
     const requiredFields = fields.filter((f) => f.kind === "cf" && f.required);
     const [cfValues, setCfValues] = useState<Record<string, CustomFieldValue>>({});
     const [cfError, setCfError] = useState<string>();
@@ -78,6 +102,10 @@ export default function CreateIssueModal({
             customFields: requiredFields.length ? cfValues : undefined,
             title: data.title,
             content: data.content || undefined,
+            issueTypeId: issueTypeId || undefined,
+            spaceId: effectiveSpaceId || undefined,
+            featureScope: isFeature ? (common ? "COMMON" : "UNIT") : undefined,
+            featureId: (isFeature && common) ? undefined : featureId || undefined,
             priority: data.priority,
             statusId: initialStatusId,
             assigneeId: data.assigneeId || undefined,
@@ -104,11 +132,45 @@ export default function CreateIssueModal({
                         />
                     </FormField>
 
+                    <div className="grid grid-cols-2 gap-3">
+                        <FormField label="작업 공간">
+                            <Select value={effectiveSpaceId} onChange={(e) => setSpaceId(e.target.value)} aria-label="작업 공간"
+                                    disabled={isFeature && common}>
+                                {spaces.map((sp) => <option key={sp.id} value={sp.id}>{sp.name}</option>)}
+                            </Select>
+                        </FormField>
+                        <FormField label="유형">
+                            <Select value={issueTypeId} onChange={(e) => setIssueTypeId(e.target.value)} aria-label="유형">
+                                <option value="">Issue (기본)</option>
+                                {issueTypes.map((t) => <option key={t.id} value={t.id}>{t.typeNm}</option>)}
+                            </Select>
+                        </FormField>
+                    </div>
+
+                    {isFeature && (
+                        <label className="flex items-center gap-2 text-sm text-slate-700">
+                            <input type="checkbox" checked={common} onChange={(e) => setCommon(e.target.checked)}/>
+                            공통 Feature (여러 작업 공간을 아우르고 항상 최상위로 정렬)
+                        </label>
+                    )}
+                    {!(isFeature && common) && (
+                        <FormField label={isFeature ? "상위 공통 Feature" : "Feature"}>
+                            <Select value={featureId} onChange={(e) => setFeatureId(e.target.value)} aria-label="Feature">
+                                <option value="">연결 안 함</option>
+                                {featureOptions.map((f) => (
+                                    <option key={f.id} value={f.id}>
+                                        {f.featureScope === "COMMON" ? "[공통] " : ""}{f.issueKey} {f.title}
+                                    </option>
+                                ))}
+                            </Select>
+                        </FormField>
+                    )}
+
                     <FormField label="설명">
                         <Textarea
                             {...register("content")}
                             rows={4}
-                            placeholder="Task 설명을 입력하세요..."
+                            placeholder="Task 설명을 입력하세요... (Team Docs 의 메인 문서로 저장됩니다)"
                         />
                     </FormField>
 

@@ -15,7 +15,13 @@
 ```ts
 { onClose: () => void; onSuccess?: () => void }
 ```
-- 키·이름·설명·타입. 타입 목록은 `useProjectTypes`(기준정보 › CIRA), 첫 타입이 기본값이고 `projectTypeId` 로 보냅니다.
+- 키·이름·설명·첫 작업 공간(이름 `defaultSpaceName`, 비우면 General · 프리셋 `projectTypeId`). 프리셋 목록은 `useProjectTypes`(기준정보 › CIRA 작업 공간 프리셋), 첫 프리셋이 기본값. 프리셋의 상태·필드·보드가 첫 공간에 1회 복사됩니다(V630).
+
+### CreateSpaceModal — `@/components/project/CreateSpaceModal`
+```ts
+{ projectId: string; onClose: () => void; onCreated?: (space: Space) => void }
+```
+- `ui/Dialog`. 이름(1~60자)·프리셋(`""` = 빈 공간: To Do → In Progress → Done + 칸반)·공간 관리자(`useProjectMembers`, `""` = 나) → `useCreateSpace`. 실패(같은 이름 409·권한 403)는 창 안 오류 문구. 사용처: `CiraSidebar` [+] (프로젝트 ADMIN 에게만 보임).
 
 ## settings/
 

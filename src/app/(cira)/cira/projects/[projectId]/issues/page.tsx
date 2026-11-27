@@ -1,5 +1,6 @@
 "use client";
 
+import {useCurrentSpace} from "@/hooks/useSpaces";
 import Dialog from "@/components/ui/Dialog";
 import PageHeader from "@/components/cira/ui/PageHeader";
 import ColumnPicker from "@/components/issue/ColumnPicker";
@@ -44,17 +45,19 @@ export default function IssueListPage({
         size: PAGE_SIZE,
     });
     const {show, ToastComponent} = useToast();
+    // V630: Task 목록·필드·컬럼은 지금 작업 공간(?space=) 기준
+    const {spaceId} = useCurrentSpace(projectId);
 
     const {data: project} = useProject(projectId);
     const {
         data: page,
         isLoading,
         isError,
-    } = useIssues(projectId, filters);
+    } = useIssues(projectId, {...filters, spaceId});
 
-    const {data: fields} = useProjectFields(projectId);
-    const {data: columns} = useColumnPref(projectId);
-    const saveColumns = useSaveColumnPref(projectId);
+    const {data: fields} = useProjectFields(projectId, spaceId);
+    const {data: columns} = useColumnPref(projectId, spaceId);
+    const saveColumns = useSaveColumnPref(projectId, spaceId);
     const {data: members} = useProjectMembers(projectId);
     const {data: sprints} = useSprints(projectId);
     const names = useMemo(() => Object.fromEntries([
@@ -69,9 +72,9 @@ export default function IssueListPage({
     const [deletingField, setDeletingField] = useState<FieldDef | null>(null);
     const [showLibrary, setShowLibrary] = useState(false);
     const {data: library = []} = useFieldLibrary(showLibrary ? projectId : undefined);
-    const saveField = useSaveProjectField(projectId);
+    const saveField = useSaveProjectField(projectId, spaceId);
     const deleteField = useDeleteProjectField(projectId);
-    const importField = useImportToProject(projectId);
+    const importField = useImportToProject(projectId, spaceId);
     const showColumn = (key: string) => columns && !columns.includes(key) && onColumns([...columns, key]);
 
     const issues = page?.content ?? [];
@@ -141,7 +144,7 @@ export default function IssueListPage({
             )}
 
             {showCreate && (
-                <CreateIssueModal
+                <CreateIssueModal spaceId={spaceId}
                     projectId={projectId}
                     onClose={() => setShowCreate(false)}
                     onSuccess={() => show("Task가 생성되었습니다.")}

@@ -1,6 +1,8 @@
 export interface BoardResponse {
     id: string;
     projectId: string;
+    /** 보드를 가진 작업 공간 */
+    spaceId?: string | null;
     boardNm: string;
     boardType: string;
     columnCount: number;
@@ -51,6 +53,8 @@ export interface BoardDetailResponse {
 export interface CreateBoardRequest {
     boardNm: string;
     boardType?: string;
+    /** 없으면 기본 작업 공간 */
+    spaceId?: string | null;
 }
 
 export interface UpdateBoardRequest {

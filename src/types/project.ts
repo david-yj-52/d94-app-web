@@ -15,8 +15,10 @@ export interface CreateProjectRequest {
     key: string;
     name: string;
     description?: string;
-    /** 기준정보 프로젝트 타입 id (GET /v1/cira/project-types) */
-    projectTypeId: string;
+    /** 기본 작업 공간의 스타터 프리셋 (기준정보 프로젝트 타입 id, GET /v1/cira/project-types). 없으면 첫 타입 */
+    projectTypeId?: string;
+    /** 기본 작업 공간 이름 (없으면 General) */
+    defaultSpaceName?: string;
 }
 
 export interface UpdateProjectRequest {

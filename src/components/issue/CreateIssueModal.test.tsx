@@ -15,7 +15,7 @@ async function setup() {
     const utils = renderWithClient(<CreateIssueModal projectId="PRJ-1" onClose={onClose} onSuccess={onSuccess}/>);
     // 전체 실행 때 첫 렌더가 1초(기본 대기)를 넘을 수 있다
     await screen.findByRole("option", {name: "김개발"}, {timeout: 5000});
-    await waitFor(() => expect(utils.client.getQueryData(["projects", "PRJ-1", "workflow", "statuses"])).toBeDefined(),
+    await waitFor(() => expect(utils.client.getQueryData(["projects", "PRJ-1", "workflow", "statuses", "SPACE-1"]) /* 기본 작업 공간 */).toBeDefined(),
         {timeout: 5000});
     await screen.findByLabelText(/계약 단계/); // 필수 사용자 정의 필드 (fixtures.projectFields)
     return {...utils, user, onClose, onSuccess};
@@ -48,7 +48,8 @@ describe("CreateIssueModal", () => {
             path: "/v1/projects/PRJ-1/issues",
             body: {title: "제목만", statusId: "ST-TODO", customFields: {"cf:CF-1": "리드"}},
         });
-        expect(Object.keys(lastRequest("POST")!.body as object).sort()).toEqual(["customFields", "statusId", "title"]);
+        // spaceId = 기본 작업 공간 (V630)
+        expect(Object.keys(lastRequest("POST")!.body as object).sort()).toEqual(["customFields", "spaceId", "statusId", "title"]);
     });
 
     it("필수 사용자 정의 필드를 비우면 안내하고 요청하지 않는다", async () => {

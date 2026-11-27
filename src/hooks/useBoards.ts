@@ -21,10 +21,11 @@ import type {
 } from "@/types/board";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
-export function useBoards(projectId: string) {
+/** spaceId 없음 = 기본 작업 공간 */
+export function useBoards(projectId: string, spaceId?: string | null) {
     return useQuery({
-        queryKey: ["boards", projectId],
-        queryFn: () => getBoards(projectId),
+        queryKey: ["boards", projectId, spaceId ?? null],
+        queryFn: () => getBoards(projectId, spaceId),
         enabled: !!projectId,
     });
 }

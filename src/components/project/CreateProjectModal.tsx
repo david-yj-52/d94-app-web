@@ -21,7 +21,8 @@ const schema = z.object({
         .regex(/^[A-Z0-9]+$/, "대문자 영문/숫자만 입력 가능합니다."),
     name: z.string().min(1, "프로젝트 이름을 입력해주세요."),
     description: z.string().optional(),
-    projectTypeId: z.string().min(1, "프로젝트 타입을 선택해주세요."),
+    projectTypeId: z.string().min(1, "작업 공간 프리셋을 선택해주세요."),
+    defaultSpaceName: z.string().trim().max(60).optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -106,7 +107,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                     <div>
                         <div className="flex items-center justify-between mb-1">
                             <label className="block text-xs font-medium text-slate-600">
-                                타입
+                                첫 작업 공간
                             </label>
                             <Link
                                 href="/settings?group=cira"
@@ -116,8 +117,11 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                                 기준정보에서 관리
                             </Link>
                         </div>
+                        <div className="grid grid-cols-2 gap-2">
+                        <Input {...register("defaultSpaceName")} placeholder="General" aria-label="첫 작업 공간 이름"/>
                         <Select
                             {...register("projectTypeId")}
+                            aria-label="작업 공간 프리셋"
                         >
                             {projectTypes.map((type) => (
                                 <option key={type.id} value={type.id}>
@@ -125,8 +129,9 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                                 </option>
                             ))}
                         </Select>
+                        </div>
                         <p className="mt-1 text-[11px] text-slate-400">
-                            타입에 따라 Task가 관리할 필드가 정해집니다.
+                            프리셋의 상태·필드·보드가 첫 작업 공간에 복사됩니다. Hardware·Software 같은 공간은 만든 뒤 사이드바에서 추가합니다.
                         </p>
                         {errors.projectTypeId && (
                             <p className="mt-0.5 text-xs text-red-500">{errors.projectTypeId.message}</p>

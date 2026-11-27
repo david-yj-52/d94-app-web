@@ -12,6 +12,12 @@ export interface DocRule {
     templateContent: string | null;
     /** true 면 Task 생성 때 폴더를 바로 만든다. false 면 첫 파생 때 */
     autoCreate: boolean;
+    /** 응답만: GLOBAL(전사 기준정보) | PROJECT(프로젝트 공통) | SPACE */
+    scope?: "GLOBAL" | "PROJECT" | "SPACE" | null;
+    spaceId?: string | null;
+    sourceRuleId?: string | null;
+    /** 기준정보에서 가져온 규칙 — 공간·프로젝트에서 지우거나 바꿀 수 없다 */
+    locked?: boolean | null;
 }
 
 export interface LinkedDoc {

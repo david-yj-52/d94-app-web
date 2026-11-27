@@ -53,6 +53,7 @@ Avatar({name?: string | null; size?: "sm" | "md"})                // 이름 첫 
 { collapsed?: boolean }
 ```
 - 메뉴: 내 작업(`/cira/dashboard`) · 알림 / 프로젝트 목록(`useProjects`) — 현재 프로젝트는 백로그(sprints)·보드·Task(`/issues`)·리포트·릴리스(versions)·위키·프로젝트 설정(ADMIN만, `useProjectMembers`) / 필터: 검색·고급 검색.
+- V630 작업 공간: 현재 프로젝트 아래 공간 select(`useCurrentSpace` — 바꾸면 `?space=` 로 같은 화면 이동)·추가 버튼 + (프로젝트 ADMIN → `CreateSpaceModal`). 메뉴에 "Feature (전체 통합)"(`/features`). 보드·Task·설정의 필드/문서 관리/워크플로우 링크는 `withSpace` 로 `?space=` 를 잇습니다. 프로젝트 ADMIN 이 아닌 공간 관리자(`space.canManage`)에게는 "공간 설정"(→ 워크플로우). `useSearchParams` 때문에 내부를 `Suspense` 로 감쌉니다.
 - 설정 화면 안에서는 프로젝트 하위 메뉴 대신 설정 메뉴(기본 정보·필드·문서 관리·멤버·워크플로우·Git 연동·자동화).
 - 현재 위치 판정은 `navContext.ts`의 `getNavContext(pathname)` → `{projectId?, inSettings}` (`navContext.test.ts`).
 - **새 프로젝트 하위 화면을 추가하면 `projectMenu` 배열에 항목을 추가하세요.**
