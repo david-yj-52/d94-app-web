@@ -7,7 +7,7 @@ type On = (method: string, pattern: string, h: (ctx: Ctx) => MockResult | Promis
 
 const ok = (data: unknown): MockResult => ({status: 200, body: {success: true, data}});
 const fail = (status: number, code: string, message: string): MockResult => ({status, body: {success: false, code, message}});
-const SERVICES = ["all", "cira", "docs", "study", "interface-test", "life-metric"];
+const SERVICES = ["all", "cira", "docs", "study", "interface-test", "life-metric", "infra"];
 
 const tokens: ApiToken[] = [];
 const enabled: Record<string, boolean> = {};
