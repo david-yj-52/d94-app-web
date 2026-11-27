@@ -1063,6 +1063,12 @@ const touch = (item: InterfaceTestItemResponse, event: string) => {
 };
 
 on("GET", "/v1/interface-tests", () => ok(getStore().interfaceTests));
+on("POST", "/v1/smartfarm/pumps/:pumpId/command", ({params, body}) => {
+    if (params.pumpId !== "PUMP1" || (body.action !== "ON" && body.action !== "OFF")) {
+        return {status: 400, body: {success: false, error: "Only PUMP1 ON/OFF is supported (mock)"}};
+    }
+    return ok({pumpId: "PUMP1", action: body.action, status: "PUBLISHED"});
+});
 on("GET", "/v1/interface-tests/:id", ({params}) => {
     const item = findIfItem(params.id);
     return item ? ok(item) : notFound("interface test item");
