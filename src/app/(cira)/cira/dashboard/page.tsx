@@ -4,6 +4,7 @@ import {useDashboard} from "@/hooks/useReports";
 import {Skeleton} from "@/components/ui/Skeleton";
 import type {ActivityItem, DashboardIssue} from "@/types/reports";
 import Link from "next/link";
+import Badge from "@/components/ui/Badge";
 
 const PRIORITY_COLOR: Record<string, string> = {
     CRITICAL: "bg-red-100 text-red-700",
@@ -67,16 +68,14 @@ function IssueRow({issue}: { issue: DashboardIssue }) {
                 )}
             </td>
             <td className="py-2.5 px-2">
-        <span className="inline-block px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs">
+        <Badge>
           {issue.statusNm ?? issue.status}
-        </span>
+        </Badge>
             </td>
             <td className="py-2.5 px-2">
-        <span
-            className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${PRIORITY_COLOR[issue.priority] ?? "bg-slate-100 text-slate-500"}`}
-        >
+        <Badge className={PRIORITY_COLOR[issue.priority] ?? "bg-slate-100 text-slate-500"}>
           {PRIORITY_LABEL[issue.priority] ?? issue.priority}
-        </span>
+        </Badge>
             </td>
             <td
                 className={`py-2.5 pr-4 text-xs text-right ${overdue ? "text-red-500 font-medium" : "text-slate-400"}`}

@@ -29,6 +29,7 @@ import {isAxiosError} from "axios";
 import {ArrowDown, ArrowUp, Lock, Plus, X} from "lucide-react";
 import {useState} from "react";
 import CustomFieldModal from "./CustomFieldModal";
+import EmptyState from "@/components/ui/EmptyState";
 
 const TYPE_NAME_MAX = 30;
 const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
@@ -205,7 +206,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                     <p className="mb-2 text-xs text-slate-500">
                         기본 세트에 넣으면 이 타입의 모든 프로젝트에 적용되고, 넣지 않으면 이 타입 프로젝트들이 라이브러리에서 골라 가져갑니다.
                     </p>
-                    {ownFields.length === 0 && <p className="mb-2 text-xs text-slate-400">이 타입의 필드가 없습니다.</p>}
+                    {ownFields.length === 0 && <EmptyState size="sm" className="mb-2 p-0 text-left">이 타입의 필드가 없습니다.</EmptyState>}
                     <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
                         {ownFields.map((f) => (
                             <li key={f.fieldKey} aria-label={f.name} className="flex min-h-10 items-center gap-2 px-3 text-sm">
@@ -322,7 +323,7 @@ function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
             <p className="mb-3 text-xs text-slate-500">
                 라이브러리 필드입니다. 타입으로 가져가거나(만들 때 "넣을 타입") 프로젝트가 가져가야 적용되고, 가져가면 복사본이 생깁니다.
             </p>
-            {fields.length === 0 && <p className="mb-3 text-xs text-slate-400">전역 사용자 정의 필드가 없습니다.</p>}
+            {fields.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">전역 사용자 정의 필드가 없습니다.</EmptyState>}
             <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200">
                 {fields.map((f) => (
                     <li key={f.fieldKey} aria-label={f.name} className="flex min-h-11 items-center gap-2 px-3 text-sm">

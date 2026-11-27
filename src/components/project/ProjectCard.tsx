@@ -1,5 +1,6 @@
 import type {ProjectResponse} from "@/types/project";
 import Link from "next/link";
+import Badge from "@/components/ui/Badge";
 
 interface Props {
     project: ProjectResponse;
@@ -19,11 +20,9 @@ export default function ProjectCard({project}: Props) {
           <span className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-widest">
             {project.key}
           </span>
-                    <span
-                        className={`text-xs font-medium px-2 py-0.5 rounded-full ${TYPE_COLORS[project.projectType] ?? "bg-slate-100 text-slate-600"}`}
-                    >
+                    <Badge className={TYPE_COLORS[project.projectType] ?? "bg-slate-100 text-slate-600"}>
             {project.projectType}
-          </span>
+          </Badge>
                 </div>
                 <h3 className="text-base font-semibold text-slate-900 group-hover:text-d94-brand mb-1">
                     {project.name}

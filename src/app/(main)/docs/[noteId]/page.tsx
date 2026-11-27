@@ -20,6 +20,7 @@ import {Skeleton} from "@/components/ui/Skeleton";
 import {docsError} from "@/lib/docs/error";
 import type {NoteKind, NoteVersion} from "@/types/docs";
 import {KIND_LABEL, KINDS} from "@/lib/docs/markdown";
+import EmptyState from "@/components/ui/EmptyState";
 
 /** 노트 화면: mode 하나로 보기·편집·버전 미리보기를 전환 (CIRA 위키와 같은 패턴). ?edit=1 이면 편집으로 연다 */
 export default function NotePage() {
@@ -60,7 +61,7 @@ function NoteContent() {
     const {show, ToastComponent} = useToast();
 
     if (note.isLoading) return <Skeleton className="h-96"/>;
-    if (!note.data) return <p className="p-8 text-center text-slate-500">노트를 찾을 수 없습니다.</p>;
+    if (!note.data) return <EmptyState className="text-slate-500">노트를 찾을 수 없습니다.</EmptyState>;
     const n = note.data;
     const existing = new Set(n.links.filter((l) => l.exists).map((l) => l.title));
     const folderPath = (() => {

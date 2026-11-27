@@ -8,6 +8,8 @@ import {useToast} from "@/components/ui/Toast";
 import {KIND_LABEL} from "@/lib/docs/markdown";
 import {docsError} from "@/lib/docs/error";
 import Button from "@/components/ui/Button";
+import Badge from "@/components/ui/Badge";
+import EmptyState from "@/components/ui/EmptyState";
 
 /** Docs 첫 화면: 아이디어 빠른 기록(제목 한 줄 → 아이디어 노트) + 최근 노트 */
 export default function DocsHomePage() {
@@ -32,13 +34,13 @@ export default function DocsHomePage() {
                 {(recent.data ?? []).slice(0, 15).map((n) => (
                     <li key={n.id}>
                         <Link href={`/docs/${n.id}`} className="flex items-center gap-2 py-2 text-sm hover:text-d94-brand">
-                            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">{KIND_LABEL[n.kind]}</span>
+                            <Badge className="text-slate-500">{KIND_LABEL[n.kind]}</Badge>
                             <span className="truncate">{n.title}</span>
                             {n.modifiedAt && <span className="ml-auto shrink-0 text-xs text-slate-400">{new Date(n.modifiedAt).toLocaleDateString("ko-KR")}</span>}
                         </Link>
                     </li>
                 ))}
-                {recent.data?.length === 0 && <li className="py-6 text-center text-sm text-slate-400">아직 노트가 없습니다.</li>}
+                {recent.data?.length === 0 && <li><EmptyState className="py-6">아직 노트가 없습니다.</EmptyState></li>}
             </ul>
             {ToastComponent}
         </div>

@@ -3,6 +3,7 @@
 import type {WikiPageSummary} from "@/lib/api/wiki";
 import {ChevronDown, ChevronRight, FilePlus, MoreHorizontal, Plus, Trash2} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface WikiTreeNode extends WikiPageSummary {
     children: WikiTreeNode[];
@@ -182,7 +183,7 @@ export default function WikiTree({
             {/* Tree */}
             <div className="flex-1 overflow-y-auto py-2 px-1">
                 {tree.length === 0 && (
-                    <div className="text-xs text-slate-400 px-3 py-2">페이지가 없습니다.</div>
+                    <EmptyState size="sm" className="py-2 text-left">페이지가 없습니다.</EmptyState>
                 )}
                 {tree.map((node) => (
                     <TreeNode

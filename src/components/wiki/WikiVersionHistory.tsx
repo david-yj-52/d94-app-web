@@ -2,6 +2,7 @@
 
 import type {WikiVersionResponse} from "@/lib/api/wiki";
 import {X} from "lucide-react";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface WikiVersionHistoryProps {
     versions: WikiVersionResponse[];
@@ -41,7 +42,7 @@ export default function WikiVersionHistory({
                 )}
 
                 {!isLoading && versions.length === 0 && (
-                    <div className="text-xs text-slate-400 px-4 py-6 text-center">버전 이력이 없습니다.</div>
+                    <EmptyState size="sm" className="px-4 py-6">버전 이력이 없습니다.</EmptyState>
                 )}
 
                 {!isLoading &&

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import {FileText, Loader2, RotateCw, Trash2} from "lucide-react";
 import type {StudyDocument} from "@/types/study";
+import Badge from "@/components/ui/Badge";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface Props {
     documents: StudyDocument[];
@@ -18,7 +20,7 @@ const STATUS: Record<StudyDocument["status"], { label: string; cls: string }> = 
 
 export default function DocumentList({documents, onDelete, onReparse}: Props) {
     if (!documents.length) {
-        return <p className="py-10 text-center text-sm text-slate-400">아직 올린 문서가 없습니다.</p>;
+        return <EmptyState>아직 올린 문서가 없습니다.</EmptyState>;
     }
     return (
         <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white">
@@ -41,10 +43,10 @@ export default function DocumentList({documents, onDelete, onReparse}: Props) {
                         {d.status === "READY"
                             ? <Link href={`/study/${d.id}`} className="flex min-w-0 flex-1 hover:text-indigo-600">{body}</Link>
                             : body}
-                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${s.cls}`}>
+                        <Badge className={s.cls}>
                             {d.status === "PARSING" && <Loader2 className="h-3 w-3 animate-spin"/>}
                             {s.label}
-                        </span>
+                        </Badge>
                         <button type="button" aria-label={`${d.title} 다시 분석`} title="원본 PDF로 다시 분석"
                                 disabled={d.status === "PARSING"} onClick={() => onReparse(d)}
                                 className="rounded p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-40">

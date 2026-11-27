@@ -22,7 +22,9 @@
 
 | 10 | `bd1e6b4` refactor | 보드·지표 삭제 확인 | KanbanBoard 컬럼·보드 삭제, Life Metric 지표 삭제의 손 마크업 다이얼로그 → `useConfirm` (손 마크업 삭제 모달 0개 — 프로젝트 설정의 인라인 2단계 삭제·CIRA 타입 삭제 Dialog 는 의도된 형태로 유지) |
 
-| 11 | (이번) feat | FormField | `ui/FormField`(라벨+입력+오류, `<label>` 로 입력 연결 — 라벨 클릭 포커스·스크린리더) 추가, 표준 라벨 필드 36곳(12개 파일) 교체 |
+| 11 | `bd11771` feat | FormField | `ui/FormField`(라벨+입력+오류, `<label>` 로 입력 연결 — 라벨 클릭 포커스·스크린리더) 추가, 표준 라벨 필드 36곳(12개 파일) 교체 |
+
+| 12 | (이번) feat | Badge·EmptyState | `ui/Badge`(알약, 색은 className) 23곳 · `ui/EmptyState`(md·sm·action) 21곳 교체 |
 
 **남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로.
 

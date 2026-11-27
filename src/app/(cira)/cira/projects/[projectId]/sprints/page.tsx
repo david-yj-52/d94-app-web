@@ -23,6 +23,7 @@ import type {SprintResponse, SprintStatus} from "@/types/sprint";
 import Link from "next/link";
 import {use, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Badge from "@/components/ui/Badge";
 
 const STATUS_LABEL: Record<SprintStatus, string> = {
     Planned: "대기",
@@ -133,11 +134,9 @@ function SprintCard({
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 flex-wrap">
                         <h3 className="text-base font-semibold text-slate-900">{sprint.sprintNm}</h3>
-                        <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[sprint.sprintStat]}`}
-                        >
+                        <Badge className={STATUS_COLOR[sprint.sprintStat]}>
               {STATUS_LABEL[sprint.sprintStat]}
-            </span>
+            </Badge>
                     </div>
 
                     {sprint.goal && (
@@ -238,10 +237,9 @@ function SprintCard({
                                     </td>
                                     <td className="py-2.5 text-center">
                                         {issue.statusNm && (
-                                            <span
-                                                className="inline-block px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-xs">
+                                            <Badge>
                           {issue.statusNm}
-                        </span>
+                        </Badge>
                                         )}
                                     </td>
                                     <td className="py-2.5 text-xs text-slate-500">

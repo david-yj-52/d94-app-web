@@ -6,6 +6,7 @@ import type {GitRepoResponse} from "@/lib/api/git";
 import {use, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 import FormField from "@/components/ui/FormField";
+import Badge from "@/components/ui/Badge";
 
 const PROVIDER_LABEL: Record<string, string> = {
     GITHUB: "GitHub",
@@ -165,11 +166,9 @@ export default function SettingsGitPage({
                     {repos?.map((repo) => (
                         <div key={repo.id} className="flex items-center justify-between px-4 py-3 gap-3">
                             <div className="flex items-center gap-3 min-w-0">
-                <span
-                    className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${PROVIDER_COLOR[repo.provider] ?? "bg-slate-100 text-slate-600"}`}
-                >
+                <Badge className={`shrink-0 ${PROVIDER_COLOR[repo.provider] ?? "bg-slate-100 text-slate-600"}`}>
                   {PROVIDER_LABEL[repo.provider] ?? repo.provider}
-                </span>
+                </Badge>
                                 <span className="font-medium text-slate-800 text-sm truncate">
                   {repo.repoName}
                 </span>
@@ -276,15 +275,13 @@ export default function SettingsGitPage({
                     )}
                     {activity?.map((item) => (
                         <div key={item.id} className="flex items-start gap-3 px-4 py-3">
-              <span
-                  className={`mt-0.5 shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${
+              <Badge className={`mt-0.5 shrink-0 ${
                       item.type === "PR"
                           ? "bg-purple-100 text-purple-700"
                           : "bg-slate-100 text-slate-600"
-                  }`}
-              >
+                  }`}>
                 {item.type === "PR" ? "PR" : "커밋"}
-              </span>
+              </Badge>
                             <div className="min-w-0 flex-1">
                                 <p className="text-sm text-slate-800 truncate">{item.message}</p>
                                 <p className="text-xs text-slate-400 mt-0.5">

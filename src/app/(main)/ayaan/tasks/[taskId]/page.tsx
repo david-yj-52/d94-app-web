@@ -8,6 +8,7 @@ import {useToast} from "@/components/ui/Toast";
 import {cancelTask, cleanTaskWorkspace, getTask, resumeTask} from "@/lib/api/ayaan";
 import {btnPrimary, btnSecondary, canCleanWorkspace, cleanError, fmtNum, fmtTime, STATUS_CLASS} from "../../format";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Badge from "@/components/ui/Badge";
 
 export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId: string }> }) {
     const {confirm, ConfirmComponent} = useConfirm();
@@ -40,7 +41,7 @@ export default function AyaanTaskDetailPage({params}: { params: Promise<{ taskId
             <Link href="/ayaan/tasks" className="text-sm text-d94-brand hover:underline">← 작업 목록</Link>
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">
-                    {t.issueKey ?? t.id} <span className={`ml-2 rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span>
+                    {t.issueKey ?? t.id} <Badge className={`ml-2 ${STATUS_CLASS[t.status]}`}>{t.status}</Badge>
                 </h1>
                 <div className="flex gap-2">
                     <button className={btnPrimary} disabled={!canResume || resume.isPending} onClick={() => resume.mutate()}>재개</button>

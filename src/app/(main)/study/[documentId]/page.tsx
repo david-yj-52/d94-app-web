@@ -20,6 +20,7 @@ import {useCreateStudyAnnotation, useSaveStudyPosition, useStudyDocument, useStu
 import {errorMessage} from "@/lib/study/colors";
 import {rangeToAnchor, type SelectionAnchor} from "@/lib/study/selection";
 import type {AnnotationColor} from "@/types/study";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function StudyViewerPage() {
     return <Suspense><Viewer/></Suspense>;
@@ -174,7 +175,7 @@ function Viewer() {
     };
 
     if (doc.isLoading) return <div className="mx-auto max-w-3xl px-4"><Skeleton className="h-64"/></div>;
-    if (!doc.data) return <p className="p-8 text-center text-slate-500">문서를 찾을 수 없습니다.</p>;
+    if (!doc.data) return <EmptyState className="text-slate-500">문서를 찾을 수 없습니다.</EmptyState>;
     if (!ready) {
         return (
             <div className="mx-auto max-w-xl p-8 text-center text-slate-600">

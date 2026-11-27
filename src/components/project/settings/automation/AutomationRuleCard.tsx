@@ -4,6 +4,8 @@ import {useDeleteAutomationRule, useRuleExecutions, useUpdateAutomationRule} fro
 import type {ActionType, AutomationRule, TriggerType} from "@/lib/api/automation";
 import {useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Badge from "@/components/ui/Badge";
+import EmptyState from "@/components/ui/EmptyState";
 
 export const TRIGGER_LABEL: Record<TriggerType, string> = {
     ISSUE_CREATED: "Task 생성됨",
@@ -83,13 +85,13 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
                     <div className="min-w-0">
                         <p className="font-medium text-slate-800 text-sm truncate">{rule.ruleName}</p>
                         <div className="flex items-center gap-2 mt-1">
-              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+              <Badge className="bg-blue-50 text-blue-700">
                 {TRIGGER_LABEL[rule.triggerType] ?? rule.triggerType}
-              </span>
+              </Badge>
                             <span className="text-xs text-slate-400">→</span>
-                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-violet-50 text-violet-700">
+                            <Badge className="bg-violet-50 text-violet-700">
                 {ACTION_LABEL[rule.actionType] ?? rule.actionType}
-              </span>
+              </Badge>
                         </div>
                     </div>
                 </div>
@@ -124,7 +126,7 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
                         <p className="text-xs text-slate-400">불러오는 중...</p>
                     )}
                     {!execLoading && (!executions || executions.length === 0) && (
-                        <p className="text-xs text-slate-400">실행 이력이 없습니다.</p>
+                        <EmptyState size="sm" className="p-0 text-left">실행 이력이 없습니다.</EmptyState>
                     )}
                     <div className="space-y-1">
                         {executions?.map((exec) => (

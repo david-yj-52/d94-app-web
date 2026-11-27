@@ -2,6 +2,7 @@
 
 import Dialog from "@/components/ui/Dialog";
 import {CUSTOM_FIELD_TYPE_LABELS, type LibraryItem} from "@/types/fields";
+import EmptyState from "@/components/ui/EmptyState";
 
 const GROUPS = [["global", "전역 필드"], ["type", "이 타입의 필드"]] as const;
 
@@ -18,7 +19,7 @@ export default function FieldLibraryDialog({items, onImport, isPending, onClose}
     return (
         <Dialog open onOpenChange={(o) => !o && onClose()} title="라이브러리에서 가져오기">
             <p className="px-4 pt-3 text-xs text-slate-500">가져오면 이 프로젝트의 필드로 복사됩니다. 복사본은 원본과 따로 고칠 수 있습니다.</p>
-            {items.length === 0 && <p className="px-4 py-6 text-sm text-slate-400">가져올 수 있는 필드가 없습니다.</p>}
+            {items.length === 0 && <EmptyState className="py-6">가져올 수 있는 필드가 없습니다.</EmptyState>}
             {GROUPS.map(([scope, title]) => {
                 const group = items.filter((i) => i.field.scope === scope);
                 if (group.length === 0) return null;

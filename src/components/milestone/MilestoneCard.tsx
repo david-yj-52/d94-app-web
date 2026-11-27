@@ -2,6 +2,7 @@
 
 import {useMilestoneProgress} from "@/hooks/useMilestones";
 import type {MilestoneResponse, MilestoneStatus} from "@/types/milestone";
+import Badge from "@/components/ui/Badge";
 
 const STATUS_LABEL: Record<MilestoneStatus, string> = {
     OPEN: "진행 중",
@@ -57,11 +58,9 @@ export default function MilestoneCard({milestone, onEdit, onDelete, isDeleting}:
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 flex-wrap">
                         <h3 className="text-base font-semibold text-slate-900">{milestone.name}</h3>
-                        <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[milestone.status]}`}
-                        >
+                        <Badge className={STATUS_COLOR[milestone.status]}>
               {STATUS_LABEL[milestone.status]}
-            </span>
+            </Badge>
                     </div>
 
                     {milestone.description && (

@@ -3,6 +3,7 @@
 import {useRemoveProjectMember, useUpdateProjectMemberRole,} from "@/hooks/useProjectSettings";
 import type {ProjectMemberResponse, ProjectRole} from "@/types/member";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Badge from "@/components/ui/Badge";
 
 interface Props {
     projectId: string;
@@ -116,15 +117,13 @@ export default function MemberTable({
                                     <option value="MEMBER">Member</option>
                                 </select>
                             ) : (
-                                <span
-                                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                                <Badge className={`py-1 ${
                                         member.role === "ADMIN"
                                             ? "bg-blue-100 text-blue-700"
                                             : "bg-slate-100 text-slate-600"
-                                    }`}
-                                >
+                                    }`}>
                     {member.role === "ADMIN" ? "Admin" : "Member"}
-                  </span>
+                  </Badge>
                             )}
                         </td>
                         {isAdmin && (

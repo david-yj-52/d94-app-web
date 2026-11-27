@@ -13,6 +13,7 @@ import type {WorkflowCategory, WorkflowStatusResponse} from "@/types/workflow";
 import {useSession} from "next-auth/react";
 import {use, useEffect, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Badge from "@/components/ui/Badge";
 
 const CATEGORY_LABEL: Record<WorkflowCategory, string> = {
     TODO: "할 일",
@@ -271,11 +272,9 @@ export default function SettingsWorkflowPage({
                     <span className="font-medium text-slate-800 text-sm">
                       {status.statusNm}
                     </span>
-                                        <span
-                                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${CATEGORY_COLOR[status.category]}`}
-                                        >
+                                        <Badge className={CATEGORY_COLOR[status.category]}>
                       {CATEGORY_LABEL[status.category]}
-                    </span>
+                    </Badge>
                                     </div>
                                     {isAdmin && (
                                         <button

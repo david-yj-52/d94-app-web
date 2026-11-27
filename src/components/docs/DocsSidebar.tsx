@@ -4,6 +4,7 @@ import {useState} from "react";
 import Link from "next/link";
 import {ChevronDown, ChevronRight, FileText, Folder, FolderPlus, Lock, MoreHorizontal, Plus, Users} from "lucide-react";
 import type {DocsFolder, DocsVault, NoteSummary} from "@/types/docs";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface DocsSidebarProps {
     /** 보여 줄 vault 들 (통합 뷰면 여러 개). vault 마다 섹션 하나 */
@@ -50,7 +51,7 @@ export default function DocsSidebar(props: DocsSidebarProps) {
                         </div>
                         {!closed.has(key) && <Tree {...props} folders={vf} notes={vn} parentId={null} depth={0} closed={closed} toggle={toggle}/>}
                         {!closed.has(key) && vf.length === 0 && vn.length === 0 &&
-                            <p className="px-2 py-2 text-xs text-slate-400">아직 노트가 없습니다.</p>}
+                            <EmptyState size="sm" className="px-2 py-2 text-left">아직 노트가 없습니다.</EmptyState>}
                     </section>
                 );
             })}

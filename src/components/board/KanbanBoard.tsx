@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import {useState} from "react";
 import Button from "@/components/ui/Button";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Badge from "@/components/ui/Badge";
 
 interface DragState {
     issueId: string;
@@ -175,9 +176,9 @@ export default function KanbanBoard({boardId, projectId}: Props) {
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                     <h2 className="text-lg font-semibold text-slate-800">{board.boardNm}</h2>
-                    <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                    <Badge className="text-slate-400">
             {board.boardType}
-          </span>
+          </Badge>
                 </div>
 
                 <div className="flex items-center gap-2">

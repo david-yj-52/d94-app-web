@@ -13,6 +13,8 @@ import {toCreateBody} from "./taskBody";
 import {planStageLabel} from "./planStage";
 import {ayaanError, btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Badge from "@/components/ui/Badge";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function AyaanTasksPage() {
     const {confirm, ConfirmComponent} = useConfirm();
@@ -197,7 +199,7 @@ export default function AyaanTasksPage() {
                             <Link href={`/ayaan/tasks/${t.id}`} className="block px-3 py-3 text-sm active:bg-slate-50">
                                 <span className="flex items-center gap-2">
                                     <span className="font-medium text-d94-brand">{t.issueKey ?? t.id}</span>
-                                    <span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span>
+                                    <Badge className={STATUS_CLASS[t.status]}>{t.status}</Badge>
                                     <span className="ml-auto text-xs text-slate-500">{t.toolCd}</span>
                                 </span>
                                 <span className="mt-1 block text-xs text-slate-500">
@@ -206,7 +208,7 @@ export default function AyaanTasksPage() {
                             </Link>
                         </li>
                     ))}
-                    {list.data?.length === 0 && <li className="p-4 text-center text-sm text-slate-400">작업이 없습니다.</li>}
+                    {list.data?.length === 0 && <li><EmptyState className="py-4">작업이 없습니다.</EmptyState></li>}
                 </ul>
                 <div className="hidden overflow-x-auto rounded-xl border border-slate-200 bg-white md:block">
                 <table className="w-full min-w-[560px] text-sm">
@@ -217,13 +219,13 @@ export default function AyaanTasksPage() {
                     {(list.data ?? []).map((t) => (
                         <tr key={t.id} className="border-t border-slate-100">
                             <td className="p-2"><Link href={`/ayaan/tasks/${t.id}`} className="text-d94-brand hover:underline">{t.issueKey ?? t.id}</Link></td>
-                            <td><span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span></td>
+                            <td><Badge className={STATUS_CLASS[t.status]}>{t.status}</Badge></td>
                             <td>{t.toolCd}</td>
                             <td>{fmtTime(t.resumeAt)}</td>
                             <td>{fmtTime(t.createdAt)}</td>
                         </tr>
                     ))}
-                    {list.data?.length === 0 && <tr><td colSpan={5} className="p-4 text-center text-slate-400">작업이 없습니다.</td></tr>}
+                    {list.data?.length === 0 && <tr><td colSpan={5}><EmptyState className="py-4">작업이 없습니다.</EmptyState></td></tr>}
                     </tbody>
                 </table>
                 </div>

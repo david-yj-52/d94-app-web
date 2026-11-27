@@ -2,6 +2,7 @@
 
 import {DOT_CLASS} from "@/lib/study/colors";
 import type {AnnotationListItem, NoteLocation} from "@/types/study";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface Props {
     items: AnnotationListItem[];
@@ -11,7 +12,7 @@ interface Props {
 /** 노트를 문서별로 묶어 보여 준다. 항목을 누르면 그 문장으로 이동한다. */
 export default function NoteList({items, onOpen}: Props) {
     if (!items.length) {
-        return <p className="py-10 text-center text-sm text-slate-400">아직 마킹하거나 노트를 쓴 내용이 없습니다.</p>;
+        return <EmptyState>아직 마킹하거나 노트를 쓴 내용이 없습니다.</EmptyState>;
     }
     const groups = new Map<string, AnnotationListItem[]>();
     items.forEach((a) => groups.set(a.documentTitle, [...(groups.get(a.documentTitle) ?? []), a]));

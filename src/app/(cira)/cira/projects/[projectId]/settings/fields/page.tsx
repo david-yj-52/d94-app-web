@@ -19,6 +19,7 @@ import {isAxiosError} from "axios";
 import {ArrowDown, ArrowUp, Lock} from "lucide-react";
 import Link from "next/link";
 import {use, useState} from "react";
+import EmptyState from "@/components/ui/EmptyState";
 
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
 
@@ -78,7 +79,7 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
 
             <section className="max-w-2xl">
                 <h3 className="mb-2 text-sm font-semibold text-slate-800">이 프로젝트에 추가한 필드</h3>
-                {added.length === 0 && <p className="mb-3 text-xs text-slate-400">추가한 필드가 없습니다.</p>}
+                {added.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">추가한 필드가 없습니다.</EmptyState>}
                 <ul className="mb-3 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
                     {added.map((f, i) => (
                         <li key={f.fieldKey} className="flex min-h-11 items-center gap-2 px-3 text-sm">

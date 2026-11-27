@@ -3,6 +3,8 @@
 import {SkeletonRow} from "@/components/ui/Skeleton";
 import type {InterfaceTestItemResponse} from "@/types/interfaceTest";
 import {RefreshCw} from "lucide-react";
+import Badge from "@/components/ui/Badge";
+import EmptyState from "@/components/ui/EmptyState";
 
 interface Props {
     items: InterfaceTestItemResponse[];
@@ -34,7 +36,7 @@ export default function InterfaceItemTable({items, isLoading, errorMessage, sele
             ) : errorMessage ? (
                 <p className="bg-red-50 px-5 py-4 text-sm text-red-500">{errorMessage}</p>
             ) : items.length === 0 ? (
-                <p className="px-5 py-8 text-center text-sm text-slate-500">데이터가 없습니다. POST 로 생성해 보세요.</p>
+                <EmptyState className="py-8 text-slate-500">데이터가 없습니다. POST 로 생성해 보세요.</EmptyState>
             ) : (
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
@@ -53,7 +55,7 @@ export default function InterfaceItemTable({items, isLoading, errorMessage, sele
                                 className={`cursor-pointer border-t border-slate-100 hover:bg-slate-50 ${item.id === selectedId ? "bg-d94-brand-soft" : ""}`}>
                                 <td className="px-4 py-2 font-medium text-slate-900">{item.name}</td>
                                 <td className="px-4 py-2">
-                                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">{item.status}</span>
+                                    <Badge className="text-slate-700">{item.status}</Badge>
                                 </td>
                                 <td className="max-w-xs truncate px-4 py-2 text-slate-700">{item.content ?? "—"}</td>
                                 <td className="px-4 py-2 font-mono text-xs text-slate-500">{item.lastEvent}</td>

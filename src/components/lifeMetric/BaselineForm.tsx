@@ -3,6 +3,7 @@
 import type {Metric} from "@/types/lifeMetric";
 import {useState} from "react";
 import Button from "@/components/ui/Button";
+import EmptyState from "@/components/ui/EmptyState";
 
 /** 기준값 편집. 스키마의 BASELINE 항목 + 스키마 밖에 저장된 값도 보여 준다. 빈 칸 저장 = 삭제 */
 export default function BaselineForm({metric, onSave, isPending}: {
@@ -21,7 +22,7 @@ export default function BaselineForm({metric, onSave, isPending}: {
         return [r.key, v === "" ? null : r.type === "NUMBER" && !isNaN(Number(v)) ? Number(v) : v];
     })));
 
-    if (rows.length === 0) return <p className="text-sm text-slate-500">기준값 항목이 없습니다.</p>;
+    if (rows.length === 0) return <EmptyState className="py-6">기준값 항목이 없습니다.</EmptyState>;
     return (
         <div className="space-y-3">
             {rows.map((r) => (

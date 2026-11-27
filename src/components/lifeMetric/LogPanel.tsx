@@ -4,6 +4,7 @@ import type {LogRequest, Metric, MetricLog} from "@/types/lifeMetric";
 import {useState} from "react";
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import Button from "@/components/ui/Button";
+import EmptyState from "@/components/ui/EmptyState";
 
 const inputCls = "h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
 
@@ -59,7 +60,7 @@ export default function LogPanel({metric, logs, onAdd, onDelete, isPending}: {
                 </div>
             )}
 
-            {logs.length === 0 ? <p className="text-sm text-slate-500">기록이 없습니다.</p> : (
+            {logs.length === 0 ? <EmptyState className="py-6">기록이 없습니다.</EmptyState> : (
                 <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
                     {logs.map((l) => (
                         <li key={l.id} className="flex items-center gap-3 px-3 py-2 text-sm">

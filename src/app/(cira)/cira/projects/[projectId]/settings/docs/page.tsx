@@ -7,6 +7,7 @@ import type {DocRule} from "@/types/ciraDocs";
 import type {NoteKind} from "@/types/docs";
 import {ArrowDown, ArrowUp} from "lucide-react";
 import {use, useEffect, useState} from "react";
+import EmptyState from "@/components/ui/EmptyState";
 
 const KINDS: NoteKind[] = ["idea", "doc", "task", "knowledge"];
 const blank = (): DocRule => ({id: null, issueTypeId: null, folderName: "", sortOrder: null, defaultKind: null,
@@ -59,7 +60,7 @@ export default function ProjectDocRulesPage({params}: { params: Promise<{ projec
                     </select>
                 </div>
 
-                {rows.length === 0 && <p className="mb-3 text-xs text-slate-400">슬롯이 없습니다. 파생 문서는 메인 문서와 같은 폴더(또는 직접 입력한 폴더)에 만들어집니다.</p>}
+                {rows.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">슬롯이 없습니다. 파생 문서는 메인 문서와 같은 폴더(또는 직접 입력한 폴더)에 만들어집니다.</EmptyState>}
                 <ul className="mb-3 space-y-2">
                     {rows.map((r, i) => (
                         <li key={r.id ?? `new-${i}`} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">

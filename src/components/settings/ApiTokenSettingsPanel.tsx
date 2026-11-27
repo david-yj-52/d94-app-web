@@ -16,6 +16,7 @@ import {GLOBAL_TOKEN_SERVICE, serviceLabel} from "@/types/apiToken";
 import type {ApiTokenAccess, IssuedApiToken, IssueApiTokenRequest} from "@/types/apiToken";
 import Button from "@/components/ui/Button";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import EmptyState from "@/components/ui/EmptyState";
 
 const NAME_MAX = 100;
 const DAYS = [30, 90, 365] as const;
@@ -170,7 +171,7 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
 
             <div className="mt-5 overflow-x-auto">
                 {!tokens ? <SkeletonCard/> : tokens.length === 0 ? (
-                    <p className="rounded-lg bg-slate-50 px-3 py-4 text-center text-xs text-slate-400">발급한 토큰이 없습니다.</p>
+                    <EmptyState size="sm" className="rounded-lg bg-slate-50">발급한 토큰이 없습니다.</EmptyState>
                 ) : (
                     <table className="w-full text-left text-sm">
                         <thead className="text-xs text-slate-500">

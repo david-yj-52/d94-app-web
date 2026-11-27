@@ -7,6 +7,7 @@ import {useToast} from "@/components/ui/Toast";
 import {getQuotas, getTasks, refreshQuotas} from "@/lib/api/ayaan";
 import {TOOLS} from "@/types/ayaan";
 import {btnPrimary, ESTIMATED_SOURCES, fmtTime, remaining, STATUS_CLASS} from "./format";
+import Badge from "@/components/ui/Badge";
 
 export default function AyaanDashboardPage() {
     const qc = useQueryClient();
@@ -55,8 +56,8 @@ export default function AyaanDashboardPage() {
                                             <div className="flex items-center justify-between text-sm">
                                                 <span>{q.windowCd} · {q.usedPct == null ? "-" : `${pct}%`}</span>
                                                 <span className="flex items-center gap-1">
-                                                    {est && <span className="rounded-full bg-slate-100 px-2 text-xs">추정</span>}
-                                                    <span className="rounded-full bg-slate-100 px-2 text-xs">{q.status}</span>
+                                                    {est && <Badge>추정</Badge>}
+                                                    <Badge>{q.status}</Badge>
                                                 </span>
                                             </div>
                                             <div className="my-1 h-2 rounded-full bg-slate-100" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`${tool} ${q.windowCd} 사용률`}>
@@ -77,7 +78,7 @@ export default function AyaanDashboardPage() {
                 <ul className="space-y-2">
                     {active.map((t) => (
                         <li key={t.id} className="flex items-center gap-3 text-sm">
-                            <span className={`rounded-full px-2 text-xs ${STATUS_CLASS[t.status]}`}>{t.status}</span>
+                            <Badge className={STATUS_CLASS[t.status]}>{t.status}</Badge>
                             <Link href={`/ayaan/tasks/${t.id}`} className="text-d94-brand hover:underline">{t.issueKey ?? t.id}</Link>
                             <span className="text-slate-500">{t.toolCd}{t.resumeAt ? ` · 재개 ${fmtTime(t.resumeAt)}` : ""}</span>
                         </li>

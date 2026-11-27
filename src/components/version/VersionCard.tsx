@@ -3,6 +3,7 @@
 import {useState} from "react";
 import type {VersionResponse, VersionStatus} from "@/types/version";
 import ReleaseNotesModal from "./ReleaseNotesModal";
+import Badge from "@/components/ui/Badge";
 
 const STATUS_LABEL: Record<VersionStatus, string> = {
     PLANNING: "계획 중",
@@ -49,11 +50,9 @@ export default function VersionCard({
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 flex-wrap">
                             <h3 className="text-base font-semibold text-slate-900">{version.versionName}</h3>
-                            <span
-                                className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLOR[version.status]}`}
-                            >
+                            <Badge className={STATUS_COLOR[version.status]}>
                 {STATUS_LABEL[version.status]}
-              </span>
+              </Badge>
                         </div>
 
                         {version.description && (

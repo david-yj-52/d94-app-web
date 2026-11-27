@@ -5,13 +5,14 @@ import {Pencil, Trash2} from "lucide-react";
 import {useDeleteStudyTerm, useStudyTerms, useUpdateStudyTerm} from "@/hooks/useStudy";
 import {errorMessage} from "@/lib/study/colors";
 import type {StudyTerm} from "@/types/study";
+import EmptyState from "@/components/ui/EmptyState";
 
 /** 전역 + 이 문서 단어 목록. 수정·삭제하면 본문 툴팁에 바로 반영된다(페이지 쿼리 무효화). */
 export default function TermsPanel({documentId, onError}: { documentId: string; onError: (m: string) => void }) {
     const {data, isLoading} = useStudyTerms(documentId);
     if (isLoading) return <p className="text-sm text-slate-400">불러오는 중…</p>;
     if (!data?.length) {
-        return <p className="text-sm text-slate-400">등록한 단어가 없습니다. 본문에서 글자를 선택하고 “단어장”을 누르세요.</p>;
+        return <EmptyState className="py-6">등록한 단어가 없습니다. 본문에서 글자를 선택하고 “단어장”을 누르세요.</EmptyState>;
     }
     return (
         <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white">

@@ -105,6 +105,29 @@ Input(InputHTMLAttributes<HTMLInputElement>)  Select(SelectHTMLAttributes<HTMLSe
 - 입력이 여러 개(체크박스 묶음·수식 편집기 등)면 쓰지 말고 직접 마크업합니다.
 - 2026-11-26 표준 라벨 마크업 + 입력 1개인 36곳(12개 파일: sprint·milestone·version·issue 생성·project·board·member·automation·git·interfaceTest)을 교체했습니다.
 
+### Badge — `import Badge from "@/components/ui/Badge"`
+```ts
+{ className?: string; children: ReactNode }
+```
+```tsx
+<Badge className={STATUS_COLOR[sprint.sprintStat]}>{STATUS_LABEL[sprint.sprintStat]}</Badge>
+<Badge>기본 회색</Badge>
+```
+- `inline-flex rounded-full px-2 py-0.5 text-xs font-medium`, 기본 `bg-slate-100 text-slate-600`. 색은 `className`(상태별 색 맵)으로 주면 tailwind-merge 가 기본색을 덮어씁니다.
+- 2026-11-26 상태·종류 배지 23곳 교체(sprints·dashboard·workflow·git·Milestone·Version·Project 카드·MemberTable·AutomationRuleCard·ayaan·docs·study·KanbanBoard·interfaceTest). 예외: `MethodBadge`(고정 폭·테두리)·HTTP 상태 코드(고정폭 글꼴)·`rounded`(알약 아님) 배지는 그대로.
+
+### EmptyState — `import EmptyState from "@/components/ui/EmptyState"`
+```ts
+{ children: ReactNode; action?: ReactNode; size?: "md" | "sm"; className?: string }
+```
+```tsx
+if (docs.length === 0) return <EmptyState>아직 올린 문서가 없습니다.</EmptyState>;
+<EmptyState size="sm" className="py-2 text-left">페이지가 없습니다.</EmptyState>   // 사이드바·패널 안
+<li><EmptyState className="py-4">작업이 없습니다.</EmptyState></li>                  // 목록·표 안은 li/td 로 감쌈
+```
+- md = `px-4 py-10 text-sm`, sm = `px-3 py-4 text-xs`, 가운데 `text-slate-400`. `action`(버튼·링크)은 문구 아래.
+- 2026-11-26 "~이 없습니다" 빈 상태 21곳 교체(Docs·Study·Wiki·Life Metric·Ayaan·interfaceTest·설정 패널·CIRA 설정 docs/fields·필드 가져오기·자동화 실행 이력, 문서·노트를 찾을 수 없음). 안내 문구(“변경할 수 없습니다” 등)와 위키 본문 자리표시는 대상 아님.
+
 ### ConfirmDialog / useConfirm — `import {useConfirm} from "@/components/ui/ConfirmDialog"`
 ```ts
 useConfirm(): { confirm: (message: string, opts?: { title?: string; confirmLabel?: string; danger?: boolean }) => Promise<boolean>; ConfirmComponent: JSX.Element | null }
@@ -153,8 +176,8 @@ return (<div>... {ConfirmComponent}</div>);
 | `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`) | `<button>` 171곳 | ✅ **완료**(2026-11-26, 표준형 39곳 교체). `loading` 은 필요해질 때 |
 | `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | ✅ **완료** — Input·Select·Textarea(표준형 31곳), FormField(라벨+입력+오류 36곳) |
 | `ConfirmDialog` | 브라우저 `confirm()` 15곳 + 손 마크업 삭제 다이얼로그 | ✅ **완료**(2026-11-26 `useConfirm` — `confirm()` 15곳, 손 마크업 삭제 확인 5곳: Task·댓글·컬럼·보드·지표) |
-| `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | |
-| `EmptyState` | "~이 없습니다" 빈 화면 | |
+| `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | ✅ **완료**(2026-11-26, 23곳) |
+| `EmptyState` | "~이 없습니다" 빈 화면 | ✅ **완료**(2026-11-26, 21곳) |
 | `DropdownMenu` | `···` 더보기 메뉴 (issue 상세 등) | |
 
 새 primitive를 만들면 이 문서 §2에 카드를 추가하고, 카탈로그 표에도 등록합니다.
