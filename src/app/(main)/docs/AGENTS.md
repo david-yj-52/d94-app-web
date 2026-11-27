@@ -29,7 +29,7 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 |---|---|---|
 | `useDocsVaults` | `GET /v1/docs/vaults` | ✅ (Private 하나) |
 | `useDocsFolders(vaultId)`, `useCreate/Rename/Move/DeleteDocsFolder` | `GET/POST /v1/docs/folders` (`vaultId`, 생성은 `{name, parentId, vaultId}`), `PUT /{id}`, `PUT /{id}/move`, `DELETE /{id}` | ✅ |
-| `useNotes(filters)` | `GET /v1/docs/notes` (layout 은 선택한 `vaultId`, home·useOpenNote 는 통합, 파생 노트는 `{origin: 제목, vaultId: 노트의 vault}`) | ✅ |
+| `useNotes(filters, enabled?)` | `GET /v1/docs/notes` (layout 은 선택한 `vaultId`, home·useOpenNote 는 통합, 파생 노트는 `{origin: 제목, vaultId: 노트의 vault}`) | ✅ |
 | `useNote`, `useUpdateNote`, `useMoveNote`, `useDeleteNote` | `GET/PUT/DELETE /v1/docs/notes/{id}`, `PUT /{id}/move` | ✅ |
 | `useCreateNote` (useOpenNote) | `POST /v1/docs/notes` | ✅ |
 | `useBacklinks`, `useNoteVersions` | `GET /v1/docs/notes/{id}/backlinks`, `/versions` (이력 패널을 열 때만) | ✅ |

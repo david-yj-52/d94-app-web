@@ -88,8 +88,8 @@ export function useDeleteDocsFolder() {
 }
 
 // ── 노트 ──
-export function useNotes(filters: NoteFilters = {}) {
-    return useQuery({queryKey: ["docsNotes", filters], queryFn: () => getNotes(filters)});
+export function useNotes(filters: NoteFilters = {}, enabled = true) {
+    return useQuery({queryKey: ["docsNotes", filters], queryFn: () => getNotes(filters), enabled});
 }
 
 export function useNote(id: string) {

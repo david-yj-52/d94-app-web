@@ -35,7 +35,7 @@ function NoteContent() {
     const note = useNote(noteId);
     const backlinks = useBacklinks(noteId);
     // 파생·이동 대상은 이 노트의 vault 안에서만 (링크·계보가 vault 단위)
-    const derived = useNotes(note.data ? {origin: note.data.title, vaultId: note.data.vaultId} : {origin: "\u0000"});
+    const derived = useNotes({origin: note.data?.title, vaultId: note.data?.vaultId}, !!note.data);
     const folders = useDocsFolders(note.data?.vaultId ?? "ALL");
     const [mode, setMode] = useState<"view" | "edit">(search.get("edit") ? "edit" : "view");
     const [showVersions, setShowVersions] = useState(false);
