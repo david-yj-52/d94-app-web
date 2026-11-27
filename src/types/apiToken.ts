@@ -41,6 +41,7 @@ const SERVICE_LABELS: Record<string, string> = {
     study: "Study",
     "interface-test": "인터페이스 테스트",
     "life-metric": "Life Metric",
+    infra: "인프라",
 };
 
 /** 서비스 코드 → 화면 이름. 모르는 코드는 대문자로 */

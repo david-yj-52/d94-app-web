@@ -17,6 +17,7 @@ app/layout.tsx           <html>·<body>(bg-d94-bg) + Providers(Query+Session) + 
 │   ├── home/                                       허브
 │   ├── docs/                                       Docs 개인 vault
 │   ├── life-metric/                                Life Metric (삶의 수치화)
+│   ├── infra/                                      인프라 통합 리소스·사용량
 │   └── mpms/ solace/ todo/ interface-test/ study/  실험 모듈
 ├── (cira)/cira/         CIRA 전용 영역 (URL /cira/**). layout: CIRA 셸 (세션은 루트 Providers 공유)
 │   └── projects/ dashboard/ search/ notifications/
@@ -27,7 +28,7 @@ app/layout.tsx           <html>·<body>(bg-d94-bg) + Providers(Query+Session) + 
 ```
 
 - **접근 제어**는 `src/middleware.ts`가 담당합니다.
-  - 보호 경로(비로그인 시 `/login?callbackUrl=…`으로, 판정은 쿠키를 읽기만 하는 `readSessionToken`): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`, `/settings`, `/docs/**`, `/life-metric/**`. 판정은 `src/lib/routeAccess.ts`
+  - 보호 경로(비로그인 시 `/login?callbackUrl=…`으로, 판정은 쿠키를 읽기만 하는 `readSessionToken`): `/cira/**`(단 `/cira/register` 제외), `/interface-test`, `/study/**`, `/ayaan/**`, `/settings`, `/docs/**`, `/life-metric/**`, `/infra/**`. 판정은 `src/lib/routeAccess.ts`
   - 예전 CIRA 경로(`/projects/**` 등)는 `next.config.mjs` redirect 로 `/cira/...` 에 갑니다 → [architecture](../../docs/architecture.md)
   - `/home`, `/todo`는 페이지에서 직접 `auth()`를 확인해 redirect합니다. `/mpms`, `/solace`는 **보호되지 않습니다**.
 
@@ -55,6 +56,8 @@ app/layout.tsx           <html>·<body>(bg-d94-bg) + Providers(Query+Session) + 
 | Docs Task | `/docs/tasks` | 공통 | 모든 노트의 체크박스 줄 상태별 모아보기·필터·상태 변경 | [docs/tasks](./(main)/docs/tasks/AGENTS.md) |
 | Life Metric | `/life-metric` | 🧪 | 지표 카드 대시보드 · 템플릿/커스텀 수식으로 지표 생성 | [life-metric](./(main)/life-metric/AGENTS.md) |
 | Life Metric 상세 | `/life-metric/[metricId]` | 🧪 | 현재 값·수식 편집·기준값·기록(추이 차트) | [[metricId]](./(main)/life-metric/[metricId]/AGENTS.md) |
+| 인프라 | `/infra` | 🧪 | 노드 카드 종합 현황 · 위치 필터 · 메모리 유휴 요약 · 노드 등록(ADMIN) | [infra](./(main)/infra/AGENTS.md) |
+| 인프라 노드 상세 | `/infra/[nodeKey]` | 🧪 | 스펙·접속 가이드·사용률 추이·프로세스/컨테이너 Top-N·서비스 문서 | [[nodeKey]](./(main)/infra/[nodeKey]/AGENTS.md) |
 | PDF 학습 | `/study` | 🧪 | 문서 목록·PDF 분할 업로드 | [study](./(main)/study/AGENTS.md) |
 | PDF 학습 뷰어 | `/study/[documentId]` | 🧪 | 목차·본문·이 페이지 내용 3단 뷰어, 마킹·단어장 | [viewer](./(main)/study/[documentId]/AGENTS.md) |
 | 노트 모아보기 | `/study/notes` | 🧪 | 모든 문서의 마킹·노트, 클릭하면 해당 문장으로 | [notes](./(main)/study/notes/AGENTS.md) |
