@@ -62,42 +62,52 @@ export default function SpaceInfoPage({params}: { params: Promise<{ projectId: s
     };
 
     return (
-        <div className="max-w-2xl">
+        <>
             <div className="mb-6">
-                <h2 className="text-xl font-bold text-slate-900">작업 공간 · {space.name}</h2>
+                <h2 className="text-xl font-bold text-slate-900">공간 정보</h2>
                 <p className="mt-1 text-sm text-slate-500">
-                    이 공간의 워크플로·필드·보드·산출물 규칙은 공간 관리자가 따로 운영합니다. 공간을 바꾸려면 사이드바에서 고르세요.
+                    {space.name} 작업 공간의 워크플로·필드·보드·산출물 규칙은 공간 관리자가 따로 운영합니다. 다른 공간은 사이드바에서 고르세요.
                 </p>
             </div>
-            <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
-                <FormField label="이름">
+
+            <div className="max-w-lg space-y-5">
+                <FormField label="이름" required>
                     <Input value={name} maxLength={60} disabled={!canEdit} onChange={(e) => setName(e.target.value)}/>
                 </FormField>
                 <FormField label="설명">
-                    <Textarea rows={2} value={description} maxLength={500} disabled={!canEdit} onChange={(e) => setDescription(e.target.value)}/>
+                    <Textarea rows={3} value={description} maxLength={500} disabled={!canEdit} onChange={(e) => setDescription(e.target.value)}/>
                 </FormField>
-                <FormField label="공간 관리자">
-                    <Select value={adminUserId} disabled={!isAdmin} onChange={(e) => setAdminUserId(e.target.value)}>
-                        {!members.some((m) => m.userId === space.adminUserId) && <option value={space.adminUserId}>{space.adminNm ?? space.adminUserId}</option>}
-                        {members.map((m) => <option key={m.userId} value={m.userId}>{m.userNm} ({m.email})</option>)}
-                    </Select>
-                </FormField>
-                {!isAdmin && <p className="text-xs text-slate-400">공간 관리자 임명·공간 삭제는 프로젝트 관리자만 할 수 있습니다.</p>}
+                <div>
+                    <FormField label="공간 관리자">
+                        <Select value={adminUserId} disabled={!isAdmin} onChange={(e) => setAdminUserId(e.target.value)}>
+                            {!members.some((m) => m.userId === space.adminUserId) && <option value={space.adminUserId}>{space.adminNm ?? space.adminUserId}</option>}
+                            {members.map((m) => <option key={m.userId} value={m.userId}>{m.userNm} ({m.email})</option>)}
+                        </Select>
+                    </FormField>
+                    {!isAdmin && <p className="mt-1 text-xs text-slate-400">공간 관리자 임명·공간 삭제는 프로젝트 관리자만 할 수 있습니다.</p>}
+                </div>
                 {canEdit && (
-                    <Button type="button" disabled={!dirty || !name.trim() || update.isPending} onClick={save}>저장</Button>
+                    <div className="pt-2">
+                        <Button type="button" className="px-6" disabled={!dirty || !name.trim() || update.isPending} onClick={save}>
+                            {update.isPending ? "저장 중..." : "저장"}
+                        </Button>
+                    </div>
                 )}
             </div>
+
             {isAdmin && (
-                <div className="mt-6 rounded-xl border border-red-200 bg-white p-6">
-                    <h3 className="mb-1 text-sm font-semibold text-red-700">작업 공간 삭제</h3>
-                    <p className="mb-3 text-xs text-slate-500">
-                        {space.isDefault ? "기본 작업 공간은 삭제할 수 없습니다." : "Task 가 남아 있으면 삭제할 수 없습니다. 먼저 Task 를 옮기거나 지우세요."}
+                <section className="mt-10 max-w-lg rounded-xl border border-red-200 bg-red-50/50 p-5">
+                    <h3 className="text-sm font-bold text-red-500">위험 구역</h3>
+                    <p className="mt-1 text-xs text-slate-500">
+                        {space.isDefault ? "기본 작업 공간은 삭제할 수 없습니다." : "작업 공간을 삭제하면 워크플로·필드·보드·산출물 규칙이 함께 지워집니다. Task 가 남아 있으면 삭제할 수 없습니다."}
                     </p>
-                    <Button type="button" variant="danger" disabled={space.isDefault || remove.isPending} onClick={onDelete}>삭제</Button>
-                </div>
+                    <Button type="button" variant="danger" className="mt-4" disabled={space.isDefault || remove.isPending} onClick={onDelete}>
+                        {remove.isPending ? "삭제 중..." : "작업 공간 삭제"}
+                    </Button>
+                </section>
             )}
             {ToastComponent}
             {ConfirmComponent}
-        </div>
+        </>
     );
 }

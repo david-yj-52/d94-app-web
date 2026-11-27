@@ -133,33 +133,24 @@ export default function SettingsGeneralPage({
             </form>
 
             <section className="mt-10 max-w-lg rounded-xl border border-red-200 bg-red-50/50 p-5">
-                <h3 className="text-sm font-bold text-red-700">위험 구역</h3>
-                <p className="mt-1 text-xs text-red-600">
+                <h3 className="text-sm font-bold text-red-500">위험 구역</h3>
+                <p className="mt-1 text-xs text-slate-500">
                     프로젝트를 삭제하면 프로젝트 목록에서 제거되며 복구할 수 없습니다.
                 </p>
                 {!confirmDelete ? (
-                    <Button variant="unstyled"
-                        type="button"
-                        onClick={() => setConfirmDelete(true)}
-                        className="mt-4 h-9 rounded-lg border border-red-300 bg-white px-4 text-sm font-semibold text-red-600 hover:bg-red-50"
-                    >
+                    <Button type="button" variant="danger" className="mt-4" onClick={() => setConfirmDelete(true)}>
                         프로젝트 삭제
                     </Button>
                 ) : (
                     <div className="mt-4 flex items-center gap-2">
-                        <Button variant="unstyled"
-                            type="button"
-                            onClick={handleDelete}
-                            disabled={isDeleting}
-                            className="h-9 rounded-lg bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
-                        >
+                        <Button type="button" variant="danger" onClick={handleDelete} disabled={isDeleting}>
                             {isDeleting ? "삭제 중..." : "정말 삭제"}
                         </Button>
                         <Button
                             type="button"
                             onClick={() => setConfirmDelete(false)}
                             disabled={isDeleting}
-                            variant="secondary" className="h-9"
+                            variant="secondary"
                         >
                             취소
                         </Button>

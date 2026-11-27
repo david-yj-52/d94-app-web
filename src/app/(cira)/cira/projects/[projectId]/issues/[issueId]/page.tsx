@@ -26,6 +26,7 @@ import type {Priority, UpdateIssueRequest} from "@/types/issue";
 import {useRouter} from "next/navigation";
 import {use, useEffect, useRef, useState} from "react";
 import Button from "@/components/ui/Button";
+import {Textarea} from "@/components/ui/Input";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 const PRIORITY_LABELS: Record<Priority, string> = {
@@ -53,8 +54,7 @@ function IssueDescription({content, mainNoteId, onSave}: { content: string; main
     if (editing) {
         return (
             <div className="px-3">
-                <textarea aria-label="설명 편집" value={draft} onChange={(e) => setDraft(e.target.value)} rows={10}
-                          className="w-full rounded-lg border border-slate-200 p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"/>
+                <Textarea aria-label="설명 편집" value={draft} onChange={(e) => setDraft(e.target.value)} rows={10} className="font-mono"/>
                 <div className="mt-2 flex gap-2">
                     <Button type="button" size="sm" onClick={() => {
                         if (draft !== content) onSave(draft);

@@ -41,7 +41,7 @@
 ```ts
 { projectId: string; spaceId?: string; onClose: () => void; onSuccess?: (boardId: string) => void }
 ```
-- 이름 + 보드 유형(칸반·스크럼) select. `spaceId` 의 작업 공간에 만듭니다(없으면 기본 공간 — 화면은 지금 공간을 넘깁니다).
+- `ui/Dialog` + `FormField`. 이름 + 보드 유형(칸반·스크럼) select. `spaceId` 의 작업 공간에 만듭니다(없으면 기본 공간 — 화면은 지금 공간을 넘깁니다).
 - 생성에 성공하면 `onSuccess(newBoardId)`를 호출하고, 부모가 새 보드로 이동합니다.
 - 사용처: `boards/page.tsx`(보드가 없을 때), `boards/[boardId]/page.tsx`, `settings/boards`
 

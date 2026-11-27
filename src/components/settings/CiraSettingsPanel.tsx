@@ -37,11 +37,9 @@ import {useEffect, useState} from "react";
 import CustomFieldModal from "./CustomFieldModal";
 import EmptyState from "@/components/ui/EmptyState";
 import Button from "@/components/ui/Button";
+import {Input, Select} from "@/components/ui/Input";
 
 const TYPE_NAME_MAX = 30;
-const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
-const btnCls = "inline-flex h-9 shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50";
-const iconBtn = "flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30";
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
 
 /**
@@ -60,7 +58,7 @@ export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
             <div role="tablist" className="mb-4 flex gap-1 border-b border-slate-100">
                 {([["types", "작업 공간 프리셋"], ["fields", "사용자 정의 필드"], ["docRules", "공통 산출물 규칙"]] as const).map(([id, label]) => (
                     <Button variant="unstyled" key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
-                            className={`-mb-px h-10 border-b-2 px-3 text-sm ${tab === id ? "border-d94-brand font-semibold text-blue-700" : "border-transparent text-slate-500"}`}>
+                            className={`-mb-px h-10 border-b-2 px-3 text-sm ${tab === id ? "border-d94-brand font-semibold text-d94-brand" : "border-transparent text-slate-500"}`}>
                         {label}
                     </Button>
                 ))}
@@ -106,24 +104,24 @@ function PresetWorkflow({preset, readOnly, show}: { preset: ProjectTypeResponse;
             <p className="mb-2 text-xs text-slate-500">
                 새 작업 공간에 복사되는 상태와 보드 유형입니다. 전이는 이웃 상태끼리 앞뒤로, 그리고 첫 상태에서 마지막 상태로 바로 갈 수 있습니다.
             </p>
-            <label className="mb-2 flex items-center gap-2 text-sm text-slate-700">
+            <label className="mb-3 flex items-center gap-3 text-xs font-medium text-slate-600">
                 보드 유형
-                <select aria-label="보드 유형" className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm" disabled={readOnly}
+                <Select aria-label="보드 유형" className="w-40" disabled={readOnly}
                         value={boardType} onChange={(e) => setBoardType(e.target.value as PresetBoardType)}>
                     <option value="KANBAN">칸반</option>
                     <option value="SCRUM">스크럼</option>
-                </select>
+                </Select>
             </label>
-            <ol className="mb-2 divide-y divide-slate-100 rounded-lg border border-slate-200">
+            <ol className="mb-2 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
                 {rows.map((r, i) => (
-                    <li key={i} className="flex min-h-11 items-center gap-2 px-3 text-sm">
-                        <span className="w-5 text-xs text-slate-400">{i + 1}</span>
-                        <input aria-label={`상태 ${i + 1} 이름`} className={`${inputCls} h-9 flex-1`} value={r.name} maxLength={30} disabled={readOnly}
+                    <li key={i} className="flex min-h-11 items-center gap-2 px-3 py-1.5 text-sm">
+                        <span className="w-5 shrink-0 text-xs text-slate-400">{i + 1}</span>
+                        <Input aria-label={`상태 ${i + 1} 이름`} className="h-8 flex-1" value={r.name} maxLength={30} disabled={readOnly}
                                onChange={(e) => set(i, {name: e.target.value})}/>
-                        <select aria-label={`상태 ${i + 1} 분류`} className="h-9 w-24 shrink-0 rounded-lg border border-slate-200 bg-white px-2 text-sm" disabled={readOnly}
+                        <Select aria-label={`상태 ${i + 1} 분류`} className="h-8 w-28 shrink-0" disabled={readOnly}
                                 value={r.category} onChange={(e) => set(i, {category: e.target.value as StatusCategory})}>
                             {(Object.keys(CATEGORY_LABELS) as StatusCategory[]).map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
-                        </select>
+                        </Select>
                         {!readOnly && (
                             <>
                                 <Button variant="ghost" size="icon" type="button" aria-label={`상태 ${i + 1} 위로`} disabled={i === 0} onClick={() => move(i, -1)}><ArrowUp className="h-4 w-4"/></Button>
@@ -137,7 +135,7 @@ function PresetWorkflow({preset, readOnly, show}: { preset: ProjectTypeResponse;
             {problem && <p className="mb-2 text-xs text-red-500">{problem}</p>}
             {!readOnly && (
                 <div className="flex gap-2">
-                    <Button variant="unstyled" type="button" className={btnCls} disabled={rows.length >= 10}
+                    <Button variant="secondary" size="sm" type="button" disabled={rows.length >= 10}
                             onClick={() => setRows([...rows, {name: "", category: "IN_PROGRESS"}])}><Plus className="h-4 w-4"/>상태 추가</Button>
                     <Button type="button" size="sm" disabled={!dirty || !!problem || update.isPending}
                             onClick={() => update.mutate({id: preset.id, data: {
@@ -208,9 +206,9 @@ function TypesTab({types, catalog, readOnly, show}: {
                 </ul>
                 {!readOnly && (
                     <div className="flex gap-2">
-                        <input aria-label="새 프리셋 이름" className={inputCls} value={draft} maxLength={TYPE_NAME_MAX}
+                        <Input aria-label="새 프리셋 이름" value={draft} maxLength={TYPE_NAME_MAX}
                                placeholder="예: 영업" onChange={(e) => setDraft(e.target.value)}/>
-                        <Button variant="unstyled" type="button" aria-label="프리셋 추가" disabled={!canAdd || create.isPending} className={btnCls}
+                        <Button variant="secondary" size="icon" type="button" aria-label="프리셋 추가" disabled={!canAdd || create.isPending} className="h-10 w-10 shrink-0"
                                 onClick={() => create.mutate({typeNm: name}, {
                                     onSuccess: (t) => {
                                         setDraft("");
@@ -229,22 +227,22 @@ function TypesTab({types, catalog, readOnly, show}: {
                     <div className="mb-3 flex flex-wrap items-center gap-2">
                         {rename !== null ? (
                             <>
-                                <input aria-label="프리셋 이름" className={`${inputCls} max-w-xs`} value={rename} maxLength={TYPE_NAME_MAX}
+                                <Input aria-label="프리셋 이름" className="max-w-xs" value={rename} maxLength={TYPE_NAME_MAX}
                                        onChange={(e) => setRename(e.target.value)}/>
-                                <Button variant="unstyled" type="button" className={btnCls} disabled={!rename.trim()}
+                                <Button variant="secondary" size="sm" type="button" disabled={!rename.trim()}
                                         onClick={() => update.mutate({id: selected.id, data: {typeNm: rename.trim(), descr: selected.descr ?? undefined}}, {
                                             onSuccess: () => setRename(null),
                                             onError: (e) => show(errMsg(e, "저장하지 못했습니다."), "error"),
                                         })}>저장</Button>
-                                <Button variant="unstyled" type="button" className={btnCls} onClick={() => setRename(null)}>취소</Button>
+                                <Button variant="secondary" size="sm" type="button" onClick={() => setRename(null)}>취소</Button>
                             </>
                         ) : (
                             <>
                                 <h3 className="flex-1 text-base font-semibold text-slate-900">{selected.typeNm}</h3>
                                 {!readOnly && (
                                     <>
-                                        <Button variant="unstyled" type="button" className={btnCls} onClick={() => setRename(selected.typeNm)}>이름 변경</Button>
-                                        <Button variant="unstyled" type="button" className={btnCls} onClick={() => setConfirmDelete(true)}>삭제</Button>
+                                        <Button variant="secondary" size="sm" type="button" onClick={() => setRename(selected.typeNm)}>이름 변경</Button>
+                                        <Button variant="secondary" size="sm" type="button" onClick={() => setConfirmDelete(true)}>삭제</Button>
                                     </>
                                 )}
                             </>
@@ -273,10 +271,10 @@ function TypesTab({types, catalog, readOnly, show}: {
                                                onChange={() => setFields(selected.fields.map((x) => x.fieldKey === tf.fieldKey ? {...x, defaultVisible: !x.defaultVisible} : x))}/>
                                         기본 표시
                                     </label>
-                                    <Button variant="unstyled" type="button" aria-label={`${f?.name} 위로`} disabled={readOnly || i === 0} onClick={() => move(i, -1)} className={iconBtn}><ArrowUp className="h-4 w-4"/></Button>
-                                    <Button variant="unstyled" type="button" aria-label={`${f?.name} 아래로`} disabled={readOnly || i === selected.fields.length - 1} onClick={() => move(i, 1)} className={iconBtn}><ArrowDown className="h-4 w-4"/></Button>
+                                    <Button variant="ghost" size="icon" type="button" aria-label={`${f?.name} 위로`} disabled={readOnly || i === 0} onClick={() => move(i, -1)}><ArrowUp className="h-4 w-4"/></Button>
+                                    <Button variant="ghost" size="icon" type="button" aria-label={`${f?.name} 아래로`} disabled={readOnly || i === selected.fields.length - 1} onClick={() => move(i, 1)}><ArrowDown className="h-4 w-4"/></Button>
                                     {!readOnly && (
-                                        <Button variant="unstyled" type="button" aria-label={`${f?.name} 빼기`} className={iconBtn}
+                                        <Button variant="ghost" size="icon" type="button" aria-label={`${f?.name} 빼기`} 
                                                 onClick={() => setFields(selected.fields.filter((x) => x.fieldKey !== tf.fieldKey))}><X className="h-4 w-4"/></Button>
                                     )}
                                 </li>
@@ -284,12 +282,12 @@ function TypesTab({types, catalog, readOnly, show}: {
                         })}
                     </ul>
                     {!readOnly && (
-                        <select aria-label="필드 추가" value="" disabled={addable.length === 0}
+                        <Select aria-label="필드 추가" value="" disabled={addable.length === 0}
                                 onChange={(e) => e.target.value && setFields([...selected.fields, {fieldKey: e.target.value, defaultVisible: true}])}
-                                className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm">
+                                className="w-auto">
                             <option value="">+ 필드 추가</option>
                             {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}{f.kind === "cf" ? " (이 프리셋의 필드)" : ""}</option>)}
-                        </select>
+                        </Select>
                     )}
 
                     <h4 className="mb-1 mt-6 text-sm font-semibold text-slate-800">이 프리셋의 필드</h4>
@@ -311,7 +309,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                                 {!readOnly && (
                                     <>
                                         <Button variant="unstyled" type="button" onClick={() => setEditingField(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</Button>
-                                        <Button variant="unstyled" type="button" onClick={() => setDeletingField(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</Button>
+                                        <Button variant="ghost" size="sm" type="button" onClick={() => setDeletingField(f)} className="text-red-500 hover:bg-red-50">삭제</Button>
                                     </>
                                 )}
                             </li>
@@ -319,18 +317,18 @@ function TypesTab({types, catalog, readOnly, show}: {
                     </ul>
                     {!readOnly && (
                         <div className="flex flex-wrap gap-2">
-                            <Button variant="unstyled" type="button" aria-label="이 프리셋에 새 필드" className={btnCls} onClick={() => setEditingField(null)}>
+                            <Button variant="secondary" size="sm" type="button" aria-label="이 프리셋에 새 필드" onClick={() => setEditingField(null)}>
                                 <Plus className="h-4 w-4"/>새 필드
                             </Button>
-                            <select aria-label="전역에서 가져오기" value="" disabled={importable.length === 0 || importField.isPending}
+                            <Select aria-label="전역에서 가져오기" value="" disabled={importable.length === 0 || importField.isPending}
                                     onChange={(e) => e.target.value && importField.mutate({typeId: selected.id, sourceFieldId: e.target.value}, {
                                         onSuccess: (f) => show(`'${f.name}' 필드를 이 프리셋으로 가져왔습니다.`),
                                         onError: (err) => show(errMsg(err, "가져오지 못했습니다."), "error"),
                                     })}
-                                    className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm">
+                                    className="w-auto">
                                 <option value="">+ 전역에서 가져오기</option>
                                 {importable.map((g) => <option key={g.fieldKey} value={g.fieldKey.slice(3)}>{g.name}</option>)}
-                            </select>
+                            </Select>
                         </div>
                     )}
 
@@ -420,18 +418,18 @@ function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
                             <span className="ml-2 text-xs text-slate-400">{CUSTOM_FIELD_TYPE_LABELS[f.fieldType]}{f.required ? " · 필수" : ""}</span>
                         </span>
                         {(copies[f.fieldKey.slice(3)] ?? 0) === 0
-                            ? <span className="text-xs text-amber-600">아직 어디에도 적용되지 않음</span>
+                            ? <span className="text-xs text-slate-400">아직 어디에도 적용되지 않음</span>
                             : <span className="text-xs text-slate-400">복사본 {copies[f.fieldKey.slice(3)]}개</span>}
                         {!readOnly && (
                             <>
                                 <Button variant="unstyled" type="button" onClick={() => setEditing(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</Button>
-                                <Button variant="unstyled" type="button" onClick={() => setDeleting(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</Button>
+                                <Button variant="ghost" size="sm" type="button" onClick={() => setDeleting(f)} className="text-red-500 hover:bg-red-50">삭제</Button>
                             </>
                         )}
                     </li>
                 ))}
             </ul>
-            {!readOnly && <Button variant="unstyled" type="button" className={btnCls} onClick={() => setEditing(null)}><Plus className="h-4 w-4"/>새 필드</Button>}
+            {!readOnly && <Button variant="secondary" size="sm" type="button" onClick={() => setEditing(null)}><Plus className="h-4 w-4"/>새 필드</Button>}
 
             {editing !== undefined && (
                 <CustomFieldModal
@@ -494,21 +492,21 @@ function GlobalDocRulesTab({readOnly, show}: { readOnly: boolean; show: Show }) 
                 모든 프로젝트 팀이 공통으로 남겨야 하는 산출물(예: 요구사항 정의서·시험성적서·릴리즈 노트)입니다.
                 프로젝트에서 가져가면 잠금(🔒)으로 복사되어 공간 관리자가 지우거나 바꿀 수 없습니다.
             </p>
-            <select aria-label="Task 타입" value={current} onChange={(e) => setTypeId(e.target.value)} className={`${inputCls} mb-3 w-48`}>
+            <Select aria-label="Task 타입" value={current} onChange={(e) => setTypeId(e.target.value)} className="mb-3 w-48">
                 {issueTypes.map((t) => <option key={t.id} value={t.id}>{t.typeNm}</option>)}
-            </select>
+            </Select>
             {rows.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">이 타입의 공통 산출물 규칙이 없습니다.</EmptyState>}
             <ul className="mb-3 space-y-2">
                 {rows.map((r, i) => (
                     <li key={r.id ?? `new-${i}`} className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 p-2 text-sm">
-                        <input aria-label="산출물 폴더 이름" value={r.folderName} disabled={readOnly}
-                               onChange={(e) => set(i, {folderName: e.target.value})} className={`${inputCls} w-48`} placeholder="요구사항 정의서"/>
+                        <Input aria-label="산출물 폴더 이름" value={r.folderName} disabled={readOnly}
+                               onChange={(e) => set(i, {folderName: e.target.value})} className="h-8 w-48" placeholder="요구사항 정의서"/>
                         <label className="flex items-center gap-1 text-xs text-slate-600">
                             <input type="checkbox" checked={r.autoCreate} disabled={readOnly} onChange={(e) => set(i, {autoCreate: e.target.checked})}/>
                             Task 생성 때 폴더 만들기
                         </label>
                         {!readOnly && (
-                            <Button variant="unstyled" type="button" aria-label="빼기" className={`${iconBtn} ml-auto`}
+                            <Button variant="ghost" size="icon" type="button" aria-label="빼기" className="ml-auto"
                                     onClick={() => setRows((rs) => rs.filter((_, j) => j !== i))}><X className="h-4 w-4"/></Button>
                         )}
                     </li>
@@ -516,7 +514,7 @@ function GlobalDocRulesTab({readOnly, show}: { readOnly: boolean; show: Show }) 
             </ul>
             {!readOnly && (
                 <div className="flex gap-2">
-                    <Button variant="unstyled" type="button" className={btnCls}
+                    <Button variant="secondary" size="sm" type="button"
                             onClick={() => setRows((rs) => [...rs, {id: null, issueTypeId: null, folderName: "", sortOrder: null, defaultKind: null,
                                 defaultStream: null, templateContent: null, autoCreate: false}])}>
                         <Plus className="h-4 w-4"/> 규칙 추가

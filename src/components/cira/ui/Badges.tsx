@@ -1,3 +1,4 @@
+import Badge from "@/components/ui/Badge";
 import {ArrowDown, ArrowUp, ChevronsDown, ChevronsUp, Equal} from "lucide-react";
 import {
     ISSUE_TYPE_CLASS,
@@ -53,12 +54,11 @@ export function Avatar({name, size = "sm"}: { name?: string | null; size?: "sm" 
     );
 }
 
-/** 공통 Feature 에 연결된 Task 의 우선 배지 (설계 3.2) */
+/** 공통 Feature 에 연결된 Task 의 우선 배지 (설계 3.2) — ui/Badge + 강조색 토큰 */
 export function CommonFeatureBadge({feature}: { feature: { issueKey: string; title: string } }) {
     return (
-        <span title={`공통 Feature ${feature.issueKey} ${feature.title}`}
-              className="inline-flex max-w-full items-center gap-1 truncate rounded bg-violet-50 px-1.5 py-0.5 text-[10px] font-semibold text-violet-700">
-            공통 · {feature.issueKey}
+        <span title={`공통 Feature ${feature.issueKey} ${feature.title}`} className="inline-flex max-w-full">
+            <Badge className="truncate bg-d94-brand-soft text-d94-brand">공통 · {feature.issueKey}</Badge>
         </span>
     );
 }

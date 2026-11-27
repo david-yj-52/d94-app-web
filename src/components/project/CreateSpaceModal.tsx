@@ -41,16 +41,16 @@ export default function CreateSpaceModal({projectId, onClose, onCreated}: {
 
     return (
         <Dialog open onOpenChange={(o) => !o && onClose()} title="작업 공간 추가">
-            <form onSubmit={submit} className="space-y-4">
+            <form onSubmit={submit} className="space-y-4 p-4">
                 <FormField label="이름" required>
                     <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Hardware" maxLength={60} autoFocus/>
                 </FormField>
                 <FormField label="프리셋">
                     <Select value={presetTypeId} onChange={(e) => setPresetTypeId(e.target.value)}>
-                        <option value="">빈 공간 (To Do → In Progress → Done)</option>
+                        <option value="" title="To Do → In Progress → Done">빈 공간</option>
                         {types.map((t) => <option key={t.id} value={t.id}>{t.typeNm}</option>)}
                     </Select>
-                    <p className="mt-1 text-[11px] text-slate-400">프리셋의 상태·필드·보드를 1회 복사합니다. 이후 공간 관리자가 자유롭게 바꿉니다.</p>
+                    <p className="mt-1 text-xs text-slate-400">프리셋의 상태·필드·보드를 1회 복사합니다. 이후 공간 관리자가 자유롭게 바꿉니다.</p>
                 </FormField>
                 <FormField label="공간 관리자">
                     <Select value={adminUserId} onChange={(e) => setAdminUserId(e.target.value)}>

@@ -60,9 +60,10 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 { open: boolean; onOpenChange: (open: boolean) => void; title: string; children: ReactNode; side?: "left"; hideTitle?: boolean; compact?: boolean }
 ```
 - Radix Dialog(`@radix-ui/react-dialog`). 모바일은 전체 화면 시트, `md` 이상은 가운데 모달(최대 `max-w-lg`). `side="left"` 는 왼쪽 서랍(`w-72 max-w-[85vw]`, 모바일 메뉴). `compact` 는 모든 화면에서 가운데 작은 카드(`max-w-sm`, 확인 창).
+- 본문 여백은 없습니다 — `children` 최상위에 `p-4`(폼이면 `space-y-4 p-4`)를 주세요. 하단 버튼 쌍은 `flex gap-3 pt-2` + `flex-1`.
 - 바깥 클릭·Esc·✕ 로 닫히고 포커스를 가둡니다. 부모가 `open` 상태를 갖습니다. ⚠️ 서랍 안에서 서랍 밖에 그려지는 다른 모달(`{open && <XxxModal/>}`)을 열 때는 서랍을 먼저 닫아야 그 모달에 입력할 수 있습니다(Docs layout 참고).
 - 내용 패널에 `cira-root` 클래스가 붙습니다(포털이 `.cira-root` 밖에 그려져도 CIRA 자식의 `cira-*` 색이 살도록, 값은 d94 토큰과 같음).
-- 사용처: `layout/ApHeader`(모바일 메뉴 서랍), `(main)/docs/layout`(모바일 폴더 트리 서랍), `cira/shell/CiraShell`·`CreateIssueButton`, issue(`ColumnPicker`·`FieldLibraryDialog`·`AttachmentSection`), settings(`CiraSettingsPanel`·`CustomFieldModal`), CIRA issues·settings/fields 화면. 2026-11-26 `cira/ui` 에서 승격([ADR 0006](../../../docs/decisions/0006-cira-design-layer.md) 갱신).
+- 사용처: `layout/ApHeader`(모바일 메뉴 서랍), `(main)/docs/layout`(모바일 폴더 트리 서랍), `cira/shell/CiraShell`·`CreateIssueButton`, issue(`ColumnPicker`·`FieldLibraryDialog`·`AttachmentSection`), settings(`CiraSettingsPanel`·`CustomFieldModal`), project(`CreateProjectModal`·`CreateSpaceModal`), board(`CreateBoardModal`), docs(`PromoteToCiraModal`), CIRA issues·settings/fields 화면. 2026-11-26 `cira/ui` 에서 승격([ADR 0006](../../../docs/decisions/0006-cira-design-layer.md) 갱신).
 
 ### Button — `import Button from "@/components/ui/Button"`
 ```ts
