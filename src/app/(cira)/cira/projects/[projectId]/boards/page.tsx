@@ -1,5 +1,6 @@
 "use client";
 
+import {useCurrentSpace} from "@/hooks/useSpaces";
 import CreateBoardModal from "@/components/board/CreateBoardModal";
 import {useToast} from "@/components/ui/Toast";
 import {useBoards} from "@/hooks/useBoards";
@@ -19,13 +20,14 @@ export default function BoardsPage({
     const {show, ToastComponent} = useToast();
 
     const {data: project} = useProject(projectId);
-    const {data: boards, isLoading, isError} = useBoards(projectId);
+    const {spaceId, withSpace} = useCurrentSpace(projectId);
+    const {data: boards, isLoading, isError} = useBoards(projectId, spaceId);
 
     const [showCreate, setShowCreate] = useState(false);
 
     useEffect(() => {
         if (boards && boards.length > 0) {
-            router.replace(`/cira/projects/${projectId}/boards/${boards[0].id}`);
+            router.replace(withSpace(`/cira/projects/${projectId}/boards/${boards[0].id}`));
         }
     }, [boards, projectId, router]);
 

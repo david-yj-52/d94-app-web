@@ -60,19 +60,20 @@ export function useRemoveProjectMember(projectId: string) {
     });
 }
 
-export function useWorkflowStatuses(projectId: string) {
+/** spaceId 없음 = 기본 작업 공간 */
+export function useWorkflowStatuses(projectId: string, spaceId?: string | null) {
     return useQuery({
-        queryKey: ["projects", projectId, "workflow", "statuses"],
-        queryFn: () => getWorkflowStatuses(projectId),
+        queryKey: ["projects", projectId, "workflow", "statuses", spaceId ?? null],
+        queryFn: () => getWorkflowStatuses(projectId, spaceId),
         enabled: !!projectId,
     });
 }
 
-export function useCreateWorkflowStatus(projectId: string) {
+export function useCreateWorkflowStatus(projectId: string, spaceId?: string | null) {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (data: CreateWorkflowStatusRequest) =>
-            createWorkflowStatus(projectId, data),
+            createWorkflowStatus(projectId, data, spaceId),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["projects", projectId, "workflow", "statuses"],
@@ -93,19 +94,19 @@ export function useDeleteWorkflowStatus(projectId: string) {
     });
 }
 
-export function useWorkflowTransitions(projectId: string) {
+export function useWorkflowTransitions(projectId: string, spaceId?: string | null) {
     return useQuery({
-        queryKey: ["projects", projectId, "workflow", "transitions"],
-        queryFn: () => getWorkflowTransitions(projectId),
+        queryKey: ["projects", projectId, "workflow", "transitions", spaceId ?? null],
+        queryFn: () => getWorkflowTransitions(projectId, spaceId),
         enabled: !!projectId,
     });
 }
 
-export function useUpdateWorkflowTransitions(projectId: string) {
+export function useUpdateWorkflowTransitions(projectId: string, spaceId?: string | null) {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (data: UpdateWorkflowTransitionsRequest) =>
-            updateWorkflowTransitions(projectId, data),
+            updateWorkflowTransitions(projectId, data, spaceId),
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["projects", projectId, "workflow", "transitions"],

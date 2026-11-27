@@ -9,6 +9,8 @@ import PageHeader from "@/components/cira/ui/PageHeader";
 import {STATUS_TONE_CLASS, statusTone} from "@/components/cira/ui/tones";
 import {useToast} from "@/components/ui/Toast";
 import {useProjectFields} from "@/hooks/useFields";
+import {useFeatures} from "@/hooks/useSpaces";
+import Link from "next/link";
 import {useProjectMembers} from "@/hooks/useProjectSettings";
 import {
     useAvailableTransitions,
@@ -117,7 +119,18 @@ export default function IssueDetailPage({
 
     const {confirm, ConfirmComponent} = useConfirm();
     // 유효 필드 중 사용자 정의 필드 (타입이 바뀌어 빠진 필드의 값은 서버에 보관만 되고 여기 안 보인다)
-    const {data: fields = []} = useProjectFields(projectId);
+    const {data: fields = []} = useProjectFields(projectId, issue?.spaceId);
+    // V650: 상단 경로 "공통 Feature > 단위 Feature"
+    const {data: featureTree = []} = useFeatures(projectId);
+    const featurePath = (() => {
+        if (!issue?.featureId) return [];
+        for (const c of featureTree) {
+            if (c.feature.id === issue.featureId) return [c.feature];
+            const u = c.children.find((x) => x.feature.id === issue.featureId);
+            if (u) return [c.feature, u.feature];
+        }
+        return [];
+    })();
     const customFields = fields.filter((f) => f.kind === "cf");
     const {data: members = []} = useProjectMembers(projectId);
 
@@ -197,10 +210,28 @@ export default function IssueDetailPage({
                         />
                     </div>
 
-                    {/* Description inline edit */}
+                    {featurePath.length > 0 && (
+                        <p className="mb-3 px-3 text-xs text-slate-500" aria-label="Feature 경로">
+                            {featurePath.map((f, i) => (
+                                <span key={f.id}>
+                                    {i > 0 && " › "}
+                                    <Link href={`/cira/projects/${projectId}/issues/${f.id}`} className="hover:underline">
+                                        {f.featureScope === "COMMON" ? "공통 " : ""}Feature {f.issueKey} {f.title}
+                                    </Link>
+                                </span>
+                            ))}
+                        </p>
+                    )}
+
+                    {/* 설명 = Docs 메인 노트 본문 (V650 단일 원본). 여기서 고치면 메인 노트가 바뀐다 */}
                     <div className="mb-6">
                         <p className="text-xs font-medium text-slate-500 mb-1 px-3">
                             설명
+                            {issue.mainNoteId && (
+                                <Link href={`/docs/${issue.mainNoteId}`} className="ml-2 font-normal text-d94-brand hover:underline">
+                                    Docs 에서 열기 (버전·링크·파생)
+                                </Link>
+                            )}
                         </p>
                         <InlineText
                             value={issue.content ?? ""}

@@ -62,7 +62,7 @@ export const ISSUE_TYPES = [
     {id: "t-story", name: "Story"},
     {id: "t-task", name: "Task"},
     {id: "t-bug", name: "Bug"},
-    {id: "t-epic", name: "Epic"},
+    {id: "t-feature", name: "Feature"},
 ];
 
 function defaultStatuses(): WorkflowStatusResponse[] {
@@ -108,7 +108,7 @@ const ISSUE_SEED: Array<[string, string, Priority, number | undefined, number, s
     ["Git 커밋 메시지 이슈 키 연동", "t-story", "MEDIUM", 5, 3, "s-todo", "sp-4"],
     ["자동화 규칙 실행 이력 화면", "t-task", "LOW", 3, 4, "s-todo", "sp-4"],
     ["릴리즈 노트 마크다운 내보내기", "t-task", "LOW", 2, 5, "s-todo", undefined],
-    ["다크 모드 지원", "t-epic", "LOWEST", 13, 0, "s-todo", undefined],
+    ["다크 모드 지원", "t-feature", "LOWEST", 13, 0, "s-todo", undefined],
     ["모바일 반응형 레이아웃 점검", "t-task", "MEDIUM", 5, 2, "s-todo", undefined],
     ["프로젝트 설정 권한 체크 누락", "t-bug", "HIGHEST", 2, 0, "s-todo", undefined],
     ["이슈 일괄 편집 기능", "t-story", "LOW", 8, -1, "s-todo", undefined],

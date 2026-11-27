@@ -1,5 +1,6 @@
 "use client";
 
+import {useCurrentSpace} from "@/hooks/useSpaces";
 import {useToast} from "@/components/ui/Toast";
 import {
     useCreateWorkflowStatus,
@@ -30,14 +31,15 @@ const CATEGORY_COLOR: Record<WorkflowCategory, string> = {
 
 interface AddStatusFormProps {
     projectId: string;
+    spaceId?: string;
     onSuccess: () => void;
     onError: () => void;
 }
 
-function AddStatusForm({projectId, onSuccess, onError}: AddStatusFormProps) {
+function AddStatusForm({projectId, spaceId, onSuccess, onError}: AddStatusFormProps) {
     const [name, setName] = useState("");
     const [category, setCategory] = useState<WorkflowCategory>("TODO");
-    const {mutate: createStatus, isPending} = useCreateWorkflowStatus(projectId);
+    const {mutate: createStatus, isPending} = useCreateWorkflowStatus(projectId, spaceId);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -173,28 +175,32 @@ export default function SettingsWorkflowPage({
     const {projectId} = use(params);
     const {data: session} = useSession();
     const {data: members} = useProjectMembers(projectId);
+    // V650: 워크플로는 작업 공간 소유 — 지금 공간(?space=)의 상태·전이
+    const {space, spaceId} = useCurrentSpace(projectId);
     const {
         data: statuses,
         isLoading: statusLoading,
         isError: statusError,
-    } = useWorkflowStatuses(projectId);
+    } = useWorkflowStatuses(projectId, spaceId);
     const {
         data: transitions,
         isLoading: transitionLoading,
-    } = useWorkflowTransitions(projectId);
+    } = useWorkflowTransitions(projectId, spaceId);
     const {mutate: deleteStatus} = useDeleteWorkflowStatus(projectId);
     const {mutate: saveTransitions, isPending: isSaving} =
-        useUpdateWorkflowTransitions(projectId);
+        useUpdateWorkflowTransitions(projectId, spaceId);
     const {show, ToastComponent} = useToast();
 
     const [enabledPairs, setEnabledPairs] = useState<Set<string>>(new Set());
 
     const currentUserEmail = session?.user?.email;
+    // 프로젝트 ADMIN 또는 이 공간 관리자 (백엔드 Space.canManage)
     const isAdmin =
-        currentUserEmail != null &&
-        members?.some(
-            (m) => m.email === currentUserEmail && m.role === "ADMIN",
-        ) === true;
+        space?.canManage === true ||
+        (currentUserEmail != null &&
+            members?.some(
+                (m) => m.email === currentUserEmail && m.role === "ADMIN",
+            ) === true);
 
     useEffect(() => {
         if (transitions) {
@@ -294,6 +300,7 @@ export default function SettingsWorkflowPage({
                         {isAdmin && statuses !== undefined && (
                             <AddStatusForm
                                 projectId={projectId}
+                                spaceId={spaceId}
                                 onSuccess={() => show("상태가 추가되었습니다.")}
                                 onError={() => show("상태 추가에 실패했습니다.", "error")}
                             />

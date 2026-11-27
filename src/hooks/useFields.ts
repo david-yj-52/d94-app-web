@@ -94,10 +94,11 @@ export function useFieldUsage(id?: string) {
     return useQuery({queryKey: ["field-usage", id], queryFn: () => getFieldUsage(id!), enabled: !!id});
 }
 
-export function useProjectFields(projectId?: string) {
+/** spaceId 없음 = 기본 작업 공간 */
+export function useProjectFields(projectId?: string, spaceId?: string | null) {
     return useQuery({
-        queryKey: ["project-fields", projectId],
-        queryFn: () => getProjectFields(projectId!),
+        queryKey: ["project-fields", projectId, spaceId ?? null],
+        queryFn: () => getProjectFields(projectId!, spaceId),
         enabled: !!projectId,
     });
 }
@@ -109,19 +110,19 @@ const invalidateProject = (qc: QueryClient, projectId: string) => {
     qc.invalidateQueries({queryKey: ["issues", projectId]});
 };
 
-export function useReplaceProjectFields(projectId: string) {
+export function useReplaceProjectFields(projectId: string, spaceId?: string | null) {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: (keys: string[]) => replaceProjectFields(projectId, keys),
+        mutationFn: (keys: string[]) => replaceProjectFields(projectId, keys, spaceId),
         onSuccess: () => invalidateProject(qc, projectId),
     });
 }
 
-export function useSaveProjectField(projectId: string) {
+export function useSaveProjectField(projectId: string, spaceId?: string | null) {
     const qc = useQueryClient();
     return useMutation({
         mutationFn: ({id, data}: { id?: string; data: SaveCustomField }) =>
-            id ? updateProjectField(projectId, id, data) : createProjectField(projectId, data),
+            id ? updateProjectField(projectId, id, data) : createProjectField(projectId, data, spaceId),
         onSuccess: () => invalidateProject(qc, projectId),
     });
 }
@@ -134,20 +135,20 @@ export function useDeleteProjectField(projectId: string) {
     });
 }
 
-export function useColumnPref(projectId?: string) {
+export function useColumnPref(projectId?: string, spaceId?: string | null) {
     return useQuery({
-        queryKey: ["column-pref", projectId],
-        queryFn: () => getColumnPref(projectId!),
+        queryKey: ["column-pref", projectId, spaceId ?? null],
+        queryFn: () => getColumnPref(projectId!, spaceId),
         enabled: !!projectId,
     });
 }
 
 /** keys = null 이면 [기본값으로]. 응답으로 캐시를 바로 바꾼다 */
-export function useSaveColumnPref(projectId: string) {
+export function useSaveColumnPref(projectId: string, spaceId?: string | null) {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: (keys: string[] | null) => (keys ? saveColumnPref(projectId, keys) : resetColumnPref(projectId)),
-        onSuccess: (keys) => qc.setQueryData(["column-pref", projectId], keys),
+        mutationFn: (keys: string[] | null) => (keys ? saveColumnPref(projectId, keys, spaceId) : resetColumnPref(projectId, spaceId)),
+        onSuccess: (keys) => qc.setQueryData(["column-pref", projectId, spaceId ?? null], keys),
     });
 }
 
@@ -188,10 +189,10 @@ export function useFieldLibrary(projectId?: string) {
 }
 
 /** 라이브러리 필드 → 프로젝트 필드 복사 (프로젝트 멤버) */
-export function useImportToProject(projectId: string) {
+export function useImportToProject(projectId: string, spaceId?: string | null) {
     const qc = useQueryClient();
     return useMutation({
-        mutationFn: (sourceFieldId: string) => importToProject(projectId, sourceFieldId),
+        mutationFn: (sourceFieldId: string) => importToProject(projectId, sourceFieldId, spaceId),
         onSuccess: () => invalidateProject(qc, projectId),
     });
 }

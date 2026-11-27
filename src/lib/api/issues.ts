@@ -18,6 +18,8 @@ export async function getIssues(
     if (filters?.assigneeId) params.assigneeId = filters.assigneeId;
     if (filters?.issueType) params.issueType = filters.issueType;
     if (filters?.sprintId) params.sprintId = filters.sprintId;
+    if (filters?.spaceId) params.spaceId = filters.spaceId;
+    if (filters?.featureId) params.featureId = filters.featureId;
     if (filters?.status?.length) params.status = filters.status;
     if (filters?.sort) params.sort = filters.sort;
     if (filters?.page !== undefined) params.page = filters.page;

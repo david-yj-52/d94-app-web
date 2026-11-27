@@ -1,5 +1,6 @@
 "use client";
 
+import {useCurrentSpace} from "@/hooks/useSpaces";
 import Dialog from "@/components/ui/Dialog";
 import FieldLibraryDialog from "@/components/issue/FieldLibraryDialog";
 import CustomFieldModal from "@/components/settings/CustomFieldModal";
@@ -28,17 +29,19 @@ const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?
 export default function ProjectFieldsPage({params}: { params: Promise<{ projectId: string }> }) {
     const {projectId} = use(params);
     const {data: project} = useProject(projectId);
-    const {data: fields = []} = useProjectFields(projectId);
+    // V650: 필드 세트는 작업 공간 소유 — 지금 공간(?space=). 고정 필드 외에는 프리셋에서 온 필드도 뺄 수 있다
+    const {space, spaceId} = useCurrentSpace(projectId);
+    const {data: fields = []} = useProjectFields(projectId, spaceId);
     const {data: catalog} = useFieldCatalog();
-    const replace = useReplaceProjectFields(projectId);
-    const save = useSaveProjectField(projectId);
+    const replace = useReplaceProjectFields(projectId, spaceId);
+    const save = useSaveProjectField(projectId, spaceId);
     const remove = useDeleteProjectField(projectId);
     const {show, ToastComponent} = useToast();
     const [editing, setEditing] = useState<FieldDef | null | undefined>(undefined); // undefined = 닫힘, null = 새로
     const [deleting, setDeleting] = useState<FieldDef | null>(null);
     const [showLibrary, setShowLibrary] = useState(false);
     const {data: library = []} = useFieldLibrary(showLibrary ? projectId : undefined);
-    const importField = useImportToProject(projectId);
+    const importField = useImportToProject(projectId, spaceId);
 
     const inherited = fields.filter((f) => f.source !== "project");
     const added = fields.filter((f) => f.source === "project");

@@ -48,7 +48,7 @@ describe("useBoards 조회 훅", () => {
     it("useBoards → [\"boards\", projectId], useBoardDetail → [\"board\", boardId]", async () => {
         const {result, client} = renderHookWithClient(() => ({list: useBoards("PRJ-1"), detail: useBoardDetail("BRD-1")}));
         await waitFor(() => expect(result.current.detail.isSuccess && result.current.list.isSuccess).toBe(true));
-        expect(client.getQueryData(["boards", "PRJ-1"])).toHaveLength(1);
+        expect(client.getQueryData(["boards", "PRJ-1", null])).toHaveLength(1); // 마지막 = spaceId (없음 = 기본 공간)
         expect(client.getQueryData(["board", "BRD-1"])).toEqual(boardDetail());
     });
 

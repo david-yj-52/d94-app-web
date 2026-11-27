@@ -10,8 +10,9 @@ import type {
     UpdateBoardRequest,
 } from "@/types/board";
 
-export async function getBoards(projectId: string): Promise<BoardResponse[]> {
-    const res = await apiClient.get(`/v1/projects/${projectId}/boards`);
+/** spaceId 없음 = 기본 작업 공간 */
+export async function getBoards(projectId: string, spaceId?: string | null): Promise<BoardResponse[]> {
+    const res = await apiClient.get(`/v1/projects/${projectId}/boards`, {params: spaceId ? {spaceId} : {}});
     return res.data.data;
 }
 

@@ -25,9 +25,12 @@ import {
     type ProjectTypeResponse,
     type TypeField,
 } from "@/types/fields";
+import {useIssueTypes} from "@/hooks/useCiraDocs";
+import {useGlobalDocRules, useSaveGlobalDocRules} from "@/hooks/useSpaces";
+import type {DocRule} from "@/types/ciraDocs";
 import {isAxiosError} from "axios";
 import {ArrowDown, ArrowUp, Lock, Plus, X} from "lucide-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import CustomFieldModal from "./CustomFieldModal";
 import EmptyState from "@/components/ui/EmptyState";
 import Button from "@/components/ui/Button";
@@ -38,9 +41,12 @@ const btnCls = "inline-flex h-9 shrink-0 items-center gap-1 rounded-lg border bo
 const iconBtn = "flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30";
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
 
-/** 기준정보 › CIRA: 프로젝트 타입과 타입별 필드 세트, 전역 사용자 정의 필드. ADMIN 아니면 읽기 전용 */
+/**
+ * 기준정보 › CIRA: 작업 공간 프리셋(구 프로젝트 타입)과 프리셋별 필드 세트, 전역 사용자 정의 필드, 공통 산출물 규칙(V650).
+ * 프리셋은 작업 공간을 만들 때 1회 복사된다. ADMIN 아니면 읽기 전용
+ */
 export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
-    const [tab, setTab] = useState<"types" | "fields">("types");
+    const [tab, setTab] = useState<"types" | "fields" | "docRules">("types");
     const {data: types} = useProjectTypes();
     const {data: catalog} = useFieldCatalog();
     const {show, ToastComponent} = useToast();
@@ -49,7 +55,7 @@ export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
     return (
         <section className="rounded-xl border border-slate-200 bg-white p-6">
             <div role="tablist" className="mb-4 flex gap-1 border-b border-slate-100">
-                {([["types", "프로젝트 타입"], ["fields", "사용자 정의 필드"]] as const).map(([id, label]) => (
+                {([["types", "작업 공간 프리셋"], ["fields", "사용자 정의 필드"], ["docRules", "공통 산출물 규칙"]] as const).map(([id, label]) => (
                     <Button variant="unstyled" key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
                             className={`-mb-px h-10 border-b-2 px-3 text-sm ${tab === id ? "border-d94-brand font-semibold text-blue-700" : "border-transparent text-slate-500"}`}>
                         {label}
@@ -57,9 +63,9 @@ export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
                 ))}
             </div>
             {readOnly && <p className="mb-4 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">관리자만 변경할 수 있습니다.</p>}
-            {tab === "types"
-                ? <TypesTab types={types} catalog={catalog} readOnly={readOnly} show={show}/>
-                : <GlobalFieldsTab fields={catalog.custom} copies={catalog.copies} types={types} readOnly={readOnly} show={show}/>}
+            {tab === "types" && <TypesTab types={types} catalog={catalog} readOnly={readOnly} show={show}/>}
+            {tab === "fields" && <GlobalFieldsTab fields={catalog.custom} copies={catalog.copies} types={types} readOnly={readOnly} show={show}/>}
+            {tab === "docRules" && <GlobalDocRulesTab readOnly={readOnly} show={show}/>}
             {ToastComponent}
         </section>
     );
@@ -379,5 +385,63 @@ function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
                 </div>
             </Dialog>
         </>
+    );
+}
+
+/**
+ * 전사 공통 산출물 규칙(Task 타입별 파생 문서 폴더 슬롯). 프로젝트 ADMIN 이 [기준정보에서 가져오기] 하면 프로젝트에 🔒 잠금 복사된다.
+ * 여기서 바꿔도 이미 가져간 프로젝트 복사본은 그대로다.
+ */
+function GlobalDocRulesTab({readOnly, show}: { readOnly: boolean; show: Show }) {
+    const {data: issueTypes = []} = useIssueTypes();
+    const {data: rules = []} = useGlobalDocRules();
+    const save = useSaveGlobalDocRules();
+    const [typeId, setTypeId] = useState("");
+    const current = typeId || issueTypes[0]?.id || "";
+    const [rows, setRows] = useState<DocRule[]>([]);
+    useEffect(() => setRows(rules.filter((r) => r.issueTypeId === current)), [rules, current]);
+    const set = (i: number, patch: Partial<DocRule>) => setRows((rs) => rs.map((r, j) => (j === i ? {...r, ...patch} : r)));
+    const submit = () => save.mutate({issueTypeId: current, rules: rows.map((r, i) => ({...r, sortOrder: i}))}, {
+        onSuccess: () => show("저장했습니다."),
+        onError: (e) => show(errMsg(e, "저장하지 못했습니다."), "error"),
+    });
+
+    return (
+        <div className="max-w-3xl">
+            <p className="mb-3 text-sm text-slate-500">
+                모든 프로젝트 팀이 공통으로 남겨야 하는 산출물(예: 요구사항 정의서·시험성적서·릴리즈 노트)입니다.
+                프로젝트에서 가져가면 잠금(🔒)으로 복사되어 공간 관리자가 지우거나 바꿀 수 없습니다.
+            </p>
+            <select aria-label="Task 타입" value={current} onChange={(e) => setTypeId(e.target.value)} className={`${inputCls} mb-3 w-48`}>
+                {issueTypes.map((t) => <option key={t.id} value={t.id}>{t.typeNm}</option>)}
+            </select>
+            {rows.length === 0 && <EmptyState size="sm" className="mb-3 p-0 text-left">이 타입의 공통 산출물 규칙이 없습니다.</EmptyState>}
+            <ul className="mb-3 space-y-2">
+                {rows.map((r, i) => (
+                    <li key={r.id ?? `new-${i}`} className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 p-2 text-sm">
+                        <input aria-label="산출물 폴더 이름" value={r.folderName} disabled={readOnly}
+                               onChange={(e) => set(i, {folderName: e.target.value})} className={`${inputCls} w-48`} placeholder="요구사항 정의서"/>
+                        <label className="flex items-center gap-1 text-xs text-slate-600">
+                            <input type="checkbox" checked={r.autoCreate} disabled={readOnly} onChange={(e) => set(i, {autoCreate: e.target.checked})}/>
+                            Task 생성 때 폴더 만들기
+                        </label>
+                        {!readOnly && (
+                            <Button variant="unstyled" type="button" aria-label="빼기" className={`${iconBtn} ml-auto`}
+                                    onClick={() => setRows((rs) => rs.filter((_, j) => j !== i))}><X className="h-4 w-4"/></Button>
+                        )}
+                    </li>
+                ))}
+            </ul>
+            {!readOnly && (
+                <div className="flex gap-2">
+                    <Button variant="unstyled" type="button" className={btnCls}
+                            onClick={() => setRows((rs) => [...rs, {id: null, issueTypeId: null, folderName: "", sortOrder: null, defaultKind: null,
+                                defaultStream: null, templateContent: null, autoCreate: false}])}>
+                        <Plus className="h-4 w-4"/> 규칙 추가
+                    </Button>
+                    <Button type="button" onClick={submit} disabled={!current || save.isPending || rows.some((r) => !r.folderName.trim())}>저장</Button>
+                </div>
+            )}
+        </div>
     );
 }

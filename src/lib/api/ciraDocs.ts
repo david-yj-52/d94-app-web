@@ -37,7 +37,9 @@ export async function deriveIssueDoc(projectId: string, issueId: string, req: De
     return res.data.data;
 }
 
-export async function promoteNoteToCira(projectId: string, noteId: string, issueTypeId?: string, title?: string): Promise<IssueResponse> {
-    const res = await apiClient.post(`${p(projectId)}/docs/notes/${noteId}/promote-to-cira`, {issueTypeId, title});
+/** Team vault 노트면 그 노트 자체가 Task 의 메인 문서(설명)가 된다. spaceId 없음 = 기본 공간 */
+export async function promoteNoteToCira(projectId: string, noteId: string, issueTypeId?: string, title?: string,
+                                        spaceId?: string): Promise<IssueResponse> {
+    const res = await apiClient.post(`${p(projectId)}/docs/notes/${noteId}/promote-to-cira`, {issueTypeId, title, spaceId});
     return res.data.data;
 }

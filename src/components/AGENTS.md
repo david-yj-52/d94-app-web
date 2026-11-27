@@ -63,7 +63,7 @@
 | ConfirmDialog / `useConfirm` | `ui/ConfirmDialog` | 브라우저 confirm() 대체 확인 창 (Promise<boolean>) | CIRA sprints·versions·wiki·settings, study, ayaan, settings 패널 | 🔁 |
 | Dialog | `ui/Dialog` | Radix 모달 (모바일 전체 화면·왼쪽 서랍) | ApHeader, CIRA 셸·화면·issue·settings | 🔁 |
 | DropdownMenu | `ui/DropdownMenu` | Radix ··· 더보기 메뉴 (키보드·바깥 클릭) | CIRA 셸·Task 상세·스프린트·KanbanCard·KanbanBoard·DocsSidebar | 🔁 |
-| CiraShell › CiraSidebar, CreateIssueButton | `cira/shell/*` | CIRA 셸 (상단 바·통합 사이드바·모바일 서랍·이슈 만들기) | `(cira)/cira/layout.tsx` | ✅ |
+| CiraShell › CiraSidebar, CreateIssueButton | `cira/shell/*` | CIRA 셸 (상단 바·통합 사이드바(작업 공간 전환)·모바일 서랍·이슈 만들기) | `(cira)/cira/layout.tsx` | ✅ |
 
 ### Domain
 | 폴더 | 컴포넌트 | 용도 | 사용처 | 카드 |
@@ -76,6 +76,7 @@
 | issue | ColumnPicker, FieldLibraryDialog, FieldValue, CustomFieldInput | 사람별 컬럼 선택·순서·만들기·가져오기 · 라이브러리 가져오기 창 · 필드 값 표시 · 사용자 정의 필드 입력 | `issues`, `issues/[issueId]`, `settings/fields` | [issue](issue/AGENTS.md) |
 | issue | CommentSection, AttachmentSection | 댓글(멘션·이모지·답글)·첨부(DnD 업로드) | `issues/[issueId]` | [issue](issue/AGENTS.md) |
 | issue | IssueDocsSection | Task 연결 Docs(메인 노트·슬롯 파생·계보) | `issues/[issueId]` | [issue](issue/AGENTS.md) |
+| issue | FeatureTree | 2단계 Feature 트리 (공통 배지·공간 배지·Task 수) | `features` | [issue](issue/AGENTS.md) |
 | interfaceTest | InterfaceRequestPanel, InterfaceCallLog, InterfaceItemTable, MethodBadge, PumpControlPanel | REST 메서드별 통신 확인 + Admin 전용 PUMP1 MQTT 제어 | `/interface-test` 🧪 | [interfaceTest](interfaceTest/AGENTS.md) |
 | lifeMetric | MetricCard, MetricCreateModal, FormulaEditor, BaselineForm, LogPanel | 삶의 수치화 지표 카드·생성(템플릿/수식 빌더)·기준값·기록 | `/life-metric` 🧪 | [lifeMetric](lifeMetric/AGENTS.md) |
 | infra | NodeCard, UsageBar, NodeFormModal, ServiceFormModal, MetricChart, ProcessTable, format | 인프라 노드 카드·사용률 막대·노드/서비스 등록·추이 차트·프로세스 Top-N | `/infra/**` 🧪 | [infra](infra/AGENTS.md) |
@@ -83,11 +84,12 @@
 | docs | DocsSidebar, NoteMarkdown, CodeBlock, MermaidDiagram, NoteEditor, livePreview, useNoteAutosave, NoteSidePanel, DeriveModal, PromoteToCiraModal, TaskBoard, NoteVersionHistory, QuickSwitcher, FolderPickerModal, DocsDialog, useOpenNote | Docs 다중 vault (vault 섹션별 폴더 트리·[[링크]] 렌더링·편집·백링크·버전·Cmd+K) | `/docs/**` | [docs](docs/AGENTS.md) |
 | milestone | MilestoneCard, MilestoneModal | 마일스톤 카드·생성/편집 | `versions` | §5 |
 | mpns | PlatformTable, ProductTable, MobileRowCards, DetailPanel, PlatformAddPopup, ProductAddPopup | MPMS 마스터-디테일 (모바일 카드 목록) | `/mpms` 🧪 | [mpns](mpns/AGENTS.md) |
-| project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성 | `/cira/projects` | [project](project/AGENTS.md) |
+| project | ProjectCard, CreateProjectModal | 프로젝트 카드·생성(첫 작업 공간 이름·프리셋) | `/cira/projects` | [project](project/AGENTS.md) |
+| project | CreateSpaceModal | 작업 공간 추가(이름·프리셋/빈 공간·공간 관리자) | CiraSidebar | [project](project/AGENTS.md) |
 | project/settings | MemberTable, AddMemberModal | 멤버 관리 | `settings/*` | [project](project/AGENTS.md) |
 | project/settings/automation | AutomationRuleCard, AutomationRuleModal | 자동화 규칙 | `settings/automation` | [project](project/AGENTS.md) |
 | search | CqlEditor, CqlSyntaxGuide | CQL 입력기(자동완성·검증)·문법 가이드 | `search/advanced` | §5 |
-| settings | SettingsNav, GeneralSettingsPanel, CiraSettingsPanel, AyaanSettingsPanel, ApiTokenSettingsPanel, EmptyGroupPanel | 기준정보 그룹 목록·General 로고·CIRA 프로젝트 타입/필드·Ayaan·API 토큰·빈 그룹 | `/settings` | [settings](settings/AGENTS.md) |
+| settings | SettingsNav, GeneralSettingsPanel, CiraSettingsPanel, AyaanSettingsPanel, ApiTokenSettingsPanel, EmptyGroupPanel | 기준정보 그룹 목록·General 로고·CIRA 작업 공간 프리셋/필드/공통 산출물 규칙·Ayaan·API 토큰·빈 그룹 | `/settings` | [settings](settings/AGENTS.md) |
 | settings | CustomFieldModal | 사용자 정의 필드 생성·수정 폼 (전역·프로젝트 공용, 저장은 부모) | `/settings` CIRA, `settings/fields` | [settings](settings/AGENTS.md) |
 | sprint | CreateSprintModal, EditSprintModal, AssignIssueModal, CompleteSprintModal | 스프린트 생성·편집·이슈 할당·완료 | `sprints` | [sprint](sprint/AGENTS.md) |
 | version | VersionCard › ReleaseNotesModal, VersionModal | 버전 카드·릴리즈 노트·생성/편집 | `versions` | [version](version/AGENTS.md) |

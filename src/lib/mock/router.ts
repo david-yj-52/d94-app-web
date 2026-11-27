@@ -475,7 +475,52 @@ on("GET", "/v1/attachments/:id/download", ({params}) => {
 // 보드
 // CIRA Task ↔ Docs — ponytail: 기준정보만 메모리에 저장. 메인 노트·파생은 실제 백엔드에서만(mock 은 "메인 문서 없음")
 const docRules: Record<string, Array<Record<string, unknown>>> = {};
-on("GET", "/v1/issue-types", () => ok([{id: "type-issue", typeNm: "Issue"}, {id: "type-bug", typeNm: "Bug"}]));
+on("GET", "/v1/issue-types", () => ok([{id: "type-issue", typeNm: "Issue"}, {id: "type-bug", typeNm: "Bug"}, {id: "type-feature", typeNm: "Feature"}]));
+
+// 작업 공간 (V650) — ponytail: 프로젝트마다 기본 공간 "General" 을 처음 조회할 때 만든다. 공간별 워크플로·필드는 흉내 내지 않음(spaceId 무시)
+const mockSpaces: Record<string, Array<Record<string, unknown>>> = {};
+const spacesOf = (projectId: string) => (mockSpaces[projectId] ??= [{
+    id: `space-${projectId}`, projectId, name: "General", key: "DEFAULT", description: null, presetTypeId: null,
+    adminUserId: "mock-user", adminNm: "나", isDefault: true, sortOrd: 0, canManage: true,
+}]);
+on("GET", "/v1/projects/:projectId/spaces", ({params}) => ok(spacesOf(params.projectId)));
+on("POST", "/v1/projects/:projectId/spaces", ({params, body}) => {
+    const list = spacesOf(params.projectId);
+    const sp = {id: nextId("space"), projectId: params.projectId, name: String(body.name), key: String(body.name).toUpperCase(),
+        description: null, presetTypeId: body.presetTypeId ?? null, adminUserId: body.adminUserId ?? "mock-user", adminNm: null,
+        isDefault: false, sortOrd: list.length, canManage: true};
+    list.push(sp);
+    return ok(sp);
+});
+on("PUT", "/v1/spaces/:spaceId", ({params, body}) => {
+    const sp = Object.values(mockSpaces).flat().find((s) => s.id === params.spaceId);
+    return sp ? ok(Object.assign(sp, body.name ? {name: body.name} : {})) : notFound("space");
+});
+on("DELETE", "/v1/spaces/:spaceId", ({params}) => {
+    for (const k of Object.keys(mockSpaces)) mockSpaces[k] = mockSpaces[k].filter((s) => s.id !== params.spaceId || s.isDefault);
+    return {status: 204};
+});
+on("GET", "/v1/projects/:projectId/features", () => ok([]));
+const globalDocRules: Array<Record<string, unknown>> = [];
+on("GET", "/v1/cira/doc-rules", () => ok(globalDocRules));
+on("PUT", "/v1/cira/doc-rules/:issueTypeId", ({params, body}) => {
+    const rows = (Array.isArray(body) ? body : []) as Array<Record<string, unknown>>;
+    const kept = globalDocRules.filter((r) => r.issueTypeId !== params.issueTypeId);
+    globalDocRules.splice(0, globalDocRules.length, ...kept,
+        ...rows.map((r, i) => ({...r, id: r.id ?? `grule-${Date.now()}-${i}`, issueTypeId: params.issueTypeId, scope: "GLOBAL", locked: false})));
+    return ok(globalDocRules);
+});
+on("POST", "/v1/projects/:projectId/doc-rules/import", ({params}) => {
+    const mine = (docRules[params.projectId] ??= []);
+    for (const g of globalDocRules) {
+        if (!mine.some((r) => r.sourceRuleId === g.id)) mine.push({...g, id: `${g.id}-${params.projectId}`, scope: "PROJECT", sourceRuleId: g.id, locked: true});
+    }
+    return ok(mine);
+});
+on("GET", "/v1/spaces/:spaceId/doc-rules", () => ok([]));
+on("PUT", "/v1/spaces/:spaceId/doc-rules/:issueTypeId", ({params, body}) =>
+    ok(((Array.isArray(body) ? body : []) as Array<Record<string, unknown>>).map((r, i) => ({...r, id: r.id ?? `srule-${i}`,
+        issueTypeId: params.issueTypeId, scope: "SPACE", spaceId: params.spaceId, locked: false}))));
 on("GET", "/v1/projects/:projectId/doc-rules", ({params}) => ok(docRules[params.projectId] ?? []));
 on("PUT", "/v1/projects/:projectId/doc-rules/:issueTypeId", ({params, body}) => {
     const rows = (Array.isArray(body) ? body : []) as Array<Record<string, unknown>>;
@@ -1030,7 +1075,7 @@ on("GET", "/v1/search/cql/autocomplete", ({query}) => {
     const values: Record<string, string[]> = {
         status: ['"To Do"', '"In Progress"', '"In Review"', '"Done"'],
         priority: ["HIGHEST", "HIGH", "MEDIUM", "LOW", "LOWEST"],
-        type: ['"Story"', '"Task"', '"Bug"', '"Epic"'],
+        type: ['"Story"', '"Task"', '"Bug"', '"Feature"'],
         project: ["CIRA", "OPS"],
         assignee: ["currentUser()", ...USERS.map((u) => `"${u.name}"`)],
     };

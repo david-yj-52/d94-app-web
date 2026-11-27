@@ -47,6 +47,7 @@ app/layout.tsx           <html>·<body>(bg-d94-bg) + Providers(Query+Session) + 
 | 설정 | `/cira/projects/:id/settings/*` | CIRA | 기본정보·필드·문서 관리·멤버·워크플로우·Git·자동화 | [settings](./(cira)/cira/projects/[projectId]/settings/AGENTS.md) |
 | 버전 | `/cira/projects/:id/versions` | CIRA | 버전·마일스톤 탭 | [versions](./(cira)/cira/projects/[projectId]/versions/AGENTS.md) |
 | 위키 | `/cira/projects/:id/wiki` | CIRA | 트리·뷰어·Tiptap 편집·이력 | [wiki](./(cira)/cira/projects/[projectId]/wiki/AGENTS.md) |
+| Feature | `/cira/projects/:id/features` | CIRA | 2단계 Feature 트리(공통 최상위·단위), 작업 공간 필터 | [features](./(cira)/cira/projects/[projectId]/features/AGENTS.md) |
 | MPMS | `/mpms` | 🧪 | 플랫폼·제품 마스터-디테일 | [mpms](./(main)/mpms/AGENTS.md) |
 | Solace | `/solace` | 🧪 | WebSocket 메시징 테스트 | [solace](./(main)/solace/AGENTS.md) |
 | Todo | `/todo` | 🧪 | Server Actions | [todo](./(main)/todo/AGENTS.md) |

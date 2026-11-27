@@ -21,15 +21,22 @@
 
 ### CreateIssueModal — `@/components/issue/CreateIssueModal`
 ```ts
-{ projectId: string; onClose: () => void; onSuccess?: () => void }
+{ projectId: string; spaceId?: string; onClose: () => void; onSuccess?: () => void }
 ```
 - react-hook-form + zod 폼이며, 내부에서 `useCreateIssue`를 호출합니다.
+- V650: 작업 공간(`useSpaces`, 기본 = `spaceId` prop 또는 기본 공간)·유형(`useIssueTypes`, 비우면 Issue)·Feature. 유형이 `Feature` 면 [공통 Feature] 체크(→ `featureScope: "COMMON"`, 공간 선택 잠김), 아니면 `UNIT`. Feature 선택지(`useFeatures`): Task = 공통 + 같은 공간 단위, 단위 Feature = 공통만, 공통 Feature = 없음. 상태·필수 필드는 고른 공간 기준(공통 Feature 는 기본 공간 워크플로). 설명은 Team Docs 메인 문서의 첫 본문이 됩니다.
 - 프로젝트 유효 필드(`useProjectFields`) 중 **필수 사용자 정의 필드만** `CustomFieldInput` 으로 받아 `customFields` 로 보냅니다. 비어 있으면 "{이름} 값을 입력해주세요." 를 보이고 요청하지 않습니다. 나머지 필드는 상세에서 입력합니다.
 - 담당자는 `useProjectMembers` 목록에서 고르고 `userId` 를 `assigneeId` 로 보냅니다. `statusId` 는 `useWorkflowStatuses` 의 sortOrd 최솟값입니다. 우선순위·스토리 포인트는 비우면 보내지 않습니다.
 - ⚠️ 남은 결함(`it.fails`): `issueTypeId` 를 보내지 않아 실제 d94-query 에서는 **여전히 500** 입니다(백엔드에 이슈 유형 목록 API 가 없음). 설명(content)이 255자를 넘으면 백엔드 저장이 실패합니다(varchar(255)) → [test-report](../../../docs/test-report.md)
 ```tsx
 {showCreate && <CreateIssueModal projectId={projectId} onClose={() => setShowCreate(false)} onSuccess={() => show("이슈가 생성되었습니다.")}/>}
 ```
+
+### FeatureTree — `@/components/issue/FeatureTree`
+```ts
+{ projectId: string; nodes: FeatureNode[]; spaces: Space[] }
+```
+- 2단계 Feature 트리(서버 순서 그대로 — 공통이 먼저). 행 = 배지(공통 / 공간 이름)·키·제목·`Task {taskCount}`·상태, 공통 아래 단위 Feature 는 들여쓴 하위 목록. 행 → Task 상세. 표현 컴포넌트. 사용처: `features` 화면.
 
 ### ColumnPicker — `@/components/issue/ColumnPicker`
 ```ts

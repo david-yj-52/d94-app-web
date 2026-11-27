@@ -41,11 +41,13 @@ export async function removeProjectMember(
     await apiClient.delete(`/v1/projects/${projectId}/members/${userId}`);
 }
 
+/** spaceId 없음 = 기본 작업 공간 (V650: 워크플로는 공간 소유) */
 export async function getWorkflowStatuses(
     projectId: string,
+    spaceId?: string | null,
 ): Promise<WorkflowStatusResponse[]> {
     const res = await apiClient.get(
-        `/v1/projects/${projectId}/workflow/statuses`,
+        `/v1/projects/${projectId}/workflow/statuses`, {params: spaceId ? {spaceId} : {}},
     );
     return res.data.data;
 }
@@ -53,10 +55,11 @@ export async function getWorkflowStatuses(
 export async function createWorkflowStatus(
     projectId: string,
     data: CreateWorkflowStatusRequest,
+    spaceId?: string | null,
 ): Promise<WorkflowStatusResponse> {
     const res = await apiClient.post(
         `/v1/projects/${projectId}/workflow/statuses`,
-        data,
+        data, {params: spaceId ? {spaceId} : {}},
     );
     return res.data.data;
 }
@@ -72,9 +75,10 @@ export async function deleteWorkflowStatus(
 
 export async function getWorkflowTransitions(
     projectId: string,
+    spaceId?: string | null,
 ): Promise<WorkflowTransitionResponse[]> {
     const res = await apiClient.get(
-        `/v1/projects/${projectId}/workflow/transitions`,
+        `/v1/projects/${projectId}/workflow/transitions`, {params: spaceId ? {spaceId} : {}},
     );
     return res.data.data;
 }
@@ -82,10 +86,11 @@ export async function getWorkflowTransitions(
 export async function updateWorkflowTransitions(
     projectId: string,
     data: UpdateWorkflowTransitionsRequest,
+    spaceId?: string | null,
 ): Promise<WorkflowTransitionResponse[]> {
     const res = await apiClient.put(
         `/v1/projects/${projectId}/workflow/transitions`,
-        data,
+        data, {params: spaceId ? {spaceId} : {}},
     );
     return res.data.data;
 }

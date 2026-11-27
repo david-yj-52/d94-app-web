@@ -7,14 +7,15 @@
 | URL | 파일 | 설명 |
 |---|---|---|
 | `/cira/projects/:id/settings` | `page.tsx` | 기본 정보 (이름·설명·프로젝트 타입 수정, 키는 변경 불가) |
-| `…/settings/fields` | `fields/page.tsx` | 타입에서 물려받은 필드(잠김) · 이 프로젝트에 추가한 필드(순서·제거·출처) · 프로젝트 필드 생성·라이브러리 가져오기·수정·삭제 |
-| `…/settings/docs` | `docs/page.tsx` | 문서 관리: Task 타입별 파생 문서 폴더 슬롯(이름·기본 종류·트랙·템플릿·Task 생성 때 폴더 만들기) |
+| `…/settings/fields` | `fields/page.tsx` | 지금 작업 공간의 필드 세트 — 고정 필드(잠김) · 공간 필드(프리셋에서 온 것 포함, 순서·제거·출처) · 프로젝트 필드 생성·라이브러리 가져오기·수정·삭제 |
+| `…/settings/docs` | `docs/page.tsx` | 문서 관리(산출물 규칙): 🔒 기준정보에서 가져온 공통 규칙 · 프로젝트 공통 슬롯 · (`?space=` 면) 공간 슬롯 — 이름·기본 종류·트랙·템플릿·Task 생성 때 폴더 만들기 |
 | `…/settings/members` | `members/page.tsx` | 멤버 목록·추가·역할 변경·제거 |
 | `…/settings/workflow` | `workflow/page.tsx` (335줄) | 상태 추가·삭제, 상태 전이 매트릭스 |
 | `…/settings/git` | `git/page.tsx` (329줄) | Git 저장소 연동·Webhook 정보·최근 활동 |
 | `…/settings/automation` | `automation/page.tsx` | 자동화 규칙 목록·생성·편집 |
 
 - 진입: 셸 사이드바의 "프로젝트 설정". **ADMIN 멤버에게만 탭이 보입니다.** 다만 URL로 직접 들어오는 것은 막지 않습니다.
+- V650: 필드·문서 관리·워크플로우는 **작업 공간 설정**입니다. 지금 공간 = URL `?space=`(사이드바 공간 select, 메뉴 링크가 이어 붙임, 없으면 기본 공간). 프로젝트 ADMIN 이 아닌 공간 관리자는 사이드바 "공간 설정"으로 들어와 자기 공간만 고칩니다(워크플로 편집 가능 = `space.canManage`).
 
 ## 화면 구성
 ```
@@ -36,10 +37,10 @@ settings/layout.tsx
 | 화면 | 훅 | queryKey |
 |---|---|---|
 | 기본 | `useProject`, `useUpdateProject`, `useProjectTypes` | `["projects", projectId]`, `["project-types"]` |
-| fields | `useProjectFields`, `useFieldCatalog`, `useReplaceProjectFields`, `useSave/DeleteProjectField`, `useFieldLibrary`, `useImportToProject` | `["project-fields", projectId]`, `["field-catalog"]`, `["field-library", projectId]` |
-| docs | `useIssueTypes`, `useDocRules`, `useSaveDocRules` | `["issueTypes"]`, `["docRules", projectId]` |
+| fields | `useCurrentSpace`, `useProjectFields`, `useFieldCatalog`, `useReplaceProjectFields`, `useSave/DeleteProjectField`, `useFieldLibrary`, `useImportToProject` (spaceId 전달) | `["project-fields", projectId, spaceId]`, `["field-catalog"]`, `["field-library", projectId]` |
+| docs | `useIssueTypes`, `useDocRules`, `useSaveDocRules`, `useCurrentSpace`, `useSpaceDocRules`, `useSaveSpaceDocRules`, `useImportDocRules` | `["issueTypes"]`, `["docRules", projectId]`, `["space-doc-rules", spaceId]` |
 | members | `useProjectMembers`, `useAdd/UpdateRole/RemoveProjectMember` | `["projects", projectId, "members"]` |
-| workflow | `useWorkflowStatuses`, `useCreate/DeleteWorkflowStatus`, `useWorkflowTransitions`, `useUpdateWorkflowTransitions` | `[…, "workflow", "statuses" \| "transitions"]` |
+| workflow | `useCurrentSpace`, `useWorkflowStatuses`, `useCreate/DeleteWorkflowStatus`, `useWorkflowTransitions`, `useUpdateWorkflowTransitions` (spaceId 전달) | `[…, "workflow", "statuses" \| "transitions", spaceId]` |
 | git | `useGitRepos`, `useRegister/DeleteGitRepo`, `useGitActivity` | `["git-repos", projectId]`, `["git-activity", projectId]` |
 | automation | `useAutomationRules`, `useCreate/UpdateAutomationRule`, (카드) `useDeleteAutomationRule`, `useRuleExecutions` | `["automation-rules", projectId]` |
 
@@ -47,16 +48,17 @@ settings/layout.tsx
 ### 기본 정보
 - 이름(필수)·설명·프로젝트 타입(`projectTypeId`)을 수정합니다. 프로젝트 키는 읽기 전용입니다. 타입을 바꾸면 물려받는 필드 세트가 통째로 바뀌고, 빠진 필드의 값은 보관됩니다. 저장 결과는 토스트로 알립니다.
 ### 필드
-- 타입이 물려준 필드(고정 4개 포함)는 끌 수 없습니다 — 바꾸려면 기준정보 › CIRA. 목록에서 숨기는 것은 각자 Task 목록의 [컬럼]입니다.
+- 고정 4개만 끌 수 없습니다. 프리셋에서 복사된 필드도 공간 필드라 빼고 순서를 바꿀 수 있습니다(V650, 기준정보 프리셋을 바꿔도 이 공간에는 반영되지 않음). 목록에서 숨기는 것은 각자 Task 목록의 [컬럼]입니다.
 - 추가 필드: 기본 필드를 고르거나(`replaceProjectFields`, 전체 교체), 라이브러리(전역 + 이 타입의 필드)에서 가져오거나(복사본 생성), 프로젝트 필드를 새로 만듭니다(만들면 바로 추가 필드). 위/아래로 순서, 기본 필드는 [제거], 사용자 정의 필드는 `canEdit`(만든 사람·프로젝트 ADMIN)일 때만 [수정]·[삭제] — 모든 Task 의 값도 삭제, 확인 다이얼로그. 가져온 필드는 "'원본'에서 가져옴"(원본이 지워졌으면 "원본 삭제됨"). 서버 오류 메시지는 토스트로.
 ### 문서 관리
+- 3단계(V650): [기준정보에서 가져오기] → `POST /v1/projects/{id}/doc-rules/import` 로 전사 공통 규칙을 🔒 잠금 복사(이미 가져온 것·같은 폴더 이름은 건너뜀). 잠금·상위 범위 규칙은 위에 읽기 전용으로 보이고 같은 폴더 이름으로 덮을 수 없습니다. `?space=` 로 기본 공간이 아닌 공간을 골랐으면 그 공간 슬롯을 편집합니다(`PUT /v1/spaces/{spaceId}/doc-rules/{issueTypeId}`, 프로젝트 ADMIN 또는 공간 관리자).
 - 타입을 고르고 슬롯을 편집한 뒤 [저장] → `PUT /v1/projects/{id}/doc-rules/{issueTypeId}` 로 그 타입 목록을 통째로 바꿉니다(프로젝트 ADMIN, 아니면 403 토스트). 같은 폴더 이름 두 번·빈 이름은 저장 불가. 자동 생성을 끈 슬롯은 첫 파생 때 폴더가 생깁니다. 슬롯은 Task 상세 "연결 문서 & 계보"의 `+ 폴더` 버튼이 됩니다.
 ### 멤버
 - 현재 사용자가 ADMIN일 때만 역할 변경과 제거를 할 수 있습니다(`isAdmin` prop). MemberTable은 결과 메시지를 `onSuccess`/`onError`로 페이지에 넘기고, 페이지가 토스트를 띄웁니다.
 ### 워크플로우
 - **상태:** 이름과 카테고리로 추가하고, `useConfirm` 확인 창으로 확인한 뒤 삭제합니다.
 - **전이 매트릭스:** from 상태 × to 상태 체크박스로 허용할 전이를 정하고 한 번에 저장합니다(`enabledPairs`). 여기서 정한 규칙이 [이슈 상세](../issues/AGENTS.md)의 상태 버튼을 결정합니다.
-- ADMIN만 편집할 수 있습니다.
+- 지금 작업 공간의 상태·전이입니다. 프로젝트 ADMIN 또는 그 공간 관리자만 편집할 수 있습니다(다른 공간의 상태로 전이를 만들면 400).
 ### Git 연동
 - 저장소를 등록합니다. 입력은 provider(GITHUB/GITLAB), 저장소 이름, URL, access token입니다.
 - 등록한 저장소의 Webhook URL과 secret을 모달로 보여 주고, 복사 버튼을 제공합니다. 최근 커밋과 PR 활동 목록도 보여 줍니다.

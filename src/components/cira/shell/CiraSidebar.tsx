@@ -1,6 +1,8 @@
 "use client";
 
+import CreateSpaceModal from "@/components/project/CreateSpaceModal";
 import {useProjectMembers} from "@/hooks/useProjectSettings";
+import {useCurrentSpace} from "@/hooks/useSpaces";
 import {useProjects} from "@/hooks/useProjects";
 import {
     Bell,
@@ -8,7 +10,9 @@ import {
     ChartLine,
     Columns3,
     FileSearch,
+    Layers,
     LayoutDashboard,
+    Plus,
     ListTodo,
     Package,
     Search,
@@ -19,6 +23,7 @@ import {
 import {useSession} from "next-auth/react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
+import {Suspense, useState} from "react";
 import {getNavContext} from "./navContext";
 
 const SETTINGS_MENU = [
@@ -58,7 +63,19 @@ function Section({label, collapsed}: { label: string; collapsed: boolean }) {
     return <p className="mb-1 mt-4 px-2 text-[11px] font-bold uppercase tracking-wide text-cira-muted">{label}</p>;
 }
 
-export default function CiraSidebar({collapsed = false}: { collapsed?: boolean }) {
+/** useSearchParams(현재 작업 공간 ?space=) 를 쓰므로 정적 경로 빌드를 위해 Suspense 로 감싼다 */
+export default function CiraSidebar(props: { collapsed?: boolean }) {
+    return (
+        <Suspense fallback={null}>
+            <SidebarInner {...props}/>
+        </Suspense>
+    );
+}
+
+/** 공간 설정에 해당하는 설정 메뉴 (워크플로·필드·문서 관리) — ?space= 를 이어 붙인다 */
+const SPACE_SETTINGS = new Set(["/fields", "/docs", "/workflow"]);
+
+function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
     const pathname = usePathname();
     const {projectId, inSettings} = getNavContext(pathname);
     const {data: projects = []} = useProjects();
@@ -66,17 +83,23 @@ export default function CiraSidebar({collapsed = false}: { collapsed?: boolean }
     const {data: members} = useProjectMembers(projectId ?? "");
     // 설정은 프로젝트 ADMIN 만 (기존 ProjectNav 규칙)
     const isAdmin = !!session?.user?.email && members?.some((m) => m.email === session.user?.email && m.role === "ADMIN") === true;
+    // V650: 프로젝트 하위 작업 공간. 보드·Task·설정(워크플로·필드·문서)은 지금 공간 기준
+    const {space, spaces, setSpace, withSpace} = useCurrentSpace(projectId);
+    const [addingSpace, setAddingSpace] = useState(false);
 
     const is = (href: string) => pathname === href || pathname.startsWith(href + "/");
     const base = projectId ? `/cira/projects/${projectId}` : "";
     const projectMenu = [
+        {href: `${base}/features`, label: "Feature (전체 통합)", icon: Layers},
         {href: `${base}/sprints`, label: "백로그", icon: ListTodo},
-        {href: `${base}/boards`, label: "보드", icon: SquareKanban},
-        {href: `${base}/issues`, label: "Task", icon: Columns3},
+        {href: withSpace(`${base}/boards`), label: "보드", icon: SquareKanban},
+        {href: withSpace(`${base}/issues`), label: "Task", icon: Columns3},
         {href: `${base}/reports`, label: "리포트", icon: ChartLine},
         {href: `${base}/versions`, label: "릴리스", icon: Package},
         {href: `${base}/wiki`, label: "위키", icon: BookOpen},
         ...(isAdmin ? [{href: `${base}/settings`, label: "프로젝트 설정", icon: Settings}] : []),
+        // 공간 관리자(프로젝트 ADMIN 아님)는 자기 공간 설정만
+        ...(!isAdmin && space?.canManage ? [{href: withSpace(`${base}/settings/workflow`), label: "공간 설정", icon: Settings}] : []),
     ];
 
     return (
@@ -104,17 +127,40 @@ export default function CiraSidebar({collapsed = false}: { collapsed?: boolean }
                             </span>
                             {!collapsed && <span className="truncate">{p.name}</span>}
                         </Link>
+                        {open && !collapsed && spaces.length > 0 && (
+                            <div className="flex items-center gap-1 py-1 pl-7 pr-1">
+                                <select
+                                    aria-label="작업 공간"
+                                    value={space?.id ?? ""}
+                                    onChange={(e) => setSpace(e.target.value)}
+                                    className="h-8 min-w-0 flex-1 rounded-md border border-cira-border bg-white px-1.5 text-xs"
+                                >
+                                    {spaces.map((sp) => <option key={sp.id} value={sp.id}>{sp.name}</option>)}
+                                </select>
+                                {isAdmin && (
+                                    <button type="button" title="작업 공간 추가" aria-label="작업 공간 추가" onClick={() => setAddingSpace(true)}
+                                            className="flex h-8 w-8 items-center justify-center rounded-md text-cira-muted hover:bg-gray-100">
+                                        <Plus className="h-4 w-4"/>
+                                    </button>
+                                )}
+                            </div>
+                        )}
                         {open && !inSettings && projectMenu.map((m) => (
-                            <NavItem key={m.href} {...m} active={is(m.href)} collapsed={collapsed} indent/>
+                            <NavItem key={m.href} {...m} active={is(m.href.split("?")[0])} collapsed={collapsed} indent/>
                         ))}
                         {open && inSettings && SETTINGS_MENU.map((s) => {
-                            const href = `${base}/settings${s.suffix}`;
-                            const active = s.suffix === "" ? pathname === href : is(href);
-                            return <NavItem key={href} href={href} label={s.label} icon={Settings} active={active} collapsed={collapsed} indent/>;
+                            const path = `${base}/settings${s.suffix}`;
+                            const active = s.suffix === "" ? pathname === path : is(path);
+                            const href = SPACE_SETTINGS.has(s.suffix) ? withSpace(path) : path;
+                            return <NavItem key={path} href={href} label={s.label} icon={Settings} active={active} collapsed={collapsed} indent/>;
                         })}
                     </div>
                 );
             })}
+
+            {addingSpace && projectId && (
+                <CreateSpaceModal projectId={projectId} onClose={() => setAddingSpace(false)} onCreated={(sp) => setSpace(sp.id)}/>
+            )}
 
             <Section label="필터" collapsed={collapsed}/>
             <NavItem href="/cira/search" label="검색" icon={Search} active={pathname === "/cira/search"} collapsed={collapsed}/>

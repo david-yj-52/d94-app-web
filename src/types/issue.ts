@@ -20,6 +20,14 @@ export interface IssueResponse {
     assignee?: UserSummary;
     reporter?: UserSummary;
     projectId: string;
+    /** 작업 공간. null = 공통 레이어 (COMMON Feature) */
+    spaceId?: string | null;
+    /** Feature 유형만 */
+    featureScope?: "COMMON" | "UNIT" | null;
+    /** 연결된 Feature (Task → Feature, UNIT Feature → COMMON Feature) */
+    featureId?: string | null;
+    /** 단건 조회만: 설명의 원본인 Docs 메인 노트 (content = 그 본문) */
+    mainNoteId?: string | null;
     sprintId?: string;
     dueDt?: string;
     startedAt?: string;
@@ -43,8 +51,13 @@ export interface IssueStatusResponse {
 
 export interface CreateIssueRequest {
     title: string;
+    /** Docs 메인 노트의 첫 본문이 된다 (Task 에 따로 저장하지 않음) */
     content?: string;
     issueTypeId?: string;
+    /** 없으면 기본 공간 */
+    spaceId?: string;
+    featureScope?: "COMMON" | "UNIT";
+    featureId?: string;
     statusId?: string;
     priority?: Priority;
     storyPnt?: number;
@@ -57,7 +70,10 @@ export interface CreateIssueRequest {
 
 export interface UpdateIssueRequest {
     title?: string;
+    /** 메인 노트 본문(frontmatter·진행 경과 제외)을 바꾼다 */
     content?: string;
+    /** "" = 연결 해제 */
+    featureId?: string;
     statusId?: string;
     priority?: Priority;
     storyPnt?: number;
@@ -75,6 +91,8 @@ export interface IssueFilterParams {
     issueType?: string;
     sprintId?: string;
     keyword?: string;
+    spaceId?: string;
+    featureId?: string;
     /** "sys:dueDate,asc" (sys: 키만) */
     sort?: string;
     page?: number;
