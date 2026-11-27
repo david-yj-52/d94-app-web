@@ -79,6 +79,7 @@ export default function BoardsPage({
 
             {showCreate && (
                 <CreateBoardModal
+                    spaceId={spaceId}
                     projectId={projectId}
                     onClose={() => setShowCreate(false)}
                     onSuccess={(boardId) => {

@@ -32,3 +32,28 @@ describe("기준정보 › CIRA — 필드 라이브러리", () => {
         expect(lastRequest("POST")?.path).toBe("/v1/cira/project-types/PT-KANBAN/custom-fields");
     });
 });
+
+describe("기준정보 › CIRA — 프리셋 기본 워크플로 (V670)", () => {
+    it("상태를 추가·분류하고 보드 유형을 바꿔 저장하면 statuses·boardType 을 보낸다", async () => {
+        renderWithClient(<CiraSettingsPanel readOnly={false}/>);
+        const wf = await screen.findByRole("region", {name: "기본 워크플로"});
+        expect(within(wf).getByLabelText("상태 4 이름")).toHaveValue("Done");
+        await userEvent.selectOptions(within(wf).getByLabelText("보드 유형"), "SCRUM");
+        await userEvent.click(within(wf).getByRole("button", {name: "상태 3 빼기"})); // In Review
+        await userEvent.click(within(wf).getByRole("button", {name: "상태 추가"}));
+        await userEvent.type(within(wf).getByLabelText("상태 4 이름"), "검증");
+        await userEvent.click(within(wf).getByRole("button", {name: "워크플로 저장"}));
+        expect((await screen.findAllByText(/워크플로를 저장했습니다/)).length).toBeGreaterThan(0);
+        expect(lastRequest("PUT")).toMatchObject({path: "/v1/cira/project-types/PT-KANBAN", body: {boardType: "SCRUM", statuses: [
+            {name: "To Do", category: "TODO"}, {name: "In Progress", category: "IN_PROGRESS"}, {name: "Done", category: "DONE"},
+            {name: "검증", category: "IN_PROGRESS"}]}});
+    });
+
+    it("첫 상태가 '할 일'이 아니면 저장할 수 없다", async () => {
+        renderWithClient(<CiraSettingsPanel readOnly={false}/>);
+        const wf = await screen.findByRole("region", {name: "기본 워크플로"});
+        await userEvent.selectOptions(within(wf).getByLabelText("상태 1 분류"), "IN_PROGRESS");
+        expect(within(wf).getByText("첫 상태는 '할 일'이어야 합니다.")).toBeInTheDocument();
+        expect(within(wf).getByRole("button", {name: "워크플로 저장"})).toBeDisabled();
+    });
+});

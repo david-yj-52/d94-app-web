@@ -1,6 +1,7 @@
 "use client";
 
-import {Avatar, IssueTypeIcon, PriorityIcon} from "@/components/cira/ui/Badges";
+import {Avatar, CommonFeatureBadge, IssueTypeIcon, PriorityIcon} from "@/components/cira/ui/Badges";
+import {useCommonFeatures} from "@/hooks/useSpaces";
 import DropdownMenu from "@/components/ui/DropdownMenu";
 import type {BoardIssueResponse} from "@/types/board";
 import {MoveRight} from "lucide-react";
@@ -28,6 +29,7 @@ export default function KanbanCard({
                                        moveTargets = [],
                                        onMoveTo,
                                    }: Props) {
+    const common = useCommonFeatures(projectId).get(issue.featureId ?? "");
     return (
         <>
             {showDropBefore && (
@@ -43,6 +45,7 @@ export default function KanbanCard({
                     isDragging ? "opacity-30 scale-[0.98] border-indigo-300" : "border-slate-200",
                 ].join(" ")}
             >
+                {common && <div className="mb-1"><CommonFeatureBadge feature={common}/></div>}
                 <p className="mb-2 text-sm leading-snug text-slate-800 line-clamp-2">
                     <Link
                         href={`/cira/projects/${projectId}/issues/${issue.id}`}

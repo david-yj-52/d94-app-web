@@ -13,17 +13,21 @@
 | `…/settings/workflow` | `workflow/page.tsx` (335줄) | 상태 추가·삭제, 상태 전이 매트릭스 |
 | `…/settings/git` | `git/page.tsx` (329줄) | Git 저장소 연동·Webhook 정보·최근 활동 |
 | `…/settings/automation` | `automation/page.tsx` | 자동화 규칙 목록·생성·편집 |
+| `…/settings/space` | `space/page.tsx` | **작업 공간 설정 › 공간 정보**: 이름·설명(공간 관리자도) · 공간 관리자 임명(프로젝트 ADMIN, 멤버 select) · 공간 삭제(프로젝트 ADMIN, 기본 공간 불가, Task 남으면 409 사유 토스트) |
+| `…/settings/boards` | `boards/page.tsx` | **작업 공간 설정 › 보드·뷰**: 이 공간 보드 목록(이름·유형)·"+ 보드 추가" → `CreateBoardModal`(spaceId)·삭제(확인 창). 컬럼은 보드 화면 |
 
-- 진입: 셸 사이드바의 "프로젝트 설정". **ADMIN 멤버에게만 탭이 보입니다.** 다만 URL로 직접 들어오는 것은 막지 않습니다.
-- V650: 필드·문서 관리·워크플로우는 **작업 공간 설정**입니다. 지금 공간 = URL `?space=`(사이드바 공간 select, 메뉴 링크가 이어 붙임, 없으면 기본 공간). 프로젝트 ADMIN 이 아닌 공간 관리자는 사이드바 "공간 설정"으로 들어와 자기 공간만 고칩니다(워크플로 편집 가능 = `space.canManage`).
+- 진입: 셸 사이드바 "프로젝트 설정"(프로젝트 ADMIN) · "공간 설정"(`space.canManage` = 프로젝트 ADMIN 또는 그 공간 관리자 → `settings/space?space=`). URL 직접 진입은 막지 않고 권한은 백엔드가 검사합니다.
+- 설정 사이드바는 두 묶음(설계 7.2): **프로젝트**(기본 정보·멤버·Git 연동·자동화, ADMIN 만) · **작업 공간 · {이름}**(공간 정보·워크플로·필드·보드·뷰·산출물 규칙, `canManage` 만, 링크에 `?space=`). 지금 공간 = URL `?space=`(없으면 기본 공간), 바꾸려면 사이드바 공간 select.
 
 ## 화면 구성
 ```
 settings/layout.tsx
-├── PageHeader (프로젝트 / {이름} · "프로젝트 설정")
-├── (설정 메뉴는 CIRA 셸 사이드바: 기본 정보 / 필드 / 문서 관리 / 멤버 / 워크플로우 / Git 연동 / 자동화)
+├── PageHeader (프로젝트 / {이름} · "설정")
+├── (설정 메뉴는 CIRA 셸 사이드바: [프로젝트] 기본 정보 / 멤버 / Git 연동 / 자동화 · [작업 공간 · {이름}] 공간 정보 / 워크플로 / 필드 / 보드 · 뷰 / 산출물 규칙)
 └── {children}
-    ├── (기본)     폼: 이름·설명·타입 select + [저장]  (react-hook-form)
+    ├── (기본)     폼: 이름·설명 + [저장]  (react-hook-form)
+    ├── space      이름·설명·공간 관리자 select · [저장] · 삭제 카드(ConfirmDialog)
+    ├── boards     보드 행(링크·유형·삭제) · [+ 보드 추가] → board/CreateBoardModal
     ├── fields     고정 필드 칩(모든 공간 공통) · "{공간 이름} 작업 공간의 필드" 목록 · [+ 제공 필드 추가] select(기본 필드만) · [+ 라이브러리에서 가져오기] → issue/FieldLibraryDialog · [+ 새 필드 만들기] → settings/CustomFieldModal · 삭제 Dialog
     ├── docs       Task 타입 select · 슬롯 행(폴더 이름·종류·트랙·자동 생성·위/아래·삭제·템플릿) · [+ 슬롯 추가] [저장]
     ├── members    MemberTable + {showAdd && <AddMemberModal/>}           → project 카드
@@ -36,7 +40,9 @@ settings/layout.tsx
 ## 데이터
 | 화면 | 훅 | queryKey |
 |---|---|---|
-| 기본 | `useProject`, `useUpdateProject`, `useProjectTypes` | `["projects", projectId]`, `["project-types"]` |
+| 기본 | `useProject`, `useUpdateProject` | `["projects", projectId]` |
+| space | `useCurrentSpace`, `useProjectMembers`, `useUpdateSpace`, `useDeleteSpace` | `["spaces", projectId]`, `["projects", projectId, "members"]` |
+| boards | `useCurrentSpace`, `useBoards(projectId, spaceId)`, `useDeleteBoard` | `["boards", projectId, spaceId]` |
 | fields | `useCurrentSpace`, `useProjectFields`, `useFieldCatalog`, `useReplaceProjectFields`, `useSave/DeleteProjectField`, `useFieldLibrary`, `useImportToProject` (spaceId 전달) | `["project-fields", projectId, spaceId]`, `["field-catalog"]`, `["field-library", projectId]` |
 | docs | `useIssueTypes`, `useDocRules`, `useSaveDocRules`, `useCurrentSpace`, `useSpaceDocRules`, `useSaveSpaceDocRules`, `useImportDocRules` | `["issueTypes"]`, `["docRules", projectId]`, `["space-doc-rules", spaceId]` |
 | members | `useProjectMembers`, `useAdd/UpdateRole/RemoveProjectMember` | `["projects", projectId, "members"]` |

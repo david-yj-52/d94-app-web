@@ -23,7 +23,7 @@ issues/page.tsx
 issues/[issueId]/page.tsx
 ├── PageHeader (프로젝트 / 이슈 › 제목 = issueKey) + ··· 더보기 Menu(삭제)
 ├── 좌측 본문
-│   ├── 제목·설명: InlineText (페이지 내부 컴포넌트)
+│   ├── 제목: InlineText · 설명: IssueDescription (페이지 내부 — 보기 docs/NoteMarkdown, [편집] 텍스트 영역)
 │   ├── AttachmentSection issueId                → issue 카드
 │   ├── IssueDocsSection projectId issueId       → issue 카드 (연결 문서 & 계보)
 │   └── CommentSection issueId                   → issue 카드
@@ -65,8 +65,8 @@ issues/[issueId]/page.tsx
 ### 사용자 정의 필드 (상세)
 - 세부 정보의 사용자 정의 필드는 blur·선택 즉시 `update({customFields: {[key]: 값}})` 로 저장합니다(빈 값 = 삭제). 타입이 바뀌어 유효 필드에서 빠진 필드는 보이지 않지만 값은 서버에 보관됩니다.
 ### 인라인 편집 (상세)
-- **설명 = Docs 메인 노트 본문**(V650 단일 원본): `GET /issues/{id}` 가 메인 노트의 frontmatter·진행 경과를 뺀 본문을 `content` 로, `mainNoteId` 와 함께 줍니다(옛 CONTENT 만 있던 Task 는 이때 노트로 옮겨짐). 여기서 고치면 백엔드가 메인 노트 본문만 바꿉니다. 라벨 옆 "Docs 에서 열기"(`/docs/{mainNoteId}`) → 버전·링크·파생.
-- 제목, 설명, 스토리 포인트는 `InlineText`로 편집합니다. 클릭하면 편집 모드가 되고, blur나 Enter로 저장합니다(`update({field})`).
+- **설명 = Docs 메인 노트 본문**(V650 단일 원본): `GET /issues/{id}` 가 메인 노트의 frontmatter·진행 경과를 뺀 본문을 `content` 로, `mainNoteId` 와 함께 줍니다(옛 CONTENT 만 있던 Task 는 이때 노트로 옮겨짐). 여기서 고치면 백엔드가 메인 노트 본문만 바꿉니다. 라벨 옆 "Docs 에서 열기"(`/docs/{mainNoteId}`) → 버전·링크·파생. 보기는 Docs 와 같은 `NoteMarkdown`(`[[링크]]` → `useOpenNote` 로 메인 노트 vault 안에서 이동, 없는 노트는 흐리게 — `useNote(mainNoteId).links`), 마우스를 올리면 [편집] → 텍스트 영역·[저장][취소].
+- 제목, 스토리 포인트는 `InlineText`로 편집합니다. 클릭하면 편집 모드가 되고, blur나 Enter로 저장합니다(`update({field})`).
 - 우선순위는 select를 바꾸면 바로 저장되고, 마감일은 date input에서 blur할 때 저장됩니다. 결과는 "저장되었습니다." 또는 "저장에 실패했습니다." 토스트로 알립니다.
 ### 상태 전이 (워크플로우)
 - `useAvailableTransitions`로 **현재 상태에서 갈 수 있는 상태**만 상태 드롭다운 항목으로 보여 줍니다. 버튼 색은 현재 상태의 `category`(`cira/ui/tones`)입니다. 전이 규칙은 [settings/workflow](../settings/AGENTS.md)에서 정의합니다.

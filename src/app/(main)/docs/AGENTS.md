@@ -36,7 +36,7 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 | `useNoteTitles` (QuickSwitcher) | `GET /v1/docs/notes/titles?prefix=` | ✅ |
 | `useChangeNoteKind`, `useDeriveNote` | `PUT /v1/docs/notes/{id}/kind`, `POST /{id}/derive` | ✅ |
 | `useAutosaveNote`, `useUploadDocsImage`, `useInvalidateDocs` | `PUT /v1/docs/notes/{id}`(자동 저장), `POST /v1/docs/images` | ✅ |
-| `useProjects`, `useIssueTypes`, `usePromoteNoteToCira` (CIRA Task로 등록) | `GET /v1/projects`, `GET /v1/issue-types`, `POST /v1/projects/{id}/docs/notes/{noteId}/promote-to-cira` | ✅ (Task 만 생성) |
+| `useProjects`, `useIssueTypes`, `usePromoteNoteToCira` (CIRA Task로 등록) | `GET /v1/projects`, `GET /v1/issue-types`, `POST /v1/projects/{id}/docs/notes/{noteId}/promote-to-cira` (`spaceId` = 고른 작업 공간, 없으면 기본) | ✅ (Task 만 생성) |
 | `useSetDocsTaskStatus`, `usePromoteDocsTask` | `PUT /v1/docs/tasks/{noteId}/{lineNo}`, `POST …/promote` | ✅ |
 
 ## 기능 (L4)

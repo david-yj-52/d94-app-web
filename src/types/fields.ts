@@ -53,11 +53,25 @@ export interface ProjectTypeResponse {
     /** 이 프리셋으로 만든 작업 공간 수 (참고용 — 만든 뒤에는 연결이 없다) */
     spaceCount: number;
     fields: TypeField[];
+    /** 새 작업 공간에 복사할 기본 보드 유형·워크플로 (V670). statuses 순서대로, 전이는 이웃 앞뒤 + 처음 → 마지막 */
+    boardType: PresetBoardType;
+    statuses: PresetStatus[];
+}
+
+export type PresetBoardType = "KANBAN" | "SCRUM";
+export type StatusCategory = "TODO" | "IN_PROGRESS" | "DONE";
+export interface PresetStatus {
+    name: string;
+    category: StatusCategory;
 }
 
 export interface SaveProjectType {
     typeNm: string;
     descr?: string;
+    /** 없으면 그대로 */
+    boardType?: PresetBoardType;
+    /** 없으면 그대로. 첫 상태 TODO, DONE 하나 이상, 2~10개 */
+    statuses?: PresetStatus[];
 }
 
 export interface SaveCustomField {

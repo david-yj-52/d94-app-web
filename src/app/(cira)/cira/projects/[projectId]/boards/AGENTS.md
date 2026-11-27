@@ -23,7 +23,7 @@ boards/[boardId]/page.tsx
 ```
 
 ## 데이터
-- `useBoards(projectId)` → `["boards", projectId]`, `useBoardDetail(boardId)` → `["board", boardId]`
+- `useBoards(projectId, spaceId)` → `["boards", projectId, spaceId]` (지금 작업 공간 `useCurrentSpace`, 새 보드도 그 공간에 — `CreateBoardModal spaceId`), `useBoardDetail(boardId)` → `["board", boardId]`
 - 쓰기: `useMoveIssue`, `useAdd/Update/DeleteColumn`, `useCreate/DeleteBoard`
 
 ## 기능 (L4)

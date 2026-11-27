@@ -67,7 +67,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - `study/segments.ts` `buildSegments` — 블록 텍스트를 단어 hit·마킹 경계로 자른다. `study/selection.ts` `rangeToAnchor` — 브라우저 선택 → `{start,end}BlockKey/Offset`(블록 요소 시작부터 `Range.toString().length`, 표 컨테이너 제외). 테스트 `study/study.test.ts`.
 - `study/colors.ts` — 마킹 색 클래스, `errorMessage(e, fallback)`.
 - mock: `mock/study.ts`의 `registerStudyMock(on)` (시드 문서 `mock-doc-1`, 업로드 complete 는 바로 READY).
-- mock: `mock/fields.ts`의 `registerFieldsMock(on, presetOf)` (프리셋 SCRUM·KANBAN 시드, 기본 공간 프리셋으로 계산, 유효 필드·기본 컬럼 계산과 소속·복사 가져오기·`importedAs`·`copies` 만 흉내, 이름 중복 외 검증 없음). 프로젝트 생성 mock 은 `spaces` 가 있으면 그 공간들을 `mockSpaces` 에 만들고(첫 번째 = 기본) 첫 공간 프리셋을, 없으면 `presetTypeId` 를 `mockPreset` 에 기억하고, Task mock 은 `customFields` 를 병합합니다(null = 삭제).
+- mock: `mock/fields.ts`의 `registerFieldsMock(on, presetOf)` (프리셋 SCRUM·KANBAN 시드 — `boardType`·기본 4단계 `statuses`, PUT 이 바꿈, 기본 공간 프리셋으로 계산, 유효 필드·기본 컬럼 계산과 소속·복사 가져오기·`importedAs`·`copies` 만 흉내, 이름 중복 외 검증 없음). 프로젝트 생성 mock 은 `spaces` 가 있으면 그 공간들을 `mockSpaces` 에 만들고(첫 번째 = 기본) 첫 공간 프리셋을, 없으면 `presetTypeId` 를 `mockPreset` 에 기억하고, Task mock 은 `customFields` 를 병합합니다(null = 삭제).
 - mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `all`·`cira`·`docs`·`study`·`interface-test`·`life-metric`·`infra`, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
 ### Docs: `api/docs.ts` · `docs/`

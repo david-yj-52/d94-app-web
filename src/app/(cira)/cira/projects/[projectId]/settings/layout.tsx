@@ -16,7 +16,7 @@ export default function SettingsLayout({
 
     return (
         <div className="max-w-6xl mx-auto px-4">
-            <PageHeader breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]} title="프로젝트 설정"/>
+            <PageHeader breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]} title="설정"/>
             <div className="min-w-0">{children}</div>
         </div>
     );

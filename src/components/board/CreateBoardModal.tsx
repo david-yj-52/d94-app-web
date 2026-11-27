@@ -6,23 +6,27 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import Button from "@/components/ui/Button";
-import {Input} from "@/components/ui/Input";
+import {Input, Select} from "@/components/ui/Input";
 import FormField from "@/components/ui/FormField";
 
 const schema = z.object({
     boardNm: z.string().min(1, "보드 이름을 입력해주세요.").max(100),
+    boardType: z.enum(["KANBAN", "SCRUM"]),
 });
 
 type FormData = z.infer<typeof schema>;
 
 interface Props {
     projectId: string;
+    /** 보드를 만들 작업 공간 (없으면 기본 공간) */
+    spaceId?: string;
     onClose: () => void;
     onSuccess?: (boardId: string) => void;
 }
 
 export default function CreateBoardModal({
                                              projectId,
+                                             spaceId,
                                              onClose,
                                              onSuccess,
                                          }: Props) {
@@ -34,7 +38,7 @@ export default function CreateBoardModal({
         formState: {errors},
     } = useForm<FormData>({
         resolver: zodResolver(schema),
-        defaultValues: {boardNm: "기본 보드"},
+        defaultValues: {boardNm: "기본 보드", boardType: "KANBAN"},
     });
 
     useEffect(() => {
@@ -45,7 +49,7 @@ export default function CreateBoardModal({
     }, [data, onClose, onSuccess]);
 
     const onSubmit = (formData: FormData) => {
-        mutate({boardNm: formData.boardNm, boardType: "KANBAN"});
+        mutate({boardNm: formData.boardNm, boardType: formData.boardType, spaceId});
     };
 
     return (
@@ -63,6 +67,13 @@ export default function CreateBoardModal({
                             {...register("boardNm")}
                             placeholder="예: 개발 보드"
                         />
+                    </FormField>
+
+                    <FormField label="보드 유형">
+                        <Select {...register("boardType")}>
+                            <option value="KANBAN">칸반 (전체 Task)</option>
+                            <option value="SCRUM">스크럼 (활성 스프린트 Task)</option>
+                        </Select>
                     </FormField>
 
                     {isError && (
