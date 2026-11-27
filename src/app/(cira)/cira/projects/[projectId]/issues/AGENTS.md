@@ -28,7 +28,7 @@ issues/[issueId]/page.tsx
 │   ├── IssueDocsSection projectId issueId       → issue 카드 (연결 문서 & 계보)
 │   └── CommentSection issueId                   → issue 카드
 ├── 우측 사이드바 (모바일은 본문 위): 상태 드롭다운(Menu, 모바일 sticky) · <details> "세부 정보"(우선순위 select · 담당자/보고자 · 스토리 포인트 · 마감일 · 사용자 정의 필드(CustomFieldInput) · 생성/수정 시각)
-└── 삭제 확인 다이얼로그 (표준 삭제 다이얼로그의 원본)
+└── 삭제 확인: 더보기 [삭제] → `useConfirm`("Task 삭제", 빨간 [삭제]) → 성공 시 목록으로
 ```
 
 ## 데이터

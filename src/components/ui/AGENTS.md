@@ -105,7 +105,7 @@ return (<div>... {ConfirmComponent}</div>);
 ```
 - 브라우저 `confirm()` 대체. `useToast` 처럼 훅을 부른 컴포넌트 안에 `{ConfirmComponent}` 를 렌더링합니다(Dialog 포털이라 위치는 상관없음).
 - `Dialog compact` + 취소 버튼(secondary)·confirmLabel 버튼(danger 면 빨강). 취소·바깥 클릭·Esc·✕ → `false`. 첫 포커스는 ✕(Enter 로 실수 삭제 방지).
-- 사용처(2026-11-26 `confirm()` 15곳 교체): CIRA sprints·versions·wiki·settings/git·workflow, MemberTable, AutomationRuleCard, ApiTokenSettingsPanel, AyaanSettingsPanel, study 문서 목록, ayaan 작업 목록·상세. 테스트 `ApiTokenSettingsPanel.test.tsx`("확인 후 폐기").
+- 사용처(2026-11-26 `confirm()` 15곳 교체): CIRA sprints·versions·wiki·settings/git·workflow, MemberTable, AutomationRuleCard, ApiTokenSettingsPanel, AyaanSettingsPanel, study 문서 목록, ayaan 작업 목록·상세, CIRA Task 상세 삭제·댓글 삭제(`CommentSection`). 테스트 `ApiTokenSettingsPanel.test.tsx`("확인 후 폐기").
 
 ## 3. 표준 마크업 (모달 — 버튼·입력은 위 Button·Input 을 쓰세요)
 
@@ -136,7 +136,7 @@ return (<div>... {ConfirmComponent}</div>);
 </div>
 ```
 
-**삭제 확인**은 `useConfirm` 을 쓰세요(위 카드). `issues/[issueId]/page.tsx` 하단의 손 마크업 다이얼로그는 예전 방식입니다.
+**삭제 확인**은 `useConfirm` 을 쓰세요(위 카드).
 
 ## 4. 승격 계획 (Phase 2)
 
@@ -145,7 +145,7 @@ return (<div>... {ConfirmComponent}</div>);
 | `Modal` (`open`, `onClose`, `title`, `size`, ESC 닫기) | 모달 overlay 21곳 | 위 모달 마크업 반복 — **새 모달은 `ui/Dialog` 를 쓰세요**(승격 완료) |
 | `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`) | `<button>` 171곳 | ✅ **완료**(2026-11-26, 표준형 39곳 교체). `loading` 은 필요해질 때 |
 | `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | ✅ Input·Select·Textarea **완료**(표준형 31곳 교체). `FormField`(라벨+오류) 는 후보 |
-| `ConfirmDialog` | 브라우저 `confirm()` 15곳 + issue 상세 삭제 다이얼로그 | ✅ **완료**(2026-11-26 `useConfirm`, `confirm()` 15곳 교체). issue 상세·댓글의 손 마크업 다이얼로그는 후보 |
+| `ConfirmDialog` | 브라우저 `confirm()` 15곳 + issue 상세·댓글 삭제 다이얼로그 | ✅ **완료**(2026-11-26 `useConfirm` — `confirm()` 15곳, Task·댓글 삭제 손 마크업 2곳 교체) |
 | `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | |
 | `EmptyState` | "~이 없습니다" 빈 화면 | |
 | `DropdownMenu` | `···` 더보기 메뉴 (issue 상세 등) | |

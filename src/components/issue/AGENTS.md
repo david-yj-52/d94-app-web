@@ -67,7 +67,7 @@
 ```ts
 { issueId: string }
 ```
-- 자기 완결형(self-contained) 섹션입니다. `issueId`만 넘기면 조회, 작성, 수정, 삭제, 반응까지 모두 처리합니다.
+- 자기 완결형(self-contained) 섹션입니다. `issueId`만 넘기면 조회, 작성, 수정, 삭제, 반응까지 모두 처리합니다. 댓글 삭제 확인은 `ui/ConfirmDialog` 의 `useConfirm`("댓글 삭제") 이고, 삭제 중에는 [삭제] 가 비활성입니다.
 - 기능:
   - 답글
   - `@멘션`: `useMention` + `searchUsers`로 사용자를 자동완성합니다.

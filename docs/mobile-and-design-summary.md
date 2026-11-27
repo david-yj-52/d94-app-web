@@ -16,9 +16,11 @@
 
 | 7 | `2e7f65f` feat | 공통 Button·Input | `ui/Button`(primary·secondary·ghost·danger, md·sm, tailwind-merge) · `ui/Input`(Input·Select·Textarea) 추가, 표준형 버튼 39개·입력 31개(25개 파일) 교체 |
 
-| 8 | (이번) feat | ConfirmDialog | `ui/ConfirmDialog` `useConfirm()` → `Promise<boolean>` (`Dialog compact` 카드, danger 빨간 버튼) · 브라우저 `confirm()` 15곳(12개 파일) 교체 |
+| 8 | `3321b95` feat | ConfirmDialog | `ui/ConfirmDialog` `useConfirm()` → `Promise<boolean>` (`Dialog compact` 카드, danger 빨간 버튼) · 브라우저 `confirm()` 15곳(12개 파일) 교체 |
 
-**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로 · `FormField`(라벨+오류 묶음) · issue 상세·댓글의 손 마크업 삭제 다이얼로그 → `useConfirm`.
+| 9 | (이번) refactor | Task·댓글 삭제 확인 | CIRA Task 상세 삭제·댓글 삭제의 손 마크업 다이얼로그 → `useConfirm`(중복 삭제 방지 유지) |
+
+**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로 · `FormField`(라벨+오류 묶음) · KanbanBoard 컬럼·보드 삭제, Life Metric 상세 삭제의 손 마크업 다이얼로그.
 
 ## 1. 모바일 환경 문제점 분석
 

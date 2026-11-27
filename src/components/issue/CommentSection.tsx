@@ -1,6 +1,7 @@
 "use client";
 
 import {useToast} from "@/components/ui/Toast";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 import {
     useComments,
     useCreateComment,
@@ -258,7 +259,7 @@ function CommentItem({
     const {show, ToastComponent} = useToast();
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState(comment.content);
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const {confirm, ConfirmComponent} = useConfirm();
     const [showReplyForm, setShowReplyForm] = useState(false);
     const [replyContent, setReplyContent] = useState("");
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -289,12 +290,10 @@ function CommentItem({
         );
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        if (!(await confirm("이 댓글을 삭제하시겠습니까?", {title: "댓글 삭제", confirmLabel: "삭제", danger: true}))) return;
         deleteComment(comment.id, {
-            onSuccess: () => {
-                setShowDeleteConfirm(false);
-                show("댓글이 삭제되었습니다.");
-            },
+            onSuccess: () => show("댓글이 삭제되었습니다."),
             onError: () => show("댓글 삭제에 실패했습니다.", "error"),
         });
     };
@@ -465,8 +464,9 @@ function CommentItem({
                             수정
                         </button>
                         <button
-                            onClick={() => setShowDeleteConfirm(true)}
-                            className="px-2 py-1 rounded text-xs text-red-400 hover:bg-red-50"
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                            className="px-2 py-1 rounded text-xs text-red-400 hover:bg-red-50 disabled:opacity-50"
                         >
                             삭제
                         </button>
@@ -488,37 +488,9 @@ function CommentItem({
                 </div>
             )}
 
-            {/* 삭제 확인 모달 */}
-            {showDeleteConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-black/40"/>
-                    <div className="relative bg-white rounded-2xl shadow-xl p-6 max-w-sm mx-4">
-                        <h3 className="text-base font-bold text-slate-900 mb-2">
-                            댓글 삭제
-                        </h3>
-                        <p className="text-sm text-slate-600 mb-5">
-                            이 댓글을 삭제하시겠습니까?
-                        </p>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setShowDeleteConfirm(false)}
-                                className="flex-1 h-9 rounded-lg border border-slate-200 text-sm hover:bg-slate-50"
-                            >
-                                취소
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                disabled={isDeleting}
-                                className="flex-1 h-9 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-60"
-                            >
-                                {isDeleting ? "삭제 중..." : "삭제"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }

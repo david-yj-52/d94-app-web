@@ -21,6 +21,7 @@ import type {Priority, UpdateIssueRequest} from "@/types/issue";
 import {useRouter} from "next/navigation";
 import {use, useEffect, useRef, useState} from "react";
 import Button from "@/components/ui/Button";
+import {useConfirm} from "@/components/ui/ConfirmDialog";
 
 const PRIORITY_LABELS: Record<Priority, string> = {
     HIGHEST: "⬆⬆ HIGHEST",
@@ -114,7 +115,7 @@ export default function IssueDetailPage({
     const {mutate: deleteIssueMutation, isPending: isDeleting} =
         useDeleteIssue(projectId);
 
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const {confirm, ConfirmComponent} = useConfirm();
     // 유효 필드 중 사용자 정의 필드 (타입이 바뀌어 빠진 필드의 값은 서버에 보관만 되고 여기 안 보인다)
     const {data: fields = []} = useProjectFields(projectId);
     const customFields = fields.filter((f) => f.kind === "cf");
@@ -130,7 +131,10 @@ export default function IssueDetailPage({
         );
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
+        if (isDeleting) return;
+        if (!(await confirm(`Task ${issue?.issueKey ?? ""}를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`,
+            {title: "Task 삭제", confirmLabel: "삭제", danger: true}))) return;
         deleteIssueMutation(issueId, {
             onSuccess: () => router.push(`/cira/projects/${projectId}/issues`),
             onError: () => show("삭제에 실패했습니다.", "error"),
@@ -173,7 +177,7 @@ export default function IssueDetailPage({
                                 ···
                             </button>
                         }
-                        items={[{label: "삭제", onSelect: () => setShowDeleteConfirm(true), danger: true}]}
+                        items={[{label: "삭제", onSelect: handleDelete, danger: true}]}
                     />
                 }
             />
@@ -346,38 +350,9 @@ export default function IssueDetailPage({
                 </aside>
             </div>
 
-            {/* Delete confirm dialog */}
-            {showDeleteConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-black/40"/>
-                    <div className="relative bg-white rounded-2xl shadow-xl p-6 max-w-sm mx-4">
-                        <h3 className="text-lg font-bold text-slate-900 mb-2">
-                            Task 삭제
-                        </h3>
-                        <p className="text-sm text-slate-600 mb-5">
-                            Task <strong>{issue.issueKey}</strong>를 삭제하시겠습니까? 이
-                            작업은 되돌릴 수 없습니다.
-                        </p>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setShowDeleteConfirm(false)}
-                                className="flex-1 h-10 rounded-lg border border-slate-200 text-sm hover:bg-slate-50"
-                            >
-                                취소
-                            </button>
-                            <Button
-                                onClick={handleDelete}
-                                disabled={isDeleting}
-                                variant="danger" className="flex-1"
-                            >
-                                {isDeleting ? "삭제 중..." : "삭제"}
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {ToastComponent}
+            {ConfirmComponent}
         </div>
     );
 }
