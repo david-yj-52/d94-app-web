@@ -26,14 +26,20 @@ import {usePathname} from "next/navigation";
 import {Suspense, useState} from "react";
 import {getNavContext} from "./navContext";
 
-const SETTINGS_MENU = [
+/** 프로젝트 설정 (프로젝트 ADMIN) */
+const PROJECT_SETTINGS = [
     {suffix: "", label: "기본 정보"},
-    {suffix: "/fields", label: "필드"},
-    {suffix: "/docs", label: "문서 관리"},
     {suffix: "/members", label: "멤버"},
-    {suffix: "/workflow", label: "워크플로우"},
     {suffix: "/git", label: "Git 연동"},
     {suffix: "/automation", label: "자동화"},
+];
+/** 작업 공간 설정 (프로젝트 ADMIN 또는 그 공간 관리자, 설계 7.2) — ?space= 를 이어 붙인다 */
+const SPACE_SETTINGS = [
+    {suffix: "/space", label: "공간 정보"},
+    {suffix: "/workflow", label: "워크플로"},
+    {suffix: "/fields", label: "필드"},
+    {suffix: "/boards", label: "보드 · 뷰"},
+    {suffix: "/docs", label: "산출물 규칙"},
 ];
 
 function NavItem({href, label, icon: Icon, active, collapsed, indent}: {
@@ -63,6 +69,11 @@ function Section({label, collapsed}: { label: string; collapsed: boolean }) {
     return <p className="mb-1 mt-4 px-2 text-[11px] font-bold uppercase tracking-wide text-cira-muted">{label}</p>;
 }
 
+function SubLabel({label, collapsed}: { label: string; collapsed: boolean }) {
+    if (collapsed) return null;
+    return <p className="mt-2 truncate pl-7 pr-2 text-[11px] font-semibold text-cira-muted">{label}</p>;
+}
+
 /** useSearchParams(현재 작업 공간 ?space=) 를 쓰므로 정적 경로 빌드를 위해 Suspense 로 감싼다 */
 export default function CiraSidebar(props: { collapsed?: boolean }) {
     return (
@@ -71,9 +82,6 @@ export default function CiraSidebar(props: { collapsed?: boolean }) {
         </Suspense>
     );
 }
-
-/** 공간 설정에 해당하는 설정 메뉴 (워크플로·필드·문서 관리) — ?space= 를 이어 붙인다 */
-const SPACE_SETTINGS = new Set(["/fields", "/docs", "/workflow"]);
 
 function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
     const pathname = usePathname();
@@ -98,8 +106,7 @@ function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
         {href: `${base}/versions`, label: "릴리스", icon: Package},
         {href: `${base}/wiki`, label: "위키", icon: BookOpen},
         ...(isAdmin ? [{href: `${base}/settings`, label: "프로젝트 설정", icon: Settings}] : []),
-        // 공간 관리자(프로젝트 ADMIN 아님)는 자기 공간 설정만
-        ...(!isAdmin && space?.canManage ? [{href: withSpace(`${base}/settings/workflow`), label: "공간 설정", icon: Settings}] : []),
+        ...(space?.canManage ? [{href: withSpace(`${base}/settings/space`), label: "공간 설정", icon: Settings}] : []),
     ];
 
     return (
@@ -148,12 +155,21 @@ function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
                         {open && !inSettings && projectMenu.map((m) => (
                             <NavItem key={m.href} {...m} active={is(m.href.split("?")[0])} collapsed={collapsed} indent/>
                         ))}
-                        {open && inSettings && SETTINGS_MENU.map((s) => {
-                            const path = `${base}/settings${s.suffix}`;
-                            const active = s.suffix === "" ? pathname === path : is(path);
-                            const href = SPACE_SETTINGS.has(s.suffix) ? withSpace(path) : path;
-                            return <NavItem key={path} href={href} label={s.label} icon={Settings} active={active} collapsed={collapsed} indent/>;
-                        })}
+                        {open && inSettings && (
+                            <>
+                                {isAdmin && <SubLabel label="프로젝트" collapsed={collapsed}/>}
+                                {isAdmin && PROJECT_SETTINGS.map((s) => {
+                                    const path = `${base}/settings${s.suffix}`;
+                                    const active = s.suffix === "" ? pathname === path : is(path);
+                                    return <NavItem key={path} href={path} label={s.label} icon={Settings} active={active} collapsed={collapsed} indent/>;
+                                })}
+                                {space?.canManage && <SubLabel label={`작업 공간 · ${space.name}`} collapsed={collapsed}/>}
+                                {space?.canManage && SPACE_SETTINGS.map((s) => {
+                                    const path = `${base}/settings${s.suffix}`;
+                                    return <NavItem key={path} href={withSpace(path)} label={s.label} icon={Settings} active={is(path)} collapsed={collapsed} indent/>;
+                                })}
+                            </>
+                        )}
                     </div>
                 );
             })}

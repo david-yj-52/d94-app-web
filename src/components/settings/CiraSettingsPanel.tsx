@@ -22,7 +22,10 @@ import {
     FIXED_FIELD_KEYS,
     type FieldCatalog,
     type FieldDef,
+    type PresetBoardType,
+    type PresetStatus,
     type ProjectTypeResponse,
+    type StatusCategory,
     type TypeField,
 } from "@/types/fields";
 import {useIssueTypes} from "@/hooks/useCiraDocs";
@@ -72,6 +75,83 @@ export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
 }
 
 type Show = (msg: string, type?: "success" | "error") => void;
+
+const CATEGORY_LABELS: Record<StatusCategory, string> = {TODO: "할 일", IN_PROGRESS: "진행 중", DONE: "완료"};
+
+/**
+ * 프리셋 기본 워크플로·보드 유형 (설계 2.2, V670). 새 작업 공간을 만들 때 1회 복사되고, 이미 만든 공간에는 반영되지 않는다.
+ * 전이는 이웃 상태끼리 앞뒤 + 처음 → 마지막. 첫 상태는 "할 일", "완료" 하나 이상, 2~10개.
+ */
+function PresetWorkflow({preset, readOnly, show}: { preset: ProjectTypeResponse; readOnly: boolean; show: Show }) {
+    const update = useUpdateProjectType();
+    const [boardType, setBoardType] = useState<PresetBoardType>(preset.boardType);
+    const [rows, setRows] = useState<PresetStatus[]>(preset.statuses);
+    const dirty = boardType !== preset.boardType || JSON.stringify(rows) !== JSON.stringify(preset.statuses);
+    const names = rows.map((r) => r.name.trim());
+    const problem = rows.length < 2 || rows.length > 10 ? "상태는 2~10개입니다."
+        : names.some((n) => !n || n.length > 30) ? "상태 이름은 1~30자입니다."
+        : new Set(names).size !== names.length ? "상태 이름이 겹칩니다."
+        : rows[0].category !== "TODO" ? "첫 상태는 '할 일'이어야 합니다."
+        : !rows.some((r) => r.category === "DONE") ? "'완료' 상태가 하나 이상 있어야 합니다." : null;
+    const set = (i: number, patch: Partial<PresetStatus>) => setRows(rows.map((r, k) => k === i ? {...r, ...patch} : r));
+    const move = (i: number, d: -1 | 1) => {
+        const next = [...rows];
+        [next[i], next[i + d]] = [next[i + d], next[i]];
+        setRows(next);
+    };
+
+    return (
+        <section aria-label="기본 워크플로">
+            <h4 className="mb-1 text-sm font-semibold text-slate-800">기본 워크플로 · 보드</h4>
+            <p className="mb-2 text-xs text-slate-500">
+                새 작업 공간에 복사되는 상태와 보드 유형입니다. 전이는 이웃 상태끼리 앞뒤로, 그리고 첫 상태에서 마지막 상태로 바로 갈 수 있습니다.
+            </p>
+            <label className="mb-2 flex items-center gap-2 text-sm text-slate-700">
+                보드 유형
+                <select aria-label="보드 유형" className="h-9 rounded-lg border border-slate-200 bg-white px-2 text-sm" disabled={readOnly}
+                        value={boardType} onChange={(e) => setBoardType(e.target.value as PresetBoardType)}>
+                    <option value="KANBAN">칸반</option>
+                    <option value="SCRUM">스크럼</option>
+                </select>
+            </label>
+            <ol className="mb-2 divide-y divide-slate-100 rounded-lg border border-slate-200">
+                {rows.map((r, i) => (
+                    <li key={i} className="flex min-h-11 items-center gap-2 px-3 text-sm">
+                        <span className="w-5 text-xs text-slate-400">{i + 1}</span>
+                        <input aria-label={`상태 ${i + 1} 이름`} className={`${inputCls} h-9 flex-1`} value={r.name} maxLength={30} disabled={readOnly}
+                               onChange={(e) => set(i, {name: e.target.value})}/>
+                        <select aria-label={`상태 ${i + 1} 분류`} className="h-9 w-24 shrink-0 rounded-lg border border-slate-200 bg-white px-2 text-sm" disabled={readOnly}
+                                value={r.category} onChange={(e) => set(i, {category: e.target.value as StatusCategory})}>
+                            {(Object.keys(CATEGORY_LABELS) as StatusCategory[]).map((c) => <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>)}
+                        </select>
+                        {!readOnly && (
+                            <>
+                                <Button variant="ghost" size="icon" type="button" aria-label={`상태 ${i + 1} 위로`} disabled={i === 0} onClick={() => move(i, -1)}><ArrowUp className="h-4 w-4"/></Button>
+                                <Button variant="ghost" size="icon" type="button" aria-label={`상태 ${i + 1} 아래로`} disabled={i === rows.length - 1} onClick={() => move(i, 1)}><ArrowDown className="h-4 w-4"/></Button>
+                                <Button variant="ghost" size="icon" type="button" aria-label={`상태 ${i + 1} 빼기`} onClick={() => setRows(rows.filter((_, k) => k !== i))}><X className="h-4 w-4"/></Button>
+                            </>
+                        )}
+                    </li>
+                ))}
+            </ol>
+            {problem && <p className="mb-2 text-xs text-red-500">{problem}</p>}
+            {!readOnly && (
+                <div className="flex gap-2">
+                    <Button variant="unstyled" type="button" className={btnCls} disabled={rows.length >= 10}
+                            onClick={() => setRows([...rows, {name: "", category: "IN_PROGRESS"}])}><Plus className="h-4 w-4"/>상태 추가</Button>
+                    <Button type="button" size="sm" disabled={!dirty || !!problem || update.isPending}
+                            onClick={() => update.mutate({id: preset.id, data: {
+                                typeNm: preset.typeNm, descr: preset.descr ?? undefined, boardType,
+                                statuses: rows.map((r) => ({name: r.name.trim(), category: r.category})),
+                            }}, {
+                                onSuccess: () => show("워크플로를 저장했습니다. 새로 만드는 작업 공간부터 적용됩니다."),
+                                onError: (e) => show(errMsg(e, "저장하지 못했습니다."), "error"),
+                            })}>워크플로 저장</Button>
+                </div>
+            )}
+        </section>
+    );
+}
 
 function TypesTab({types, catalog, readOnly, show}: {
     types: ProjectTypeResponse[];
@@ -170,6 +250,9 @@ function TypesTab({types, catalog, readOnly, show}: {
                             </>
                         )}
                     </div>
+                    <PresetWorkflow key={selected.id} preset={selected} readOnly={readOnly} show={show}/>
+
+                    <h4 className="mb-1 mt-6 text-sm font-semibold text-slate-800">기본 필드 세트</h4>
                     <p className="mb-2 text-xs text-slate-500">
                         이 프리셋으로 새 작업 공간을 만들 때 복사되는 필드입니다. 바꿔도 이미 만든 작업 공간({selected.spaceCount}개)에는 반영되지 않습니다.
                     </p>

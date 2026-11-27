@@ -4,6 +4,7 @@ import CreateBoardModal from "@/components/board/CreateBoardModal";
 import KanbanBoard from "@/components/board/KanbanBoard";
 import {useToast} from "@/components/ui/Toast";
 import {useBoards} from "@/hooks/useBoards";
+import {useCurrentSpace} from "@/hooks/useSpaces";
 import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
@@ -20,7 +21,9 @@ export default function BoardDetailPage({
     const {show, ToastComponent} = useToast();
 
     const {data: project} = useProject(projectId);
-    const {data: boards} = useBoards(projectId);
+    // 보드 탭·새 보드는 지금 작업 공간 기준 (V650)
+    const {spaceId} = useCurrentSpace(projectId);
+    const {data: boards} = useBoards(projectId, spaceId);
 
     const [showCreate, setShowCreate] = useState(false);
 
@@ -72,6 +75,7 @@ export default function BoardDetailPage({
 
             {showCreate && (
                 <CreateBoardModal
+                    spaceId={spaceId}
                     projectId={projectId}
                     onClose={() => setShowCreate(false)}
                     onSuccess={(newBoardId) => {

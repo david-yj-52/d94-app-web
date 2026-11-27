@@ -93,7 +93,8 @@ export const importedCopy = (sourceFieldId: string): BackendField => ({
 export const projectTypes: BackendProjectType[] = [
     {id: "PT-KANBAN", typeNm: "KANBAN", descr: null, sortOrd: 1, spaceCount: 1,
         fields: [{fieldKey: "sys:priority", defaultVisible: true}, {fieldKey: "sys:assignee", defaultVisible: true},
-            {fieldKey: "sys:modifiedAt", defaultVisible: true}]},
+            {fieldKey: "sys:modifiedAt", defaultVisible: true}],
+        boardType: "KANBAN", statuses: [{name: "To Do", category: "TODO"}, {name: "In Progress", category: "IN_PROGRESS"}, {name: "In Review", category: "IN_PROGRESS"}, {name: "Done", category: "DONE"}]},
 ];
 
 export const issue1: BackendIssue = {

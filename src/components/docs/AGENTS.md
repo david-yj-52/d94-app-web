@@ -41,7 +41,7 @@
 `{ originTitle: string; saving?: boolean; onSubmit: (req: DeriveRequest) => void; onClose: () => void }` — 파생(브로드캐스트·결과 문서) 노트의 제목·트랙(datalist dev·design·knowledge)·종류(기본 문서).
 
 ### PromoteToCiraModal — `@/components/docs/PromoteToCiraModal`
-`{ noteTitle: string; projects: {id, label}[]; issueTypes: {id, label}[]; saving?: boolean; onSubmit: (req: {projectId, issueTypeId, title}) => void; onClose: () => void }` — 노트 → CIRA Task: 프로젝트·Task 타입·제목(기본 노트 제목). 표현 컴포넌트(목록·저장은 부모). 프로젝트가 없으면 안내만.
+`{ noteTitle: string; projects: {id, label}[]; issueTypes: {id, label}[]; saving?: boolean; onSubmit: (req: {projectId, issueTypeId, title, spaceId?}) => void; onClose: () => void }` — 노트 → CIRA Task: 프로젝트·작업 공간(`useSpaces`, 기본 공간 = 빈 값)·Task 타입·제목(기본 노트 제목). 표현 컴포넌트(목록·저장은 부모). 프로젝트가 없으면 안내만.
 
 ### TaskBoard — `@/components/docs/TaskBoard`
 `{ tasks: DocsTask[]; onStatus: (task: DocsTask, status: TaskStatus) => void }` — 할 일·진행 중·완료 3열, 카드 = 내용·원 노트 링크·마감·상태 선택. 사용: [docs/tasks](../../app/(main)/docs/tasks/AGENTS.md)

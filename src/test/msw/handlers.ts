@@ -82,6 +82,8 @@ export const handlers = [
 
     // 프로젝트 타입·필드·컬럼 (CiraFieldController)
     http.get(`${API}/cira/project-types`, () => json(fx.ok(fx.projectTypes))),
+    http.put(`${API}/cira/project-types/:typeId`, async ({request, params}) =>
+        json(fx.ok({...(fx.projectTypes.find((t) => t.id === params.typeId) ?? fx.projectTypes[0]), ...(await readBody(request) as object)}))),
     http.get(`${API}/cira/field-catalog`, () => json(fx.ok({
         system: fx.projectFields.filter((f) => f.kind === "sys"),
         custom: [fx.globalField],

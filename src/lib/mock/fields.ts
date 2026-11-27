@@ -24,10 +24,12 @@ const BASE: TypeField[] = [
     {fieldKey: "sys:modifiedAt", defaultVisible: true},
 ];
 
+const DEFAULT_STATUSES: ProjectTypeResponse["statuses"] = [{name: "To Do", category: "TODO"}, {name: "In Progress", category: "IN_PROGRESS"}, {name: "In Review", category: "IN_PROGRESS"}, {name: "Done", category: "DONE"}];
 const types: ProjectTypeResponse[] = [
     {id: "PT-SCRUM", typeNm: "SCRUM", sortOrd: 1, spaceCount: 0, fields: [...BASE,
-            {fieldKey: "sys:sprint", defaultVisible: false}, {fieldKey: "sys:storyPoints", defaultVisible: false}]},
-    {id: "PT-KANBAN", typeNm: "KANBAN", sortOrd: 2, spaceCount: 0, fields: [...BASE]},
+            {fieldKey: "sys:sprint", defaultVisible: false}, {fieldKey: "sys:storyPoints", defaultVisible: false}],
+        boardType: "SCRUM", statuses: DEFAULT_STATUSES},
+    {id: "PT-KANBAN", typeNm: "KANBAN", sortOrd: 2, spaceCount: 0, fields: [...BASE], boardType: "KANBAN", statuses: DEFAULT_STATUSES},
 ];
 const customFields: FieldDef[] = [];
 /** 타입 필드의 소속 타입 (FieldDef 에는 타입 id 칸이 없다) */
@@ -141,7 +143,7 @@ export function registerFieldsMock(on: On, presetOf: (projectId: string) => stri
     on("POST", "/v1/cira/project-types", ({body}) => {
         const typeNm = String(body.typeNm ?? "").trim();
         if (!typeNm || types.some((t) => t.typeNm === typeNm)) return fail(400, "이미 있는 타입 이름입니다");
-        const t: ProjectTypeResponse = {id: `PT-${++seq}`, typeNm, sortOrd: types.length + 1, spaceCount: 0, fields: [...BASE]};
+        const t: ProjectTypeResponse = {id: `PT-${++seq}`, typeNm, sortOrd: types.length + 1, spaceCount: 0, fields: [...BASE], boardType: "KANBAN", statuses: DEFAULT_STATUSES};
         types.push(t);
         return ok(t);
     });
@@ -149,6 +151,8 @@ export function registerFieldsMock(on: On, presetOf: (projectId: string) => stri
         const t = types.find((x) => x.id === params.id);
         if (!t) return fail(404, "타입 없음");
         t.typeNm = String(body.typeNm ?? t.typeNm).trim();
+        if (body.boardType) t.boardType = body.boardType as ProjectTypeResponse["boardType"];
+        if (Array.isArray(body.statuses)) t.statuses = body.statuses as ProjectTypeResponse["statuses"];
         return ok(t);
     });
     on("DELETE", "/v1/cira/project-types/:id", ({params}) => {

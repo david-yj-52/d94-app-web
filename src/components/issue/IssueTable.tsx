@@ -1,6 +1,7 @@
 "use client";
 
-import {Avatar, IssueTypeIcon, PriorityIcon, StatusLozenge} from "@/components/cira/ui/Badges";
+import {Avatar, CommonFeatureBadge, IssueTypeIcon, PriorityIcon, StatusLozenge} from "@/components/cira/ui/Badges";
+import {useCommonFeatures} from "@/hooks/useSpaces";
 import type {FieldDef} from "@/types/fields";
 import type {IssueResponse} from "@/types/issue";
 import {ChevronDown, ChevronUp} from "lucide-react";
@@ -46,6 +47,10 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
         ? columns.map((k) => byKey.get(k)).filter((f): f is FieldDef => !!f)
         : FIXED_COLUMNS.map((k) => FIXED_FIELDS.get(k)!);
     const [sortKey, sortDir] = (sort ?? "").split(",");
+    // 설계 3.2: 공통 Feature 에 연결된 Task 는 배지 + (정렬을 고르지 않았으면) 이 페이지 안에서 먼저
+    const common = useCommonFeatures(projectId);
+    const commonOf = (i: IssueResponse) => common.get(i.featureId ?? "");
+    const rows = sort ? issues : [...issues.filter((i) => commonOf(i)), ...issues.filter((i) => !commonOf(i))];
     const mobileExtras = cols.filter((f) => f.kind === "cf").slice(0, 2);
 
     if (issues.length === 0) {
@@ -80,7 +85,7 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
                     </tr>
                     </thead>
                     <tbody>
-                    {issues.map((issue) => (
+                    {rows.map((issue) => (
                         <tr
                             key={issue.id}
                             onClick={() => router.push(href(issue))}
@@ -89,6 +94,7 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
                             {cols.map((f, i) => (
                                 <td key={f.fieldKey}
                                     className={`${WIDTH[f.fieldKey] ?? ""} ${f.fieldKey === "sys:summary" || (f.kind === "cf" && f.fieldType === "TEXT") ? "max-w-xs truncate" : "whitespace-nowrap"} ${isNumeric(f) ? "text-right" : ""} ${i === cols.length - 1 ? "pr-4" : "pr-3"} text-xs text-slate-600`}>
+                                    {f.fieldKey === "sys:summary" && commonOf(issue) && <span className="mr-1.5"><CommonFeatureBadge feature={commonOf(issue)!}/></span>}
                                     <FieldValue field={f} issue={issue} names={names}/>
                                 </td>
                             ))}
@@ -99,7 +105,7 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
             </div>
 
             <ul className="divide-y divide-slate-100 md:hidden">
-                {issues.map((issue) => (
+                {rows.map((issue) => (
                     <li key={issue.id}>
                         <Link href={href(issue)} className="block px-3 py-3 active:bg-slate-50">
                             <div className="mb-1 flex items-center gap-2">
@@ -108,6 +114,7 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
                                 <span className="flex-1"/>
                                 <PriorityIcon priority={issue.priority}/>
                             </div>
+                            {commonOf(issue) && <div className="mb-1"><CommonFeatureBadge feature={commonOf(issue)!}/></div>}
                             <p className="mb-2 text-sm font-medium text-slate-900">{issue.title}</p>
                             {mobileExtras.length > 0 && (
                                 <p className="mb-2 flex gap-3 text-xs text-slate-500">
