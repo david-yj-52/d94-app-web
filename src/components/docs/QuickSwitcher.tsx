@@ -39,7 +39,7 @@ export default function QuickSwitcher({onOpenTitle, onClose}: QuickSwitcherProps
                     {options.map((t, i) => (
                         <li key={t}>
                             <button type="button" onMouseEnter={() => setCursor(i)} onClick={() => pick(i)}
-                                    className={`w-full rounded-lg px-3 py-2 text-left text-sm ${i === cursor ? "bg-blue-50 text-blue-700" : "text-slate-700"}`}>
+                                    className={`w-full rounded-lg px-3 py-2 text-left text-sm ${i === cursor ? "bg-d94-brand-soft text-d94-brand" : "text-slate-700"}`}>
                                 {t}
                             </button>
                         </li>

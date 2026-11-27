@@ -18,13 +18,13 @@ export function Toast({message, type = "success", onClose}: ToastProps) {
 
     return (
         <div
-            className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all ${
+            className={`fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-4 z-50 flex max-w-[calc(100vw-2rem)] items-center gap-3 sm:right-6 px-4 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all ${
                 type === "error" ? "bg-red-500" : "bg-green-500"
             }`}
         >
             <span>{type === "error" ? "✕" : "✓"}</span>
             <span>{message}</span>
-            <button onClick={onClose} className="ml-2 opacity-70 hover:opacity-100">
+            <button onClick={onClose} aria-label="닫기" className="ml-2 opacity-70 hover:opacity-100">
                 ✕
             </button>
         </div>

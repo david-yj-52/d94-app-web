@@ -221,7 +221,7 @@ export default function CqlEditor({
                                     applySuggestion(s);
                                 }}
                                 className={`block w-full px-3 py-2 text-left font-mono text-xs hover:bg-d94-brand-soft ${
-                                    i === selectedSuggestion ? "bg-blue-50 text-blue-700" : "text-gray-700"
+                                    i === selectedSuggestion ? "bg-d94-brand-soft text-d94-brand" : "text-gray-700"
                                 }`}
                             >
                                 {s}

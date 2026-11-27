@@ -112,7 +112,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                     {types.map((t) => (
                         <li key={t.id}>
                             <button onClick={() => setSelectedId(t.id)}
-                                    className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3 text-left text-sm ${t.id === selected?.id ? "bg-blue-50 font-semibold text-blue-700" : "text-slate-700 hover:bg-slate-50"}`}>
+                                    className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3 text-left text-sm ${t.id === selected?.id ? "bg-d94-brand-soft font-semibold text-d94-brand" : "text-slate-700 hover:bg-slate-50"}`}>
                                 {t.typeNm}<span className="text-xs text-slate-400">{t.projectCount}</span>
                             </button>
                         </li>

@@ -50,7 +50,7 @@ export default function InterfaceItemTable({items, isLoading, errorMessage, sele
                         <tbody>
                         {items.map((item) => (
                             <tr key={item.id} onClick={() => onSelect(item)}
-                                className={`cursor-pointer border-t border-slate-100 hover:bg-slate-50 ${item.id === selectedId ? "bg-blue-50" : ""}`}>
+                                className={`cursor-pointer border-t border-slate-100 hover:bg-slate-50 ${item.id === selectedId ? "bg-d94-brand-soft" : ""}`}>
                                 <td className="px-4 py-2 font-medium text-slate-900">{item.name}</td>
                                 <td className="px-4 py-2">
                                     <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">{item.status}</span>

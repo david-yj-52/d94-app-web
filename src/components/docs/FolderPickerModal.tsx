@@ -25,7 +25,7 @@ export default function FolderPickerModal({title, folders, disabledIds, initial,
     walk(null, 0);
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
-            <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 <h2 className="mb-3 text-base font-semibold text-slate-900">{title}</h2>
                 <select value={value} onChange={(e) => setValue(e.target.value)} aria-label="대상 폴더" size={8}
                         className="w-full rounded-lg border border-slate-200 p-1 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand">

@@ -99,7 +99,7 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
             {confirmDelete && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setConfirmDelete(false)}/>
-                    <div className="relative mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+                    <div className="relative mx-4 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto">
                         <h2 className="mb-2 text-lg font-bold text-slate-900">지표 삭제</h2>
                         <p className="mb-5 text-sm text-slate-600">&lsquo;{metric.name}&rsquo;과 기준값·기록이 모두 지워집니다. <code>@{metric.code}</code>를 참조하던 지표는 계산할 수 없게 됩니다.</p>
                         <div className="flex gap-3">

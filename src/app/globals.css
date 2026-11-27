@@ -221,3 +221,12 @@ body {
 [data-open~="PHRASE"]::before { content: "("; color: #94a3b8; }
 [data-close~="PHRASE"]::after { content: ")"; color: #94a3b8; }
 [data-close~="SUBJECT"]::after { content: " ‖"; color: #94a3b8; }
+
+/* iOS Safari 는 16px 미만 입력란에 포커스하면 화면을 확대한다 → 모바일에서만 입력 글자 16px */
+@media (max-width: 767px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    select,
+    textarea {
+        font-size: 16px;
+    }
+}

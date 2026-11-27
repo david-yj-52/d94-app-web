@@ -34,7 +34,7 @@ const {show, ToastComponent} = useToast();
 mutate(data, {onSuccess: () => show("저장되었습니다."), onError: () => show("저장에 실패했습니다.", "error")});
 return (<div>... {ToastComponent}</div>);
 ```
-- 화면 우측 하단에 고정되고 3초 뒤 자동으로 닫힙니다. 한 번에 하나만 표시됩니다.
+- 화면 우측 하단에 고정되고(아이폰 홈 표시줄 safe-area 만큼 띄움, 폭은 화면 − 2rem 이하) 3초 뒤 자동으로 닫힙니다. 한 번에 하나만 표시됩니다.
 - **주의:** 훅을 호출한 컴포넌트 안에 `{ToastComponent}`를 렌더링해야 보입니다. 전역 토스트가 아닙니다.
 
 ### Skeleton / SkeletonCard / SkeletonRow — `import {Skeleton, SkeletonCard, SkeletonRow} from "@/components/ui/Skeleton"`
@@ -66,13 +66,15 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 
 ## 3. 표준 마크업 (primitive가 생기기 전까지 복사해서 사용)
 
+> 모바일 공통 규칙: 손으로 만든 모달 패널에는 `max-h-[calc(100dvh-2rem)] overflow-y-auto` 를 붙여 낮은 화면에서도 버튼까지 스크롤되게 합니다(2026-11-26 기존 20개 모달에 일괄 적용). 입력란 글자는 `globals.css` 가 모바일(< 768px)에서 16px 로 올려 iOS 확대를 막으므로 따로 지정하지 않습니다.
+
 아래 마크업은 `sprint/CreateSprintModal` 등 기존 코드에서 가장 많이 쓰이는 형태를 그대로 옮긴 것입니다.
 
 **모달**
 ```tsx
 <div className="fixed inset-0 z-50 flex items-center justify-center">
     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose}/>
-    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
+    <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 max-h-[calc(100dvh-2rem)] overflow-y-auto">
         <h2 className="text-lg font-bold text-slate-900 mb-5">제목</h2>
         {/* 본문 */}
         <div className="flex gap-3 pt-2">{/* 취소 / 확인 버튼 */}</div>

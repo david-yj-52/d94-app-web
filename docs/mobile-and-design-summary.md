@@ -10,7 +10,9 @@
 
 | 4 | `32f917a` feat | 모바일 메뉴 서랍 | `cira/ui/Dialog` → `ui/Dialog` 승격(ADR 0006 갱신, import 9곳) · ApHeader 모바일 메뉴를 펼침 패널 → 왼쪽 서랍(`Dialog side="left"`, 바깥 클릭·Esc·✕ 닫힘) |
 
-| 5 | (이번) feat | Docs 트리 서랍 | Docs 폴더 트리 토글 → `ui/Dialog side="left"` 서랍(트리 JSX 한 벌을 데스크톱 aside·서랍이 함께 씀), 화면 이동·다른 창 열림 시 자동 닫힘 |
+| 5 | `c15611f` feat | Docs 트리 서랍 | Docs 폴더 트리 토글 → `ui/Dialog side="left"` 서랍(트리 JSX 한 벌을 데스크톱 aside·서랍이 함께 씀), 화면 이동·다른 창 열림 시 자동 닫힘 |
+
+| 6 | (이번) fix | 모바일 사용성 | iOS 입력 확대 방지(모바일 입력 16px, `globals.css`) · 손 모달 20개 `max-h-[calc(100dvh-2rem)] overflow-y-auto`(낮은 화면에서 버튼까지 스크롤) · Toast safe-area·폭 제한·닫기 aria-label · 아이콘 버튼 aria-label 2곳 · 선택 강조(Docs·Wiki 트리, 빠른 전환, 버전 이력, CQL 자동완성, CIRA 설정, 인터페이스 테스트, Life Metric 템플릿) `blue-50/700` → `d94-brand-soft/brand` |
 
 **남은 후보(미적용):** `ui/` 에 Button·Input primitive 가 없어 버튼 마크업이 화면마다 반복됨.
 

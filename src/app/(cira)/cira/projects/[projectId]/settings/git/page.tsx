@@ -42,7 +42,7 @@ interface WebhookModalProps {
 function WebhookModal({repo, onClose}: WebhookModalProps) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 max-h-[calc(100dvh-2rem)] overflow-y-auto">
                 <h3 className="text-lg font-bold text-slate-900 mb-1">Webhook 정보</h3>
                 <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-5">
                     ⚠️ Webhook Secret은 지금만 확인할 수 있습니다. 반드시 안전한 곳에 저장해 두세요.

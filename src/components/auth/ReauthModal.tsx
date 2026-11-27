@@ -32,7 +32,7 @@ export default function ReauthModal() {
             className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 px-4"
             onClick={() => settleReauth(false)}
         >
-            <div onClick={(e) => e.stopPropagation()} className="relative w-full max-w-md">
+            <div onClick={(e) => e.stopPropagation()} className="relative max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto">
                 <button
                     type="button"
                     aria-label="닫기"

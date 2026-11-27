@@ -22,7 +22,7 @@ export default function DocsDialog({spec, onClose}: { spec: DocsDialogSpec; onCl
     };
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
-            <form className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}
+            <form className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}
                   onSubmit={(e) => {
                       e.preventDefault();
                       submit();

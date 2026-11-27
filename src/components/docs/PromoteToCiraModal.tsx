@@ -25,7 +25,7 @@ export default function PromoteToCiraModal({noteTitle, projects, issueTypes, sav
     const field = "mt-1 h-10 w-full rounded-lg border border-slate-200 px-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand";
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
-            <form className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}
+            <form className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}
                   onSubmit={(e) => {
                       e.preventDefault();
                       if (projectId && title.trim()) onSubmit({projectId, issueTypeId: issueTypeId || issueTypes[0]?.id || "", title: title.trim()});

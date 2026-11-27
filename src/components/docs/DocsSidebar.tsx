@@ -81,7 +81,7 @@ function Tree(p: DocsSidebarProps & { parentId: string | null; depth: number; cl
             {here.map((n) => (
                 <li key={n.id}>
                     <Link href={`/docs/${n.id}`} style={indent}
-                          className={`flex items-center gap-1 rounded py-1 pr-1 ${n.id === p.selectedNoteId ? "bg-blue-50 text-blue-700" : "text-slate-700 hover:bg-slate-100"}`}>
+                          className={`flex items-center gap-1 rounded py-1 pr-1 ${n.id === p.selectedNoteId ? "bg-d94-brand-soft text-d94-brand" : "text-slate-700 hover:bg-slate-100"}`}>
                         <FileText className="ml-4 h-4 w-4 shrink-0 text-slate-400"/>
                         <span className="truncate">{n.title}</span>
                     </Link>

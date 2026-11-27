@@ -65,7 +65,7 @@ function ActiveFilterTag({
         <span
             className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
       {label}
-            <button onClick={onRemove} className="hover:text-blue-900">
+            <button onClick={onRemove} aria-label={`${label} 필터 제거`} className="hover:text-blue-900">
         <X className="h-3 w-3"/>
       </button>
     </span>
@@ -82,7 +82,7 @@ function SaveFilterModal({
     const [name, setName] = useState("");
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-            <div className="w-full max-w-xs rounded-2xl bg-white p-6 shadow-xl">
+            <div className="w-full max-w-xs rounded-2xl bg-white p-6 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto">
                 <h3 className="mb-4 text-base font-semibold text-gray-900">필터 저장</h3>
                 <input
                     autoFocus

@@ -23,6 +23,7 @@ export default function WikiVersionHistory({
                 <span className="text-sm font-semibold text-slate-700">버전 이력</span>
                 <button
                     onClick={onClose}
+                    aria-label="버전 이력 닫기"
                     className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600"
                 >
                     <X size={15}/>

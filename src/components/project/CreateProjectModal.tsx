@@ -64,7 +64,7 @@ export default function CreateProjectModal({onClose, onSuccess}: Props) {
                 className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                 onClick={onClose}
             />
-            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6">
+            <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 p-6 max-h-[calc(100dvh-2rem)] overflow-y-auto">
                 <h2 className="text-lg font-bold text-slate-900 mb-5">프로젝트 생성</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

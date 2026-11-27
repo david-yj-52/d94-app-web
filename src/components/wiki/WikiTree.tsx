@@ -63,7 +63,7 @@ function TreeNode({node, selectedId, onSelect, onAddChild, onDelete, depth = 0}:
                 className={[
                     "group flex items-center gap-1 rounded-md px-2 py-1 cursor-pointer text-sm select-none",
                     isSelected
-                        ? "bg-blue-50 text-blue-700 font-medium"
+                        ? "bg-d94-brand-soft text-d94-brand font-medium"
                         : "text-slate-600 hover:bg-slate-100",
                 ].join(" ")}
                 style={{paddingLeft: `${8 + depth * 16}px`}}

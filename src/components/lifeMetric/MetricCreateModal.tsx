@@ -86,7 +86,7 @@ export default function MetricCreateModal({onClose, onCreated}: {
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                             {templates.map((t) => (
                                 <button key={t.id} type="button" onClick={() => chooseTemplate(t)}
-                                        className={`rounded-xl border p-3 text-left text-sm ${templateId === t.id ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:bg-slate-50"}`}>
+                                        className={`rounded-xl border p-3 text-left text-sm ${templateId === t.id ? "border-d94-brand bg-d94-brand-soft" : "border-slate-200 hover:bg-slate-50"}`}>
                                     <span className="block font-semibold text-slate-900">{t.name}</span>
                                     <code className="mt-1 block truncate text-xs text-slate-500">{t.defaultFormula}</code>
                                 </button>

@@ -20,7 +20,7 @@ export default function AnnotationPopover({annotationId, documentId, onClose, on
     const item = data?.find((a) => a.id === annotationId);
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={onClose}>
-            <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full max-w-md rounded-xl bg-white p-5 shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                 {item ? <Editor key={item.id} item={item} onClose={onClose} onError={onError}/>
                     : <p className="text-sm text-slate-500">불러오는 중…</p>}
             </div>

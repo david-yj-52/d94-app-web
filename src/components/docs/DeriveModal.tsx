@@ -18,7 +18,7 @@ export default function DeriveModal({originTitle, saving, onSubmit, onClose}: De
     const [kind, setKind] = useState<NoteKind>("doc");
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
-            <form className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}
+            <form className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}
                   onSubmit={(e) => {
                       e.preventDefault();
                       if (title.trim()) onSubmit({title: title.trim(), stream: stream.trim() || null, kind});

@@ -25,7 +25,7 @@ export default function NoteVersionHistory({versions, isLoading, selected, onPre
                     {versions.map((v) => (
                         <li key={v.version}>
                             <button type="button" onClick={() => onPreview(v)}
-                                    className={`w-full rounded-lg px-2 py-1.5 text-left ${selected === v.version ? "bg-blue-50 text-blue-700" : "hover:bg-slate-50"}`}>
+                                    className={`w-full rounded-lg px-2 py-1.5 text-left ${selected === v.version ? "bg-d94-brand-soft text-d94-brand" : "hover:bg-slate-50"}`}>
                                 <span className="font-medium">v{v.version}</span> <span className="text-slate-500">{v.title}</span>
                                 <span className="block text-xs text-slate-400">{new Date(v.editedAt).toLocaleString("ko-KR")}</span>
                             </button>

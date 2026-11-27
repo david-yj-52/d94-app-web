@@ -40,7 +40,7 @@ export default function ProductAddPopup({
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30">
             <form
                 onSubmit={handleSubmit}
-                className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+                className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl max-h-[calc(100dvh-2rem)] overflow-y-auto"
             >
                 <h2 className="mb-4 text-lg font-semibold">
                     {platformName

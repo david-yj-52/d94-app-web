@@ -30,7 +30,7 @@ export default function TermEditModal({initialTerm, initialDefinition = "", docu
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={onClose}>
-            <form className="w-full max-w-md space-y-3 rounded-xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}
+            <form className="w-full max-w-md space-y-3 rounded-xl bg-white p-5 shadow-2xl max-h-[calc(100dvh-2rem)] overflow-y-auto" onClick={(e) => e.stopPropagation()}
                   onSubmit={(e) => {
                       e.preventDefault();
                       save();
