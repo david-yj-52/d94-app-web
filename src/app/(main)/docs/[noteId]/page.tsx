@@ -2,7 +2,7 @@
 
 import {Suspense, useState} from "react";
 import {useParams, useRouter, useSearchParams} from "next/navigation";
-import {FolderInput, GitBranch, Pencil, SquareKanban, Trash2} from "lucide-react";
+import {Brain, FolderInput, GitBranch, Pencil, SquareKanban, Trash2} from "lucide-react";
 import NoteEditor from "@/components/docs/NoteEditor";
 import NoteMarkdown from "@/components/docs/NoteMarkdown";
 import NoteSidePanel from "@/components/docs/NoteSidePanel";
@@ -14,7 +14,7 @@ import PromoteToCiraModal from "@/components/docs/PromoteToCiraModal";
 import {useIssueTypes, usePromoteNoteToCira} from "@/hooks/useCiraDocs";
 import {useProjects} from "@/hooks/useProjects";
 import {useOpenNote} from "@/components/docs/useOpenNote";
-import {useBacklinks, useChangeNoteKind, useDeriveNote, usePromoteDocsTask, useSetDocsTaskStatus, useDeleteNote, useDocsFolders, useMoveNote, useNote, useNotes, useNoteTitleFetcher, useNoteVersions, useInvalidateDocs, useUploadDocsImage} from "@/hooks/useDocs";
+import {useBacklinks, useChangeNoteKind, useDeriveNote, usePromoteDocsTask, useSetDocsTaskStatus, useDeleteNote, useDocsFolders, useMoveNote, useNote, useNotes, useNoteTitleFetcher, useNoteVersions, useInvalidateDocs, useUploadDocsImage, useIndexDocsNoteKnowledge} from "@/hooks/useDocs";
 import {useToast} from "@/components/ui/Toast";
 import {Skeleton} from "@/components/ui/Skeleton";
 import {docsError} from "@/lib/docs/error";
@@ -57,6 +57,7 @@ function NoteContent() {
     const invalidate = useInvalidateDocs();
     const move = useMoveNote();
     const remove = useDeleteNote();
+    const indexKnowledge = useIndexDocsNoteKnowledge();
     const openNote = useOpenNote();
     const fetchTitles = useNoteTitleFetcher();
     const {show, ToastComponent} = useToast();
@@ -103,6 +104,10 @@ function NoteContent() {
                                     </select>
                                     <IconButton label="파생 노트 만들기" onClick={() => setDeriving(true)}><GitBranch className="h-4 w-4"/></IconButton>
                                     <IconButton label="CIRA Task로 등록" onClick={() => setPromoting(true)}><SquareKanban className="h-4 w-4"/></IconButton>
+                                    <IconButton label="문서 지식화" onClick={() => indexKnowledge.mutate(n.id, {
+                                        onSuccess: (result) => show(`지식화 완료: ${result.chunks}개 청크 (v${result.version})`),
+                                        onError: (e) => show(docsError(e, "문서를 지식화하지 못했습니다."), "error"),
+                                    })}><Brain className="h-4 w-4"/></IconButton>
                                     <IconButton label="편집" onClick={() => setMode("edit")}><Pencil className="h-4 w-4"/></IconButton>
                                     <IconButton label="폴더 이동" onClick={() => setMoving(true)}><FolderInput className="h-4 w-4"/></IconButton>
                                     <IconButton label="삭제" onClick={() => setDialog({

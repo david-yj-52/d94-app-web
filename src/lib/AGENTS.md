@@ -68,6 +68,7 @@ await apiClient.post(url, formData, {headers: {"Content-Type": undefined as unkn
 - mock: `mock/apiToken.ts`의 `registerApiTokenMock(on)` (서비스 `all`·`cira`·`docs`·`study`·`interface-test`·`life-metric`, 발급 시 가짜 원문 생성, dev 서버 재시작 시 초기화).
 
 ### Docs: `api/docs.ts` · `docs/`
+- RAG: `indexDocsNoteKnowledge(id)` 와 `searchDocsKnowledge(q, vaultId?)` 는 지식화 요청과 접근 가능한 vault 범위의 검색을 호출합니다.
 - `api/docs.ts`: d94-query `/api/v1/docs` 와 짝. vault `getDocsVaults`, 폴더 `getDocsFolders(vaultId="ALL")`·`createDocsFolder(name, parentId, vaultId?)`·`create/rename/move/deleteDocsFolder`, 노트 `getNotes(filters)`(`folderId=""` 최상위만)·`getNoteTitles`·`getNoteByTitle`·`getNote`·`create/update/move/deleteNote`(수정은 `version` 필수, 불일치 409)·`getNoteVersions`·`getBacklinks`, 진화 `deriveNote`·`changeNoteKind`·`getLineage`, Task `getDocsTasks`·`setDocsTaskStatus`·`promoteDocsTask`, 이미지 `uploadDocsImage(blob)`(`application/octet-stream`, 형식은 서버가 앞 바이트로 판별)·`docsImageUrl(id)`(`/api/proxy/v1/docs/images/{id}`).
 - `docs/drafts.ts` `loadDraft`·`saveDraft`·`deleteDraft` — 편집 초안 IndexedDB(`d94-docs`/`drafts`, 키 noteId). 열 수 없으면 조용히 건너뜀 → [conventions §7](../../docs/conventions.md)
 - `docs/image.ts` `shrinkImage(blob)` — 900KB 이하·허용 형식이면 그대로, 아니면 긴 변 1920→800px·WebP 품질을 낮춰 가며 줄임(UMD 1MB 상한).

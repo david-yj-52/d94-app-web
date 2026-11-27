@@ -11,6 +11,9 @@ export interface DocsVault {
 /** 목록 조회 범위: "ALL" = 통합 뷰(내 Private + 소속 Team), 아니면 vault id */
 export type VaultScope = "ALL" | string;
 
+export interface DocsKnowledgeResult { noteId: string; version: number; chunks: number }
+export interface DocsKnowledgeHit { noteId: string; vaultId: string; title: string; content: string; chunkIndex: number; score: number }
+
 export type NoteKind = "idea" | "doc" | "task" | "knowledge";
 export type TaskStatus = "todo" | "doing" | "done";
 

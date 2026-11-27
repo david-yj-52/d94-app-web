@@ -17,9 +17,9 @@ docs/layout.tsx
 ├── DocsSidebar   (vault 섹션별 폴더 트리·폴더별 노트, 폴더 ··· 메뉴: 새 노트·하위 폴더·이름 변경·이동·삭제)
 ├── {children}
 ├── FolderPickerModal (폴더 이동)  ·  DocsDialog (이름 입력·삭제 확인)  ·  {ToastComponent}
-docs/page.tsx            아이디어 빠른 기록(제목 한 줄) + 최근 노트 15개
+docs/page.tsx            아이디어 빠른 기록 + RAG 지식 검색(전체 또는 vault 선택) + 최근 노트 15개
 docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIRA 위키와 같은 패턴)
-├── 가운데: 폴더 경로·제목·[종류▾(승격)][파생][CIRA Task로 등록][편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
+├── 가운데: 폴더 경로·제목·[종류▾(승격)][파생][CIRA Task로 등록][지식화][편집][폴더 이동][삭제] + NoteMarkdown | NoteEditor
 ├── 오른쪽(lg 미만은 본문 아래): NoteSidePanel(속성·태그·Task·백링크·파생 노트) | NoteVersionHistory
 └── DeriveModal (파생) · PromoteToCiraModal (CIRA Task로 등록)
 ```
@@ -63,6 +63,7 @@ docs/[noteId]/page.tsx   mode 하나로 보기·편집·버전 미리보기 (CIR
 - **파생:** 가지 아이콘 → DeriveModal(제목·트랙·종류) → 원본과 같은 폴더에 `origin: "[[원본]]"`·`stream` 이 붙은 노트를 만들고 `?edit=1` 로 이동. 원본의 "파생 노트"에 나타납니다.
 - **CIRA Task로 등록:** 칸반 아이콘 → PromoteToCiraModal(내가 멤버인 프로젝트·Task 타입·제목) → 서버가 Task 를 만들고, 그 Task 의 메인 노트(팀 vault) frontmatter 에 `origin: "[[이 노트]]"` 를 겁니다. 성공하면 Task 상세로 이동. 원본이 Private 이면 vault 가 달라 계보 트리에는 이어지지 않습니다(크로스 vault 링크 미구현).
 - **Task:** 본문의 `- [ ]` 줄이 Task 입니다. 오른쪽 Task 목록의 체크박스는 그 줄의 `[ ]`↔`[x]` 만 바꿔 저장, 그 줄이 바뀌었으면 409. "노트로 만들기" → 줄 내용을 제목으로 `kind: task` 노트를 만들고 줄을 `[[제목]]` 으로 바꾼 뒤 새 노트로 이동.
+- **Docs RAG:** 문서 지식화 버튼을 누르면 현재 문서 버전을 청크로 임베딩해 Elasticsearch 에 색인합니다. 첫 화면 검색은 선택한 vault 또는 현재 사용자가 접근 가능한 전체 vault 를 대상으로 BM25 + 벡터 검색하며, 수정·삭제되었거나 현재 접근할 수 없는 노트의 오래된 색인 결과는 API 가 제외합니다.
 ### 버전
 - 오른쪽 "버전 이력" → 버전을 고르면 가운데에 그 버전 본문(읽기 전용), "현재 버전으로" 로 복귀.
 

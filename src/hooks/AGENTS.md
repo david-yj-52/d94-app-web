@@ -63,3 +63,4 @@ export function useCreateMilestone(projectId: string) {
 - **useNotifications**: `getNotifications(0, 10)`을 30초마다 폴링합니다(`refetchInterval`, 화면이 숨겨지면 멈춤). 첫 결과는 기준선으로만 쓰고, 이후 처음 보는 안 읽은 알림만 토스트로 띄우며 `["notifications-unread-count"]`를 무효화합니다. SSE 는 쓰지 않습니다(브라우저에 토큰을 내려야 하고 UMD 가 스트리밍 미지원, [ADR 0005](../../docs/decisions/0005-backend-token-server-only.md)). `layout/NotificationMount`에서 한 번만 사용합니다.
 - **useCqlValidate**: 입력값을 500ms debounce한 뒤 검증 API를 호출합니다.
 - useNotifications는 새 알림을 토스트로 바로 보여 주기 위해 예외적으로 훅 안에서 `useToast`를 씁니다. 일반 훅에서는 따라 하지 마세요.
+- Docs RAG: `useIndexDocsNoteKnowledge` 는 지식화 mutation, `useSearchDocsKnowledge` 는 수동 검색 mutation 입니다. 검색 결과는 mutation 데이터로만 화면에 표시합니다.

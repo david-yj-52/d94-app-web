@@ -13,11 +13,13 @@ import {
     getDocsFolders,
     getDocsTasks,
     getDocsVaults,
+    indexDocsNoteKnowledge,
     getLineage,
     getNote,
     getNoteTitles,
     getNoteVersions,
     getNotes,
+    searchDocsKnowledge,
     moveDocsFolder,
     moveNote,
     promoteDocsTask,
@@ -92,6 +94,14 @@ export function useNotes(filters: NoteFilters = {}) {
 
 export function useNote(id: string) {
     return useQuery({queryKey: ["docsNote", id], queryFn: () => getNote(id), enabled: !!id});
+}
+
+export function useIndexDocsNoteKnowledge() {
+    return useMutation({mutationFn: indexDocsNoteKnowledge});
+}
+
+export function useSearchDocsKnowledge() {
+    return useMutation({mutationFn: ({query, vaultId}: {query: string; vaultId?: string}) => searchDocsKnowledge(query, vaultId)});
 }
 
 export function useNoteTitles(prefix: string, enabled = true) {

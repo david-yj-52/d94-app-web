@@ -14,6 +14,8 @@ import type {
     TaskFilters,
     TaskStatus,
     VaultScope,
+    DocsKnowledgeHit,
+    DocsKnowledgeResult,
 } from "@/types/docs";
 
 const BASE = "/v1/docs";
@@ -68,6 +70,16 @@ export async function getNoteByTitle(title: string): Promise<Note> {
 
 export async function getNote(id: string): Promise<Note> {
     const res = await apiClient.get(`${BASE}/notes/${id}`);
+    return res.data.data;
+}
+
+export async function indexDocsNoteKnowledge(id: string): Promise<DocsKnowledgeResult> {
+    const res = await apiClient.post(`${BASE}/notes/${id}/knowledge`);
+    return res.data.data;
+}
+
+export async function searchDocsKnowledge(q: string, vaultId?: string): Promise<DocsKnowledgeHit[]> {
+    const res = await apiClient.get(`${BASE}/knowledge/search`, {params: {q, vaultId}});
     return res.data.data;
 }
 
