@@ -6,6 +6,7 @@ import {useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 import Badge from "@/components/ui/Badge";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 export const TRIGGER_LABEL: Record<TriggerType, string> = {
     ISSUE_CREATED: "Task 생성됨",
@@ -67,7 +68,7 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
             <div className="flex items-center justify-between px-4 py-3 gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                     {/* 활성 토글 */}
-                    <button
+                    <Button variant="unstyled"
                         onClick={handleToggle}
                         disabled={isToggling}
                         aria-label={rule.isActive ? "비활성화" : "활성화"}
@@ -80,7 +81,7 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
                     rule.isActive ? "translate-x-4" : "translate-x-0"
                 }`}
             />
-                    </button>
+                    </Button>
 
                     <div className="min-w-0">
                         <p className="font-medium text-slate-800 text-sm truncate">{rule.ruleName}</p>
@@ -97,24 +98,24 @@ export default function AutomationRuleCard({rule, projectId, onEdit, onDeleted}:
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                    <button
+                    <Button variant="unstyled"
                         onClick={() => setShowExecutions((v) => !v)}
                         className="text-xs text-slate-400 hover:text-slate-600"
                     >
                         {showExecutions ? "이력 닫기" : "이력 보기"}
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="unstyled"
                         onClick={() => onEdit(rule)}
                         className="text-xs text-blue-500 hover:text-d94-brand-hover"
                     >
                         수정
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="unstyled"
                         onClick={handleDelete}
                         className="text-xs text-red-400 hover:text-red-600"
                     >
                         삭제
-                    </button>
+                    </Button>
                 </div>
             </div>
 

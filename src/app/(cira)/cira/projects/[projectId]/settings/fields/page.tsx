@@ -20,6 +20,7 @@ import {ArrowDown, ArrowUp, Lock} from "lucide-react";
 import Link from "next/link";
 import {use, useState} from "react";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
 
@@ -90,18 +91,18 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
                                     <span className="ml-2 text-xs text-slate-400">· {f.sourceName ? `'${f.sourceName}'에서 가져옴` : "원본 삭제됨"}</span>
                                 )}
                             </span>
-                            <button type="button" aria-label={`${f.name} 위로`} disabled={i === 0} onClick={() => move(i, -1)}
-                                    className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowUp className="h-4 w-4"/></button>
-                            <button type="button" aria-label={`${f.name} 아래로`} disabled={i === added.length - 1} onClick={() => move(i, 1)}
-                                    className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowDown className="h-4 w-4"/></button>
+                            <Button variant="unstyled" type="button" aria-label={`${f.name} 위로`} disabled={i === 0} onClick={() => move(i, -1)}
+                                    className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowUp className="h-4 w-4"/></Button>
+                            <Button variant="unstyled" type="button" aria-label={`${f.name} 아래로`} disabled={i === added.length - 1} onClick={() => move(i, 1)}
+                                    className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowDown className="h-4 w-4"/></Button>
                             {f.kind === "cf" ? (f.canEdit && (
                                 <>
-                                    <button type="button" onClick={() => setEditing(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
-                                    <button type="button" onClick={() => setDeleting(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
+                                    <Button variant="unstyled" type="button" onClick={() => setEditing(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</Button>
+                                    <Button variant="unstyled" type="button" onClick={() => setDeleting(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</Button>
                                 </>
                             )) : (
-                                <button type="button" onClick={() => setKeys(addedKeys.filter((k) => k !== f.fieldKey))}
-                                        className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">제거</button>
+                                <Button variant="unstyled" type="button" onClick={() => setKeys(addedKeys.filter((k) => k !== f.fieldKey))}
+                                        className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">제거</Button>
                             )}
                         </li>
                     ))}
@@ -117,10 +118,10 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
                         <option value="">+ 제공 필드 추가</option>
                         {addable.map((f) => <option key={f.fieldKey} value={f.fieldKey}>{f.name}</option>)}
                     </select>
-                    <button type="button" onClick={() => setShowLibrary(true)}
-                            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">+ 라이브러리에서 가져오기</button>
-                    <button type="button" onClick={() => setEditing(null)}
-                            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">+ 새 필드 만들기</button>
+                    <Button variant="unstyled" type="button" onClick={() => setShowLibrary(true)}
+                            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">+ 라이브러리에서 가져오기</Button>
+                    <Button variant="unstyled" type="button" onClick={() => setEditing(null)}
+                            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">+ 새 필드 만들기</Button>
                 </div>
             </section>
 
@@ -160,13 +161,13 @@ export default function ProjectFieldsPage({params}: { params: Promise<{ projectI
                         <strong>{deleting?.name}</strong> 필드를 삭제하면 이 프로젝트 모든 Task의 값이 함께 삭제됩니다. 되돌릴 수 없습니다.
                     </p>
                     <div className="flex gap-3">
-                        <button type="button" onClick={() => setDeleting(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</button>
-                        <button type="button" disabled={remove.isPending}
+                        <Button variant="unstyled" type="button" onClick={() => setDeleting(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</Button>
+                        <Button type="button" disabled={remove.isPending}
                                 onClick={() => deleting && remove.mutate(deleting.fieldKey.slice(3), {
                                     onSuccess: () => setDeleting(null),
                                     onError: (e) => show(errMsg(e, "삭제하지 못했습니다."), "error"),
                                 })}
-                                className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60">삭제</button>
+                                variant="danger" className="flex-1">삭제</Button>
                     </div>
                 </div>
             </Dialog>

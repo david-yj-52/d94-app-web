@@ -17,6 +17,7 @@ import {FileText} from "lucide-react";
 import {Suspense, use, useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Button from "@/components/ui/Button";
 
 type Mode = "view" | "edit" | "create" | "version-preview";
 
@@ -155,12 +156,12 @@ function WikiPageContent({projectId}: { projectId: string }) {
               v{previewVersion.version} 미리보기
             </span>
                         <span className="text-xs text-amber-600">{previewVersion.createdBy}</span>
-                        <button
+                        <Button variant="unstyled"
                             className="ml-auto text-xs text-slate-500 hover:text-slate-700 underline"
                             onClick={() => setMode("view")}
                         >
                             현재 버전으로 돌아가기
-                        </button>
+                        </Button>
                     </div>
                     <div className="flex-1 overflow-y-auto px-6 py-5">
                         <div

@@ -164,31 +164,31 @@ export default function SettingsGeneralPage({
                     프로젝트를 삭제하면 프로젝트 목록에서 제거되며 복구할 수 없습니다.
                 </p>
                 {!confirmDelete ? (
-                    <button
+                    <Button variant="unstyled"
                         type="button"
                         onClick={() => setConfirmDelete(true)}
                         className="mt-4 h-9 rounded-lg border border-red-300 bg-white px-4 text-sm font-semibold text-red-600 hover:bg-red-50"
                     >
                         프로젝트 삭제
-                    </button>
+                    </Button>
                 ) : (
                     <div className="mt-4 flex items-center gap-2">
-                        <button
+                        <Button variant="unstyled"
                             type="button"
                             onClick={handleDelete}
                             disabled={isDeleting}
                             className="h-9 rounded-lg bg-red-600 px-4 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
                         >
                             {isDeleting ? "삭제 중..." : "정말 삭제"}
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="button"
                             onClick={() => setConfirmDelete(false)}
                             disabled={isDeleting}
-                            className="h-9 rounded-lg border border-slate-200 bg-white px-4 text-sm text-slate-600 hover:bg-slate-50"
+                            variant="secondary" className="h-9"
                         >
                             취소
-                        </button>
+                        </Button>
                     </div>
                 )}
             </section>

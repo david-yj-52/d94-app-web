@@ -7,6 +7,7 @@ import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {use, useEffect, useState} from "react";
+import Button from "@/components/ui/Button";
 
 export default function BoardsPage({
                                        params,
@@ -65,12 +66,12 @@ export default function BoardsPage({
                         보드가 없습니다.
                     </p>
                     <p className="text-sm mb-6">새 보드를 생성해서 Task를 관리하세요.</p>
-                    <button
+                    <Button
                         onClick={() => setShowCreate(true)}
-                        className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        className="px-6"
                     >
                         + 보드 생성
-                    </button>
+                    </Button>
                 </div>
             )}
 

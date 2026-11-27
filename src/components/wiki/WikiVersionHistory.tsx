@@ -3,6 +3,7 @@
 import type {WikiVersionResponse} from "@/lib/api/wiki";
 import {X} from "lucide-react";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 interface WikiVersionHistoryProps {
     versions: WikiVersionResponse[];
@@ -22,13 +23,13 @@ export default function WikiVersionHistory({
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
                 <span className="text-sm font-semibold text-slate-700">버전 이력</span>
-                <button
+                <Button variant="unstyled"
                     onClick={onClose}
                     aria-label="버전 이력 닫기"
                     className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600"
                 >
                     <X size={15}/>
-                </button>
+                </Button>
             </div>
 
             {/* List */}
@@ -63,12 +64,12 @@ export default function WikiVersionHistory({
                                     <span className="text-xs text-slate-400">{date}</span>
                                 </div>
                                 <p className="text-xs text-slate-500 mb-2">{v.createdBy}</p>
-                                <button
+                                <Button
                                     onClick={() => onPreview(v)}
-                                    className="text-xs text-d94-brand hover:underline"
+                                    variant="link" className="text-xs"
                                 >
                                     이 버전 보기
-                                </button>
+                                </Button>
                             </div>
                         );
                     })}

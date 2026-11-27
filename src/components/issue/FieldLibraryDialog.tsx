@@ -3,6 +3,7 @@
 import Dialog from "@/components/ui/Dialog";
 import {CUSTOM_FIELD_TYPE_LABELS, type LibraryItem} from "@/types/fields";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 const GROUPS = [["global", "전역 필드"], ["type", "이 타입의 필드"]] as const;
 
@@ -33,14 +34,14 @@ export default function FieldLibraryDialog({items, onImport, isPending, onClose}
                                         {field.name}
                                         <span className="ml-2 text-xs text-slate-400">{CUSTOM_FIELD_TYPE_LABELS[field.fieldType]}</span>
                                     </span>
-                                    <button
+                                    <Button variant="unstyled"
                                         type="button"
                                         disabled={!!importedAs || isPending}
                                         onClick={() => onImport(field.fieldKey.slice(3))}
                                         className="h-8 rounded-lg border border-slate-200 px-3 text-xs text-slate-700 hover:bg-slate-50 disabled:opacity-50"
                                     >
                                         {importedAs ? "가져옴" : "가져오기"}
-                                    </button>
+                                    </Button>
                                 </li>
                             ))}
                         </ul>

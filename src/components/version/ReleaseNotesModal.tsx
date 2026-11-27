@@ -2,6 +2,7 @@
 
 import {useReleaseNotes} from "@/hooks/useVersions";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 interface Props {
     versionId: string;
@@ -45,19 +46,19 @@ export default function ReleaseNotesModal({versionId, versionName, onClose}: Pro
                 <div className="flex items-center justify-between mb-5">
                     <h2 className="text-lg font-bold text-slate-900">릴리즈 노트 — {versionName}</h2>
                     <div className="flex items-center gap-2">
-                        <button
+                        <Button
                             onClick={handleCopy}
                             disabled={!data}
-                            className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50 disabled:opacity-40"
+                            variant="secondary" size="sm" className="disabled:opacity-40"
                         >
                             {copied ? "복사됨 ✓" : "마크다운 복사"}
-                        </button>
-                        <button
+                        </Button>
+                        <Button variant="unstyled"
                             onClick={onClose}
                             className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50"
                         >
                             ✕
-                        </button>
+                        </Button>
                     </div>
                 </div>
 

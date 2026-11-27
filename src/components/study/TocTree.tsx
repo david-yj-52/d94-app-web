@@ -1,6 +1,7 @@
 "use client";
 
 import type {TocNode} from "@/types/study";
+import Button from "@/components/ui/Button";
 
 interface Props {
     nodes: TocNode[];
@@ -20,12 +21,12 @@ export default function TocTree({nodes, activePageSectionId, onSelect}: Props) {
 function Item({node, active, onSelect}: { node: TocNode; active: string | null; onSelect: (n: TocNode) => void }) {
     const isActive = node.pageSectionId === active;
     const label = (
-        <button type="button" onClick={() => onSelect(node)}
+        <Button variant="unstyled" type="button" onClick={() => onSelect(node)}
                 className={`w-full truncate rounded px-2 py-1 text-left ${
                     isActive ? "bg-indigo-50 font-medium text-indigo-700" : "text-slate-600 hover:bg-slate-100"
                 }`} title={node.title}>
             {node.title}
-        </button>
+        </Button>
     );
     if (!node.children.length) return <li>{label}</li>;
     const containsActive = (n: TocNode): boolean => n.pageSectionId === active || n.children.some(containsActive);

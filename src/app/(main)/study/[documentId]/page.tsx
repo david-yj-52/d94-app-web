@@ -21,6 +21,7 @@ import {errorMessage} from "@/lib/study/colors";
 import {rangeToAnchor, type SelectionAnchor} from "@/lib/study/selection";
 import type {AnnotationColor} from "@/types/study";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 export default function StudyViewerPage() {
     return <Suspense><Viewer/></Suspense>;
@@ -197,16 +198,16 @@ function Viewer() {
                 <h1 className="min-w-0 flex-1 truncate text-lg font-semibold text-slate-900">{doc.data.title}</h1>
                 <div className="flex gap-1 text-sm" role="tablist">
                     {(["read", "terms"] as const).map((t) => (
-                        <button key={t} role="tab" aria-selected={tab === t} type="button" onClick={() => setTab(t)}
+                        <Button variant="unstyled" key={t} role="tab" aria-selected={tab === t} type="button" onClick={() => setTab(t)}
                                 className={`rounded px-3 py-1 ${tab === t ? "bg-indigo-600 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
                             {t === "read" ? "본문" : "단어장"}
-                        </button>
+                        </Button>
                     ))}
-                    <button type="button" aria-label="문장 구조" role="switch" aria-checked={syntaxOn}
+                    <Button variant="unstyled" type="button" aria-label="문장 구조" role="switch" aria-checked={syntaxOn}
                             onClick={() => setSyntaxOn((value) => { const next = !value; try { localStorage.setItem("study.syntax", next ? "1" : "0"); } catch { /* storage can be disabled */ } return next; })}
-                            className={`rounded px-3 py-1 ${syntaxOn ? "bg-indigo-100 text-indigo-700" : "text-slate-600 hover:bg-slate-100"}`}>문장 구조</button>
+                            className={`rounded px-3 py-1 ${syntaxOn ? "bg-indigo-100 text-indigo-700" : "text-slate-600 hover:bg-slate-100"}`}>문장 구조</Button>
                     {syntax.isFetching && syntaxOn && <Loader2 className="mt-1 h-4 w-4 animate-spin text-slate-400" aria-label="분석 중"/>}
-                    <button type="button" aria-label="사전 API 키" onClick={() => setDictionaryKeyOpen(true)} className="rounded px-2 py-1 text-slate-600 hover:bg-slate-100"><BookA className="h-4 w-4"/></button>
+                    <Button variant="unstyled" type="button" aria-label="사전 API 키" onClick={() => setDictionaryKeyOpen(true)} className="rounded px-2 py-1 text-slate-600 hover:bg-slate-100"><BookA className="h-4 w-4"/></Button>
                     <Link href={`/study/notes?documentId=${documentId}`} className="rounded px-3 py-1 text-slate-600 hover:bg-slate-100">노트</Link>
                 </div>
             </div>

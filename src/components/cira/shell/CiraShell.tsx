@@ -13,6 +13,7 @@ import {type ReactNode, useEffect, useState} from "react";
 import CiraSidebar from "./CiraSidebar";
 import CreateIssueButton from "./CreateIssueButton";
 import {getNavContext, SIDEBAR_COOKIE} from "./navContext";
+import Button from "@/components/ui/Button";
 
 export default function CiraShell({user, initialCollapsed, children}: {
     user?: { name?: string | null; email?: string | null };
@@ -36,10 +37,10 @@ export default function CiraShell({user, initialCollapsed, children}: {
     return (
         <div className="cira-root flex min-h-screen flex-col">
             <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-2 border-b border-cira-border bg-white px-2 md:px-4">
-                <button onClick={() => setDrawerOpen(true)} aria-label="메뉴 열기"
+                <Button variant="unstyled" onClick={() => setDrawerOpen(true)} aria-label="메뉴 열기"
                         className="flex h-10 w-10 items-center justify-center rounded-md hover:bg-gray-100 md:hidden">
                     <MenuIcon className="h-5 w-5"/>
-                </button>
+                </Button>
                 <Link href="/cira/projects" className="flex items-center gap-2 no-underline">
                     <span className="h-6 w-6 rounded-md bg-cira-brand"/>
                     <span className="font-extrabold tracking-wide text-cira-brand">CIRA</span>
@@ -54,9 +55,9 @@ export default function CiraShell({user, initialCollapsed, children}: {
                 <NotificationBell/>
                 <DropdownMenu
                     trigger={
-                        <button aria-label="프로필 메뉴" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100">
+                        <Button variant="unstyled" aria-label="프로필 메뉴" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100">
                             <Avatar name={user?.name || user?.email} size="md"/>
-                        </button>
+                        </Button>
                     }
                     items={[
                         {label: <span className="text-cira-muted">{user?.email ?? user?.name ?? "-"}</span>, onSelect: () => {}, disabled: true},
@@ -75,10 +76,10 @@ export default function CiraShell({user, initialCollapsed, children}: {
                     {/* 태블릿(768–1023px)은 항상 아이콘만 */}
                     <div className="lg:hidden"><CiraSidebar collapsed/></div>
                     <div className="hidden lg:block"><CiraSidebar collapsed={collapsed}/></div>
-                    <button onClick={toggle} aria-label={collapsed ? "사이드바 펼치기" : "사이드바 접기"}
+                    <Button variant="unstyled" onClick={toggle} aria-label={collapsed ? "사이드바 펼치기" : "사이드바 접기"}
                             className="mt-auto hidden h-10 items-center justify-center border-t border-cira-border text-cira-muted hover:bg-gray-100 lg:flex">
                         {collapsed ? <PanelLeftOpen className="h-4 w-4"/> : <PanelLeftClose className="h-4 w-4"/>}
-                    </button>
+                    </Button>
                 </aside>
                 <main className="min-w-0 flex-1 py-5">{children}</main>
             </div>

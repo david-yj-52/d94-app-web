@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {z} from "zod";
 
 import {SESSION_EXPIRED_REASON} from "@/lib/routeAccess";
+import Button from "@/components/ui/Button";
 
 /** /login?reason=… 로 들어왔을 때 보여 줄 안내 */
 const LOGIN_NOTICES: Record<string, string> = {
@@ -102,13 +103,13 @@ export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: Lo
                             placeholder="••••••••"
                             className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                         />
-                        <button
+                        <Button variant="unstyled"
                             type="button"
                             onClick={() => setShowPassword((v) => !v)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
                         >
                             {showPassword ? "숨기기" : "보기"}
-                        </button>
+                        </Button>
                     </div>
                     {errors.password && (
                         <p className="mt-1 text-xs text-red-500">
@@ -123,7 +124,7 @@ export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: Lo
                     </p>
                 )}
 
-                <button
+                <Button variant="unstyled"
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full h-11 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -154,7 +155,7 @@ export default function LoginForm({reason, callbackUrl = "/home", onSuccess}: Lo
                     ) : (
                         "로그인"
                     )}
-                </button>
+                </Button>
             </form>
 
             <p className="mt-6 text-center text-sm text-slate-500">

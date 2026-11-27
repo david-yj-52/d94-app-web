@@ -5,6 +5,7 @@ import CreateIssueModal from "@/components/issue/CreateIssueModal";
 import {useProjects} from "@/hooks/useProjects";
 import {Plus} from "lucide-react";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 // 프로젝트 안이면 바로 Task 생성, 밖이면 프로젝트부터 고른다
 export default function CreateIssueButton({projectId}: { projectId?: string }) {
@@ -15,21 +16,21 @@ export default function CreateIssueButton({projectId}: { projectId?: string }) {
 
     return (
         <>
-            <button
+            <Button variant="unstyled"
                 onClick={() => setStep(projectId ? "form" : "pick")}
                 className="flex h-9 items-center gap-1 rounded-md bg-cira-brand px-3 text-sm font-semibold text-white hover:opacity-90"
                 aria-label="Task 만들기"
             >
                 <Plus className="h-4 w-4"/>
                 <span className="hidden sm:inline">만들기</span>
-            </button>
+            </Button>
 
             <Dialog open={step === "pick"} onOpenChange={(o) => !o && setStep("closed")} title="Task를 만들 프로젝트">
                 <ul className="p-2">
                     {projects.length === 0 && <li className="p-3 text-sm text-cira-muted">프로젝트가 없습니다.</li>}
                     {projects.map((p) => (
                         <li key={p.id}>
-                            <button
+                            <Button variant="unstyled"
                                 onClick={() => {
                                     setPicked(p.id);
                                     setStep("form");
@@ -38,7 +39,7 @@ export default function CreateIssueButton({projectId}: { projectId?: string }) {
                             >
                                 <span className="font-mono text-xs text-cira-muted">{p.key}</span>
                                 {p.name}
-                            </button>
+                            </Button>
                         </li>
                     ))}
                 </ul>

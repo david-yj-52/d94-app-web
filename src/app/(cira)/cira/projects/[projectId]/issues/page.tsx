@@ -27,6 +27,7 @@ import {useProject} from "@/hooks/useProjects";
 import {useSprints} from "@/hooks/useSprints";
 import type {IssueFilterParams} from "@/types/issue";
 import {use, useMemo, useState} from "react";
+import Button from "@/components/ui/Button";
 
 const PAGE_SIZE = 20;
 const errMsg = (e: unknown, fallback: string) => (isAxiosError(e) && e.response?.data?.message) || fallback;
@@ -79,7 +80,7 @@ export default function IssueListPage({
 
     return (
         <div className="max-w-6xl mx-auto px-4">
-            <PageHeader breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]} title="Task" actions={<button onClick={() => setShowCreate(true)} className="h-9 px-4 rounded bg-cira-brand text-white text-sm font-semibold hover:opacity-90 shrink-0">+ Task 생성</button>}/>
+            <PageHeader breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]} title="Task" actions={<Button variant="unstyled" onClick={() => setShowCreate(true)} className="h-9 px-4 rounded bg-cira-brand text-white text-sm font-semibold hover:opacity-90 shrink-0">+ Task 생성</Button>}/>
             <div className="mb-4 flex items-start gap-2">
                 <div className="min-w-0 flex-1"><IssueFilter filters={filters} onChange={setFilters}/></div>
                 {fields && columns && (
@@ -115,7 +116,7 @@ export default function IssueListPage({
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-2 mt-6">
-                    <button
+                    <Button variant="unstyled"
                         disabled={currentPage === 0}
                         onClick={() =>
                             setFilters((f) => ({...f, page: (f.page ?? 0) - 1}))
@@ -123,11 +124,11 @@ export default function IssueListPage({
                         className="h-8 px-3 rounded-lg border border-slate-200 text-sm disabled:opacity-40 hover:bg-slate-50"
                     >
                         이전
-                    </button>
+                    </Button>
                     <span className="text-sm text-slate-600">
             {currentPage + 1} / {totalPages}
           </span>
-                    <button
+                    <Button variant="unstyled"
                         disabled={currentPage >= totalPages - 1}
                         onClick={() =>
                             setFilters((f) => ({...f, page: (f.page ?? 0) + 1}))
@@ -135,7 +136,7 @@ export default function IssueListPage({
                         className="h-8 px-3 rounded-lg border border-slate-200 text-sm disabled:opacity-40 hover:bg-slate-50"
                     >
                         다음
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -185,14 +186,14 @@ export default function IssueListPage({
                         <strong>{deletingField?.name}</strong> 컬럼을 삭제하면 이 프로젝트 모든 Task의 값도 삭제됩니다. 되돌릴 수 없습니다.
                     </p>
                     <div className="flex gap-3">
-                        <button type="button" onClick={() => setDeletingField(null)}
-                                className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</button>
-                        <button type="button" disabled={deleteField.isPending}
+                        <Button variant="unstyled" type="button" onClick={() => setDeletingField(null)}
+                                className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</Button>
+                        <Button type="button" disabled={deleteField.isPending}
                                 onClick={() => deletingField && deleteField.mutate(deletingField.fieldKey.slice(3), {
                                     onSuccess: () => setDeletingField(null),
                                     onError: (e) => show(errMsg(e, "삭제하지 못했습니다."), "error"),
                                 })}
-                                className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60">삭제</button>
+                                variant="danger" className="flex-1">삭제</Button>
                     </div>
                 </div>
             </Dialog>

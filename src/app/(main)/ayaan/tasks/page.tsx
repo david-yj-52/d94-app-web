@@ -11,10 +11,11 @@ import {cancelPlan, createPlan, createTask, getMilestones, getPlans, getTasks, g
 import {TASK_STATUSES, TOOLS, type CreateTaskRequest} from "@/types/ayaan";
 import {toCreateBody} from "./taskBody";
 import {planStageLabel} from "./planStage";
-import {ayaanError, btnPrimary, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
+import {ayaanError, btnSecondary, fmtTime, inputCls, STATUS_CLASS} from "../format";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 import Badge from "@/components/ui/Badge";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 export default function AyaanTasksPage() {
     const {confirm, ConfirmComponent} = useConfirm();
@@ -85,8 +86,8 @@ export default function AyaanTasksPage() {
             <div className="flex flex-wrap items-end justify-between gap-2">
                 <h1 className="text-2xl font-bold text-slate-900">Ayaan 작업</h1>
                 <div className="flex gap-2">
-                    <button className={btnSecondary} onClick={() => setShowPlan(!showPlan)}>계획 실행</button>
-                    <button className={btnPrimary} onClick={() => setShowForm(!showForm)}>새 작업</button>
+                    <Button variant="secondary" onClick={() => setShowPlan(!showPlan)}>계획 실행</Button>
+                    <Button  onClick={() => setShowForm(!showForm)}>새 작업</Button>
                 </div>
             </div>
             {showPlan && (
@@ -103,7 +104,7 @@ export default function AyaanTasksPage() {
                             {(milestones.data ?? []).map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
                         </select>
                     </label>
-                    <button className={btnPrimary} disabled={!milestoneId || startPlan.isPending} onClick={() => startPlan.mutate()}>실행</button>
+                    <Button  disabled={!milestoneId || startPlan.isPending} onClick={() => startPlan.mutate()}>실행</Button>
                 </div>
             )}
             {showForm && (
@@ -148,7 +149,7 @@ export default function AyaanTasksPage() {
                             </select>
                         </label>
                     </div>
-                    <button className={btnPrimary} disabled={create.isPending} onClick={submit}>등록</button>
+                    <Button  disabled={create.isPending} onClick={submit}>등록</Button>
                     {existingId && (
                         <p role="status" className="text-sm text-slate-700">
                             이미 등록된 작업입니다. <Link href={`/ayaan/tasks/${existingId}`} className="text-d94-brand hover:underline">기존 작업 보기</Link>
@@ -170,9 +171,9 @@ export default function AyaanTasksPage() {
                                         {p.lastError && <span className="block text-xs text-red-500">{p.lastError}</span>}
                                     </span>
                                     <span className="flex shrink-0 gap-2">
-                                        {p.stage === "HALTED" && <button className={btnPrimary} disabled={resumeP.isPending} onClick={() => resumeP.mutate(p.id)}>재개</button>}
-                                        {active && <button className={btnSecondary} disabled={cancelP.isPending}
-                                                           onClick={async () => (await confirm("계획을 취소할까요?", {confirmLabel: "계획 취소", danger: true})) && cancelP.mutate(p.id)}>취소</button>}
+                                        {p.stage === "HALTED" && <Button  disabled={resumeP.isPending} onClick={() => resumeP.mutate(p.id)}>재개</Button>}
+                                        {active && <Button variant="secondary" disabled={cancelP.isPending}
+                                                           onClick={async () => (await confirm("계획을 취소할까요?", {confirmLabel: "계획 취소", danger: true})) && cancelP.mutate(p.id)}>취소</Button>}
                                     </span>
                                 </li>
                             );
@@ -189,7 +190,7 @@ export default function AyaanTasksPage() {
                     <option value="">전체 Tool</option>
                     {TOOLS.map((t) => <option key={t}>{t}</option>)}
                 </select>
-                <button className={btnSecondary} onClick={() => list.refetch()}>새로고침</button>
+                <Button variant="secondary" onClick={() => list.refetch()}>새로고침</Button>
             </div>
             {list.isLoading ? <SkeletonRow/> : (<>
                 {/* 모바일(< md) 카드 목록 */}

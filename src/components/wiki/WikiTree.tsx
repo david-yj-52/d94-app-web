@@ -4,6 +4,7 @@ import type {WikiPageSummary} from "@/lib/api/wiki";
 import {ChevronDown, ChevronRight, FilePlus, MoreHorizontal, Plus, Trash2} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 interface WikiTreeNode extends WikiPageSummary {
     children: WikiTreeNode[];
@@ -71,7 +72,7 @@ function TreeNode({node, selectedId, onSelect, onAddChild, onDelete, depth = 0}:
                 onClick={() => onSelect(node.id)}
             >
                 {/* expand toggle */}
-                <button
+                <Button variant="unstyled"
                     className="shrink-0 text-slate-400 hover:text-slate-600 w-4 h-4 flex items-center justify-center"
                     onClick={(e) => {
                         e.stopPropagation();
@@ -83,13 +84,13 @@ function TreeNode({node, selectedId, onSelect, onAddChild, onDelete, depth = 0}:
                     ) : (
                         <span className="w-3"/>
                     )}
-                </button>
+                </Button>
 
                 <span className="flex-1 truncate">{node.title}</span>
 
                 {/* hover actions — 터치 기기(< md)는 항상 보임 */}
                 <span className="flex items-center gap-0.5 md:hidden md:group-hover:flex">
-          <button
+          <Button variant="unstyled"
               title="하위 페이지 추가"
               className="p-0.5 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600"
               onClick={(e) => {
@@ -98,9 +99,9 @@ function TreeNode({node, selectedId, onSelect, onAddChild, onDelete, depth = 0}:
               }}
           >
             <Plus size={12}/>
-          </button>
+          </Button>
           <div className="relative" ref={menuRef}>
-            <button
+            <Button variant="unstyled"
                 title="더보기"
                 className="p-0.5 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600"
                 onClick={(e) => {
@@ -109,11 +110,11 @@ function TreeNode({node, selectedId, onSelect, onAddChild, onDelete, depth = 0}:
                 }}
             >
               <MoreHorizontal size={12}/>
-            </button>
+            </Button>
               {menuOpen && (
                   <div
                       className="absolute right-0 top-6 z-50 bg-white border border-slate-200 rounded-lg shadow-lg py-1 w-32">
-                      <button
+                      <Button variant="unstyled"
                           className="w-full flex items-center gap-2 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50"
                           onClick={(e) => {
                               e.stopPropagation();
@@ -123,7 +124,7 @@ function TreeNode({node, selectedId, onSelect, onAddChild, onDelete, depth = 0}:
                       >
                           <Trash2 size={13}/>
                           삭제
-                      </button>
+                      </Button>
                   </div>
               )}
           </div>
@@ -171,13 +172,13 @@ export default function WikiTree({
             {/* Header */}
             <div className="flex items-center justify-between px-3 py-3 border-b border-slate-200">
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Wiki</span>
-                <button
+                <Button variant="unstyled"
                     title="새 페이지"
                     onClick={() => onAddPage()}
                     className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600"
                 >
                     <FilePlus size={15}/>
-                </button>
+                </Button>
             </div>
 
             {/* Tree */}

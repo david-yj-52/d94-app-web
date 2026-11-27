@@ -3,6 +3,7 @@
 import {useState} from "react";
 import {useCreateStudyTerm} from "@/hooks/useStudy";
 import {errorMessage} from "@/lib/study/colors";
+import Button from "@/components/ui/Button";
 
 interface Props {
     initialTerm: string;
@@ -56,9 +57,9 @@ export default function TermEditModal({initialTerm, initialDefinition = "", docu
                     </label>
                 </fieldset>
                 <div className="flex justify-end gap-2">
-                    <button type="button" onClick={onClose} className="rounded px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100">취소</button>
-                    <button type="submit" disabled={create.isPending || !term.trim() || !definition.trim()}
-                            className="rounded bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white disabled:opacity-50">저장</button>
+                    <Button variant="unstyled" type="button" onClick={onClose} className="rounded px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100">취소</Button>
+                    <Button variant="unstyled" type="submit" disabled={create.isPending || !term.trim() || !definition.trim()}
+                            className="rounded bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white disabled:opacity-50">저장</Button>
                 </div>
             </form>
         </div>

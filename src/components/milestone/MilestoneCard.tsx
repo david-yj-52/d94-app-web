@@ -3,6 +3,7 @@
 import {useMilestoneProgress} from "@/hooks/useMilestones";
 import type {MilestoneResponse, MilestoneStatus} from "@/types/milestone";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 
 const STATUS_LABEL: Record<MilestoneStatus, string> = {
     OPEN: "진행 중",
@@ -75,19 +76,19 @@ export default function MilestoneCard({milestone, onEdit, onDelete, isDeleting}:
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
-                    <button
+                    <Button
                         onClick={() => onEdit(milestone)}
-                        className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
+                        variant="secondary" size="sm"
                     >
                         수정
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="unstyled"
                         onClick={() => onDelete(milestone.id)}
                         disabled={isDeleting}
                         className="h-8 px-3 rounded-lg border border-red-200 text-xs text-red-500 hover:bg-red-50 disabled:opacity-60"
                     >
                         삭제
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

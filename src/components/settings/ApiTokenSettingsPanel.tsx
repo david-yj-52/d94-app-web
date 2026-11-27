@@ -118,10 +118,10 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                     <div className="flex gap-2">
                         <code className="min-w-0 flex-1 break-all rounded bg-white px-3 py-2 text-xs text-slate-800"
                               aria-label="발급된 토큰">{issued.token}</code>
-                        <button type="button" onClick={() => copy(issued.token)}
+                        <Button variant="unstyled" type="button" onClick={() => copy(issued.token)}
                                 className="inline-flex h-9 shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">
                             <Copy className="h-4 w-4"/> 복사
-                        </button>
+                        </Button>
                     </div>
                     <p className="mt-3 text-xs text-amber-900">
                         MCP 설정 예시 (Claude Code · Cursor · Codex 등, Streamable HTTP). DOCS·CIRA 를 함께 쓰려면 전체(전역) 토큰:
@@ -131,10 +131,10 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                     }</pre>
                     <p className="mt-1 text-xs text-amber-900">새 토큰은 서버 반영까지 최대 1시간 걸릴 수 있습니다.</p>
                     <div className="mt-3 flex justify-end">
-                        <button type="button" onClick={() => setIssued(null)}
+                        <Button variant="unstyled" type="button" onClick={() => setIssued(null)}
                                 className="h-9 rounded-lg bg-amber-600 px-4 text-sm font-semibold text-white hover:bg-amber-700">
                             확인했습니다
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}
@@ -197,11 +197,11 @@ function TokensCard({onToast}: { onToast: (m: string, type?: "success" | "error"
                                     <td className="py-2 pr-2">{expired ? <span className="text-red-500">만료됨</span> : day(t.expiresAt)}</td>
                                     <td className="py-2 pr-2">{t.lastUsedAt ? minute(t.lastUsedAt) : "-"}</td>
                                     <td className="py-2 text-right">
-                                        <button type="button" aria-label={`${t.name} 폐기`} onClick={() => remove(t.id, t.name)}
+                                        <Button variant="unstyled" type="button" aria-label={`${t.name} 폐기`} onClick={() => remove(t.id, t.name)}
                                                 disabled={revoke.isPending}
                                                 className="rounded p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-50">
                                             <Trash2 className="h-4 w-4"/>
-                                        </button>
+                                        </Button>
                                     </td>
                                 </tr>
                             );

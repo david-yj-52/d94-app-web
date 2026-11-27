@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from "react";
 import {Minus, Pause, Play, Plus} from "lucide-react";
 import type {SectionRef} from "@/types/study";
+import Button from "@/components/ui/Button";
 
 const SPEED_COOKIE = "study_autoscroll_speed";
 /** 1단계 = 초당 15px. ponytail: 체감 보정은 이 값 하나로 */
@@ -124,17 +125,17 @@ export default function AutoScroll({pageId, next, onNext}: Props) {
         <div ref={boxRef}
              className="fixed bottom-4 right-4 z-30 flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm shadow-lg">
             {nextLabel && running && <span className="mr-1 max-w-[180px] truncate text-xs text-slate-500">다음: {nextLabel}</span>}
-            <button type="button" onClick={() => setRunning((r) => !r)} aria-pressed={running}
+            <Button variant="unstyled" type="button" onClick={() => setRunning((r) => !r)} aria-pressed={running}
                     aria-label={running ? "자동 스크롤 멈춤" : "자동 스크롤 시작"} title="Enter: 멈춤·재개 · 휠·방향키: 멈춤"
                     className="flex items-center gap-1 rounded px-2 py-1 font-medium text-slate-700 hover:bg-slate-100">
                 {running ? <Pause className="h-4 w-4"/> : <Play className="h-4 w-4"/>}
                 자동 스크롤
-            </button>
-            <button type="button" onClick={() => changeLevel(-1)} disabled={level <= LEVELS[0]} aria-label="느리게"
-                    className="rounded p-1 text-slate-500 hover:bg-slate-100 disabled:opacity-30"><Minus className="h-4 w-4"/></button>
+            </Button>
+            <Button variant="unstyled" type="button" onClick={() => changeLevel(-1)} disabled={level <= LEVELS[0]} aria-label="느리게"
+                    className="rounded p-1 text-slate-500 hover:bg-slate-100 disabled:opacity-30"><Minus className="h-4 w-4"/></Button>
             <span className="w-7 text-center tabular-nums text-slate-700" aria-label="속도">{level}</span>
-            <button type="button" onClick={() => changeLevel(1)} disabled={level >= LEVELS[LEVELS.length - 1]} aria-label="빠르게"
-                    className="rounded p-1 text-slate-500 hover:bg-slate-100 disabled:opacity-30"><Plus className="h-4 w-4"/></button>
+            <Button variant="unstyled" type="button" onClick={() => changeLevel(1)} disabled={level >= LEVELS[LEVELS.length - 1]} aria-label="빠르게"
+                    className="rounded p-1 text-slate-500 hover:bg-slate-100 disabled:opacity-30"><Plus className="h-4 w-4"/></Button>
         </div>
     );
 }

@@ -6,6 +6,7 @@ import {useAttachments, useDeleteAttachment, useUploadAttachment,} from "@/hooks
 import {formatFileSize, getDownloadUrl} from "@/lib/api/attachments";
 import {Download, File, FileImage, FileText, Paperclip, Trash2, Upload,} from "lucide-react";
 import {useCallback, useRef, useState} from "react";
+import Button from "@/components/ui/Button";
 
 // 업로드는 768KB 조각, 다운로드는 4MB Range 로 나눠 UMD 상한(요청 1MB·응답 5MB)을 넘긴다. 백엔드 상한과 같음
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
@@ -116,13 +117,13 @@ export function AttachmentSection({issueId}: { issueId: string }) {
             </span>
                     )}
                 </h3>
-                <button
+                <Button variant="unstyled"
                     onClick={() => fileInputRef.current?.click()}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50 transition-colors"
                 >
                     <Upload className="h-3.5 w-3.5"/>
                     파일 추가
-                </button>
+                </Button>
             </div>
 
             {/* Drop zone */}
@@ -229,13 +230,13 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                                 >
                                     <Download className="h-3.5 w-3.5"/>
                                 </a>
-                                <button
+                                <Button variant="unstyled"
                                     onClick={() => setDeleteTargetId(att.id)}
                                     className="flex items-center justify-center h-7 w-7 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                                     title="삭제"
                                 >
                                     <Trash2 className="h-3.5 w-3.5"/>
-                                </button>
+                                </Button>
                             </div>
                         </li>
                     ))}
@@ -263,19 +264,19 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                             이 파일을 삭제하시겠습니까? 되돌릴 수 없습니다.
                         </p>
                         <div className="flex gap-3">
-                            <button
+                            <Button variant="unstyled"
                                 onClick={() => setDeleteTargetId(null)}
                                 className="flex-1 h-9 rounded-lg border border-slate-200 text-sm hover:bg-slate-50"
                             >
                                 취소
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 onClick={() => handleDelete(deleteTargetId)}
                                 disabled={isRemoving}
-                                className="flex-1 h-9 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-60"
+                                variant="danger" className="flex-1 h-9"
                             >
                                 {isRemoving ? "삭제 중..." : "삭제"}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
@@ -294,12 +295,12 @@ export function AttachmentSection({issueId}: { issueId: string }) {
                         </li>
                     ))}
                 </ul>
-                <button
+                <Button variant="unstyled"
                     onClick={() => setOversized([])}
                     className="h-9 w-full rounded bg-cira-brand text-sm font-semibold text-white hover:opacity-90"
                 >
                     확인
-                </button>
+                </Button>
             </Dialog>
 
             {ToastComponent}

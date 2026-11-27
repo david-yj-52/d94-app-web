@@ -1,4 +1,5 @@
 import MobileRowCards from "./MobileRowCards";
+import Button from "@/components/ui/Button";
 
 export type Platform = {
     id: string;
@@ -38,19 +39,19 @@ export default function PlatformTable({
                         onChange={(e) => onChangeSearch(e.target.value)}
                         className="h-8 w-32 rounded border border-gray-300 px-2 text-sm"
                     />
-                    <button
+                    <Button variant="unstyled"
                         type="button"
                         className="h-8 rounded bg-d94-brand px-3 text-xs font-medium text-white hover:bg-d94-brand-hover"
                     >
                         검색
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="unstyled"
                         type="button"
                         onClick={onClickAdd}
                         className="h-8 rounded border border-gray-300 px-3 text-xs font-medium text-gray-800 hover:bg-gray-50"
                     >
                         신규
-                    </button>
+                    </Button>
                 </div>
             </header>
 

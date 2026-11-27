@@ -1,6 +1,7 @@
 "use client";
 
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 type Props = {
     open: boolean;
@@ -80,19 +81,19 @@ export default function PlatformAddPopup({
                 </div>
 
                 <div className="mt-6 flex justify-end gap-2 text-sm">
-                    <button
+                    <Button variant="unstyled"
                         type="button"
                         onClick={onClose}
                         className="rounded border border-gray-300 px-4 py-1 text-gray-700 hover:bg-gray-50"
                     >
                         취소
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="unstyled"
                         type="submit"
                         className="rounded bg-d94-brand px-4 py-1 font-medium text-white hover:bg-d94-brand-hover"
                     >
                         저장
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

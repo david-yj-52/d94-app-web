@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import {stripFrontmatter, titleFromHref, toMarkdownLinks} from "@/lib/docs/markdown";
 import CodeBlock from "./CodeBlock";
 import MermaidDiagram from "./MermaidDiagram";
+import Button from "@/components/ui/Button";
 
 interface NoteMarkdownProps {
     content: string;
@@ -44,11 +45,11 @@ export default function NoteMarkdown({content, existing, onOpenTitle}: NoteMarkd
             const title = titleFromHref(href);
             if (title === null) return <a href={href} target="_blank" rel="noreferrer" className="text-d94-brand underline">{children}</a>;
             return (
-                <button type="button" onClick={() => onOpenTitle(title)}
+                <Button variant="unstyled" type="button" onClick={() => onOpenTitle(title)}
                         className={existing.has(title) ? "text-d94-brand hover:underline" : "text-slate-400 hover:underline"}
                         title={existing.has(title) ? title : `${title} (없는 노트 — 클릭하면 만듭니다)`}>
                     {children}
-                </button>
+                </Button>
             );
         },
     };

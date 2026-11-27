@@ -4,6 +4,7 @@ import {useState} from "react";
 import type {VersionResponse, VersionStatus} from "@/types/version";
 import ReleaseNotesModal from "./ReleaseNotesModal";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 
 const STATUS_LABEL: Record<VersionStatus, string> = {
     PLANNING: "계획 중",
@@ -69,47 +70,47 @@ export default function VersionCard({
 
                     <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                         {version.status === "ACTIVE" && (
-                            <button
+                            <Button variant="unstyled"
                                 onClick={() => onRelease(version.id)}
                                 disabled={isActioning}
                                 className="h-8 px-3 rounded-lg bg-green-600 text-white text-xs font-semibold hover:bg-green-700 disabled:opacity-60"
                             >
                                 릴리즈
-                            </button>
+                            </Button>
                         )}
                         {version.status === "RELEASED" && (
-                            <button
+                            <Button
                                 onClick={() => setShowReleaseNotes(true)}
-                                className="h-8 px-3 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover"
+                                size="sm"
                             >
                                 릴리즈 노트
-                            </button>
+                            </Button>
                         )}
                         {version.status !== "ARCHIVED" && version.status !== "RELEASED" && (
-                            <button
+                            <Button
                                 onClick={() => onEdit(version)}
-                                className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
+                                variant="secondary" size="sm"
                             >
                                 수정
-                            </button>
+                            </Button>
                         )}
                         {version.status === "RELEASED" && (
-                            <button
+                            <Button
                                 onClick={() => onArchive(version.id)}
                                 disabled={isActioning}
-                                className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50 disabled:opacity-60"
+                                variant="secondary" size="sm"
                             >
                                 아카이브
-                            </button>
+                            </Button>
                         )}
                         {version.status !== "RELEASED" && version.status !== "ARCHIVED" && (
-                            <button
+                            <Button variant="unstyled"
                                 onClick={() => onDelete(version.id)}
                                 disabled={isActioning}
                                 className="h-8 px-3 rounded-lg border border-red-200 text-xs text-red-500 hover:bg-red-50 disabled:opacity-60"
                             >
                                 삭제
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>

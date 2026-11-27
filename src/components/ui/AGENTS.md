@@ -66,7 +66,7 @@ logoFontClass(id: string | undefined): string                   // 모르는 id�
 
 ### Button — `import Button from "@/components/ui/Button"`
 ```ts
-ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "secondary" | "ghost" | "danger"; size?: "md" | "sm" }  // 기본 primary·md
+ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "secondary" | "ghost" | "danger" | "link" | "unstyled"; size?: "md" | "sm" | "icon" | "none" }  // 기본 primary·md (link·unstyled 는 none)
 ```
 ```tsx
 <div className="flex gap-3 pt-2">
@@ -74,7 +74,10 @@ ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "secondary" | 
     <Button type="submit" className="flex-1" disabled={isPending}>저장</Button>
 </div>
 ```
-- md = `h-10 px-4 text-sm`, sm = `h-8 px-3 text-xs`, `rounded-lg`, `disabled:opacity-60`. primary `bg-d94-brand`, secondary 흰 바탕 + `border-slate-200`, ghost 테두리 없음, danger `bg-red-500`.
+- md = `h-10 px-4 text-sm`, sm = `h-8 px-3 text-xs`, icon = `h-8 w-8 p-0`, `rounded-lg`, `disabled:opacity-60`. primary `bg-d94-brand`, secondary 흰 바탕 + `border-slate-200`, ghost 테두리 없음, danger `bg-red-500`, link `text-d94-brand hover:underline`(높이·여백 없음).
+- `unstyled`: 기본 모양 없이 `className` 만 씁니다 — 탭·목록 줄·칩·아이콘·토글처럼 모양이 제각각인 버튼용. 모든 variant 에 키보드 포커스 링(`focus-visible:ring-2 ring-d94-brand`)이 공통으로 붙습니다.
+- **앱의 모든 `<button>` 은 `Button` 입니다**(2026-11-26 기준 `components/ui` 밖 `<button>` 0개). 새 버튼도 `Button` 을 쓰고, 표준 모양이면 variant, 특수 모양이면 `variant="unstyled"` + className.
+- DropdownMenu `trigger` 에도 `Button` 을 넣을 수 있습니다(React 19 라 Radix `asChild` 의 ref 가 그대로 전달됨).
 - `className` 은 `tailwind-merge` 로 합쳐져 뒤에 준 값이 이깁니다(`flex-1`, `w-full`, `px-5` 등).
 - `type` 기본값을 바꾸지 않습니다(네이티브와 같음: 폼 안에서는 submit). 폼 안의 취소·보조 버튼은 `type="button"` 을 주세요.
 
@@ -89,7 +92,7 @@ Input(InputHTMLAttributes<HTMLInputElement>)  Select(SelectHTMLAttributes<HTMLSe
 ```
 - 공통 모양 `w-full rounded-lg border-slate-200 bg-slate-50 px-3 text-sm focus:ring-2 focus:ring-d94-brand`, Input·Select `h-10`, Textarea `py-2 resize-none`. `className` 은 tailwind-merge 로 덮어씀.
 - React 19 라 `ref` 가 일반 prop → `{...register()}` 를 그대로 펼치면 됩니다.
-- 2026-11-26 표준 마크업과 같은 버튼 39개·입력 31개(25개 파일)를 이 컴포넌트로 교체했습니다. 모양이 다른 버튼(아이콘·링크형·배지형 등)은 그대로 둡니다.
+- 2026-11-26 표준 마크업과 같은 입력 31개를 이 컴포넌트로 교체했습니다(버튼 이력은 Button 카드).
 
 ### FormField — `import FormField from "@/components/ui/FormField"`
 ```ts
@@ -187,7 +190,7 @@ return (<div>... {ConfirmComponent}</div>);
 | 예정 primitive | 대체 대상 | 근거 |
 |---|---|---|
 | `Modal` (`open`, `onClose`, `title`, `size`, ESC 닫기) | 모달 overlay 21곳 | 위 모달 마크업 반복 — **새 모달은 `ui/Dialog` 를 쓰세요**(승격 완료) |
-| `Button` (`variant: primary/secondary/ghost/danger`, `size: md/sm`) | `<button>` 171곳 | ✅ **완료**(2026-11-26, 표준형 39곳 교체). `loading` 은 필요해질 때 |
+| `Button` (`variant: primary/secondary/ghost/danger/link/unstyled`, `size: md/sm/icon/none`) | `<button>` 전부 | ✅ **완료**(2026-11-26 1차 표준형 39곳, 2차 나머지 307곳 — `<button>` 0개). `loading` 은 필요해질 때 |
 | `Input` / `Textarea` / `Select` / `FormField` | 입력 94곳 | ✅ **완료** — Input·Select·Textarea(표준형 31곳), FormField(라벨+입력+오류 36곳) |
 | `ConfirmDialog` | 브라우저 `confirm()` 15곳 + 손 마크업 삭제 다이얼로그 | ✅ **완료**(2026-11-26 `useConfirm` — `confirm()` 15곳, 손 마크업 삭제 확인 5곳: Task·댓글·컬럼·보드·지표) |
 | `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | ✅ **완료**(2026-11-26, 23곳) |

@@ -3,12 +3,13 @@
 import {addTodos} from "@/app/actions";
 import {useRef} from "react";
 import {useFormStatus} from "react-dom";
+import Button from "@/components/ui/Button";
 
 function SubmitButton() {
     const {pending} = useFormStatus();
 
     return (
-        <button
+        <Button variant="unstyled"
             type="submit"
             disabled={pending}
             className="bg-d94-brand text-white px-6 py-3 rounded-xl font-semibold hover:bg-d94-brand-hover transition-colors
@@ -36,7 +37,7 @@ function SubmitButton() {
             ) : (
                 "Add"
             )}
-        </button>
+        </Button>
     );
 }
 

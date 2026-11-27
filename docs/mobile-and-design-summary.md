@@ -26,9 +26,11 @@
 
 | 12 | `07bd49f` feat | Badge·EmptyState | `ui/Badge`(알약, 색은 className) 23곳 · `ui/EmptyState`(md·sm·action) 21곳 교체 |
 
-| 13 | (이번) feat | DropdownMenu | `cira/ui/Menu` → `ui/DropdownMenu` 승격(ADR 0006) · KanbanBoard 보드 메뉴·Docs 폴더 메뉴의 손 마크업 드롭다운 교체 · Docs 폴더 `···` 모바일 상시 표시 |
+| 13 | `7e9b5aa` feat | DropdownMenu | `cira/ui/Menu` → `ui/DropdownMenu` 승격(ADR 0006) · KanbanBoard 보드 메뉴·Docs 폴더 메뉴의 손 마크업 드롭다운 교체 · Docs 폴더 `···` 모바일 상시 표시 |
 
-**남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로.
+| 14 | (이번) refactor | 남은 버튼 전부 Button | `Button` 에 `link`·`unstyled` variant, `icon`·`none` size, 공통 키보드 포커스 링 추가 · 남은 `<button>` 307곳(97개 파일) 교체 — 표준형 69·링크형 7·`unstyled` 231(모양 그대로) → `components/ui` 밖 `<button>` 0개 |
+
+**남은 후보(미적용):** `unstyled` 로 둔 버튼 중 반복되는 모양(탭·아이콘 버튼 등)을 찾아 variant 로 묶기.
 
 ## 1. 모바일 환경 문제점 분석
 

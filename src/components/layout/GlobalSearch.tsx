@@ -5,6 +5,7 @@ import type {IssueResponse} from "@/types/issue";
 import {Search, X} from "lucide-react";
 import {useRouter} from "next/navigation";
 import {useEffect, useRef, useState} from "react";
+import Button from "@/components/ui/Button";
 
 export default function GlobalSearch() {
     const router = useRouter();
@@ -124,7 +125,7 @@ export default function GlobalSearch() {
                     ⌘K
                 </kbd>
                 {open && query && (
-                    <button
+                    <Button variant="unstyled"
                         onClick={(e) => {
                             e.stopPropagation();
                             setQuery("");
@@ -133,7 +134,7 @@ export default function GlobalSearch() {
                         }}
                     >
                         <X className="h-3.5 w-3.5 text-gray-400 hover:text-gray-600"/>
-                    </button>
+                    </Button>
                 )}
             </div>
 
@@ -149,7 +150,7 @@ export default function GlobalSearch() {
                             <ul className="divide-y divide-gray-100">
                                 {results.map((issue) => (
                                     <li key={issue.id}>
-                                        <button
+                                        <Button variant="unstyled"
                                             className="flex w-full flex-col gap-0.5 px-4 py-2.5 text-left hover:bg-gray-50"
                                             onClick={() => goToIssue(issue)}
                                         >
@@ -167,18 +168,18 @@ export default function GlobalSearch() {
                                             <span className="text-sm text-gray-800 line-clamp-1">
                         {issue.title}
                       </span>
-                                        </button>
+                                        </Button>
                                     </li>
                                 ))}
                             </ul>
                             <div className="border-t border-gray-100">
-                                <button
+                                <Button variant="unstyled"
                                     className="flex w-full items-center justify-center px-4 py-2.5 text-sm text-d94-brand hover:bg-d94-brand-soft"
                                     onClick={goToFullResults}
                                 >
                                     <Search className="mr-1.5 h-3.5 w-3.5"/>
                                     &quot;{query}&quot; 전체 결과 보기
-                                </button>
+                                </Button>
                             </div>
                         </>
                     )}

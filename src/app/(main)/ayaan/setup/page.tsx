@@ -4,7 +4,8 @@ import {useMutation, useQuery} from "@tanstack/react-query";
 import {useToast} from "@/components/ui/Toast";
 import {getPlugins, getSetupCheck, sendTestNotify, syncPlugins} from "@/lib/api/ayaan";
 import {SETUP_STEPS} from "../constant/setupSteps";
-import {btnPrimary, btnSecondary} from "../format";
+
+import Button from "@/components/ui/Button";
 
 export default function AyaanSetupPage() {
     const {show, ToastComponent} = useToast();
@@ -30,8 +31,8 @@ export default function AyaanSetupPage() {
             <div className="flex items-end justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">Ayaan 셋업</h1>
                 <div className="flex gap-2">
-                    <button className={btnSecondary} disabled={check.isFetching} onClick={() => check.refetch()}>다시 점검</button>
-                    <button className={btnPrimary} disabled={notify.isPending} onClick={() => notify.mutate()}>테스트 알림</button>
+                    <Button variant="secondary" disabled={check.isFetching} onClick={() => check.refetch()}>다시 점검</Button>
+                    <Button  disabled={notify.isPending} onClick={() => notify.mutate()}>테스트 알림</Button>
                 </div>
             </div>
             {SETUP_STEPS.map((s) => {
@@ -47,8 +48,8 @@ export default function AyaanSetupPage() {
                         {s.commands.map((c, i) => (
                             <div key={i} className="relative mt-2">
                                 <pre className="overflow-auto rounded-lg bg-slate-900 p-3 text-xs text-slate-100">{c}</pre>
-                                <button className="absolute right-2 top-2 rounded bg-slate-700 px-2 py-1 text-xs text-white hover:bg-slate-600"
-                                        onClick={() => copy(c)}>복사</button>
+                                <Button variant="unstyled" className="absolute right-2 top-2 rounded bg-slate-700 px-2 py-1 text-xs text-white hover:bg-slate-600"
+                                        onClick={() => copy(c)}>복사</Button>
                             </div>
                         ))}
                         <p className="mt-2 text-sm text-slate-600"><b>자동 점검:</b> {s.check}</p>
@@ -67,9 +68,9 @@ export default function AyaanSetupPage() {
             <section className="rounded-2xl border border-slate-200 bg-white p-5">
                 <h2 className="mb-2 flex items-center justify-between font-bold text-slate-900">
                     Claude 플러그인
-                    <button className={btnPrimary} disabled={sync.isPending} onClick={() => sync.mutate()}>
+                    <Button  disabled={sync.isPending} onClick={() => sync.mutate()}>
                         {sync.isPending ? "설치 중…" : "플러그인 설치"}
-                    </button>
+                    </Button>
                 </h2>
                 <p className="text-sm text-slate-600">기준정보 <code>CLAUDE_PLUGINS</code> 목록을 서버 Claude에 설치합니다. ayaan 시작 시에도 자동으로 실행됩니다.</p>
                 {sync.data && (

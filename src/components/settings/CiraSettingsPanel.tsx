@@ -30,6 +30,7 @@ import {ArrowDown, ArrowUp, Lock, Plus, X} from "lucide-react";
 import {useState} from "react";
 import CustomFieldModal from "./CustomFieldModal";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 const TYPE_NAME_MAX = 30;
 const inputCls = "w-full h-10 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand disabled:opacity-60";
@@ -49,10 +50,10 @@ export default function CiraSettingsPanel({readOnly}: { readOnly: boolean }) {
         <section className="rounded-xl border border-slate-200 bg-white p-6">
             <div role="tablist" className="mb-4 flex gap-1 border-b border-slate-100">
                 {([["types", "프로젝트 타입"], ["fields", "사용자 정의 필드"]] as const).map(([id, label]) => (
-                    <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
+                    <Button variant="unstyled" key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
                             className={`-mb-px h-10 border-b-2 px-3 text-sm ${tab === id ? "border-d94-brand font-semibold text-blue-700" : "border-transparent text-slate-500"}`}>
                         {label}
-                    </button>
+                    </Button>
                 ))}
             </div>
             {readOnly && <p className="mb-4 rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">관리자만 변경할 수 있습니다.</p>}
@@ -112,10 +113,10 @@ function TypesTab({types, catalog, readOnly, show}: {
                 <ul className="mb-3 space-y-1">
                     {types.map((t) => (
                         <li key={t.id}>
-                            <button onClick={() => setSelectedId(t.id)}
+                            <Button variant="unstyled" onClick={() => setSelectedId(t.id)}
                                     className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3 text-left text-sm ${t.id === selected?.id ? "bg-d94-brand-soft font-semibold text-d94-brand" : "text-slate-700 hover:bg-slate-50"}`}>
                                 {t.typeNm}<span className="text-xs text-slate-400">{t.projectCount}</span>
-                            </button>
+                            </Button>
                         </li>
                     ))}
                 </ul>
@@ -123,7 +124,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                     <div className="flex gap-2">
                         <input aria-label="새 타입 이름" className={inputCls} value={draft} maxLength={TYPE_NAME_MAX}
                                placeholder="예: 영업" onChange={(e) => setDraft(e.target.value)}/>
-                        <button type="button" aria-label="타입 추가" disabled={!canAdd || create.isPending} className={btnCls}
+                        <Button variant="unstyled" type="button" aria-label="타입 추가" disabled={!canAdd || create.isPending} className={btnCls}
                                 onClick={() => create.mutate({typeNm: name}, {
                                     onSuccess: (t) => {
                                         setDraft("");
@@ -132,7 +133,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                                     onError: (e) => show(errMsg(e, "추가하지 못했습니다."), "error"),
                                 })}>
                             <Plus className="h-4 w-4"/>
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>
@@ -144,20 +145,20 @@ function TypesTab({types, catalog, readOnly, show}: {
                             <>
                                 <input aria-label="타입 이름" className={`${inputCls} max-w-xs`} value={rename} maxLength={TYPE_NAME_MAX}
                                        onChange={(e) => setRename(e.target.value)}/>
-                                <button type="button" className={btnCls} disabled={!rename.trim()}
+                                <Button variant="unstyled" type="button" className={btnCls} disabled={!rename.trim()}
                                         onClick={() => update.mutate({id: selected.id, data: {typeNm: rename.trim(), descr: selected.descr ?? undefined}}, {
                                             onSuccess: () => setRename(null),
                                             onError: (e) => show(errMsg(e, "저장하지 못했습니다."), "error"),
-                                        })}>저장</button>
-                                <button type="button" className={btnCls} onClick={() => setRename(null)}>취소</button>
+                                        })}>저장</Button>
+                                <Button variant="unstyled" type="button" className={btnCls} onClick={() => setRename(null)}>취소</Button>
                             </>
                         ) : (
                             <>
                                 <h3 className="flex-1 text-base font-semibold text-slate-900">{selected.typeNm}</h3>
                                 {!readOnly && (
                                     <>
-                                        <button type="button" className={btnCls} onClick={() => setRename(selected.typeNm)}>이름 변경</button>
-                                        <button type="button" className={btnCls} onClick={() => setConfirmDelete(true)}>삭제</button>
+                                        <Button variant="unstyled" type="button" className={btnCls} onClick={() => setRename(selected.typeNm)}>이름 변경</Button>
+                                        <Button variant="unstyled" type="button" className={btnCls} onClick={() => setConfirmDelete(true)}>삭제</Button>
                                     </>
                                 )}
                             </>
@@ -183,11 +184,11 @@ function TypesTab({types, catalog, readOnly, show}: {
                                                onChange={() => setFields(selected.fields.map((x) => x.fieldKey === tf.fieldKey ? {...x, defaultVisible: !x.defaultVisible} : x))}/>
                                         기본 표시
                                     </label>
-                                    <button type="button" aria-label={`${f?.name} 위로`} disabled={readOnly || i === 0} onClick={() => move(i, -1)} className={iconBtn}><ArrowUp className="h-4 w-4"/></button>
-                                    <button type="button" aria-label={`${f?.name} 아래로`} disabled={readOnly || i === selected.fields.length - 1} onClick={() => move(i, 1)} className={iconBtn}><ArrowDown className="h-4 w-4"/></button>
+                                    <Button variant="unstyled" type="button" aria-label={`${f?.name} 위로`} disabled={readOnly || i === 0} onClick={() => move(i, -1)} className={iconBtn}><ArrowUp className="h-4 w-4"/></Button>
+                                    <Button variant="unstyled" type="button" aria-label={`${f?.name} 아래로`} disabled={readOnly || i === selected.fields.length - 1} onClick={() => move(i, 1)} className={iconBtn}><ArrowDown className="h-4 w-4"/></Button>
                                     {!readOnly && (
-                                        <button type="button" aria-label={`${f?.name} 빼기`} className={iconBtn}
-                                                onClick={() => setFields(selected.fields.filter((x) => x.fieldKey !== tf.fieldKey))}><X className="h-4 w-4"/></button>
+                                        <Button variant="unstyled" type="button" aria-label={`${f?.name} 빼기`} className={iconBtn}
+                                                onClick={() => setFields(selected.fields.filter((x) => x.fieldKey !== tf.fieldKey))}><X className="h-4 w-4"/></Button>
                                     )}
                                 </li>
                             );
@@ -220,8 +221,8 @@ function TypesTab({types, catalog, readOnly, show}: {
                                 </span>
                                 {!readOnly && (
                                     <>
-                                        <button type="button" onClick={() => setEditingField(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
-                                        <button type="button" onClick={() => setDeletingField(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
+                                        <Button variant="unstyled" type="button" onClick={() => setEditingField(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</Button>
+                                        <Button variant="unstyled" type="button" onClick={() => setDeletingField(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</Button>
                                     </>
                                 )}
                             </li>
@@ -229,9 +230,9 @@ function TypesTab({types, catalog, readOnly, show}: {
                     </ul>
                     {!readOnly && (
                         <div className="flex flex-wrap gap-2">
-                            <button type="button" aria-label="이 타입에 새 필드" className={btnCls} onClick={() => setEditingField(null)}>
+                            <Button variant="unstyled" type="button" aria-label="이 타입에 새 필드" className={btnCls} onClick={() => setEditingField(null)}>
                                 <Plus className="h-4 w-4"/>새 필드
-                            </button>
+                            </Button>
                             <select aria-label="전역에서 가져오기" value="" disabled={importable.length === 0 || importField.isPending}
                                     onChange={(e) => e.target.value && importField.mutate({typeId: selected.id, sourceFieldId: e.target.value}, {
                                         onSuccess: (f) => show(`'${f.name}' 필드를 이 타입으로 가져왔습니다.`),
@@ -267,13 +268,13 @@ function TypesTab({types, catalog, readOnly, show}: {
                                 가져간 복사본은 남습니다.
                             </p>
                             <div className="flex gap-3">
-                                <button type="button" onClick={() => setDeletingField(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</button>
-                                <button type="button" disabled={deleteField.isPending}
+                                <Button variant="unstyled" type="button" onClick={() => setDeletingField(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</Button>
+                                <Button type="button" disabled={deleteField.isPending}
                                         onClick={() => deletingField && deleteField.mutate({typeId: selected.id, id: deletingField.fieldKey.slice(3)}, {
                                             onSuccess: () => setDeletingField(null),
                                             onError: (e) => show(errMsg(e, "삭제하지 못했습니다."), "error"),
                                         })}
-                                        className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60">삭제</button>
+                                        variant="danger" className="flex-1">삭제</Button>
                             </div>
                         </div>
                     </Dialog>
@@ -286,8 +287,8 @@ function TypesTab({types, catalog, readOnly, show}: {
                                     : `"${selected.typeNm}" 타입을 삭제합니다.`}
                             </p>
                             <div className="flex gap-3">
-                                <button type="button" onClick={() => setConfirmDelete(false)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</button>
-                                <button type="button" disabled={selected.projectCount > 0 || remove.isPending}
+                                <Button variant="unstyled" type="button" onClick={() => setConfirmDelete(false)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</Button>
+                                <Button type="button" disabled={selected.projectCount > 0 || remove.isPending}
                                         onClick={() => remove.mutate(selected.id, {
                                             onSuccess: () => {
                                                 setConfirmDelete(false);
@@ -295,7 +296,7 @@ function TypesTab({types, catalog, readOnly, show}: {
                                             },
                                             onError: (e) => show(errMsg(e, "삭제하지 못했습니다."), "error"),
                                         })}
-                                        className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60">삭제</button>
+                                        variant="danger" className="flex-1">삭제</Button>
                             </div>
                         </div>
                     </Dialog>
@@ -335,14 +336,14 @@ function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
                             : <span className="text-xs text-slate-400">복사본 {copies[f.fieldKey.slice(3)]}개</span>}
                         {!readOnly && (
                             <>
-                                <button type="button" onClick={() => setEditing(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
-                                <button type="button" onClick={() => setDeleting(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
+                                <Button variant="unstyled" type="button" onClick={() => setEditing(f)} className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</Button>
+                                <Button variant="unstyled" type="button" onClick={() => setDeleting(f)} className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</Button>
                             </>
                         )}
                     </li>
                 ))}
             </ul>
-            {!readOnly && <button type="button" className={btnCls} onClick={() => setEditing(null)}><Plus className="h-4 w-4"/>새 필드</button>}
+            {!readOnly && <Button variant="unstyled" type="button" className={btnCls} onClick={() => setEditing(null)}><Plus className="h-4 w-4"/>새 필드</Button>}
 
             {editing !== undefined && (
                 <CustomFieldModal
@@ -367,13 +368,13 @@ function GlobalFieldsTab({fields, copies, types, readOnly, show}: {
                         가져간 프로젝트·타입의 복사본{usage ? `(${usage.copies}개)` : ""}은 남습니다. 되돌릴 수 없습니다.
                     </p>
                     <div className="flex gap-3">
-                        <button type="button" onClick={() => setDeleting(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</button>
-                        <button type="button" disabled={remove.isPending}
+                        <Button variant="unstyled" type="button" onClick={() => setDeleting(null)} className="h-10 flex-1 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">취소</Button>
+                        <Button type="button" disabled={remove.isPending}
                                 onClick={() => deleting && remove.mutate(deleting.fieldKey.slice(3), {
                                     onSuccess: () => setDeleting(null),
                                     onError: (e) => show(errMsg(e, "삭제하지 못했습니다."), "error"),
                                 })}
-                                className="h-10 flex-1 rounded-lg bg-red-500 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60">삭제</button>
+                                variant="danger" className="flex-1">삭제</Button>
                     </div>
                 </div>
             </Dialog>

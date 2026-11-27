@@ -3,6 +3,7 @@
 import {useCqlAutocomplete, useCqlValidate} from "@/hooks/useCqlSearch";
 import {Play} from "lucide-react";
 import {KeyboardEvent, useCallback, useEffect, useRef, useState,} from "react";
+import Button from "@/components/ui/Button";
 
 interface CqlEditorProps {
     value: string;
@@ -213,7 +214,7 @@ export default function CqlEditor({
                         className="absolute left-0 top-full z-50 mt-0.5 max-h-48 w-72 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg"
                     >
                         {suggestions.map((s, i) => (
-                            <button
+                            <Button variant="unstyled"
                                 key={s}
                                 type="button"
                                 onMouseDown={(e) => {
@@ -225,7 +226,7 @@ export default function CqlEditor({
                                 }`}
                             >
                                 {s}
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 )}
@@ -258,7 +259,7 @@ export default function CqlEditor({
             </div>
 
             {/* Run button */}
-            <button
+            <Button variant="unstyled"
                 type="button"
                 onClick={onSearch}
                 disabled={!value.trim() || (!isValid && !!validateResult)}
@@ -266,7 +267,7 @@ export default function CqlEditor({
             >
                 <Play className="h-3.5 w-3.5"/>
                 검색 실행
-            </button>
+            </Button>
         </div>
     );
 }

@@ -8,6 +8,7 @@ import type {Priority} from "@/types/issue";
 import {ChevronLeft, ChevronRight, Filter, Save, Search, X,} from "lucide-react";
 import {useRouter, useSearchParams} from "next/navigation";
 import {Suspense, useCallback, useMemo, useState} from "react";
+import Button from "@/components/ui/Button";
 
 const PRIORITIES: { value: Priority; label: string }[] = [
     {value: "HIGHEST", label: "최상"},
@@ -65,9 +66,9 @@ function ActiveFilterTag({
         <span
             className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
       {label}
-            <button onClick={onRemove} aria-label={`${label} 필터 제거`} className="hover:text-blue-900">
+            <Button variant="unstyled" onClick={onRemove} aria-label={`${label} 필터 제거`} className="hover:text-blue-900">
         <X className="h-3 w-3"/>
-      </button>
+      </Button>
     </span>
     );
 }
@@ -94,19 +95,19 @@ function SaveFilterModal({
                     className="mb-4 w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                 />
                 <div className="flex justify-end gap-2">
-                    <button
+                    <Button variant="unstyled"
                         onClick={onClose}
                         className="h-9 rounded-lg border border-gray-200 px-4 text-sm text-gray-600 hover:bg-gray-50"
                     >
                         취소
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                         disabled={!name.trim()}
                         onClick={() => onSave(name.trim())}
-                        className="h-9 rounded-lg bg-d94-brand px-4 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-40"
+                        className="h-9 disabled:opacity-40"
                     >
                         저장
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -218,12 +219,12 @@ function SearchPageContent() {
                         className="h-10 w-full rounded-lg border border-gray-200 bg-white pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand"
                     />
                 </div>
-                <button
+                <Button
                     onClick={() => push({q: qInput, page: 0})}
-                    className="h-10 rounded-lg bg-d94-brand px-5 text-sm font-semibold text-white hover:bg-d94-brand-hover"
+                    className="px-5"
                 >
                     검색
-                </button>
+                </Button>
             </div>
 
             {/* Active filters + controls */}
@@ -233,7 +234,7 @@ function SearchPageContent() {
                         <ActiveFilterTag key={t.label} label={t.label} onRemove={t.remove}/>
                     ))}
                     {hasFilters && (
-                        <button
+                        <Button variant="unstyled"
                             onClick={() => {
                                 router.push(`/cira/search?q=${encodeURIComponent(params.q)}`);
                                 setQInput(params.q);
@@ -241,16 +242,16 @@ function SearchPageContent() {
                             className="text-xs text-gray-500 hover:text-gray-700 underline"
                         >
                             필터 초기화
-                        </button>
+                        </Button>
                     )}
                     {params.q && (
-                        <button
+                        <Button variant="unstyled"
                             onClick={() => setShowSaveModal(true)}
                             className="ml-auto flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50"
                         >
                             <Save className="h-3.5 w-3.5"/>
                             필터 저장
-                        </button>
+                        </Button>
                     )}
                 </div>
             )}
@@ -267,21 +268,21 @@ function SearchPageContent() {
                             <ul className="space-y-1">
                                 {savedFilters.map((f) => (
                                     <li key={f.id} className="flex items-center gap-1">
-                                        <button
+                                        <Button variant="unstyled"
                                             onClick={() => applySavedFilter(f)}
                                             className="min-w-0 flex-1 truncate rounded-lg px-2 py-1.5 text-left text-sm text-gray-700 hover:bg-gray-100"
                                         >
                                             <Filter className="mr-1.5 inline h-3.5 w-3.5 text-gray-400"/>
                                             {f.name}
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button variant="unstyled"
                                             onClick={() => deleteFilterMut.mutate(f.id)}
                                             disabled={deleteFilterMut.isPending}
                                             className="shrink-0 rounded p-0.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:opacity-40"
                                             title="필터 삭제"
                                         >
                                             <X className="h-3.5 w-3.5"/>
-                                        </button>
+                                        </Button>
                                     </li>
                                 ))}
                             </ul>
@@ -473,23 +474,23 @@ function SearchPageContent() {
                     {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="mt-4 flex items-center justify-center gap-2">
-                            <button
+                            <Button variant="unstyled"
                                 disabled={(params.page ?? 0) === 0}
                                 onClick={() => push({page: (params.page ?? 0) - 1})}
                                 className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-40"
                             >
                                 <ChevronLeft className="h-4 w-4"/>
-                            </button>
+                            </Button>
                             <span className="text-sm text-gray-600">
                 {(params.page ?? 0) + 1} / {totalPages}
               </span>
-                            <button
+                            <Button variant="unstyled"
                                 disabled={(params.page ?? 0) >= totalPages - 1}
                                 onClick={() => push({page: (params.page ?? 0) + 1})}
                                 className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-40"
                             >
                                 <ChevronRight className="h-4 w-4"/>
-                            </button>
+                            </Button>
                         </div>
                     )}
                 </div>

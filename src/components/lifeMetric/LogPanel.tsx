@@ -68,8 +68,8 @@ export default function LogPanel({metric, logs, onAdd, onDelete, isPending}: {
                             <code className="w-28 shrink-0 truncate text-slate-500">{l.inputKey}</code>
                             <span className="w-24 shrink-0 text-right font-semibold tabular-nums text-slate-900">{l.value.toLocaleString("ko-KR")}</span>
                             <span className="min-w-0 flex-1 truncate text-slate-600">{l.note}</span>
-                            <button type="button" aria-label={`${l.inputKey} 기록 삭제`} onClick={() => onDelete(l.id)}
-                                    className="text-slate-400 hover:text-red-500">✕</button>
+                            <Button variant="unstyled" type="button" aria-label={`${l.inputKey} 기록 삭제`} onClick={() => onDelete(l.id)}
+                                    className="text-slate-400 hover:text-red-500">✕</Button>
                         </li>
                     ))}
                 </ul>

@@ -5,6 +5,7 @@ import {Upload} from "lucide-react";
 import {useUploadStudyDocument} from "@/hooks/useStudy";
 import {errorMessage} from "@/lib/study/colors";
 import type {StudyDocument} from "@/types/study";
+import Button from "@/components/ui/Button";
 
 interface Props {
     onUploaded: (doc: StudyDocument) => void;
@@ -55,11 +56,11 @@ export default function UploadDropzone({onUploaded, onError}: Props) {
                     </div>
                 </div>
             ) : (
-                <button type="button" onClick={() => inputRef.current?.click()}
+                <Button variant="unstyled" type="button" onClick={() => inputRef.current?.click()}
                         className="inline-flex flex-col items-center gap-2 text-sm text-slate-600 hover:text-indigo-600">
                     <Upload className="h-6 w-6"/>
                     <span><b>PDF를 끌어놓거나 클릭</b>해서 올리세요 (최대 50MB, 목차가 있는 텍스트 PDF)</span>
-                </button>
+                </Button>
             )}
         </div>
     );

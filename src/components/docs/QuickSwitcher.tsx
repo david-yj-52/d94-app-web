@@ -2,6 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {useNoteTitles} from "@/hooks/useDocs";
+import Button from "@/components/ui/Button";
 
 interface QuickSwitcherProps {
     onOpenTitle: (title: string) => void;
@@ -38,10 +39,10 @@ export default function QuickSwitcher({onOpenTitle, onClose}: QuickSwitcherProps
                 <ul className="mt-2 max-h-80 overflow-y-auto">
                     {options.map((t, i) => (
                         <li key={t}>
-                            <button type="button" onMouseEnter={() => setCursor(i)} onClick={() => pick(i)}
+                            <Button variant="unstyled" type="button" onMouseEnter={() => setCursor(i)} onClick={() => pick(i)}
                                     className={`w-full rounded-lg px-3 py-2 text-left text-sm ${i === cursor ? "bg-d94-brand-soft text-d94-brand" : "text-slate-700"}`}>
                                 {t}
-                            </button>
+                            </Button>
                         </li>
                     ))}
                 </ul>

@@ -21,6 +21,7 @@ import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {use, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Button from "@/components/ui/Button";
 
 const messageOf = (e: unknown) => (isAxiosError(e) ? e.response?.data?.message ?? e.message : String(e));
 
@@ -54,12 +55,12 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
                         <h1 className="text-2xl font-bold text-slate-900">{metric.name}</h1>
                         <code className="text-sm text-slate-400">@{metric.code}</code>
                     </div>
-                    <button type="button" disabled={remove.isPending} onClick={async () => {
+                    <Button variant="unstyled" type="button" disabled={remove.isPending} onClick={async () => {
                         if (!(await confirm(`‘${metric.name}’과 기준값·기록이 모두 지워집니다. @${metric.code} 를 참조하던 지표는 계산할 수 없게 됩니다.`,
                             {title: "지표 삭제", confirmLabel: "삭제", danger: true}))) return;
                         remove.mutate(metric.id, {onSuccess: () => router.push("/life-metric"), onError});
                     }}
-                            className="h-8 rounded-lg border border-slate-200 px-3 text-sm text-red-500 hover:bg-red-50 disabled:opacity-50">삭제</button>
+                            className="h-8 rounded-lg border border-slate-200 px-3 text-sm text-red-500 hover:bg-red-50 disabled:opacity-50">삭제</Button>
                 </div>
                 {metric.error ? <p className="mt-4 text-amber-600">{metric.error}</p> : (
                     <p className="mt-4 text-4xl font-bold tabular-nums text-slate-900">
@@ -70,17 +71,17 @@ export default function LifeMetricDetailPage({params}: { params: Promise<{ metri
                     {formula == null ? (
                         <div className="flex items-center gap-3">
                             <code className="min-w-0 flex-1 truncate rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-700">{metric.formula}</code>
-                            <button type="button" onClick={() => setFormula(metric.formula)} className="text-sm text-d94-brand hover:underline">수식 편집</button>
+                            <Button type="button" onClick={() => setFormula(metric.formula)} variant="link" className="text-sm">수식 편집</Button>
                         </div>
                     ) : (
                         <div className="space-y-2">
                             <FormulaEditor value={formula} onChange={setFormula} codes={metrics.map((m) => m.code).filter((c) => c !== metric.code)}/>
                             <div className="flex gap-2">
-                                <button type="button" disabled={update.isPending}
+                                <Button type="button" disabled={update.isPending}
                                         onClick={() => update.mutate({formula}, {onSuccess: () => setFormula(null), onError})}
-                                        className="h-8 rounded-lg bg-d94-brand px-3 text-sm font-semibold text-white hover:bg-d94-brand-hover disabled:opacity-60">저장</button>
-                                <button type="button" onClick={() => setFormula(null)}
-                                        className="h-8 rounded-lg border border-slate-200 px-3 text-sm text-slate-600 hover:bg-slate-50">취소</button>
+                                        className="h-8 px-3">저장</Button>
+                                <Button type="button" onClick={() => setFormula(null)}
+                                        variant="secondary" className="h-8 px-3">취소</Button>
                             </div>
                         </div>
                     )}

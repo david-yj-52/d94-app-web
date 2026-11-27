@@ -3,6 +3,7 @@
 import {DOT_CLASS} from "@/lib/study/colors";
 import type {AnnotationListItem, NoteLocation} from "@/types/study";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 interface Props {
     items: AnnotationListItem[];
@@ -24,7 +25,7 @@ export default function NoteList({items, onOpen}: Props) {
                     <ul className="space-y-2">
                         {list.map((a) => (
                             <li key={a.id}>
-                                <button type="button" onClick={() => onOpen(a.location)}
+                                <Button variant="unstyled" type="button" onClick={() => onOpen(a.location)}
                                         className="w-full rounded-xl border border-slate-200 bg-white p-4 text-left hover:border-indigo-300 hover:shadow-sm">
                                     <p className="mb-1 flex items-center gap-2 text-xs text-slate-500">
                                         <span className={`h-2.5 w-2.5 rounded-full ${DOT_CLASS[a.color]}`}/>
@@ -33,7 +34,7 @@ export default function NoteList({items, onOpen}: Props) {
                                     </p>
                                     <p className="line-clamp-3 border-l-4 border-slate-200 pl-3 text-sm italic text-slate-600">{a.quote}</p>
                                     {a.note && <p className="mt-2 whitespace-pre-line text-sm text-slate-900">{a.note}</p>}
-                                </button>
+                                </Button>
                             </li>
                         ))}
                     </ul>

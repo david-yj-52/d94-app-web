@@ -5,6 +5,7 @@ import {FileText, Loader2, RotateCw, Trash2} from "lucide-react";
 import type {StudyDocument} from "@/types/study";
 import Badge from "@/components/ui/Badge";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 interface Props {
     documents: StudyDocument[];
@@ -47,15 +48,15 @@ export default function DocumentList({documents, onDelete, onReparse}: Props) {
                             {d.status === "PARSING" && <Loader2 className="h-3 w-3 animate-spin"/>}
                             {s.label}
                         </Badge>
-                        <button type="button" aria-label={`${d.title} 다시 분석`} title="원본 PDF로 다시 분석"
+                        <Button variant="unstyled" type="button" aria-label={`${d.title} 다시 분석`} title="원본 PDF로 다시 분석"
                                 disabled={d.status === "PARSING"} onClick={() => onReparse(d)}
                                 className="rounded p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-40">
                             <RotateCw className="h-4 w-4"/>
-                        </button>
-                        <button type="button" aria-label={`${d.title} 삭제`} onClick={() => onDelete(d)}
+                        </Button>
+                        <Button variant="unstyled" type="button" aria-label={`${d.title} 삭제`} onClick={() => onDelete(d)}
                                 className="rounded p-2 text-slate-400 hover:bg-red-50 hover:text-red-600">
                             <Trash2 className="h-4 w-4"/>
-                        </button>
+                        </Button>
                     </li>
                 );
             })}

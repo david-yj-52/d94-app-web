@@ -55,7 +55,7 @@
 | AuthCheck / LoginButton | `AuthCheck`, `LoginButton` | 초기 인증 데모 | — | ⛔ |
 | StatusLozenge, IssueTypeIcon, PriorityIcon, Avatar | `cira/ui/Badges` | CIRA 상태 배지·유형·우선순위 아이콘·아바타 | CIRA 셸·화면 | ✅ |
 | PageHeader | `cira/ui/PageHeader` | CIRA 화면 머리(경로·제목·버튼) | CIRA 화면 | ✅ |
-| Button | `ui/Button` | 공통 버튼 (primary·secondary·ghost·danger, md·sm) | 25개 파일(모달·폼·설정) | 🔁 |
+| Button | `ui/Button` | 공통 버튼 (primary·secondary·ghost·danger·link·unstyled, md·sm·icon) — 앱의 모든 버튼 | 앱 전체(약 120개 파일) | 🔁 |
 | Input / Select / Textarea | `ui/Input` | 공통 입력 필드 (react-hook-form register 그대로) | 모달·폼 | 🔁 |
 | FormField | `ui/FormField` | 라벨+입력 1개+오류 묶음 (`<label>` 로 연결) | 12개 파일(모달·폼) | 🔁 |
 | Badge | `ui/Badge` | 상태·종류 알약 배지 (색은 className) | CIRA 스프린트·대시보드·설정·카드, ayaan, docs, study 등 | 🔁 |

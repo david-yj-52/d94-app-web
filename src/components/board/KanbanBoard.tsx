@@ -182,19 +182,19 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <button
+                    <Button
                         onClick={() => setShowAddColumn(true)}
-                        className="h-8 px-3 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover transition-colors"
+                        size="sm"
                     >
                         + 컬럼 추가
-                    </button>
+                    </Button>
 
                     <DropdownMenu
                         trigger={
-                            <button type="button" aria-label="보드 메뉴"
+                            <Button variant="unstyled" type="button" aria-label="보드 메뉴"
                                     className="h-8 w-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 text-sm">
                                 ···
-                            </button>
+                            </Button>
                         }
                         items={[{label: "보드 삭제", onSelect: () => void handleDeleteBoard(), danger: true}]}
                     />
@@ -211,7 +211,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                         aria-label="보드 검색"
                         className="h-9 w-44 rounded-md border border-slate-200 bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
-                    <button
+                    <Button variant="unstyled"
                         onClick={() => setMineOnly((v) => !v)}
                         aria-pressed={mineOnly}
                         className={`h-9 rounded-md border px-3 text-sm transition-colors ${
@@ -219,7 +219,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                         }`}
                     >
                         내 Task만
-                    </button>
+                    </Button>
                 </div>
             )}
 
@@ -228,12 +228,12 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                 <div className="flex flex-col items-center justify-center py-24 text-slate-400">
                     <p className="text-base font-medium mb-1">컬럼이 없습니다.</p>
                     <p className="text-sm mb-4">컬럼을 추가해서 보드를 구성하세요.</p>
-                    <button
+                    <Button
                         onClick={() => setShowAddColumn(true)}
-                        className="h-9 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        className="h-9"
                     >
                         + 첫 컬럼 추가
-                    </button>
+                    </Button>
                 </div>
             ) : (
                 <div className="flex snap-x snap-mandatory items-start gap-3 overflow-x-auto pb-6 pt-1 md:snap-none md:gap-4">
@@ -265,12 +265,12 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                     ))}
 
                     {/* Add column ghost */}
-                    <button
+                    <Button variant="unstyled"
                         onClick={() => setShowAddColumn(true)}
                         className="w-[85vw] shrink-0 snap-start rounded-xl border-2 border-dashed md:w-72 border-slate-200 h-24 flex items-center justify-center text-slate-400 hover:border-blue-300 hover:text-blue-500 hover:bg-d94-brand-soft/30 transition-all text-sm font-medium"
                     >
                         + 컬럼 추가
-                    </button>
+                    </Button>
                 </div>
             )}
 

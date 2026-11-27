@@ -1,5 +1,6 @@
 import {auth} from "@/auth";
 import {redirect} from "next/navigation";
+import Button from "@/components/ui/Button";
 
 export default async function HomePage() {
     const session = await auth();
@@ -38,9 +39,9 @@ export default async function HomePage() {
 //               className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
 //               required
 //             />
-//             <button className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors">
+//             <Button variant="unstyled" className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors">
 //               Add
-//             </button>
+//             </Button>
 //           </form>
 //           {/* 리스트 출력 */}
 //           <ul className="space-y-2">

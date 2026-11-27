@@ -84,13 +84,13 @@ export default function AssignIssueModal({projectId, sprint, onClose, onSuccess}
                   </span>
                                 )}
                             </div>
-                            <button
+                            <Button variant="unstyled"
                                 onClick={() => handleAdd(issue.id)}
                                 disabled={adding === issue.id}
                                 className="ml-3 shrink-0 h-7 px-3 rounded-lg bg-d94-brand text-white text-xs font-medium hover:bg-d94-brand-hover disabled:opacity-60"
                             >
                                 {adding === issue.id ? "..." : "추가"}
-                            </button>
+                            </Button>
                         </div>
                     ))}
                 </div>

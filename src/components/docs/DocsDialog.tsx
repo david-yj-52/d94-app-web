@@ -37,10 +37,10 @@ export default function DocsDialog({spec, onClose}: { spec: DocsDialogSpec; onCl
                 )}
                 <div className="mt-4 flex justify-end gap-2">
                     <Button type="button" onClick={onClose} variant="ghost">취소</Button>
-                    <button type="submit" autoFocus={!spec.input}
+                    <Button variant="unstyled" type="submit" autoFocus={!spec.input}
                             className={`h-10 rounded-lg px-4 text-sm font-medium text-white ${spec.danger ? "bg-red-500 hover:bg-red-600" : "bg-d94-brand hover:bg-d94-brand-hover"}`}>
                         {spec.confirmLabel}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

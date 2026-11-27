@@ -6,8 +6,9 @@ import {SkeletonCard} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {getQuotas, getTasks, refreshQuotas} from "@/lib/api/ayaan";
 import {TOOLS} from "@/types/ayaan";
-import {btnPrimary, ESTIMATED_SOURCES, fmtTime, remaining, STATUS_CLASS} from "./format";
+import {ESTIMATED_SOURCES, fmtTime, remaining, STATUS_CLASS} from "./format";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 
 export default function AyaanDashboardPage() {
     const qc = useQueryClient();
@@ -32,7 +33,7 @@ export default function AyaanDashboardPage() {
                     <Link href="/ayaan/tasks" className="self-center text-d94-brand hover:underline">작업</Link>
                     <Link href="/settings?group=ayaan" className="self-center text-d94-brand hover:underline">기준정보</Link>
                     <Link href="/ayaan/setup" className="self-center text-d94-brand hover:underline">셋업</Link>
-                    <button className={btnPrimary} disabled={refresh.isPending} onClick={() => refresh.mutate()}>지금 수집</button>
+                    <Button  disabled={refresh.isPending} onClick={() => refresh.mutate()}>지금 수집</Button>
                 </div>
             </div>
             {quotas.data?.warnings.length ? (

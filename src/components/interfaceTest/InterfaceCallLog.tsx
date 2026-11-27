@@ -2,6 +2,7 @@
 
 import type {InterfaceCallResult} from "@/types/interfaceTest";
 import MethodBadge from "./MethodBadge";
+import Button from "@/components/ui/Button";
 
 function statusClass(status: number): string {
     if (status >= 200 && status < 300) return "bg-emerald-50 text-emerald-700";
@@ -31,10 +32,10 @@ export default function InterfaceCallLog({logs, onClear}: Props) {
         <section className="rounded-xl border border-slate-200 bg-white">
             <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
                 <h2 className="text-base font-bold text-slate-900">호출 기록 <span className="text-sm font-normal text-slate-500">({logs.length})</span></h2>
-                <button type="button" onClick={onClear} disabled={logs.length === 0}
-                        className="h-8 rounded-lg border border-slate-200 px-3 text-xs text-slate-600 hover:bg-slate-50 disabled:opacity-50">
+                <Button type="button" onClick={onClear} disabled={logs.length === 0}
+                        variant="secondary" size="sm">
                     지우기
-                </button>
+                </Button>
             </div>
 
             {logs.length === 0 ? (

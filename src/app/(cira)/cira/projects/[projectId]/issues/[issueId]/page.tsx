@@ -172,10 +172,10 @@ export default function IssueDetailPage({
                 actions={
                     <DropdownMenu
                         trigger={
-                            <button aria-label="더보기"
+                            <Button variant="unstyled" aria-label="더보기"
                                     className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50">
                                 ···
-                            </button>
+                            </Button>
                         }
                         items={[{label: "삭제", onSelect: handleDelete, danger: true}]}
                     />
@@ -234,10 +234,10 @@ export default function IssueDetailPage({
                         <DropdownMenu
                             align="start"
                             trigger={
-                                <button
+                                <Button variant="unstyled"
                                     className={`flex h-10 items-center gap-1 rounded-md px-3 text-sm font-semibold ${STATUS_TONE_CLASS[statusTone(transitions?.find((t) => t.id === issue.statusId)?.category)]}`}>
                                     {issue.statusNm ?? "-"} ▾
-                                </button>
+                                </Button>
                             }
                             items={(transitions ?? []).filter((t) => t.id !== issue.statusId).map((t) => ({
                                 label: t.statusNm,

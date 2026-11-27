@@ -2,6 +2,7 @@
 
 import type {IssueFilterParams, Priority} from "@/types/issue";
 import {useEffect, useState} from "react";
+import Button from "@/components/ui/Button";
 
 const PRIORITIES: Priority[] = ["HIGHEST", "HIGH", "MEDIUM", "LOW", "LOWEST"];
 
@@ -52,14 +53,14 @@ export default function IssueFilter({filters, onChange}: Props) {
             </select>
 
             {(filters.keyword || filters.priority) && (
-                <button
+                <Button variant="unstyled"
                     onClick={() =>
                         onChange({page: 0, size: filters.size})
                     }
                     className="h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-500 hover:bg-slate-50"
                 >
                     초기화
-                </button>
+                </Button>
             )}
         </div>
     );

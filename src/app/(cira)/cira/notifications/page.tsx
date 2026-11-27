@@ -6,6 +6,7 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {AtSign, Bell, ChevronLeft, ChevronRight, MessageSquare, RefreshCw, UserCheck} from "lucide-react";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 function relativeTime(dateStr: string): string {
     const diffMs = Date.now() - new Date(dateStr).getTime();
@@ -78,13 +79,13 @@ export default function NotificationsPage() {
                     )}
                 </div>
                 {unreadCount > 0 && (
-                    <button
+                    <Button variant="unstyled"
                         onClick={() => markAllMut.mutate()}
                         disabled={markAllMut.isPending}
                         className="h-9 rounded-lg border border-gray-200 px-4 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                     >
                         모두 읽음
-                    </button>
+                    </Button>
                 )}
             </div>
 
@@ -108,7 +109,7 @@ export default function NotificationsPage() {
                     <ul className="divide-y divide-gray-100">
                         {notifications.map((n) => (
                             <li key={n.id}>
-                                <button
+                                <Button variant="unstyled"
                                     className={`flex w-full items-start gap-4 px-5 py-4 text-left transition-colors hover:bg-gray-50 ${
                                         n.isRead ? "bg-white" : "bg-blue-50/40"
                                     }`}
@@ -133,7 +134,7 @@ export default function NotificationsPage() {
                                     {!n.isRead && (
                                         <span className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-blue-500"/>
                                     )}
-                                </button>
+                                </Button>
                             </li>
                         ))}
                     </ul>
@@ -142,23 +143,23 @@ export default function NotificationsPage() {
 
             {totalPages > 1 && (
                 <div className="mt-4 flex items-center justify-center gap-2">
-                    <button
+                    <Button variant="unstyled"
                         disabled={page === 0}
                         onClick={() => setPage((p) => p - 1)}
                         className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-40"
                     >
                         <ChevronLeft className="h-4 w-4"/>
-                    </button>
+                    </Button>
                     <span className="text-sm text-gray-600">
             {page + 1} / {totalPages}
           </span>
-                    <button
+                    <Button variant="unstyled"
                         disabled={page >= totalPages - 1}
                         onClick={() => setPage((p) => p + 1)}
                         className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-40"
                     >
                         <ChevronRight className="h-4 w-4"/>
-                    </button>
+                    </Button>
                 </div>
             )}
         </div>

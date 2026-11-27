@@ -15,6 +15,7 @@ import Dialog from "@/components/ui/Dialog";
 import {Skeleton} from "@/components/ui/Skeleton";
 import type {DocsFolder, VaultScope} from "@/types/docs";
 import {docsError} from "@/lib/docs/error";
+import Button from "@/components/ui/Button";
 
 /** Docs 3단 레이아웃의 왼쪽(vault 선택 + 폴더 트리)과 Cmd+K. 가운데·오른쪽은 각 page 가 그린다. */
 export default function DocsLayout({children}: { children: React.ReactNode }) {
@@ -64,10 +65,10 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
 
     const tree = (
         <>
-            <button type="button" onClick={() => setSwitcher(true)}
+            <Button variant="unstyled" type="button" onClick={() => setSwitcher(true)}
                     className="mb-3 flex h-8 w-full items-center rounded-lg bg-slate-50 px-2 text-left text-xs text-slate-400 hover:bg-slate-100">
                 노트 찾기 <span className="ml-auto">⌘K</span>
-            </button>
+            </Button>
             <Link href="/docs/tasks" className="mb-3 flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
                 <ListChecks className="h-4 w-4"/> Task 모아보기
             </Link>
@@ -106,10 +107,10 @@ export default function DocsLayout({children}: { children: React.ReactNode }) {
 
     return (
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-3 md:px-4 lg:flex-row">
-            <button type="button" onClick={() => setTreeOpen(true)}
+            <Button variant="unstyled" type="button" onClick={() => setTreeOpen(true)}
                     className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 lg:hidden">
                 <FolderTree className="h-4 w-4"/> 폴더 · 노트
-            </button>
+            </Button>
             <div className="hidden w-60 shrink-0 overflow-y-auto rounded-xl border border-slate-200 bg-white p-3 lg:block lg:h-[calc(100vh-7.5rem)]">
                 {tree}
             </div>

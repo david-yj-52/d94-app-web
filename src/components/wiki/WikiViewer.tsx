@@ -2,6 +2,7 @@
 
 import type {WikiPageResponse} from "@/lib/api/wiki";
 import {Clock, Edit3} from "lucide-react";
+import Button from "@/components/ui/Button";
 
 interface WikiViewerProps {
     page: WikiPageResponse;
@@ -29,20 +30,20 @@ export default function WikiViewer({page, onEdit, onShowVersions}: WikiViewerPro
                     </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-4">
-                    <button
+                    <Button variant="unstyled"
                         onClick={onShowVersions}
                         className="flex items-center gap-1.5 h-8 px-3 rounded-md border border-slate-200 text-slate-500 text-sm hover:bg-slate-50"
                     >
                         <Clock size={13}/>
                         버전 이력
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="unstyled"
                         onClick={onEdit}
                         className="flex items-center gap-1.5 h-8 px-3 rounded-md bg-d94-brand text-white text-sm font-medium hover:bg-d94-brand-hover"
                     >
                         <Edit3 size={13}/>
                         편집
-                    </button>
+                    </Button>
                 </div>
             </div>
 

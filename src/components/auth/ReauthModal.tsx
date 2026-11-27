@@ -5,6 +5,7 @@ import {useSession} from "next-auth/react";
 import LoginForm from "@/components/auth/LoginForm";
 import {settleReauth} from "@/lib/api/session";
 import {SESSION_EXPIRED_REASON} from "@/lib/routeAccess";
+import Button from "@/components/ui/Button";
 
 /**
  * 세션 만료 시 화면 위에 띄우는 재로그인. 페이지를 떠나지 않으므로 입력 중이던 내용이 그대로 남는다 (ADR 0007).
@@ -33,14 +34,14 @@ export default function ReauthModal() {
             onClick={() => settleReauth(false)}
         >
             <div onClick={(e) => e.stopPropagation()} className="relative max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto">
-                <button
+                <Button variant="unstyled"
                     type="button"
                     aria-label="닫기"
                     onClick={() => settleReauth(false)}
                     className="absolute right-4 top-4 z-10 text-sm text-slate-400 hover:text-slate-600"
                 >
                     ✕
-                </button>
+                </Button>
                 <LoginForm reason={SESSION_EXPIRED_REASON} onSuccess={onSuccess}/>
             </div>
         </div>

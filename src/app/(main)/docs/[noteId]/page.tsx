@@ -21,6 +21,7 @@ import {docsError} from "@/lib/docs/error";
 import type {NoteKind, NoteVersion} from "@/types/docs";
 import {KIND_LABEL, KINDS} from "@/lib/docs/markdown";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 /** 노트 화면: mode 하나로 보기·편집·버전 미리보기를 전환 (CIRA 위키와 같은 패턴). ?edit=1 이면 편집으로 연다 */
 export default function NotePage() {
@@ -92,7 +93,7 @@ function NoteContent() {
                                 <h1 className="truncate text-xl font-semibold md:text-2xl md:font-bold text-slate-900">{preview ? `${preview.title} (v${preview.version})` : n.title}</h1>
                             </div>
                             {preview ? (
-                                <button type="button" onClick={() => setPreview(null)} className="h-8 rounded-lg px-3 text-xs text-d94-brand hover:bg-d94-brand-soft">현재 버전으로</button>
+                                <Button variant="unstyled" type="button" onClick={() => setPreview(null)} className="h-8 rounded-lg px-3 text-xs text-d94-brand hover:bg-d94-brand-soft">현재 버전으로</Button>
                             ) : (
                                 <div className="flex items-center gap-1">
                                     <select value={n.kind} aria-label="종류 (승격)" disabled={changeKind.isPending}
@@ -181,9 +182,9 @@ function NoteContent() {
 
 function IconButton({label, onClick, children}: { label: string; onClick: () => void; children: React.ReactNode }) {
     return (
-        <button type="button" onClick={onClick} aria-label={label} title={label}
+        <Button variant="unstyled" type="button" onClick={onClick} aria-label={label} title={label}
                 className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 md:h-8 md:w-8 hover:bg-slate-100">
             {children}
-        </button>
+        </Button>
     );
 }

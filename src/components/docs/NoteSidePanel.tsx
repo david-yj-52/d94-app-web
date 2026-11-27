@@ -4,6 +4,7 @@ import Link from "next/link";
 import {ArrowUpRight, History} from "lucide-react";
 import type {Note, NoteSummary, TaskStatus} from "@/types/docs";
 import {extractTasks, KIND_LABEL} from "@/lib/docs/markdown";
+import Button from "@/components/ui/Button";
 
 interface NoteSidePanelProps {
     note: Note;
@@ -29,7 +30,7 @@ export default function NoteSidePanel({note, backlinks, derived, onOpenTitle, on
                     <dt className="text-slate-500">트랙</dt><dd>{note.stream ?? "—"}</dd>
                     <dt className="text-slate-500">원본</dt>
                     <dd>{note.origin
-                        ? <button type="button" onClick={() => onOpenTitle(note.origin!)} className="text-d94-brand hover:underline">{note.origin}</button>
+                        ? <Button type="button" onClick={() => onOpenTitle(note.origin!)} variant="link">{note.origin}</Button>
                         : "—"}</dd>
                     <dt className="text-slate-500">버전</dt><dd>v{note.version}</dd>
                 </dl>
@@ -53,10 +54,10 @@ export default function NoteSidePanel({note, backlinks, derived, onOpenTitle, on
                                     {t.status === "doing" && <span className="mr-1 text-xs text-amber-600">진행</span>}{t.text}
                                 </span>
                                 {!/^\[\[.*]]$/.test(t.text) && (
-                                    <button type="button" onClick={() => onPromoteTask(t.lineNo)} aria-label={`${t.text} 노트로 만들기`} title="노트로 만들기"
+                                    <Button variant="unstyled" type="button" onClick={() => onPromoteTask(t.lineNo)} aria-label={`${t.text} 노트로 만들기`} title="노트로 만들기"
                                             className="rounded p-0.5 text-slate-400 opacity-0 hover:bg-slate-100 focus:opacity-100 group-hover:opacity-100">
                                         <ArrowUpRight className="h-4 w-4"/>
-                                    </button>
+                                    </Button>
                                 )}
                             </li>
                         ))}
@@ -65,10 +66,10 @@ export default function NoteSidePanel({note, backlinks, derived, onOpenTitle, on
             </Section>
             <NoteList title={`백링크 (${backlinks.length})`} notes={backlinks}/>
             <NoteList title={`파생 노트 (${derived.length})`} notes={derived}/>
-            <button type="button" onClick={onShowVersions}
+            <Button variant="unstyled" type="button" onClick={onShowVersions}
                     className="flex h-8 items-center gap-1 rounded-lg px-2 text-xs text-slate-600 hover:bg-slate-100">
                 <History className="h-4 w-4"/> 버전 이력
-            </button>
+            </Button>
         </aside>
     );
 }

@@ -4,6 +4,7 @@ import Dialog from "@/components/ui/Dialog";
 import {ALWAYS_SHOWN_KEYS, type FieldDef} from "@/types/fields";
 import {ArrowDown, ArrowUp, Settings2} from "lucide-react";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 /**
  * Task 목록 컬럼 선택·순서. 바꿀 때마다 onChange(keys) — 부모가 바로 저장한다.
@@ -42,23 +43,23 @@ export default function ColumnPicker({fields, columns, onChange, onCreate, onImp
                 {f.kind === "cf" && <span className="text-[11px] text-slate-400">사용자 정의</span>}
             </label>
             {f.canEdit && onEdit && (
-                <button type="button" aria-label={`${f.name} 수정`} onClick={() => { setOpen(false); onEdit(f); }}
-                        className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</button>
+                <Button variant="unstyled" type="button" aria-label={`${f.name} 수정`} onClick={() => { setOpen(false); onEdit(f); }}
+                        className="h-8 rounded px-2 text-xs text-slate-600 hover:bg-slate-100">수정</Button>
             )}
             {f.canEdit && onDelete && (
-                <button type="button" aria-label={`${f.name} 삭제`} onClick={() => { setOpen(false); onDelete(f); }}
-                        className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
+                <Button variant="unstyled" type="button" aria-label={`${f.name} 삭제`} onClick={() => { setOpen(false); onDelete(f); }}
+                        className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</Button>
             )}
             {i !== undefined && (
                 <>
-                    <button type="button" aria-label={`${f.name} 위로`} disabled={i === 0} onClick={() => move(i, -1)}
+                    <Button variant="unstyled" type="button" aria-label={`${f.name} 위로`} disabled={i === 0} onClick={() => move(i, -1)}
                             className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30">
                         <ArrowUp className="h-4 w-4"/>
-                    </button>
-                    <button type="button" aria-label={`${f.name} 아래로`} disabled={i === shown.length - 1} onClick={() => move(i, 1)}
+                    </Button>
+                    <Button variant="unstyled" type="button" aria-label={`${f.name} 아래로`} disabled={i === shown.length - 1} onClick={() => move(i, 1)}
                             className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30">
                         <ArrowDown className="h-4 w-4"/>
-                    </button>
+                    </Button>
                 </>
             )}
         </li>
@@ -66,10 +67,10 @@ export default function ColumnPicker({fields, columns, onChange, onCreate, onImp
 
     return (
         <>
-            <button type="button" onClick={() => setOpen(true)}
+            <Button variant="unstyled" type="button" onClick={() => setOpen(true)}
                     className="inline-flex h-9 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 hover:bg-slate-50">
                 <Settings2 className="h-4 w-4"/>컬럼
-            </button>
+            </Button>
             <Dialog open={open} onOpenChange={setOpen} title="표시할 컬럼">
                 <p className="px-4 pt-3 text-xs text-slate-500">바꾸면 바로 저장됩니다. 나에게만 적용됩니다.</p>
                 <ul className="py-2">{shown.map((k, i) => row(byKey.get(k)!, true, i))}</ul>
@@ -81,18 +82,18 @@ export default function ColumnPicker({fields, columns, onChange, onCreate, onImp
                 )}
                 <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 px-4 py-3">
                     {onCreate && (
-                        <button type="button" onClick={() => { setOpen(false); onCreate(); }}
-                                className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50">+ 새 컬럼 만들기</button>
+                        <Button variant="unstyled" type="button" onClick={() => { setOpen(false); onCreate(); }}
+                                className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50">+ 새 컬럼 만들기</Button>
                     )}
                     {onImport && (
-                        <button type="button" onClick={() => { setOpen(false); onImport(); }}
-                                className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50">+ 라이브러리에서 가져오기</button>
+                        <Button variant="unstyled" type="button" onClick={() => { setOpen(false); onImport(); }}
+                                className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50">+ 라이브러리에서 가져오기</Button>
                     )}
                     <span className="flex-1"/>
-                    <button type="button" onClick={() => onChange(null)}
-                            className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-600 hover:bg-slate-50">
+                    <Button type="button" onClick={() => onChange(null)}
+                            variant="secondary" className="h-9 px-3">
                         기본값으로
-                    </button>
+                    </Button>
                 </div>
             </Dialog>
         </>

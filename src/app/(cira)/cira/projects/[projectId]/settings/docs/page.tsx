@@ -8,6 +8,7 @@ import type {NoteKind} from "@/types/docs";
 import {ArrowDown, ArrowUp} from "lucide-react";
 import {use, useEffect, useState} from "react";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 const KINDS: NoteKind[] = ["idea", "doc", "task", "knowledge"];
 const blank = (): DocRule => ({id: null, issueTypeId: null, folderName: "", sortOrder: null, defaultKind: null,
@@ -79,12 +80,12 @@ export default function ProjectDocRulesPage({params}: { params: Promise<{ projec
                                     Task 생성 때 폴더 만들기
                                 </label>
                                 <span className="ml-auto flex gap-1">
-                                    <button type="button" aria-label="위로" disabled={i === 0} onClick={() => move(i, -1)}
-                                            className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowUp className="h-4 w-4"/></button>
-                                    <button type="button" aria-label="아래로" disabled={i === rows.length - 1} onClick={() => move(i, 1)}
-                                            className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowDown className="h-4 w-4"/></button>
-                                    <button type="button" onClick={() => setRows((rs) => rs.filter((_, j) => j !== i))}
-                                            className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</button>
+                                    <Button variant="unstyled" type="button" aria-label="위로" disabled={i === 0} onClick={() => move(i, -1)}
+                                            className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowUp className="h-4 w-4"/></Button>
+                                    <Button variant="unstyled" type="button" aria-label="아래로" disabled={i === rows.length - 1} onClick={() => move(i, 1)}
+                                            className="flex h-8 w-8 items-center justify-center rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"><ArrowDown className="h-4 w-4"/></Button>
+                                    <Button variant="unstyled" type="button" onClick={() => setRows((rs) => rs.filter((_, j) => j !== i))}
+                                            className="h-8 rounded px-2 text-xs text-red-600 hover:bg-red-50">삭제</Button>
                                 </span>
                             </div>
                             <textarea value={r.templateContent ?? ""} onChange={(e) => set(i, {templateContent: e.target.value || null})}
@@ -94,10 +95,10 @@ export default function ProjectDocRulesPage({params}: { params: Promise<{ projec
                     ))}
                 </ul>
                 <div className="flex gap-2">
-                    <button type="button" onClick={() => setRows((rs) => [...rs, blank()])}
-                            className="h-10 rounded-lg border border-slate-200 px-4 text-sm text-slate-700 hover:bg-slate-50">+ 슬롯 추가</button>
-                    <button type="button" onClick={submit} disabled={!current || save.isPending || rows.some((r) => !r.folderName.trim())}
-                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">저장</button>
+                    <Button variant="unstyled" type="button" onClick={() => setRows((rs) => [...rs, blank()])}
+                            className="h-10 rounded-lg border border-slate-200 px-4 text-sm text-slate-700 hover:bg-slate-50">+ 슬롯 추가</Button>
+                    <Button type="button" onClick={submit} disabled={!current || save.isPending || rows.some((r) => !r.folderName.trim())}
+                            className="font-medium">저장</Button>
                 </div>
             </section>
             {ToastComponent}

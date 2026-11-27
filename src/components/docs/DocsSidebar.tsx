@@ -6,6 +6,7 @@ import {ChevronDown, ChevronRight, FileText, Folder, FolderPlus, Lock, MoreHoriz
 import type {DocsFolder, DocsVault, NoteSummary} from "@/types/docs";
 import EmptyState from "@/components/ui/EmptyState";
 import DropdownMenu from "@/components/ui/DropdownMenu";
+import Button from "@/components/ui/Button";
 
 interface DocsSidebarProps {
     /** 보여 줄 vault 들 (통합 뷰면 여러 개). vault 마다 섹션 하나 */
@@ -39,16 +40,16 @@ export default function DocsSidebar(props: DocsSidebarProps) {
                 return (
                     <section key={v.id} aria-label={v.name}>
                         <div className="mb-1 flex items-center gap-1">
-                            <button type="button" onClick={() => toggle(key)}
+                            <Button variant="unstyled" type="button" onClick={() => toggle(key)}
                                     className="flex min-w-0 flex-1 items-center gap-1 text-left text-xs font-medium text-slate-600">
                                 {closed.has(key) ? <ChevronRight className="h-3 w-3 shrink-0"/> : <ChevronDown className="h-3 w-3 shrink-0"/>}
                                 <Icon className="h-3.5 w-3.5 shrink-0 text-slate-400"/>
                                 <span className="truncate">{v.name}</span>
-                            </button>
-                            <button type="button" onClick={() => onNewNote(null, v.id)} aria-label={`${v.name} 새 노트`} title="새 노트"
-                                    className="rounded p-1 text-slate-500 hover:bg-slate-100"><Plus className="h-4 w-4"/></button>
-                            <button type="button" onClick={() => onNewFolder(null, v.id)} aria-label={`${v.name} 새 폴더`} title="새 폴더"
-                                    className="rounded p-1 text-slate-500 hover:bg-slate-100"><FolderPlus className="h-4 w-4"/></button>
+                            </Button>
+                            <Button variant="unstyled" type="button" onClick={() => onNewNote(null, v.id)} aria-label={`${v.name} 새 노트`} title="새 노트"
+                                    className="rounded p-1 text-slate-500 hover:bg-slate-100"><Plus className="h-4 w-4"/></Button>
+                            <Button variant="unstyled" type="button" onClick={() => onNewFolder(null, v.id)} aria-label={`${v.name} 새 폴더`} title="새 폴더"
+                                    className="rounded p-1 text-slate-500 hover:bg-slate-100"><FolderPlus className="h-4 w-4"/></Button>
                         </div>
                         {!closed.has(key) && <Tree {...props} folders={vf} notes={vn} parentId={null} depth={0} closed={closed} toggle={toggle}/>}
                         {!closed.has(key) && vf.length === 0 && vn.length === 0 &&
@@ -70,11 +71,11 @@ function Tree(p: DocsSidebarProps & { parentId: string | null; depth: number; cl
             {subFolders.map((f) => (
                 <li key={f.id}>
                     <div className="group flex items-center gap-1 rounded py-1 pr-1 hover:bg-slate-100" style={indent}>
-                        <button type="button" onClick={() => p.toggle(f.id)} className="flex min-w-0 flex-1 items-center gap-1 text-left text-slate-700">
+                        <Button variant="unstyled" type="button" onClick={() => p.toggle(f.id)} className="flex min-w-0 flex-1 items-center gap-1 text-left text-slate-700">
                             {p.closed.has(f.id) ? <ChevronRight className="h-3 w-3 shrink-0"/> : <ChevronDown className="h-3 w-3 shrink-0"/>}
                             <Folder className="h-4 w-4 shrink-0 text-slate-400"/>
                             <span className="truncate">{f.name}</span>
-                        </button>
+                        </Button>
                         <FolderMenu folder={f} {...p}/>
                     </div>
                     {!p.closed.has(f.id) && <Tree {...p} parentId={f.id} depth={p.depth + 1}/>}
@@ -99,10 +100,10 @@ function FolderMenu(p: DocsSidebarProps & { folder: DocsFolder }) {
         <DropdownMenu
             trigger={
                 // 터치 기기(< md)는 hover 가 없어 항상 보이게
-                <button type="button" aria-label={`${f.name} 메뉴`}
+                <Button variant="unstyled" type="button" aria-label={`${f.name} 메뉴`}
                         className="rounded p-0.5 text-slate-400 hover:bg-slate-200 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100">
                     <MoreHorizontal className="h-4 w-4"/>
-                </button>
+                </Button>
             }
             items={[
                 {label: "새 노트", onSelect: () => p.onNewNote(f.id, f.vaultId)},

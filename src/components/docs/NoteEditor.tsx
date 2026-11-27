@@ -10,6 +10,7 @@ import {type SaveState, useNoteAutosave} from "./useNoteAutosave";
 import {loadDraft, type NoteDraft} from "@/lib/docs/drafts";
 import {shrinkImage} from "@/lib/docs/image";
 import type {Note} from "@/types/docs";
+import Button from "@/components/ui/Button";
 
 interface NoteEditorProps {
     note: Note;
@@ -113,15 +114,15 @@ export default function NoteEditor({note, fetchTitles, uploadImage, onError, onD
             {draft && (
                 <div className="flex flex-wrap items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800" role="status">
                     <span className="flex-1">저장되지 않은 초안이 있습니다 ({new Date(draft.savedAt).toLocaleString("ko-KR")}).</span>
-                    <button type="button" className="h-8 rounded-lg bg-amber-600 px-3 text-xs font-medium text-white hover:bg-amber-700"
+                    <Button variant="unstyled" type="button" className="h-8 rounded-lg bg-amber-600 px-3 text-xs font-medium text-white hover:bg-amber-700"
                             onClick={() => {
                                 setTitle(draft.title);
                                 setContent(draft.content);
                                 committedTitle.current = draft.title;
                                 change(draft.title, draft.content);
                                 setDraft(null);
-                            }}>복원</button>
-                    <button type="button" className="h-8 rounded-lg px-3 text-xs text-amber-800 hover:bg-amber-100" onClick={() => setDraft(null)}>버리기</button>
+                            }}>복원</Button>
+                    <Button variant="unstyled" type="button" className="h-8 rounded-lg px-3 text-xs text-amber-800 hover:bg-amber-100" onClick={() => setDraft(null)}>버리기</Button>
                 </div>
             )}
             <input value={title} onChange={(e) => setTitle(e.target.value)} onBlur={commitTitle} aria-label="제목"
@@ -137,9 +138,9 @@ export default function NoteEditor({note, fetchTitles, uploadImage, onError, onD
                             basicSetup={{lineNumbers: false, foldGutter: false, highlightActiveLine: false}}/>
             </div>
             <div className="flex items-center gap-3">
-                <button type="button" disabled={state === "saving"}
+                <Button type="button" disabled={state === "saving"}
                         onClick={() => void flush().then((ok) => ok && onDone())}
-                        className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">완료</button>
+                        className="font-medium">완료</Button>
                 <span aria-live="polite"
                       className={`text-xs ${state === "offline" || state === "conflict" || state === "error" ? "text-red-500" : "text-slate-400"}`}>
                     {STATE_LABEL[state]}

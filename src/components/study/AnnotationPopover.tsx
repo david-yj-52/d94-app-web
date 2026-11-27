@@ -6,6 +6,7 @@ import {useDeleteStudyAnnotation, useStudyAnnotations, useUpdateStudyAnnotation}
 import {errorMessage} from "@/lib/study/colors";
 import {ColorPicker} from "./SelectionToolbar";
 import type {AnnotationListItem} from "@/types/study";
+import Button from "@/components/ui/Button";
 
 interface Props {
     annotationId: string;
@@ -48,12 +49,12 @@ function Editor({item, onClose, onError}: { item: AnnotationListItem; onClose: (
             <div className="flex items-center justify-between">
                 <ColorPicker value={color} onChange={setColor}/>
                 <div className="flex gap-2">
-                    <button type="button" onClick={() => remove.mutate(item.id, {onSuccess: onClose})}
+                    <Button variant="unstyled" type="button" onClick={() => remove.mutate(item.id, {onSuccess: onClose})}
                             className="inline-flex items-center gap-1 rounded px-2 py-1.5 text-sm text-red-600 hover:bg-red-50">
                         <Trash2 className="h-4 w-4"/>삭제
-                    </button>
-                    <button type="button" onClick={save} disabled={update.isPending}
-                            className="rounded bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white disabled:opacity-50">저장</button>
+                    </Button>
+                    <Button variant="unstyled" type="button" onClick={save} disabled={update.isPending}
+                            className="rounded bg-indigo-600 px-4 py-1.5 text-sm font-medium text-white disabled:opacity-50">저장</Button>
                 </div>
             </div>
         </div>

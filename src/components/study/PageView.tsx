@@ -5,6 +5,7 @@ import {ChevronLeft, ChevronRight, StickyNote} from "lucide-react";
 import {buildSegments} from "@/lib/study/segments";
 import {MARK_CLASS} from "@/lib/study/colors";
 import type {PageBlock, SectionRef, StudyPage, SyntaxSpan} from "@/types/study";
+import Button from "@/components/ui/Button";
 
 interface Props {
     page: StudyPage;
@@ -59,10 +60,10 @@ export default function PageView({page, documentId, containerRef, onNavigate, on
                     return <Fragment key={s.start}>{node}</Fragment>;
                 })}
                 {notes.map((a) => (
-                    <button key={a.id} type="button" aria-label="노트 보기" onClick={() => onAnnotationClick(a.id)}
+                    <Button variant="unstyled" key={a.id} type="button" aria-label="노트 보기" onClick={() => onAnnotationClick(a.id)}
                             className="mx-0.5 inline-flex align-middle text-amber-500 hover:text-amber-600">
                         <StickyNote className="h-4 w-4"/>
-                    </button>
+                    </Button>
                 ))}
             </>
         );
@@ -88,16 +89,16 @@ export default function PageView({page, documentId, containerRef, onNavigate, on
             </div>
             <nav className="mt-10 flex justify-between gap-4 border-t border-slate-200 pt-4 text-sm">
                 {page.prev ? (
-                    <button type="button" onClick={() => onNavigate(page.prev as SectionRef)}
+                    <Button variant="unstyled" type="button" onClick={() => onNavigate(page.prev as SectionRef)}
                             className="inline-flex max-w-[45%] items-center gap-1 text-slate-600 hover:text-indigo-600">
                         <ChevronLeft className="h-4 w-4 shrink-0"/><span className="truncate">{page.prev.title}</span>
-                    </button>
+                    </Button>
                 ) : <span/>}
                 {page.next && (
-                    <button type="button" onClick={() => onNavigate(page.next as SectionRef)}
+                    <Button variant="unstyled" type="button" onClick={() => onNavigate(page.next as SectionRef)}
                             className="inline-flex max-w-[45%] items-center gap-1 text-slate-600 hover:text-indigo-600">
                         <span className="truncate">{page.next.title}</span><ChevronRight className="h-4 w-4 shrink-0"/>
-                    </button>
+                    </Button>
                 )}
             </nav>
         </article>
@@ -179,11 +180,11 @@ export function PageOutline({items, onSelect}: {
             <ul className="space-y-1 border-l border-slate-200">
                 {items.map((o) => (
                     <li key={o.blockKey}>
-                        <button type="button" onClick={() => onSelect(o.blockKey)}
+                        <Button variant="unstyled" type="button" onClick={() => onSelect(o.blockKey)}
                                 className={`-ml-px border-l border-transparent py-0.5 text-left text-slate-600 hover:border-indigo-500 hover:text-indigo-600 ${
                                     o.level > 3 ? "pl-6" : "pl-3"}`}>
                             {o.title}
-                        </button>
+                        </Button>
                     </li>
                 ))}
             </ul>

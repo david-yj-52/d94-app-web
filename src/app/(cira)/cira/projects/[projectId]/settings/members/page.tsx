@@ -7,6 +7,7 @@ import {useToast} from "@/components/ui/Toast";
 import {useProjectMembers} from "@/hooks/useProjectSettings";
 import {useSession} from "next-auth/react";
 import {use, useState} from "react";
+import Button from "@/components/ui/Button";
 
 export default function SettingsMembersPage({
                                                 params,
@@ -36,12 +37,12 @@ export default function SettingsMembersPage({
                     )}
                 </div>
                 {isAdmin && (
-                    <button
+                    <Button
                         onClick={() => setShowAdd(true)}
-                        className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        
                     >
                         + 멤버 추가
-                    </button>
+                    </Button>
                 )}
             </div>
 

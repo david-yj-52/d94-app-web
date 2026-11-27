@@ -2,6 +2,7 @@
 
 import type {BoardColumnResponse, BoardIssueResponse} from "@/types/board";
 import KanbanCard from "./KanbanCard";
+import Button from "@/components/ui/Button";
 
 const TOP_BORDER: Record<string, string> = {
     TODO: "border-t-slate-400",
@@ -87,22 +88,22 @@ export default function KanbanColumn({
                 {(onEditColumn || onDeleteColumn) && (
                     <div className="flex items-center gap-0.5 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
                         {onEditColumn && (
-                            <button
+                            <Button variant="unstyled"
                                 onClick={() => onEditColumn(column)}
                                 className="h-6 w-6 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-white text-xs transition-colors"
                                 title="컬럼 편집"
                             >
                                 ✎
-                            </button>
+                            </Button>
                         )}
                         {onDeleteColumn && (
-                            <button
+                            <Button variant="unstyled"
                                 onClick={() => onDeleteColumn(column.id)}
                                 className="h-6 w-6 rounded flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-white text-base leading-none transition-colors"
                                 title="컬럼 삭제"
                             >
                                 ×
-                            </button>
+                            </Button>
                         )}
                     </div>
                 )}

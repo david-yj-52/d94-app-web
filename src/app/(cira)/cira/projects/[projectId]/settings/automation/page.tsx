@@ -6,6 +6,7 @@ import {useToast} from "@/components/ui/Toast";
 import {useAutomationRules, useCreateAutomationRule, useUpdateAutomationRule,} from "@/hooks/useAutomation";
 import type {AutomationRule, CreateAutomationRuleRequest} from "@/lib/api/automation";
 import {use, useState} from "react";
+import Button from "@/components/ui/Button";
 
 export default function SettingsAutomationPage({
                                                    params,
@@ -69,12 +70,12 @@ export default function SettingsAutomationPage({
                         Task 이벤트에 자동으로 반응하는 규칙을 설정합니다.
                     </p>
                 </div>
-                <button
+                <Button
                     onClick={openCreate}
-                    className="shrink-0 h-9 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                    className="shrink-0 h-9"
                 >
                     + 새 규칙
-                </button>
+                </Button>
             </div>
 
             {/* 로딩 */}
@@ -94,12 +95,12 @@ export default function SettingsAutomationPage({
                     <p className="text-sm text-slate-400 mt-1">
                         규칙을 추가하면 Task 이벤트에 자동으로 반응합니다.
                     </p>
-                    <button
+                    <Button
                         onClick={openCreate}
-                        className="mt-4 h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        className="mt-4 h-9 px-5"
                     >
                         첫 규칙 추가하기
-                    </button>
+                    </Button>
                 </div>
             )}
 

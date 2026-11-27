@@ -5,6 +5,7 @@ import DropdownMenu from "@/components/ui/DropdownMenu";
 import type {BoardIssueResponse} from "@/types/board";
 import {MoveRight} from "lucide-react";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 interface Props {
     issue: BoardIssueResponse;
@@ -61,10 +62,10 @@ export default function KanbanCard({
                         <span className="md:hidden">
                             <DropdownMenu
                                 trigger={
-                                    <button aria-label={`${issue.issueKey} 이동`}
+                                    <Button variant="unstyled" aria-label={`${issue.issueKey} 이동`}
                                             className="flex h-8 items-center gap-1 rounded border border-slate-200 px-2 text-xs text-slate-600">
                                         <MoveRight className="h-3.5 w-3.5"/>이동
-                                    </button>
+                                    </Button>
                                 }
                                 items={moveTargets.map((t) => ({label: t.columnNm, onSelect: () => onMoveTo(t.id)}))}
                             />

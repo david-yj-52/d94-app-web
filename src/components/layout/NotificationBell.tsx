@@ -7,6 +7,7 @@ import {AtSign, Bell, MessageSquare, RefreshCw, UserCheck, X} from "lucide-react
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useEffect, useRef, useState} from "react";
+import Button from "@/components/ui/Button";
 
 function relativeTime(dateStr: string): string {
     const diffMs = Date.now() - new Date(dateStr).getTime();
@@ -86,7 +87,7 @@ export default function NotificationBell() {
 
     return (
         <div ref={containerRef} className="relative shrink-0">
-            <button
+            <Button variant="unstyled"
                 onClick={() => setOpen((v) => !v)}
                 className="relative flex h-10 w-10 items-center md:h-8 md:w-8 justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
                 aria-label="알림"
@@ -98,7 +99,7 @@ export default function NotificationBell() {
             {badgeCount}
           </span>
                 )}
-            </button>
+            </Button>
 
             {open && (
                 <div className="fixed inset-x-3 top-14 z-50 rounded-xl sm:absolute sm:inset-x-auto sm:right-0 sm:top-10 sm:w-80 border border-gray-200 bg-white shadow-lg">
@@ -106,17 +107,17 @@ export default function NotificationBell() {
                         <span className="text-sm font-semibold text-gray-800">알림</span>
                         <div className="flex items-center gap-2">
                             {unreadCount > 0 && (
-                                <button
+                                <Button
                                     onClick={() => markAllMut.mutate()}
                                     disabled={markAllMut.isPending}
-                                    className="text-xs text-d94-brand hover:underline disabled:opacity-50"
+                                    variant="link" className="text-xs disabled:opacity-50"
                                 >
                                     모두 읽음
-                                </button>
+                                </Button>
                             )}
-                            <button onClick={() => setOpen(false)}>
+                            <Button variant="unstyled" onClick={() => setOpen(false)}>
                                 <X className="h-4 w-4 text-gray-400 hover:text-gray-600"/>
-                            </button>
+                            </Button>
                         </div>
                     </div>
 
@@ -128,7 +129,7 @@ export default function NotificationBell() {
                         <ul className="max-h-96 divide-y divide-gray-100 overflow-y-auto">
                             {notifications.map((n) => (
                                 <li key={n.id}>
-                                    <button
+                                    <Button variant="unstyled"
                                         className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 ${
                                             n.isRead ? "opacity-60" : ""
                                         }`}
@@ -151,7 +152,7 @@ export default function NotificationBell() {
                                         {!n.isRead && (
                                             <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500"/>
                                         )}
-                                    </button>
+                                    </Button>
                                 </li>
                             ))}
                         </ul>

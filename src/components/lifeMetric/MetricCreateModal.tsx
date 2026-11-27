@@ -75,10 +75,10 @@ export default function MetricCreateModal({onClose, onCreated}: {
 
                 <div role="tablist" className="mb-5 inline-flex rounded-lg bg-slate-100 p-1 text-sm">
                     {(["template", "custom"] as const).map((m) => (
-                        <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => setMode(m)}
+                        <Button variant="unstyled" key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => setMode(m)}
                                 className={`rounded-md px-3 py-1.5 ${mode === m ? "bg-white font-semibold text-slate-900 shadow-sm" : "text-slate-500"}`}>
                             {m === "template" ? "템플릿" : "커스텀 수식"}
-                        </button>
+                        </Button>
                     ))}
                 </div>
 
@@ -86,11 +86,11 @@ export default function MetricCreateModal({onClose, onCreated}: {
                     {mode === "template" && (
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                             {templates.map((t) => (
-                                <button key={t.id} type="button" onClick={() => chooseTemplate(t)}
+                                <Button variant="unstyled" key={t.id} type="button" onClick={() => chooseTemplate(t)}
                                         className={`rounded-xl border p-3 text-left text-sm ${templateId === t.id ? "border-d94-brand bg-d94-brand-soft" : "border-slate-200 hover:bg-slate-50"}`}>
                                     <span className="block font-semibold text-slate-900">{t.name}</span>
                                     <code className="mt-1 block truncate text-xs text-slate-500">{t.defaultFormula}</code>
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     )}
@@ -108,9 +108,9 @@ export default function MetricCreateModal({onClose, onCreated}: {
                     </div>
 
                     {mode === "template" && templateId && (
-                        <button type="button" onClick={customize} className="text-sm text-d94-brand hover:underline">
+                        <Button type="button" onClick={customize} variant="link" className="text-sm">
                             이 템플릿의 수식 고치기 →
-                        </button>
+                        </Button>
                     )}
 
                     {mode === "custom" && (
@@ -136,12 +136,12 @@ export default function MetricCreateModal({onClose, onCreated}: {
                                             </select>
                                             <input className={inputCls} aria-label="단위" placeholder="단위" value={f.unit ?? ""}
                                                    onChange={(e) => setField(i, {unit: e.target.value})}/>
-                                            <button type="button" aria-label="항목 삭제" className="text-slate-400 hover:text-red-500"
-                                                    onClick={() => setFields((fs) => fs.filter((_, j) => j !== i))}>✕</button>
+                                            <Button variant="unstyled" type="button" aria-label="항목 삭제" className="text-slate-400 hover:text-red-500"
+                                                    onClick={() => setFields((fs) => fs.filter((_, j) => j !== i))}>✕</Button>
                                         </div>
                                     ))}
-                                    <button type="button" className="text-sm text-d94-brand hover:underline"
-                                            onClick={() => setFields((fs) => [...fs, EMPTY_FIELD])}>+ 입력 항목</button>
+                                    <Button type="button" variant="link" className="text-sm"
+                                            onClick={() => setFields((fs) => [...fs, EMPTY_FIELD])}>+ 입력 항목</Button>
                                 </div>
                             </div>
 

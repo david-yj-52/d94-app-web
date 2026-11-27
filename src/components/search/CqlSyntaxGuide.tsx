@@ -2,6 +2,7 @@
 
 import {ChevronDown, ChevronUp, Clipboard} from "lucide-react";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 interface CqlSyntaxGuideProps {
     onInsert: (query: string) => void;
@@ -72,7 +73,7 @@ export default function CqlSyntaxGuide({onInsert}: CqlSyntaxGuideProps) {
 
     return (
         <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-            <button
+            <Button variant="unstyled"
                 type="button"
                 onClick={() => setOpen((v) => !v)}
                 className="flex w-full items-center justify-between px-5 py-3.5 text-left hover:bg-gray-50 transition-colors"
@@ -85,7 +86,7 @@ export default function CqlSyntaxGuide({onInsert}: CqlSyntaxGuideProps) {
                 ) : (
                     <ChevronDown className="h-4 w-4 text-gray-400"/>
                 )}
-            </button>
+            </Button>
 
             {open && (
                 <div className="border-t border-gray-100 px-5 pb-5 pt-4">
@@ -164,7 +165,7 @@ export default function CqlSyntaxGuide({onInsert}: CqlSyntaxGuideProps) {
                         </p>
                         <div className="space-y-2">
                             {EXAMPLE_QUERIES.map(({label, query}) => (
-                                <button
+                                <Button variant="unstyled"
                                     key={query}
                                     type="button"
                                     onClick={() => handleInsert(query)}
@@ -186,7 +187,7 @@ export default function CqlSyntaxGuide({onInsert}: CqlSyntaxGuideProps) {
                       삽입됨 ✓
                     </span>
                                     )}
-                                </button>
+                                </Button>
                             ))}
                         </div>
                     </div>

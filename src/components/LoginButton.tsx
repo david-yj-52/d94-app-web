@@ -1,4 +1,5 @@
 import {signIn} from "@/auth";
+import Button from "@/components/ui/Button";
 
 /** Google "G" 로고 - 공식 4색 아이콘(SVG 인라인, 파일 의존 없음) */
 function GoogleLogoIcon({className}: { className?: string }) {
@@ -37,13 +38,13 @@ export default function LoginButton() {
                 await signIn("google");
             }}
         >
-            <button
+            <Button variant="unstyled"
                 type="submit"
                 className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-900 shadow-sm hover:bg-gray-50"
             >
                 <GoogleLogoIcon className="h-5 w-5 shrink-0"/>
                 <span>Continue with Google</span>
-            </button>
+            </Button>
         </form>
     );
 }

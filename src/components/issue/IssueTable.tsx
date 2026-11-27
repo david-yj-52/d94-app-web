@@ -7,6 +7,7 @@ import {ChevronDown, ChevronUp} from "lucide-react";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import FieldValue, {isNumeric} from "./FieldValue";
+import Button from "@/components/ui/Button";
 
 interface Props {
     issues: IssueResponse[];
@@ -67,11 +68,11 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
                                     aria-sort={active ? (sortDir === "desc" ? "descending" : "ascending") : undefined}
                                     className={`pb-2 font-medium whitespace-nowrap ${WIDTH[f.fieldKey] ?? ""} ${isNumeric(f) ? "text-right" : ""} ${i === cols.length - 1 ? "pr-4" : "pr-3"}`}>
                                     {canSort ? (
-                                        <button type="button" className="inline-flex items-center gap-0.5 hover:text-slate-900"
+                                        <Button variant="unstyled" type="button" className="inline-flex items-center gap-0.5 hover:text-slate-900"
                                                 onClick={() => onSort(`${f.fieldKey},${active && sortDir !== "desc" ? "desc" : "asc"}`)}>
                                             {label}
                                             {active && (sortDir === "desc" ? <ChevronDown className="h-3 w-3"/> : <ChevronUp className="h-3 w-3"/>)}
-                                        </button>
+                                        </Button>
                                     ) : label}
                                 </th>
                             );

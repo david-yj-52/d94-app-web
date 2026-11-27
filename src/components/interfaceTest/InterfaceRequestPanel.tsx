@@ -3,6 +3,7 @@
 import type {InterfaceCallRequest, InterfaceTestItemRequest, InterfaceTestMethod} from "@/types/interfaceTest";
 import MethodBadge from "./MethodBadge";
 import FormField from "@/components/ui/FormField";
+import Button from "@/components/ui/Button";
 
 export interface InterfaceRequestForm {
     itemId: string;
@@ -92,7 +93,7 @@ export default function InterfaceRequestPanel({form, onChange, onCall, isPending
                 {ACTIONS.map((a) => {
                     const disabled = isPending || (a.needsId && !form.itemId.trim());
                     return (
-                        <button
+                        <Button variant="unstyled"
                             key={`${a.method}-${a.label}`}
                             type="button"
                             aria-label={`${a.method} ${a.label}`}
@@ -109,7 +110,7 @@ export default function InterfaceRequestPanel({form, onChange, onCall, isPending
                                 <span className="block text-sm font-semibold text-slate-800">{a.label}</span>
                                 <span className="block truncate text-xs text-slate-500">{a.hint}</span>
                             </span>
-                        </button>
+                        </Button>
                     );
                 })}
             </div>

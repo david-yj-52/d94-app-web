@@ -37,8 +37,8 @@ export default function FolderPickerModal({title, folders, disabledIds, initial,
                 </select>
                 <div className="mt-4 flex justify-end gap-2">
                     <Button type="button" onClick={onClose} variant="ghost">취소</Button>
-                    <button type="button" onClick={() => onPick(value || null)}
-                            className="h-10 rounded-lg bg-d94-brand px-4 text-sm font-medium text-white hover:bg-d94-brand-hover">이동</button>
+                    <Button type="button" onClick={() => onPick(value || null)}
+                            className="font-medium">이동</Button>
                 </div>
             </div>
         </div>

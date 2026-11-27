@@ -5,6 +5,7 @@ import type {InterfaceTestItemResponse} from "@/types/interfaceTest";
 import {RefreshCw} from "lucide-react";
 import Badge from "@/components/ui/Badge";
 import EmptyState from "@/components/ui/EmptyState";
+import Button from "@/components/ui/Button";
 
 interface Props {
     items: InterfaceTestItemResponse[];
@@ -25,10 +26,10 @@ export default function InterfaceItemTable({items, isLoading, errorMessage, sele
                 <h2 className="text-base font-bold text-slate-900">
                     DB 데이터 <span className="text-sm font-normal text-slate-500">({items.length}건, 최근 100건)</span>
                 </h2>
-                <button type="button" onClick={onRefresh}
-                        className="flex h-8 items-center gap-1 rounded-lg border border-slate-200 px-3 text-xs text-slate-600 hover:bg-slate-50">
+                <Button type="button" onClick={onRefresh}
+                        variant="secondary" size="sm" className="flex items-center gap-1">
                     <RefreshCw className="h-3.5 w-3.5"/> 새로고침
-                </button>
+                </Button>
             </div>
 
             {isLoading ? (

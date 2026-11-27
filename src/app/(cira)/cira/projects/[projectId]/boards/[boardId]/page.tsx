@@ -8,6 +8,7 @@ import {useProject} from "@/hooks/useProjects";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {use, useState} from "react";
+import Button from "@/components/ui/Button";
 
 export default function BoardDetailPage({
                                             params,
@@ -58,12 +59,12 @@ export default function BoardDetailPage({
                         </select>
                     )}
 
-                    <button
+                    <Button
                         onClick={() => setShowCreate(true)}
-                        className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50 transition-colors"
+                        variant="secondary" size="sm"
                     >
                         + 보드 생성
-                    </button>
+                    </Button>
                 </div>
             </div>
 

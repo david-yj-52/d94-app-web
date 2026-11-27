@@ -8,6 +8,7 @@ import {useDeriveIssueDoc, useEnsureIssueMainDoc, useIssueDocs} from "@/hooks/us
 import {docsError} from "@/lib/docs/error";
 import type {DocRule} from "@/types/ciraDocs";
 import type {LineageNode} from "@/types/docs";
+import Button from "@/components/ui/Button";
 
 /** 만들 파생 문서: 슬롯(rule) 또는 자유(folderName 직접 입력) */
 type Draft = { rule: DocRule | null; title: string; folderName: string };
@@ -39,11 +40,11 @@ export function IssueDocsSection({projectId, issueId}: { projectId: string; issu
             {isLoading ? <p className="text-xs text-slate-400">불러오는 중…</p> : isError || !data ? (
                 <p className="text-xs text-slate-400">연결 문서를 불러오지 못했습니다.</p>
             ) : !data.main ? (
-                <button type="button" disabled={ensure.isPending}
+                <Button variant="unstyled" type="button" disabled={ensure.isPending}
                         onClick={() => ensure.mutate(undefined, {onError: (e) => show(docsError(e, "문서를 만들지 못했습니다."), "error")})}
                         className="h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-50">
                     Docs 문서 생성
-                </button>
+                </Button>
             ) : (
                 <div className="space-y-3 text-sm">
                     <Link href={`/docs/${data.main.noteId}`}
@@ -55,15 +56,15 @@ export function IssueDocsSection({projectId, issueId}: { projectId: string; issu
 
                     <div className="flex flex-wrap gap-1.5">
                         {data.rules.map((r) => (
-                            <button key={r.id} type="button" onClick={() => setDraft({rule: r, title: "", folderName: ""})}
+                            <Button variant="unstyled" key={r.id} type="button" onClick={() => setDraft({rule: r, title: "", folderName: ""})}
                                     className="flex h-7 items-center gap-1 rounded-full border border-slate-200 px-2.5 text-xs text-slate-700 hover:bg-slate-50">
                                 <Plus className="h-3 w-3"/>{r.folderName}
-                            </button>
+                            </Button>
                         ))}
-                        <button type="button" onClick={() => setDraft({rule: null, title: "", folderName: ""})}
+                        <Button variant="unstyled" type="button" onClick={() => setDraft({rule: null, title: "", folderName: ""})}
                                 className="flex h-7 items-center gap-1 rounded-full border border-dashed border-slate-300 px-2.5 text-xs text-slate-600 hover:bg-slate-50">
                             <Plus className="h-3 w-3"/>자유 문서
-                        </button>
+                        </Button>
                     </div>
 
                     {draft && (
@@ -80,9 +81,9 @@ export function IssueDocsSection({projectId, issueId}: { projectId: string; issu
                             <input autoFocus value={draft.title} onChange={(e) => setDraft({...draft, title: e.target.value})}
                                    placeholder="문서 제목" aria-label="문서 제목"
                                    className="h-8 min-w-0 flex-1 rounded border border-slate-200 px-2 text-sm"/>
-                            <button type="submit" disabled={!draft.title.trim() || derive.isPending}
-                                    className="h-8 rounded bg-d94-brand px-3 text-xs font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">만들기</button>
-                            <button type="button" onClick={() => setDraft(null)} className="h-8 rounded px-2 text-xs text-slate-500 hover:bg-slate-100">취소</button>
+                            <Button variant="unstyled" type="submit" disabled={!draft.title.trim() || derive.isPending}
+                                    className="h-8 rounded bg-d94-brand px-3 text-xs font-medium text-white hover:bg-d94-brand-hover disabled:opacity-50">만들기</Button>
+                            <Button variant="unstyled" type="button" onClick={() => setDraft(null)} className="h-8 rounded px-2 text-xs text-slate-500 hover:bg-slate-100">취소</Button>
                         </form>
                     )}
 

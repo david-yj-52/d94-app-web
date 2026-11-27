@@ -1,5 +1,6 @@
 import type {Platform} from "./PlatformTable";
 import type {Product} from "./ProductTable";
+import Button from "@/components/ui/Button";
 
 type Props = {
     platform: Platform | null;
@@ -17,12 +18,12 @@ export default function DetailPanel({platform, product}: Props) {
                         <h3 className="font-semibold text-gray-800">
                             플랫폼 설정 상세 정보
                         </h3>
-                        <button
+                        <Button variant="unstyled"
                             type="button"
                             className="rounded border border-gray-300 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-100"
                         >
                             수정
-                        </button>
+                        </Button>
                     </div>
 
                     {platform ? (
@@ -45,12 +46,12 @@ export default function DetailPanel({platform, product}: Props) {
                     <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
                         <div className="mb-2 flex items-center justify-between">
                             <h3 className="font-semibold text-gray-800">제품 설정 상세 정보</h3>
-                            <button
+                            <Button variant="unstyled"
                                 type="button"
                                 className="rounded border border-gray-300 px-2 py-0.5 text-xs text-gray-700 hover:bg-gray-100"
                             >
                                 수정
-                            </button>
+                            </Button>
                         </div>
 
                         <dl className="space-y-1 text-xs text-gray-700">

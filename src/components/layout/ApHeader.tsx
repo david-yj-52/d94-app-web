@@ -12,6 +12,7 @@ import {useState} from "react";
 import {useIsAdmin, useSettings} from "@/hooks/useSettings";
 import {DEFAULT_LOGO_TEXT, LOGO_FONT_KEY, LOGO_TEXT_KEY} from "@/types/settings";
 import {logoFontClass} from "@/components/ui/logoFonts";
+import Button from "@/components/ui/Button";
 
 const NAV_ITEMS = [
     {href: "/home", label: "홈"},
@@ -64,14 +65,14 @@ export default function ApHeader({user}: { user: any }) {
                 <GlobalSearch/>
                 <div className="hidden h-5 w-px bg-gray-200 md:block"/>
                 <NotificationBell/>
-                <button
+                <Button variant="unstyled"
                     onClick={() => setMenuOpen(true)}
                     className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 md:hidden"
                     aria-label="메뉴"
                     aria-expanded={menuOpen}
                 >
                     <Menu className="h-5 w-5"/>
-                </button>
+                </Button>
                 <div className="hidden h-5 w-px bg-gray-200 md:block"/>
                 <span className="hidden whitespace-nowrap text-sm text-gray-600 md:inline">
           <strong className="font-semibold">{user?.name}</strong> 님
@@ -85,12 +86,12 @@ export default function ApHeader({user}: { user: any }) {
                         기준정보
                     </Link>
                 )}
-                <button
+                <Button variant="unstyled"
                     onClick={() => signOut()}
                     className="hidden h-8 items-center rounded-lg bg-gray-100 px-3 text-sm text-gray-700 transition-colors hover:bg-gray-200 whitespace-nowrap md:flex"
                 >
                     Log Out
-                </button>
+                </Button>
             </div>
 
             {/* 모바일 메뉴 (< md): 왼쪽 서랍. Dialog 가 바깥 클릭·ESC·포커스 가둠을 처리 */}
@@ -123,12 +124,12 @@ export default function ApHeader({user}: { user: any }) {
                             기준정보
                         </Link>
                     )}
-                    <button
+                    <Button variant="unstyled"
                         onClick={() => signOut()}
                         className="flex h-10 items-center rounded-lg bg-gray-100 px-3 text-sm text-gray-700 hover:bg-gray-200"
                     >
                         Log Out
-                    </button>
+                    </Button>
                 </div>
             </Dialog>
         </header>

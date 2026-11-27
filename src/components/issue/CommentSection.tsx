@@ -14,6 +14,7 @@ import type {CommentResponse} from "@/types/comment";
 import type {UserSummary} from "@/types/issue";
 import {useEffect, useRef, useState} from "react";
 import ReactMarkdown from "react-markdown";
+import Button from "@/components/ui/Button";
 
 const EMOJI_LIST = ["👍", "👎", "❤️", "😄", "😮", "🎉"];
 
@@ -171,7 +172,7 @@ function CommentInput({
                     className="absolute z-20 left-0 mt-1 w-64 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden"
                 >
                     {mention.results.slice(0, 6).map((user) => (
-                        <button
+                        <Button variant="unstyled"
                             key={user.email}
                             onMouseDown={(e) => {
                                 e.preventDefault();
@@ -181,25 +182,25 @@ function CommentInput({
                         >
                             <span className="font-medium text-slate-800">{user.name}</span>
                             <span className="text-xs text-slate-400">{user.email}</span>
-                        </button>
+                        </Button>
                     ))}
                 </div>
             )}
 
             <div className="flex justify-end gap-2 mt-2">
-                <button
+                <Button variant="unstyled"
                     onClick={onCancel}
                     className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
                 >
                     취소
-                </button>
-                <button
+                </Button>
+                <Button variant="unstyled"
                     onClick={onSubmit}
                     disabled={isSubmitting || !value.trim()}
                     className="px-3 py-1.5 rounded-lg bg-d94-brand text-white text-xs font-medium hover:bg-d94-brand-hover disabled:opacity-50"
                 >
                     {isSubmitting ? "등록 중..." : submitLabel}
-                </button>
+                </Button>
             </div>
         </div>
     );
@@ -230,7 +231,7 @@ function EmojiPicker({
             className="absolute z-20 bottom-full mb-1 left-0 bg-white border border-slate-200 rounded-xl shadow-lg p-2 flex gap-1"
         >
             {EMOJI_LIST.map((emoji) => (
-                <button
+                <Button variant="unstyled"
                     key={emoji}
                     onClick={() => {
                         onSelect(emoji);
@@ -239,7 +240,7 @@ function EmojiPicker({
                     className="text-lg hover:bg-slate-100 rounded-lg p-1 transition-colors"
                 >
                     {emoji}
-                </button>
+                </Button>
             ))}
         </div>
     );
@@ -361,14 +362,14 @@ function CommentItem({
                   className="w-full border border-blue-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-d94-brand resize-none"
               />
                             <div className="flex gap-2">
-                                <button
+                                <Button variant="unstyled"
                                     onClick={handleSave}
                                     disabled={isUpdating || !draft.trim()}
                                     className="px-3 py-1 rounded-lg bg-d94-brand text-white text-xs font-medium hover:bg-d94-brand-hover disabled:opacity-50"
                                 >
                                     {isUpdating ? "저장 중..." : "저장"}
-                                </button>
-                                <button
+                                </Button>
+                                <Button variant="unstyled"
                                     onClick={() => {
                                         setDraft(comment.content);
                                         setEditing(false);
@@ -376,7 +377,7 @@ function CommentItem({
                                     className="px-3 py-1 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
                                 >
                                     취소
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     ) : (
@@ -392,7 +393,7 @@ function CommentItem({
                             {comment.reactions
                                 ?.filter((r) => r.count > 0)
                                 .map((r) => (
-                                    <button
+                                    <Button variant="unstyled"
                                         key={r.reactionType}
                                         onClick={() => handleReaction(r.reactionType)}
                                         className={`flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs transition-colors ${
@@ -403,16 +404,16 @@ function CommentItem({
                                     >
                                         <span>{r.reactionType}</span>
                                         <span>{r.count}</span>
-                                    </button>
+                                    </Button>
                                 ))}
 
                             <div className="relative">
-                                <button
+                                <Button variant="unstyled"
                                     onClick={() => setShowEmojiPicker((v) => !v)}
                                     className="flex items-center justify-center w-6 h-6 rounded-full border border-slate-200 text-slate-400 hover:bg-slate-50 text-xs"
                                 >
                                     +
-                                </button>
+                                </Button>
                                 {showEmojiPicker && (
                                     <EmojiPicker
                                         onSelect={handleReaction}
@@ -422,12 +423,12 @@ function CommentItem({
                             </div>
 
                             {depth === 0 && (
-                                <button
+                                <Button variant="unstyled"
                                     onClick={() => setShowReplyForm((v) => !v)}
                                     className="text-xs text-slate-400 hover:text-slate-600 ml-1"
                                 >
                                     답글
-                                </button>
+                                </Button>
                             )}
                         </div>
                     )}
@@ -454,7 +455,7 @@ function CommentItem({
 
                 {!editing && (
                     <div className="flex-shrink-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
+                        <Button variant="unstyled"
                             onClick={() => {
                                 setDraft(comment.content);
                                 setEditing(true);
@@ -462,14 +463,14 @@ function CommentItem({
                             className="px-2 py-1 rounded text-xs text-slate-500 hover:bg-slate-100"
                         >
                             수정
-                        </button>
-                        <button
+                        </Button>
+                        <Button variant="unstyled"
                             onClick={handleDelete}
                             disabled={isDeleting}
                             className="px-2 py-1 rounded text-xs text-red-400 hover:bg-red-50 disabled:opacity-50"
                         >
                             삭제
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>

@@ -12,6 +12,7 @@ import type {MilestoneResponse} from "@/types/milestone";
 import type {VersionResponse} from "@/types/version";
 import {use, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Button from "@/components/ui/Button";
 
 type Tab = "versions" | "milestones";
 
@@ -106,29 +107,29 @@ export default function VersionsPage({
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex gap-2">
-                    <button className={tabClass("versions")} onClick={() => setActiveTab("versions")}>
+                    <Button variant="unstyled" className={tabClass("versions")} onClick={() => setActiveTab("versions")}>
                         버전
-                    </button>
-                    <button className={tabClass("milestones")} onClick={() => setActiveTab("milestones")}>
+                    </Button>
+                    <Button variant="unstyled" className={tabClass("milestones")} onClick={() => setActiveTab("milestones")}>
                         마일스톤
-                    </button>
+                    </Button>
                 </div>
 
                 {activeTab === "versions" && (
-                    <button
+                    <Button
                         onClick={() => setShowCreateVersion(true)}
-                        className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        
                     >
                         + 새 버전
-                    </button>
+                    </Button>
                 )}
                 {activeTab === "milestones" && (
-                    <button
+                    <Button
                         onClick={() => setShowCreateMilestone(true)}
-                        className="h-10 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        
                     >
                         + 새 마일스톤
-                    </button>
+                    </Button>
                 )}
             </div>
 
@@ -148,12 +149,12 @@ export default function VersionsPage({
                         <div className="flex flex-col items-center justify-center py-24 text-slate-400">
                             <p className="text-lg font-medium text-slate-600 mb-1">버전이 없습니다.</p>
                             <p className="text-sm mb-6">새 버전을 생성해서 릴리즈를 관리하세요.</p>
-                            <button
+                            <Button
                                 onClick={() => setShowCreateVersion(true)}
-                                className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                                className="px-6"
                             >
                                 + 새 버전
-                            </button>
+                            </Button>
                         </div>
                     )}
 
@@ -191,12 +192,12 @@ export default function VersionsPage({
                         <div className="flex flex-col items-center justify-center py-24 text-slate-400">
                             <p className="text-lg font-medium text-slate-600 mb-1">마일스톤이 없습니다.</p>
                             <p className="text-sm mb-6">새 마일스톤을 생성해서 목표를 관리하세요.</p>
-                            <button
+                            <Button
                                 onClick={() => setShowCreateMilestone(true)}
-                                className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                                className="px-6"
                             >
                                 + 새 마일스톤
-                            </button>
+                            </Button>
                         </div>
                     )}
 

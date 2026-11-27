@@ -6,6 +6,7 @@ import CqlSyntaxGuide from "@/components/search/CqlSyntaxGuide";
 import {useCqlSearch} from "@/hooks/useCqlSearch";
 import {ChevronLeft, ChevronRight, Search,} from "lucide-react";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 export default function AdvancedSearchPage() {
     const [cql, setCql] = useState("");
@@ -133,23 +134,23 @@ export default function AdvancedSearchPage() {
                 {/* Pagination */}
                 {totalPages > 1 && (
                     <div className="mt-4 flex items-center justify-center gap-2">
-                        <button
+                        <Button variant="unstyled"
                             disabled={page === 0}
                             onClick={() => setPage((p) => p - 1)}
                             className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-40 transition-colors"
                         >
                             <ChevronLeft className="h-4 w-4"/>
-                        </button>
+                        </Button>
                         <span className="text-sm text-gray-500">
               {page + 1} / {totalPages}
             </span>
-                        <button
+                        <Button variant="unstyled"
                             disabled={page >= totalPages - 1}
                             onClick={() => setPage((p) => p + 1)}
                             className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-40 transition-colors"
                         >
                             <ChevronRight className="h-4 w-4"/>
-                        </button>
+                        </Button>
                     </div>
                 )}
             </div>

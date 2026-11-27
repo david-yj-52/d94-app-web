@@ -4,6 +4,7 @@ import {useRemoveProjectMember, useUpdateProjectMemberRole,} from "@/hooks/usePr
 import type {ProjectMemberResponse, ProjectRole} from "@/types/member";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 
 interface Props {
     projectId: string;
@@ -129,13 +130,13 @@ export default function MemberTable({
                         {isAdmin && (
                             <td className="py-3 pr-4 text-right">
                                 {member.email !== currentUserEmail && (
-                                    <button
+                                    <Button variant="unstyled"
                                         onClick={() => handleRemove(member.userId, member.userNm)}
                                         disabled={isRemoving}
                                         className="text-xs text-red-400 hover:text-red-600 disabled:opacity-60"
                                     >
                                         제거
-                                    </button>
+                                    </Button>
                                 )}
                             </td>
                         )}

@@ -12,6 +12,7 @@ import {validateConfigField} from "@/app/(main)/ayaan/settings/validate";
 import {toToolBody, toToolForm, toWorkspaceBody, type ToolForm} from "@/app/(main)/ayaan/settings/toolBody";
 import {TOOLS, type AyaanRepo, type AyaanTool, type AyaanWorkspace, type ToolCd} from "@/types/ayaan";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import Button from "@/components/ui/Button";
 
 type Errors = Record<string, string>;
 
@@ -78,7 +79,7 @@ function GlobalTab() {
                 <Field key={k} id={`cfg-${k}`} helpKey={k} value={values[k] ?? ""} error={errors[k]}
                        onChange={(v) => setValues({...values, [k]: v})}/>
             ))}
-            <div className="pt-4"><button className={btnPrimary} disabled={save.isPending} onClick={onSave}>저장</button></div>
+            <div className="pt-4"><Button  disabled={save.isPending} onClick={onSave}>저장</Button></div>
             {ToastComponent}
         </div>
     );
@@ -122,7 +123,7 @@ function ToolCard({tool}: { tool: AyaanTool }) {
                        value={String(t[f] ?? "")} error={errors[f] ?? errors[helpKey]}
                        onChange={(v) => setT({...t, [f]: kind === "checkbox" ? v === "true" : v})}/>
             ))}
-            <button className={btnPrimary} disabled={save.isPending} onClick={onSave}>{t.toolCd} 저장</button>
+            <Button  disabled={save.isPending} onClick={onSave}>{t.toolCd} 저장</Button>
             {ToastComponent}
         </section>
     );
@@ -178,14 +179,14 @@ function WorkspacesTab() {
     const remove = useMutation({mutationFn: deleteWorkspace, onSuccess: () => { show("삭제했습니다."); done(); }});
     return (
         <div className="space-y-4">
-            <button className={btnSecondary} onClick={() => setForm(newWs())}>작업공간 추가</button>
+            <Button variant="secondary" onClick={() => setForm(newWs())}>작업공간 추가</Button>
             <ul className="space-y-2">
                 {(q.data ?? []).map((w) => (
                     <li key={w.projectKey} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 text-sm">
                         <span><b>{w.projectKey}</b> 저장소 {w.repos.length}개 · {w.defaultTool}</span>
                         <span className="flex gap-2">
-                            <button className={btnSecondary} onClick={() => setForm({...w, promptTemplate: w.promptTemplate ?? ""})}>편집</button>
-                            <button className={btnSecondary} onClick={async () => (await confirm(`${w.projectKey} 작업공간을 삭제할까요?`, {confirmLabel: "삭제", danger: true})) && remove.mutate(w.projectKey)}>삭제</button>
+                            <Button variant="secondary" onClick={() => setForm({...w, promptTemplate: w.promptTemplate ?? ""})}>편집</Button>
+                            <Button variant="secondary" onClick={async () => (await confirm(`${w.projectKey} 작업공간을 삭제할까요?`, {confirmLabel: "삭제", danger: true})) && remove.mutate(w.projectKey)}>삭제</Button>
                         </span>
                     </li>
                 ))}
@@ -205,16 +206,16 @@ function WorkspacesTab() {
                                 <input aria-label={`저장소 ${i + 1} URL`} placeholder="Git URL" className={`${inputCls} min-w-48 flex-1`} value={r.gitUrl} onChange={(e) => setRepo(i, {gitUrl: e.target.value})}/>
                                 <input aria-label={`저장소 ${i + 1} 기준 브랜치`} placeholder="기준 브랜치" className={`${inputCls} w-32`} value={r.baseBranch} onChange={(e) => setRepo(i, {baseBranch: e.target.value})}/>
                                 <input aria-label={`저장소 ${i + 1} 배포 브랜치`} placeholder="배포 브랜치" className={`${inputCls} w-32`} value={r.deployBranch ?? ""} onChange={(e) => setRepo(i, {deployBranch: e.target.value})}/>
-                                <button type="button" aria-label={`저장소 ${i + 1} 위로`} className={btnSecondary} disabled={i === 0} onClick={() => moveRepo(i, -1)}>↑</button>
-                                <button type="button" aria-label={`저장소 ${i + 1} 아래로`} className={btnSecondary} disabled={i === form.repos.length - 1} onClick={() => moveRepo(i, 1)}>↓</button>
-                                <button type="button" aria-label={`저장소 ${i + 1} 삭제`} className={btnSecondary} onClick={() => setForm({...form, repos: form.repos.filter((_, j) => j !== i)})}>삭제</button>
+                                <Button type="button" aria-label={`저장소 ${i + 1} 위로`} variant="secondary" disabled={i === 0} onClick={() => moveRepo(i, -1)}>↑</Button>
+                                <Button type="button" aria-label={`저장소 ${i + 1} 아래로`} variant="secondary" disabled={i === form.repos.length - 1} onClick={() => moveRepo(i, 1)}>↓</Button>
+                                <Button type="button" aria-label={`저장소 ${i + 1} 삭제`} variant="secondary" onClick={() => setForm({...form, repos: form.repos.filter((_, j) => j !== i)})}>삭제</Button>
                             </div>
                         ))}
-                        <button type="button" className={btnSecondary} onClick={() => setForm({...form, repos: [...form.repos, {...EMPTY_REPO}]})}>저장소 추가</button>
+                        <Button type="button" variant="secondary" onClick={() => setForm({...form, repos: [...form.repos, {...EMPTY_REPO}]})}>저장소 추가</Button>
                     </fieldset>
                     <div className="flex gap-2">
-                        <button className={btnPrimary} disabled={save.isPending} onClick={() => save.mutate(toWorkspaceBody(form))}>저장</button>
-                        <button className={btnSecondary} onClick={() => setForm(null)}>취소</button>
+                        <Button  disabled={save.isPending} onClick={() => save.mutate(toWorkspaceBody(form))}>저장</Button>
+                        <Button variant="secondary" onClick={() => setForm(null)}>취소</Button>
                     </div>
                 </section>
             )}
@@ -234,8 +235,8 @@ export default function AyaanSettingsPanel() {
         <section className="space-y-4">
             <div role="tablist" className="flex gap-2 border-b border-slate-200">
                 {TABS.map(([k, label]) => (
-                    <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
-                            className={`px-4 py-2 text-sm ${tab === k ? "border-b-2 border-d94-brand font-semibold text-d94-brand" : "text-slate-500"}`}>{label}</button>
+                    <Button variant="unstyled" key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}
+                            className={`px-4 py-2 text-sm ${tab === k ? "border-b-2 border-d94-brand font-semibold text-d94-brand" : "text-slate-500"}`}>{label}</Button>
                 ))}
             </div>
             <div role="tabpanel">

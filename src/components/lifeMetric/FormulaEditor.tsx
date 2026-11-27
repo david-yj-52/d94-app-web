@@ -2,6 +2,7 @@
 
 import {useRef, useState} from "react";
 import {insertRef, refQueryAt} from "./formulaRef";
+import Button from "@/components/ui/Button";
 
 const HINT = "사칙연산 · 괄호 · now() · daysBetween(a, b) · sum|avg|count(로그키[, 최근N일]) · @지표코드";
 
@@ -43,14 +44,14 @@ export default function FormulaEditor({value, onChange, codes}: {
                     className="absolute z-20 mt-1 w-56 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
                     {suggestions.map((c) => (
                         <li key={c}>
-                            <button type="button" role="option" aria-selected={false}
+                            <Button variant="unstyled" type="button" role="option" aria-selected={false}
                                     onMouseDown={(e) => {
                                         e.preventDefault();
                                         pick(c);
                                     }}
                                     className="w-full px-3 py-1.5 text-left font-mono text-sm text-slate-700 hover:bg-slate-50">
                                 @{c}
-                            </button>
+                            </Button>
                         </li>
                     ))}
                 </ul>

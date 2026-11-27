@@ -7,6 +7,7 @@ import {use, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 import FormField from "@/components/ui/FormField";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 
 const PROVIDER_LABEL: Record<string, string> = {
     GITHUB: "GitHub",
@@ -28,12 +29,12 @@ function CopyButton({text, label}: { text: string; label: string }) {
         setTimeout(() => setCopied(false), 2000);
     };
     return (
-        <button
+        <Button variant="unstyled"
             onClick={handleCopy}
             className="text-xs px-2 py-1 rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 transition-colors"
         >
             {copied ? "복사됨 ✓" : label}
-        </button>
+        </Button>
     );
 }
 
@@ -80,12 +81,12 @@ function WebhookModal({repo, onClose}: WebhookModalProps) {
                 </div>
 
                 <div className="mt-6 flex justify-end">
-                    <button
+                    <Button
                         onClick={onClose}
-                        className="h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        className="h-9 px-5"
                     >
                         확인했습니다
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
@@ -176,12 +177,12 @@ export default function SettingsGitPage({
                             <div className="flex items-center gap-2 shrink-0">
                                 <CopyButton text={repo.webhookUrl} label="Webhook URL 복사"/>
                                 <CopyButton text={repo.webhookSecret} label="Secret 복사"/>
-                                <button
+                                <Button variant="unstyled"
                                     onClick={() => handleDelete(repo.id, repo.repoName)}
                                     className="text-xs text-red-400 hover:text-red-600 ml-1"
                                 >
                                     삭제
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     ))}
@@ -250,13 +251,13 @@ export default function SettingsGitPage({
                     </div>
 
                     <div className="flex justify-end">
-                        <button
+                        <Button
                             type="submit"
                             disabled={isRegistering}
-                            className="h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                            className="h-9 px-5"
                         >
                             {isRegistering ? "등록 중..." : "저장소 등록"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </section>

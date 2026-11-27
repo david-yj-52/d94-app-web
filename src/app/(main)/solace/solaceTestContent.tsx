@@ -2,6 +2,7 @@
 
 import {useEffect, useRef, useState} from "react";
 import {useSolace} from "@/lib/messaging/solace/useSolace";
+import Button from "@/components/ui/Button";
 
 export default function SolaceTestContent() {
     const {
@@ -71,7 +72,7 @@ export default function SolaceTestContent() {
 
                 <div className="flex items-center gap-2">
                     {!isConnected ? (
-                        <button
+                        <Button variant="unstyled"
                             onClick={connect}
                             disabled={isConnecting}
                             className="px-4 py-1.5 text-sm bg-emerald-500 hover:bg-emerald-400
@@ -79,23 +80,23 @@ export default function SolaceTestContent() {
                                        rounded-md font-medium transition-colors"
                         >
                             {isConnecting ? "연결 중..." : "연결"}
-                        </button>
+                        </Button>
                     ) : (
-                        <button
+                        <Button variant="unstyled"
                             onClick={disconnect}
                             className="px-4 py-1.5 text-sm bg-gray-700 hover:bg-gray-600
                                        rounded-md font-medium transition-colors"
                         >
                             연결 해제
-                        </button>
+                        </Button>
                     )}
-                    <button
+                    <Button variant="unstyled"
                         onClick={clearMessages}
                         className="px-4 py-1.5 text-sm bg-gray-800 hover:bg-gray-700
                                    rounded-md font-medium transition-colors"
                     >
                         초기화
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -184,7 +185,7 @@ export default function SolaceTestContent() {
                                    focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500
                                    disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           />
-                    <button
+                    <Button variant="unstyled"
                         onClick={handleSend}
                         disabled={!isConnected || !inputMessage.trim() || isSending}
                         className="px-6 py-3 bg-emerald-500 hover:bg-emerald-400
@@ -192,7 +193,7 @@ export default function SolaceTestContent() {
                                    rounded-xl font-medium text-sm transition-colors self-end"
                     >
                         {isSending ? "대기 중..." : "발송"}
-                    </button>
+                    </Button>
                 </div>
 
                 <div className="mt-2 flex gap-4 text-xs text-gray-600">

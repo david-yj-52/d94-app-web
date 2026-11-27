@@ -14,6 +14,7 @@ import {useSession} from "next-auth/react";
 import {use, useEffect, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 
 const CATEGORY_LABEL: Record<WorkflowCategory, string> = {
     TODO: "할 일",
@@ -70,13 +71,13 @@ function AddStatusForm({projectId, onSuccess, onError}: AddStatusFormProps) {
                 <option value="IN_PROGRESS">진행 중</option>
                 <option value="DONE">완료</option>
             </select>
-            <button
+            <Button
                 type="submit"
                 disabled={isPending || !name.trim()}
-                className="h-9 px-4 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60 shrink-0"
+                className="h-9 shrink-0"
             >
                 {isPending ? "추가 중..." : "추가"}
-            </button>
+            </Button>
         </form>
     );
 }
@@ -277,14 +278,14 @@ export default function SettingsWorkflowPage({
                     </Badge>
                                     </div>
                                     {isAdmin && (
-                                        <button
+                                        <Button variant="unstyled"
                                             onClick={() =>
                                                 handleDeleteStatus(status.id, status.statusNm)
                                             }
                                             className="text-xs text-red-400 hover:text-red-600"
                                         >
                                             삭제
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                             ))}
@@ -307,13 +308,13 @@ export default function SettingsWorkflowPage({
                                     전이 규칙
                                 </h3>
                                 {isAdmin && (
-                                    <button
+                                    <Button
                                         onClick={handleSaveTransitions}
                                         disabled={isSaving}
-                                        className="h-8 px-4 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                                        size="sm"
                                     >
                                         {isSaving ? "저장 중..." : "저장"}
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                             <p className="text-xs text-slate-400 mb-3">

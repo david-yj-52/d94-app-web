@@ -7,6 +7,7 @@ import {SkeletonCard} from "@/components/ui/Skeleton";
 import {useToast} from "@/components/ui/Toast";
 import {useProjects} from "@/hooks/useProjects";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 export default function ProjectsPage() {
     const {data: projects, isLoading, isError} = useProjects();
@@ -15,7 +16,7 @@ export default function ProjectsPage() {
 
     return (
         <div className="max-w-5xl mx-auto px-4">
-            <PageHeader title="프로젝트" actions={<button onClick={() => setShowCreate(true)} className="h-9 px-4 rounded bg-cira-brand text-white text-sm font-semibold hover:opacity-90">+ 프로젝트 생성</button>}/>
+            <PageHeader title="프로젝트" actions={<Button variant="unstyled" onClick={() => setShowCreate(true)} className="h-9 px-4 rounded bg-cira-brand text-white text-sm font-semibold hover:opacity-90">+ 프로젝트 생성</Button>}/>
 
             {isLoading && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

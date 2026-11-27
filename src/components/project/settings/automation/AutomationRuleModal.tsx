@@ -4,6 +4,7 @@ import type {ActionType, AutomationRule, CreateAutomationRuleRequest, TriggerTyp
 import {ACTION_LABEL, TRIGGER_LABEL} from "./AutomationRuleCard";
 import {useEffect, useState} from "react";
 import FormField from "@/components/ui/FormField";
+import Button from "@/components/ui/Button";
 
 const TRIGGER_TYPES: TriggerType[] = [
     "ISSUE_CREATED",
@@ -160,7 +161,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
 
                     {/* 활성 여부 */}
                     <div className="flex items-center gap-3">
-                        <button
+                        <Button variant="unstyled"
                             type="button"
                             onClick={() => setIsActive((v) => !v)}
                             className={`relative inline-flex h-5 w-9 cursor-pointer rounded-full border-2 border-transparent transition-colors focus:outline-none ${
@@ -172,7 +173,7 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
                       isActive ? "translate-x-4" : "translate-x-0"
                   }`}
               />
-                        </button>
+                        </Button>
                         <span className="text-sm text-slate-600">
               {isActive ? "활성화 상태로 저장" : "비활성화 상태로 저장"}
             </span>
@@ -180,20 +181,20 @@ export default function AutomationRuleModal({rule, onSubmit, isPending, onClose}
 
                     {/* 버튼 */}
                     <div className="flex justify-end gap-2 pt-2">
-                        <button
+                        <Button
                             type="button"
                             onClick={onClose}
-                            className="h-9 px-4 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50"
+                            variant="secondary" className="h-9"
                         >
                             취소
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type="submit"
                             disabled={isPending}
-                            className="h-9 px-5 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60"
+                            className="h-9 px-5"
                         >
                             {isPending ? "저장 중..." : rule ? "수정 저장" : "규칙 추가"}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

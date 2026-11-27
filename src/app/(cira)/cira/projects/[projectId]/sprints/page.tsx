@@ -24,6 +24,7 @@ import Link from "next/link";
 import {use, useState} from "react";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
 import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
 
 const STATUS_LABEL: Record<SprintStatus, string> = {
     Planned: "대기",
@@ -79,10 +80,10 @@ function BacklogSection({projectId, sprints, onMoved}: {
                         {targets.length > 0 && (
                             <DropdownMenu
                                 trigger={
-                                    <button aria-label={`${issue.issueKey} 스프린트로 이동`}
+                                    <Button variant="unstyled" aria-label={`${issue.issueKey} 스프린트로 이동`}
                                             className="h-8 rounded border border-slate-200 px-2 text-xs text-slate-600 hover:bg-slate-50">
                                         스프린트로 ▾
-                                    </button>
+                                    </Button>
                                 }
                                 items={targets.map((s) => ({
                                     label: s.sprintNm,
@@ -147,57 +148,57 @@ function SprintCard({
             <span>
               {formatDate(sprint.startDt)} ~ {formatDate(sprint.endDt)}
             </span>
-                        <button
+                        <Button variant="unstyled"
                             onClick={() => setExpanded((v) => !v)}
                             className="text-blue-500 hover:text-d94-brand-hover font-medium"
                         >
                             Task {issues.length}개 {expanded ? "▲" : "▼"}
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                     {sprint.sprintStat === "Planned" && (
-                        <button
+                        <Button variant="unstyled"
                             onClick={() => onStart(sprint.id)}
                             disabled={isStarting}
                             className="h-8 px-3 rounded-lg bg-green-600 text-white text-xs font-semibold hover:bg-green-700 disabled:opacity-60"
                         >
                             {isStarting ? "시작 중..." : "시작"}
-                        </button>
+                        </Button>
                     )}
                     {sprint.sprintStat === "Active" && (
-                        <button
+                        <Button
                             onClick={() => onComplete(sprint)}
-                            className="h-8 px-3 rounded-lg bg-d94-brand text-white text-xs font-semibold hover:bg-d94-brand-hover"
+                            size="sm"
                         >
                             완료
-                        </button>
+                        </Button>
                     )}
                     {sprint.sprintStat !== "Completed" && (
-                        <button
+                        <Button
                             onClick={() => onAssign(sprint)}
-                            className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
+                            variant="secondary" size="sm"
                         >
                             Task 할당
-                        </button>
+                        </Button>
                     )}
                     {sprint.sprintStat !== "Active" && (
-                        <button
+                        <Button
                             onClick={() => onEdit(sprint)}
-                            className="h-8 px-3 rounded-lg border border-slate-200 text-xs text-slate-600 hover:bg-slate-50"
+                            variant="secondary" size="sm"
                         >
                             수정
-                        </button>
+                        </Button>
                     )}
                     {sprint.sprintStat === "Planned" && (
-                        <button
+                        <Button variant="unstyled"
                             onClick={() => onDelete(sprint.id)}
                             disabled={isDeleting}
                             className="h-8 px-3 rounded-lg border border-red-200 text-xs text-red-500 hover:bg-red-50 disabled:opacity-60"
                         >
                             삭제
-                        </button>
+                        </Button>
                     )}
                 </div>
             </div>
@@ -247,14 +248,14 @@ function SprintCard({
                                     </td>
                                     {sprint.sprintStat !== "Completed" && (
                                         <td className="py-2.5 pr-4 text-right">
-                                            <button
+                                            <Button variant="unstyled"
                                                 onClick={() =>
                                                     removeIssue({sprintId: sprint.id, issueId: issue.id})
                                                 }
                                                 className="text-xs text-red-400 hover:text-red-600"
                                             >
                                                 제거
-                                            </button>
+                                            </Button>
                                         </td>
                                     )}
                                 </tr>
@@ -314,12 +315,12 @@ export default function SprintsPage({
                 breadcrumbs={[{label: "프로젝트", href: "/cira/projects"}, {label: project?.name ?? "..."}]}
                 title="백로그"
                 actions={
-                    <button
+                    <Button variant="unstyled"
                         onClick={() => setShowCreate(true)}
                         className="h-10 rounded-md bg-cira-brand px-4 text-sm font-semibold text-white hover:opacity-90"
                     >
                         + 스프린트 생성
-                    </button>
+                    </Button>
                 }
             />
 
@@ -341,12 +342,12 @@ export default function SprintsPage({
                 <div className="flex flex-col items-center justify-center py-24 text-slate-400">
                     <p className="text-lg font-medium text-slate-600 mb-1">스프린트가 없습니다.</p>
                     <p className="text-sm mb-6">새 스프린트를 생성해서 작업을 계획하세요.</p>
-                    <button
+                    <Button
                         onClick={() => setShowCreate(true)}
-                        className="h-10 px-6 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover"
+                        className="px-6"
                     >
                         + 스프린트 생성
-                    </button>
+                    </Button>
                 </div>
             )}
 

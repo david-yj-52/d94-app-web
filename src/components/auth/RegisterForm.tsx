@@ -8,6 +8,7 @@ import {useRouter} from "next/navigation";
 import {useState} from "react";
 import {useForm} from "react-hook-form";
 import {z} from "zod";
+import Button from "@/components/ui/Button";
 
 /** 가입 실패 응답 → 사용자 안내 문구 */
 function registerErrorMessage(error: unknown): string {
@@ -138,13 +139,13 @@ export default function RegisterForm() {
                             placeholder="영문+숫자 8자 이상"
                             className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                         />
-                        <button
+                        <Button variant="unstyled"
                             type="button"
                             onClick={() => setShowPassword((v) => !v)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
                         >
                             {showPassword ? "숨기기" : "보기"}
-                        </button>
+                        </Button>
                     </div>
                     {errors.password && (
                         <p className="mt-1 text-xs text-red-500">
@@ -164,13 +165,13 @@ export default function RegisterForm() {
                             placeholder="비밀번호를 다시 입력하세요"
                             className="w-full h-11 rounded-lg border border-slate-200 bg-slate-50 px-3 pr-10 text-sm text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-d94-brand focus:border-transparent"
                         />
-                        <button
+                        <Button variant="unstyled"
                             type="button"
                             onClick={() => setShowConfirm((v) => !v)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
                         >
                             {showConfirm ? "숨기기" : "보기"}
-                        </button>
+                        </Button>
                     </div>
                     {errors.passwordConfirm && (
                         <p className="mt-1 text-xs text-red-500">
@@ -185,7 +186,7 @@ export default function RegisterForm() {
                     </p>
                 )}
 
-                <button
+                <Button variant="unstyled"
                     type="submit"
                     disabled={isSubmitting}
                     className="w-full h-11 rounded-lg bg-d94-brand text-white text-sm font-semibold hover:bg-d94-brand-hover disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -216,7 +217,7 @@ export default function RegisterForm() {
                     ) : (
                         "회원가입"
                     )}
-                </button>
+                </Button>
             </form>
 
             <p className="mt-6 text-center text-sm text-slate-500">

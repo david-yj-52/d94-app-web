@@ -16,6 +16,7 @@ import {
     TextQuote,
 } from "lucide-react";
 import {useState} from "react";
+import Button from "@/components/ui/Button";
 
 interface WikiEditorProps {
     initialTitle: string;
@@ -63,7 +64,7 @@ export default function WikiEditor({
         title: string;
         children: React.ReactNode;
     }) => (
-        <button
+        <Button variant="unstyled"
             type="button"
             title={btnTitle}
             onClick={onClick}
@@ -75,7 +76,7 @@ export default function WikiEditor({
             ].join(" ")}
         >
             {children}
-        </button>
+        </Button>
     );
 
     return (
@@ -178,19 +179,19 @@ export default function WikiEditor({
 
             {/* Actions */}
             <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-200">
-                <button
+                <Button variant="unstyled"
                     onClick={handleSave}
                     disabled={isSaving || !title.trim()}
                     className="h-8 px-4 rounded-md bg-d94-brand text-white text-sm font-medium hover:bg-d94-brand-hover disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isSaving ? "저장 중..." : "저장"}
-                </button>
-                <button
+                </Button>
+                <Button variant="unstyled"
                     onClick={onCancel}
                     className="h-8 px-4 rounded-md border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50"
                 >
                     취소
-                </button>
+                </Button>
             </div>
         </div>
     );
