@@ -128,6 +128,20 @@ if (docs.length === 0) return <EmptyState>아직 올린 문서가 없습니다.<
 - md = `px-4 py-10 text-sm`, sm = `px-3 py-4 text-xs`, 가운데 `text-slate-400`. `action`(버튼·링크)은 문구 아래.
 - 2026-11-26 "~이 없습니다" 빈 상태 21곳 교체(Docs·Study·Wiki·Life Metric·Ayaan·interfaceTest·설정 패널·CIRA 설정 docs/fields·필드 가져오기·자동화 실행 이력, 문서·노트를 찾을 수 없음). 안내 문구(“변경할 수 없습니다” 등)와 위키 본문 자리표시는 대상 아님.
 
+### DropdownMenu — `import DropdownMenu from "@/components/ui/DropdownMenu"`
+```ts
+{ trigger: ReactNode /* <button> */; items: {label: ReactNode; onSelect: () => void; disabled?: boolean; danger?: boolean}[]; align?: "start" | "end" }
+```
+```tsx
+<DropdownMenu
+    trigger={<button type="button" aria-label="보드 메뉴">···</button>}
+    items={[{label: "보드 삭제", onSelect: () => void handleDeleteBoard(), danger: true}]}
+/>
+```
+- Radix DropdownMenu(포털). 키보드(화살표·Enter·Esc)·바깥 클릭·포커스를 처리합니다. `danger` 항목은 빨강, 선택 시 메뉴가 닫힌 뒤 `onSelect`.
+- 항목에서 `useConfirm`·손 모달을 열어도 됩니다(메뉴가 먼저 닫혀 body pointer-events 가 돌아옴 — 2026-11-26 확인).
+- 사용처: CiraShell(프로필), Task 상세 더보기, 스프린트, KanbanCard(모바일 이동), KanbanBoard 보드 메뉴, DocsSidebar 폴더 메뉴. 2026-11-26 `cira/ui/Menu` 에서 승격.
+
 ### ConfirmDialog / useConfirm — `import {useConfirm} from "@/components/ui/ConfirmDialog"`
 ```ts
 useConfirm(): { confirm: (message: string, opts?: { title?: string; confirmLabel?: string; danger?: boolean }) => Promise<boolean>; ConfirmComponent: JSX.Element | null }
@@ -178,6 +192,6 @@ return (<div>... {ConfirmComponent}</div>);
 | `ConfirmDialog` | 브라우저 `confirm()` 15곳 + 손 마크업 삭제 다이얼로그 | ✅ **완료**(2026-11-26 `useConfirm` — `confirm()` 15곳, 손 마크업 삭제 확인 5곳: Task·댓글·컬럼·보드·지표) |
 | `Badge` | 상태·우선순위 배지 (`rounded-full text-xs`) | ✅ **완료**(2026-11-26, 23곳) |
 | `EmptyState` | "~이 없습니다" 빈 화면 | ✅ **완료**(2026-11-26, 21곳) |
-| `DropdownMenu` | `···` 더보기 메뉴 (issue 상세 등) | |
+| `DropdownMenu` | `···` 더보기 메뉴 (issue 상세 등) | ✅ **완료**(2026-11-26 `cira/ui/Menu` 승격, 손 마크업 드롭다운 2곳 교체) |
 
 새 primitive를 만들면 이 문서 §2에 카드를 추가하고, 카탈로그 표에도 등록합니다.

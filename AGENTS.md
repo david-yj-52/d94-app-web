@@ -84,7 +84,7 @@ AGENTS.md (L1)
 | 스타일        | Tailwind CSS v3 + `clsx` / `tailwind-merge`, 아이콘 `lucide-react` |
 | 기타          | Recharts(차트), Tiptap(리치 텍스트), react-markdown, CodeMirror 6(`@uiw/react-codemirror`·`@codemirror/{lang-markdown,language,language-data,view,state,autocomplete}`·`@lezer/highlight` — Docs 노트 편집 전용), Docs 보기: `remark-gfm`·`highlight.js`(코드 하이라이트)·`mermaid`(다이어그램, dynamic import) |
 | 테스트        | Vitest 4 + jsdom, React Testing Library, MSW 2, coverage-v8 → [docs/testing.md](docs/testing.md) |
-| UI(Radix)     | Radix UI — `@radix-ui/react-dialog` 는 공용 `ui/Dialog`, `react-dropdown-menu` 는 CIRA 전용 `cira/ui/Menu` → [ADR 0006](docs/decisions/0006-cira-design-layer.md) |
+| UI(Radix)     | Radix UI — `@radix-ui/react-dialog` → 공용 `ui/Dialog`, `react-dropdown-menu` → 공용 `ui/DropdownMenu` → [ADR 0006](docs/decisions/0006-cira-design-layer.md) |
 | 패키지 매니저 | npm (`package-lock.json`)                                          |
 
 ## 3. 명령어

@@ -5,7 +5,7 @@
 
 ### DocsSidebar — `@/components/docs/DocsSidebar`
 `{ vaults: DocsVault[]; folders: DocsFolder[]; notes: NoteSummary[]; selectedNoteId: string | null; onNewNote: (folderId | null, vaultId: string) => void; onNewFolder: (parentId | null, vaultId: string) => void; onRenameFolder; onDeleteFolder; onMoveFolder: (folder: DocsFolder) => void }`
-- `vaults` 마다 섹션(🔒 Private · 👥 Team 이름, 접기, 섹션별 [새 노트][새 폴더])을 그리고, 그 안에 `vaultId` 가 같은 폴더·노트만. `parentId` 로 폴더 트리, 폴더마다 그 폴더의 노트(제목순). 접힘은 로컬 상태. 폴더 `···` 메뉴(hover 시 표시). 들여쓰기만 인라인 style.
+- `vaults` 마다 섹션(🔒 Private · 👥 Team 이름, 접기, 섹션별 [새 노트][새 폴더])을 그리고, 그 안에 `vaultId` 가 같은 폴더·노트만. `parentId` 로 폴더 트리, 폴더마다 그 폴더의 노트(제목순). 접힘은 로컬 상태. 폴더 `···` 메뉴는 `ui/DropdownMenu`(새 노트·하위 폴더·이름 변경·이동·삭제, md 이상은 hover 시 표시·모바일은 항상 표시). 들여쓰기만 인라인 style.
 
 ### NoteMarkdown — `@/components/docs/NoteMarkdown`
 `{ content: string; existing: Set<string>; onOpenTitle: (title: string) => void }`

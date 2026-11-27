@@ -7,7 +7,7 @@ import EditSprintModal from "@/components/sprint/EditSprintModal";
 import {useToast} from "@/components/ui/Toast";
 import {SkeletonCard} from "@/components/ui/Skeleton";
 import {Avatar, IssueTypeIcon, PriorityIcon, StatusLozenge} from "@/components/cira/ui/Badges";
-import Menu from "@/components/cira/ui/Menu";
+import DropdownMenu from "@/components/ui/DropdownMenu";
 import PageHeader from "@/components/cira/ui/PageHeader";
 import {
     useAddIssueToSprint,
@@ -77,7 +77,7 @@ function BacklogSection({projectId, sprints, onMoved}: {
                         <StatusLozenge label={issue.statusNm}/>
                         <Avatar name={issue.assignee?.name}/>
                         {targets.length > 0 && (
-                            <Menu
+                            <DropdownMenu
                                 trigger={
                                     <button aria-label={`${issue.issueKey} 스프린트로 이동`}
                                             className="h-8 rounded border border-slate-200 px-2 text-xs text-slate-600 hover:bg-slate-50">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import {ChevronDown, ChevronRight, FileText, Folder, FolderPlus, Lock, MoreHorizontal, Plus, Users} from "lucide-react";
 import type {DocsFolder, DocsVault, NoteSummary} from "@/types/docs";
 import EmptyState from "@/components/ui/EmptyState";
+import DropdownMenu from "@/components/ui/DropdownMenu";
 
 interface DocsSidebarProps {
     /** 보여 줄 vault 들 (통합 뷰면 여러 개). vault 마다 섹션 하나 */
@@ -93,32 +94,23 @@ function Tree(p: DocsSidebarProps & { parentId: string | null; depth: number; cl
 }
 
 function FolderMenu(p: DocsSidebarProps & { folder: DocsFolder }) {
-    const [open, setOpen] = useState(false);
-    const act = (fn: () => void) => () => {
-        setOpen(false);
-        fn();
-    };
+    const f = p.folder;
     return (
-        <div className="relative">
-            <button type="button" onClick={() => setOpen((v) => !v)} aria-label={`${p.folder.name} 메뉴`}
-                    className="rounded p-0.5 text-slate-400 opacity-0 hover:bg-slate-200 focus:opacity-100 group-hover:opacity-100">
-                <MoreHorizontal className="h-4 w-4"/>
-            </button>
-            {open && (
-                <>
-                    <div className="fixed inset-0 z-10" onClick={() => setOpen(false)}/>
-                    <div className="absolute right-0 z-20 mt-1 w-36 rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
-                        {[["새 노트", () => p.onNewNote(p.folder.id, p.folder.vaultId)], ["하위 폴더", () => p.onNewFolder(p.folder.id, p.folder.vaultId)],
-                            ["이름 변경", () => p.onRenameFolder(p.folder)], ["이동", () => p.onMoveFolder(p.folder)],
-                            ["삭제", () => p.onDeleteFolder(p.folder)]].map(([label, fn]) => (
-                            <button key={label as string} type="button" onClick={act(fn as () => void)}
-                                    className={`block w-full px-3 py-1.5 text-left text-sm hover:bg-slate-50 ${label === "삭제" ? "text-red-500" : "text-slate-700"}`}>
-                                {label as string}
-                            </button>
-                        ))}
-                    </div>
-                </>
-            )}
-        </div>
+        <DropdownMenu
+            trigger={
+                // 터치 기기(< md)는 hover 가 없어 항상 보이게
+                <button type="button" aria-label={`${f.name} 메뉴`}
+                        className="rounded p-0.5 text-slate-400 hover:bg-slate-200 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100">
+                    <MoreHorizontal className="h-4 w-4"/>
+                </button>
+            }
+            items={[
+                {label: "새 노트", onSelect: () => p.onNewNote(f.id, f.vaultId)},
+                {label: "하위 폴더", onSelect: () => p.onNewFolder(f.id, f.vaultId)},
+                {label: "이름 변경", onSelect: () => p.onRenameFolder(f)},
+                {label: "이동", onSelect: () => p.onMoveFolder(f)},
+                {label: "삭제", onSelect: () => p.onDeleteFolder(f), danger: true},
+            ]}
+        />
     );
 }

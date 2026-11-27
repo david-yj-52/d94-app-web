@@ -4,7 +4,7 @@ import {AttachmentSection} from "@/components/issue/AttachmentSection";
 import {CommentSection} from "@/components/issue/CommentSection";
 import {IssueDocsSection} from "@/components/issue/IssueDocsSection";
 import CustomFieldInput from "@/components/issue/CustomFieldInput";
-import Menu from "@/components/cira/ui/Menu";
+import DropdownMenu from "@/components/ui/DropdownMenu";
 import PageHeader from "@/components/cira/ui/PageHeader";
 import {STATUS_TONE_CLASS, statusTone} from "@/components/cira/ui/tones";
 import {useToast} from "@/components/ui/Toast";
@@ -170,7 +170,7 @@ export default function IssueDetailPage({
                 ]}
                 title={issue.issueKey}
                 actions={
-                    <Menu
+                    <DropdownMenu
                         trigger={
                             <button aria-label="더보기"
                                     className="flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50">
@@ -231,7 +231,7 @@ export default function IssueDetailPage({
                     {/* Status (모바일은 상단 바 아래 고정) */}
                     <div className="sticky top-12 z-10 -mx-4 -mt-4 mb-4 bg-white px-4 pb-2 pt-4 lg:static">
                         <p className="mb-2 text-xs font-medium text-slate-500">상태</p>
-                        <Menu
+                        <DropdownMenu
                             align="start"
                             trigger={
                                 <button

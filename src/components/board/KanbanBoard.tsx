@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import {useState} from "react";
 import Button from "@/components/ui/Button";
 import {useConfirm} from "@/components/ui/ConfirmDialog";
+import DropdownMenu from "@/components/ui/DropdownMenu";
 import Badge from "@/components/ui/Badge";
 
 interface DragState {
@@ -43,7 +44,6 @@ export default function KanbanBoard({boardId, projectId}: Props) {
     const [editingColumn, setEditingColumn] = useState<
         BoardColumnResponse | undefined
     >(undefined);
-    const [showBoardMenu, setShowBoardMenu] = useState(false);
     const {confirm, ConfirmComponent} = useConfirm();
     const {data: session} = useSession();
     const [mineOnly, setMineOnly] = useState(false);
@@ -189,34 +189,15 @@ export default function KanbanBoard({boardId, projectId}: Props) {
                         + 컬럼 추가
                     </button>
 
-                    <div className="relative">
-                        <button
-                            onClick={() => setShowBoardMenu((v) => !v)}
-                            className="h-8 w-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 text-sm"
-                        >
-                            ···
-                        </button>
-                        {showBoardMenu && (
-                            <>
-                                <div
-                                    className="fixed inset-0 z-10"
-                                    onClick={() => setShowBoardMenu(false)}
-                                />
-                                <div
-                                    className="absolute right-0 mt-1 z-20 bg-white rounded-xl shadow-lg border border-slate-200 py-1 w-36">
-                                    <button
-                                        onClick={() => {
-                                            setShowBoardMenu(false);
-                                            void handleDeleteBoard();
-                                        }}
-                                        className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50"
-                                    >
-                                        보드 삭제
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
+                    <DropdownMenu
+                        trigger={
+                            <button type="button" aria-label="보드 메뉴"
+                                    className="h-8 w-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 text-sm">
+                                ···
+                            </button>
+                        }
+                        items={[{label: "보드 삭제", onSelect: () => void handleDeleteBoard(), danger: true}]}
+                    />
                 </div>
             </div>
 

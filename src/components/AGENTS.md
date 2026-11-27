@@ -62,7 +62,7 @@
 | EmptyState | `ui/EmptyState` | "~이 없습니다" 빈 상태 (md·sm, action) | Docs·Study·Wiki·Life Metric·Ayaan·설정 패널 등 | 🔁 |
 | ConfirmDialog / `useConfirm` | `ui/ConfirmDialog` | 브라우저 confirm() 대체 확인 창 (Promise<boolean>) | CIRA sprints·versions·wiki·settings, study, ayaan, settings 패널 | 🔁 |
 | Dialog | `ui/Dialog` | Radix 모달 (모바일 전체 화면·왼쪽 서랍) | ApHeader, CIRA 셸·화면·issue·settings | 🔁 |
-| Menu | `cira/ui/Menu` | Radix 드롭다운 메뉴 | CIRA 셸·화면 | ✅ |
+| DropdownMenu | `ui/DropdownMenu` | Radix ··· 더보기 메뉴 (키보드·바깥 클릭) | CIRA 셸·Task 상세·스프린트·KanbanCard·KanbanBoard·DocsSidebar | 🔁 |
 | CiraShell › CiraSidebar, CreateIssueButton | `cira/shell/*` | CIRA 셸 (상단 바·통합 사이드바·모바일 서랍·이슈 만들기) | `(cira)/cira/layout.tsx` | ✅ |
 
 ### Domain

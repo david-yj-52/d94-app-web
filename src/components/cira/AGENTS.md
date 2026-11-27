@@ -35,11 +35,8 @@ Avatar({name?: string | null; size?: "sm" | "md"})                // 이름 첫 
 ### Dialog — `ui/Dialog` 로 승격됨 (2026-11-26)
 - ApHeader 모바일 서랍에서도 쓰게 되어 `@/components/ui/Dialog` 로 옮겼습니다. 카드는 [ui](../ui/AGENTS.md) §2.
 
-### Menu — `@/components/cira/ui/Menu`
-```ts
-{ trigger: ReactNode /* <button> */; items: {label: ReactNode; onSelect: () => void; disabled?: boolean; danger?: boolean}[]; align?: "start" | "end" }
-```
-- Radix DropdownMenu. 키보드(화살표·Enter·Esc) 조작을 지원합니다.
+### Menu — `ui/DropdownMenu` 로 승격됨 (2026-11-26)
+- KanbanBoard 보드 메뉴·Docs 폴더 메뉴에서도 쓰게 되어 `@/components/ui/DropdownMenu` 로 옮겼습니다. 카드는 [ui](../ui/AGENTS.md) §2.
 
 ## 3. `shell/` — CIRA 셸
 

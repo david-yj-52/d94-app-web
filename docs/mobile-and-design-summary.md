@@ -24,7 +24,9 @@
 
 | 11 | `bd11771` feat | FormField | `ui/FormField`(라벨+입력+오류, `<label>` 로 입력 연결 — 라벨 클릭 포커스·스크린리더) 추가, 표준 라벨 필드 36곳(12개 파일) 교체 |
 
-| 12 | (이번) feat | Badge·EmptyState | `ui/Badge`(알약, 색은 className) 23곳 · `ui/EmptyState`(md·sm·action) 21곳 교체 |
+| 12 | `07bd49f` feat | Badge·EmptyState | `ui/Badge`(알약, 색은 className) 23곳 · `ui/EmptyState`(md·sm·action) 21곳 교체 |
+
+| 13 | (이번) feat | DropdownMenu | `cira/ui/Menu` → `ui/DropdownMenu` 승격(ADR 0006) · KanbanBoard 보드 메뉴·Docs 폴더 메뉴의 손 마크업 드롭다운 교체 · Docs 폴더 `···` 모바일 상시 표시 |
 
 **남은 후보(미적용):** 표준형이 아닌 버튼(아이콘·링크형 등)·CIRA 전용 화면 버튼은 그대로.
 

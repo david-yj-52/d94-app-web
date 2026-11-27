@@ -1,7 +1,7 @@
 "use client";
 
 import Dialog from "@/components/ui/Dialog";
-import Menu from "@/components/cira/ui/Menu";
+import DropdownMenu from "@/components/ui/DropdownMenu";
 import {Avatar} from "@/components/cira/ui/Badges";
 import GlobalSearch from "@/components/layout/GlobalSearch";
 import NotificationBell from "@/components/layout/NotificationBell";
@@ -52,7 +52,7 @@ export default function CiraShell({user, initialCollapsed, children}: {
                 </Link>
                 <CreateIssueButton projectId={getNavContext(pathname).projectId}/>
                 <NotificationBell/>
-                <Menu
+                <DropdownMenu
                     trigger={
                         <button aria-label="프로필 메뉴" className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100">
                             <Avatar name={user?.name || user?.email} size="md"/>

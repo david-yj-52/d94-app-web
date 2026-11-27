@@ -11,7 +11,7 @@
 ```
 - 상단 빠른 필터: "보드 검색"(키·제목)과 "내 이슈만"(세션 이메일 = 담당자 이메일, 대소문자 무시). 계산은 `boardFilters.ts`의 `filterColumns(columns, {mineEmail, keyword})` 이고 빈 컬럼도 남깁니다(`boardFilters.test.ts`).
 - 모바일: 컬럼 폭 85vw + 가로 snap. HTML5 DnD 는 터치에서 동작하지 않으므로 카드의 "이동" 메뉴(`md:hidden`)가 `useMoveIssue({issueId, data: {targetColumnId}})` 를 부릅니다.
-- 보드 상세를 조회하고(`useBoardDetail`), 이슈 이동(`useMoveIssue`), 컬럼 삭제(`useDeleteColumn`), 보드 삭제(`useDeleteBoard`)를 처리합니다. 두 삭제 모두 `ui/ConfirmDialog` 의 `useConfirm` 으로 먼저 확인합니다(보드 삭제 성공 시 보드 목록으로).
+- 보드 상세를 조회하고(`useBoardDetail`), 이슈 이동(`useMoveIssue`), 컬럼 삭제(`useDeleteColumn`), 보드 삭제(`useDeleteBoard`)를 처리합니다. 두 삭제 모두 `ui/ConfirmDialog` 의 `useConfirm` 으로 먼저 확인합니다(보드 삭제 성공 시 보드 목록으로). 보드 `···`(aria-label "보드 메뉴")는 `ui/DropdownMenu`.
 - 드래그 상태(드래그 중인 이슈, 드롭 대상 컬럼, 삽입 위치)를 이 컴포넌트가 들고 있다가 하위 컬럼에 props로 내려 줍니다.
 - 컬럼 추가·편집 시 `AddColumnModal`을 엽니다.
 - 드롭 규칙: 카드 위 dragover → `beforeIssueId` = 그 카드, 컬럼 빈 곳 → 기준 없음(끝에 붙음). `afterIssueId` 는 보내지 않습니다. 순서 계산은 `useMoveIssue` 의 낙관적 갱신입니다(`KanbanBoard.test.tsx`, `useBoards.test.ts`).
@@ -35,7 +35,7 @@
   onDragStart: (e) => void; onDragOver: (e, issueId: string) => void;
   moveTargets?: {id: string; columnNm: string}[]; onMoveTo?: (targetColumnId: string) => void }
 ```
-- 이슈 카드입니다(제목 → 유형 아이콘·키·우선순위·담당자 아바타, `cira/ui/Badges`). 제목을 누르면 이슈 상세로 이동합니다. `onMoveTo` 가 있으면 모바일에서 "이동" 메뉴(`cira/ui/Menu`)를 보여 줍니다. `showDropBefore`가 true면 카드 위에 삽입 위치선이 표시됩니다.
+- 이슈 카드입니다(제목 → 유형 아이콘·키·우선순위·담당자 아바타, `cira/ui/Badges`). 제목을 누르면 이슈 상세로 이동합니다. `onMoveTo` 가 있으면 모바일에서 "이동" 메뉴(`ui/DropdownMenu`)를 보여 줍니다. `showDropBefore`가 true면 카드 위에 삽입 위치선이 표시됩니다.
 
 ### CreateBoardModal — `@/components/board/CreateBoardModal`
 ```ts

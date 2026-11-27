@@ -1,7 +1,7 @@
 "use client";
 
 import {Avatar, IssueTypeIcon, PriorityIcon} from "@/components/cira/ui/Badges";
-import Menu from "@/components/cira/ui/Menu";
+import DropdownMenu from "@/components/ui/DropdownMenu";
 import type {BoardIssueResponse} from "@/types/board";
 import {MoveRight} from "lucide-react";
 import Link from "next/link";
@@ -59,7 +59,7 @@ export default function KanbanCard({
                     <PriorityIcon priority={issue.priority}/>
                     {onMoveTo && moveTargets.length > 0 && (
                         <span className="md:hidden">
-                            <Menu
+                            <DropdownMenu
                                 trigger={
                                     <button aria-label={`${issue.issueKey} 이동`}
                                             className="flex h-8 items-center gap-1 rounded border border-slate-200 px-2 text-xs text-slate-600">
