@@ -44,6 +44,20 @@ describe("IssueTable", () => {
     });
 });
 
+describe("IssueTable 공간 열 (통합 Task 목록)", () => {
+    it("spaceNames 가 있으면 고정 컬럼의 키 다음에 공간 열, 모르는 공간은 -", () => {
+        renderWithClient(<IssueTable issues={[{...issue, spaceId: "s1"}, {...issue, id: "i2", spaceId: null}]} projectId="p1" spaceNames={{s1: "HW팀"}}/>);
+        expect(headers()).toEqual(["", "키", "공간", "요약", "상태", "P", "담당자", "수정일"]);
+        expect(screen.getAllByText("HW팀").length).toBeGreaterThan(0);
+        expect(screen.getAllByText("-").length).toBeGreaterThan(0);
+    });
+
+    it("spaceNames 가 없으면 공간 열 없음", () => {
+        renderWithClient(<IssueTable issues={[issue]} projectId="p1"/>);
+        expect(screen.queryByRole("columnheader", {name: "공간"})).toBeNull();
+    });
+});
+
 describe("IssueTable 공통 Feature 우선 (설계 3.2)", () => {
     it("공통 Feature 에 연결된 Task 는 배지가 붙고, 정렬을 고르지 않았으면 먼저 나온다", async () => {
         const {server} = await import("@/test/msw/server");

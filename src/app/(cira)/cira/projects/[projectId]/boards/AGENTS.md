@@ -34,7 +34,7 @@ boards/[boardId]/page.tsx
 ### 컬럼 관리
 - 컬럼 추가와 이름 편집은 AddColumnModal로, 삭제는 컬럼 메뉴에서 합니다. 컬럼·보드 삭제 확인은 `useConfirm`("컬럼 삭제"·"보드 삭제", 빨간 [삭제]).
 ### 작업 공간 (V650)
-- 보드는 작업 공간 소유입니다. 목록은 지금 공간(`?space=`, `useCurrentSpace`)의 보드(`useBoards(projectId, spaceId)`)이고, 첫 보드로 넘길 때도 `?space=` 를 잇습니다. 공간은 셸 사이드바에서 바꿉니다. 보드·컬럼 추가·수정은 프로젝트 ADMIN 또는 공간 관리자만(백엔드 403).
+- 보드는 작업 공간 소유입니다. 목록은 지금 공간(`?space=`, `useCurrentSpace`)의 보드(`useBoards(projectId, spaceId)`)이고, 첫 보드로 넘길 때도 `?space=` 를 잇습니다(공간 목록을 받아 `spaceId` 가 정해진 뒤에만 이동 — 새로고침·공유 링크에서 다른 팀 보드로 튀지 않게). 보드 select·새 보드·보드 삭제 후 이동도 `withSpace` 로 `?space=` 를 유지합니다. 공간은 셸 사이드바의 팀 트리에서 바꿉니다. 보드·컬럼 추가·수정은 프로젝트 ADMIN 또는 공간 관리자만(백엔드 403).
 ### 보드 전환·생성
 - select로 다른 보드를 고르면 URL이 바뀝니다. 새 보드를 만들면 생성된 보드로 이동합니다.
 

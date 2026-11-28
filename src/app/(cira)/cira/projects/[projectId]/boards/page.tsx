@@ -26,10 +26,11 @@ export default function BoardsPage({
     const [showCreate, setShowCreate] = useState(false);
 
     useEffect(() => {
-        if (boards && boards.length > 0) {
+        // 공간 목록이 오기 전(spaceId 없음)의 보드는 기본 공간 것 — 다른 팀 보드로 튀지 않게 공간을 안 뒤에만 이동
+        if (spaceId && boards && boards.length > 0) {
             router.replace(withSpace(`/cira/projects/${projectId}/boards/${boards[0].id}`));
         }
-    }, [boards, projectId, router]);
+    }, [spaceId, boards, projectId, router]);
 
     return (
         <div className="max-w-6xl mx-auto px-4">

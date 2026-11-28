@@ -5,6 +5,7 @@ import KanbanColumn from "@/components/board/KanbanColumn";
 import {filterColumns} from "@/components/board/boardFilters";
 import {useToast} from "@/components/ui/Toast";
 import {useBoardDetail, useDeleteBoard, useDeleteColumn, useMoveIssue,} from "@/hooks/useBoards";
+import {useCurrentSpace} from "@/hooks/useSpaces";
 import type {BoardColumnResponse, BoardIssueResponse} from "@/types/board";
 import {useSession} from "next-auth/react";
 import {useRouter} from "next/navigation";
@@ -31,6 +32,7 @@ interface Props {
 
 export default function KanbanBoard({boardId, projectId}: Props) {
     const router = useRouter();
+    const {withSpace} = useCurrentSpace(projectId);
     const {show, ToastComponent} = useToast();
 
     const {data: board, isLoading, isError} = useBoardDetail(boardId);
@@ -143,7 +145,7 @@ export default function KanbanBoard({boardId, projectId}: Props) {
         deleteBoard(boardId, {
             onSuccess: () => {
                 show("보드가 삭제되었습니다.");
-                router.push(`/cira/projects/${projectId}/boards`);
+                router.push(withSpace(`/cira/projects/${projectId}/boards`));
             },
             onError: () => show("보드 삭제에 실패했습니다.", "error"),
         });

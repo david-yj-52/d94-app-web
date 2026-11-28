@@ -6,8 +6,10 @@
 ### IssueTable — `@/components/issue/IssueTable`
 ```ts
 { issues: IssueResponse[]; projectId?: string; emptyText?: string;
-  fields?: FieldDef[]; columns?: string[]; names?: Record<string, string>; sort?: string; onSort?: (sort: string) => void }
+  fields?: FieldDef[]; columns?: string[]; names?: Record<string, string>; sort?: string; onSort?: (sort: string) => void;
+  spaceNames?: Record<string, string> }
 ```
+- `spaceNames`(spaceId → 이름)가 있으면 고정 컬럼에서 키 다음에 "공간" 열(모르는 공간·없음은 `-`). 동적 컬럼 모드에서는 무시. 사용처: 프로젝트 통합 Task 목록.
 - `fields`·`columns` 가 있으면 `columns` 순서대로 컬럼을 그립니다(유효 필드에 없는 키는 건너뜀, 값은 `FieldValue`). 없으면 고정 컬럼(유형·키·요약·상태 배지·우선순위·담당자·수정일) — 검색 결과처럼 여러 프로젝트가 섞인 곳.
 - `onSort` 가 있으면 `sortable`(sys:) 헤더가 버튼입니다. 누르면 `"sys:<key>,asc"`, 같은 헤더를 다시 누르면 `desc`. `names` = userId·sprintId → 이름. 공통 Feature 에 연결된 Task 는 요약 앞에 `CommonFeatureBadge`, `sort` 가 없으면 이 페이지 안에서 먼저(설계 3.2, `useCommonFeatures` — 그래서 QueryClient 필요). 테스트 `IssueTable.test.tsx`.
 - `md` 이상은 표, 모바일은 카드 목록(표시 컬럼 중 앞의 사용자 정의 필드 두 개를 한 줄로 추가). 행을 누르면 `/cira/projects/{projectId ?? issue.projectId}/issues/{id}`로 이동합니다. `projectId` 를 생략하면 이슈마다 자기 프로젝트로 갑니다(검색 결과). 표현 컴포넌트이며 데이터 조회는 하지 않습니다.
