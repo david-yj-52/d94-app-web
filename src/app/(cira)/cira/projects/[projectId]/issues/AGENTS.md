@@ -14,9 +14,9 @@
 ## 화면 구성
 ```
 issues/page.tsx
-├── PageHeader (프로젝트 / {이름} · "Task" · [+ Task 생성])  → cira 카드
-├── IssueFilter (filters 상태는 페이지가 보유) + ColumnPicker(md 이상)  → issue 카드
-├── 로딩: SkeletonRow × n / 결과: IssueTable fields·columns·names·sort  → ui · issue 카드
+├── PageHeader (프로젝트 / {이름} · "Task" 또는 통합이면 "Task (전체)" · [+ Task 생성])  → cira 카드
+├── IssueFilter (filters 상태는 페이지가 보유) + 작업 공간 Select(공간 2개 이상: 전체·공간들) + ColumnPicker(md 이상, 팀 모드만)  → issue 카드
+├── 로딩: SkeletonRow × n / 결과: IssueTable names·sort + (팀 모드 fields·columns | 통합 spaceNames)  → ui · issue 카드
 ├── {showCreate && <CreateIssueModal/>} + {ToastComponent}
 └── 컬럼 만들기·수정 settings/CustomFieldModal · {showLibrary && <FieldLibraryDialog/>} · 컬럼 삭제 Dialog
 
@@ -54,7 +54,9 @@ issues/[issueId]/page.tsx
 - [+ 라이브러리에서 가져오기] → `FieldLibraryDialog`(전역 + 이 타입의 필드) → 복사본 생성, 내 컬럼 끝에 추가. 같은 이름이 있으면 서버 400 메시지 토스트.
 - 내가 만든(또는 ADMIN 이면 모든) 프로젝트 필드는 [수정]·[삭제] — 삭제는 확인 창, 모든 Task 값도 삭제.
 ### 작업 공간 · Feature (V650)
-- 목록·필드·컬럼은 지금 작업 공간(`?space=`) 기준: `useIssues(projectId, {...filters, spaceId})`, `useProjectFields`·`useColumnPref`·`useSaveColumnPref`·`useSaveProjectField`·`useImportToProject` 에 `spaceId`. Task 생성 모달에도 지금 공간을 넘깁니다.
+- **통합 모드**(`?space=` 없음, `useCurrentSpace().isAll`): 모든 공간의 Task(`spaceId` 없이 조회), 고정 컬럼 + "공간" 열(`spaceNames`), ColumnPicker 숨김, 생성 모달은 공간을 고르게(기본 = 기본 공간). 사이드바 "Task (전체)" 가 여기로 옵니다.
+- 작업 공간 Select: "전체" → `setSpace(null)`(통합), 공간 → `setSpace(id)`, 바꿀 때 첫 페이지로.
+- **팀 모드**(`?space=<id>`, 사이드바 팀 아래 "Task"): 목록·필드·컬럼은 그 공간 기준: `useIssues(projectId, {...filters, spaceId})`, `useProjectFields`·`useColumnPref`·`useSaveColumnPref`·`useSaveProjectField`·`useImportToProject` 에 `spaceId`. Task 생성 모달에도 지금 공간을 넘깁니다.
 - 상세 상단에 `공통 Feature › 단위 Feature` 경로(`useFeatures` 트리에서 `featureId` 를 찾음, 각 항목은 그 Feature 상세로 링크).
 ### Task 생성
 - CreateIssueModal에서 생성에 성공하면 "Task가 생성되었습니다." 토스트를 띄웁니다. 필수 사용자 정의 필드는 여기서 받습니다.
