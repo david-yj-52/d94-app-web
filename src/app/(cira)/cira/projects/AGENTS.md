@@ -24,12 +24,12 @@ projects/page.tsx
 └── reports/  settings/ versions/ wiki/  layout.tsx 에서 제목/서브탭
 ```
 - 프로젝트 안은 전용 워크스페이스입니다: 사이드바에 다른 프로젝트 목록이 없고 "← 모든 프로젝트"(이 허브로) · 현재 프로젝트만 보입니다. 다른 프로젝트로 가려면 허브를 거칩니다.
-- 프로젝트 하위 메뉴는 CIRA 셸 사이드바(`cira/shell/CiraSidebar`)가 그립니다: 백로그(sprints) · 보드 · 이슈 · 리포트 · 릴리스(versions) · 위키 · 프로젝트 설정(ADMIN만). 설정 화면 안에서는 설정 하위 메뉴로 바뀝니다 → [shell 카드](../../../../components/cira/AGENTS.md)
+- 프로젝트 하위 메뉴는 CIRA 셸 사이드바(`cira/shell/CiraSidebar`)가 그립니다: 통합 메뉴(Feature (전체 통합) · Task (전체) · 백로그(sprints) · 리포트 · 릴리스(versions) · 위키 · 프로젝트 설정(ADMIN만)) + 작업 공간(팀)마다 접고 펴는 묶음(보드 · Task · 공간 설정, 링크에 `?space=<팀>`). 설정 화면 안에서는 설정 하위 메뉴로 바뀝니다 → [shell 카드](../../../../components/cira/AGENTS.md)
 - 화면 상단은 `cira/ui/PageHeader`(브레드크럼 `프로젝트 / {이름}` · 제목 · 버튼)입니다. reports·settings·versions 는 layout 에서, issues·sprints·이슈 상세는 page 에서 그립니다.
 - `/cira/projects/:id`(index) 페이지는 없습니다. ProjectCard를 클릭하면 `/issues`로 이동합니다.
 - **새 하위 탭을 추가할 때:**
   1. `[projectId]/{탭}/` 폴더를 만듭니다.
-  2. `CiraSidebar`의 `projectMenu` 배열에 메뉴를 추가합니다.
+  2. `CiraSidebar`의 `projectMenu`(프로젝트 통합) 또는 `navContext.ts` 의 `teamLinks`(팀별, `?space=`) 에 메뉴를 추가합니다.
   3. 필요하면 `layout.tsx`에서 공통 헤더를 렌더링합니다.
   4. L3 문서를 작성합니다.
 

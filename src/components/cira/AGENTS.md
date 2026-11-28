@@ -53,11 +53,12 @@ CommonFeatureBadge({feature: {issueKey: string; title: string}})  // "공통 · 
 ```ts
 { collapsed?: boolean }
 ```
-- 메뉴: 내 작업(`/cira/dashboard`) · 알림 / 프로젝트 — 프로젝트 밖은 "모든 프로젝트"(허브) 링크만, 프로젝트 안은 다른 프로젝트 목록 없이 "← 모든 프로젝트" · 현재 프로젝트(`useProject`)만 — 현재 프로젝트는 백로그(sprints)·보드·Task(`/issues`)·리포트·릴리스(versions)·위키·프로젝트 설정(ADMIN만, `useProjectMembers`) / 필터: 검색·고급 검색.
-- V650 작업 공간: 현재 프로젝트 아래 공간 select(`useCurrentSpace` — 바꾸면 `?space=` 로 같은 화면 이동)·추가 버튼 + (프로젝트 ADMIN → `CreateSpaceModal`). 메뉴에 "Feature (전체 통합)"(`/features`). 보드·Task·설정의 필드/문서 관리/워크플로우 링크는 `withSpace` 로 `?space=` 를 잇습니다. `space.canManage`(프로젝트 ADMIN 또는 공간 관리자)면 "공간 설정"(→ `settings/space?space=`). `useSearchParams` 때문에 내부를 `Suspense` 로 감쌉니다.
+- 메뉴: 내 작업(`/cira/dashboard`) · 알림 / 프로젝트 — 프로젝트 밖은 "모든 프로젝트"(허브) 링크만, 프로젝트 안은 다른 프로젝트 목록 없이 "← 모든 프로젝트" · 현재 프로젝트(`useProject`)만 / 필터: 검색·고급 검색.
+- 프로젝트 **통합 메뉴**(모든 팀): Feature (전체 통합)(`/features`) · Task (전체)(`/issues`, `?space=` 없음 — 활성은 `isAll` 일 때만) · 백로그 · 리포트 · 릴리스 · 위키 · 프로젝트 설정(ADMIN만, `useProjectMembers`).
+- **작업 공간(팀) 트리**(V650, 드롭다운 대신): 공간마다 접고 펴는 버튼, 지금 공간(`useCurrentSpace().space`)은 항상 펼침, 나머지는 클릭으로(컴포넌트 상태). 펼치면 `teamLinks(sp.canManage)` = 보드 · Task · 공간 설정(`canManage`)이고 링크는 `withSpace(base + suffix, sp.id)` — 기본 공간도 항상 `?space=`. 활성은 `teamActive(...)`(경로 + 지금 공간이 그 팀, `?space=` 없는 Task 목록은 제외). ADMIN 이면 "+ 작업 공간 추가" → `CreateSpaceModal`. 사이드바 접힘(아이콘만)은 팀 이름 앞 두 글자 배지 → 그 팀 보드. `useSearchParams` 때문에 내부를 `Suspense` 로 감쌉니다.
 - 설정 화면 안에서는 프로젝트 하위 메뉴 대신 설정 메뉴 두 묶음: `PROJECT_SETTINGS`(기본 정보·멤버·Git 연동·자동화, ADMIN) · `SPACE_SETTINGS`(공간 정보·워크플로·필드·보드 · 뷰·산출물 규칙, `canManage`, `?space=` 이음) — 묶음 제목 "프로젝트" / "작업 공간 · {이름}".
-- 현재 위치 판정은 `navContext.ts`의 `getNavContext(pathname)` → `{projectId?, inSettings}` (`navContext.test.ts`).
-- **새 프로젝트 하위 화면을 추가하면 `projectMenu` 배열에 항목을 추가하세요.**
+- 현재 위치 판정은 `navContext.ts`의 `getNavContext(pathname)` → `{projectId?, inSettings}`, 팀 메뉴는 `teamLinks(canManage)`·`teamActive(pathname, base, suffix, teamId, currentSpaceId, isAll)` (`navContext.test.ts`).
+- **새 프로젝트 하위 화면을 추가하면 통합 메뉴는 `projectMenu`, 팀별 화면은 `teamLinks` 에 항목을 추가하세요.**
 
 ### CreateIssueButton — `@/components/cira/shell/CreateIssueButton`
 ```ts

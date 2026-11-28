@@ -63,7 +63,7 @@
 | ConfirmDialog / `useConfirm` | `ui/ConfirmDialog` | 브라우저 confirm() 대체 확인 창 (Promise<boolean>) | CIRA sprints·versions·wiki·settings, study, ayaan, settings 패널 | 🔁 |
 | Dialog | `ui/Dialog` | Radix 모달 (모바일 전체 화면·왼쪽 서랍) | ApHeader, CIRA 셸·화면·issue·settings | 🔁 |
 | DropdownMenu | `ui/DropdownMenu` | Radix ··· 더보기 메뉴 (키보드·바깥 클릭) | CIRA 셸·Task 상세·스프린트·KanbanCard·KanbanBoard·DocsSidebar | 🔁 |
-| CiraShell › CiraSidebar, CreateIssueButton | `cira/shell/*` | CIRA 셸 (상단 바·통합 사이드바(작업 공간 전환)·모바일 서랍·이슈 만들기) | `(cira)/cira/layout.tsx` | ✅ |
+| CiraShell › CiraSidebar, CreateIssueButton | `cira/shell/*` | CIRA 셸 (상단 바·통합 사이드바(프로젝트 통합 메뉴 + 작업 공간별 메뉴 트리)·모바일 서랍·이슈 만들기) | `(cira)/cira/layout.tsx` | ✅ |
 
 ### Domain
 | 폴더 | 컴포넌트 | 용도 | 사용처 | 카드 |
