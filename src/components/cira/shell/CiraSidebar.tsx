@@ -3,13 +3,15 @@
 import CreateSpaceModal from "@/components/project/CreateSpaceModal";
 import {useProjectMembers} from "@/hooks/useProjectSettings";
 import {useCurrentSpace} from "@/hooks/useSpaces";
-import {useProjects} from "@/hooks/useProjects";
+import {useProject} from "@/hooks/useProjects";
 import {
+    ArrowLeft,
     Bell,
     BookOpen,
     ChartLine,
     Columns3,
     FileSearch,
+    FolderKanban,
     Layers,
     LayoutDashboard,
     Plus,
@@ -86,7 +88,9 @@ export default function CiraSidebar(props: { collapsed?: boolean }) {
 function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
     const pathname = usePathname();
     const {projectId, inSettings} = getNavContext(pathname);
-    const {data: projects = []} = useProjects();
+    // 프로젝트 안은 전용 워크스페이스: 다른 프로젝트는 그리지 않고 허브(/cira/projects)를 거쳐 이동
+    const {data: project} = useProject(projectId ?? "");
+    const projects = project ? [project] : [];
     const {data: session} = useSession();
     const {data: members} = useProjectMembers(projectId ?? "");
     // 설정은 프로젝트 ADMIN 만 (기존 ProjectNav 규칙)
@@ -115,9 +119,8 @@ function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
             <NavItem href="/cira/notifications" label="알림" icon={Bell} active={is("/cira/notifications")} collapsed={collapsed}/>
 
             <Section label="프로젝트" collapsed={collapsed}/>
-            {!collapsed && (
-                <NavItem href="/cira/projects" label="모든 프로젝트" active={pathname === "/cira/projects"} collapsed={collapsed}/>
-            )}
+            <NavItem href="/cira/projects" label="모든 프로젝트" icon={projectId ? ArrowLeft : FolderKanban}
+                     active={pathname === "/cira/projects"} collapsed={collapsed}/>
             {projects.map((p) => {
                 const open = p.id === projectId;
                 return (
