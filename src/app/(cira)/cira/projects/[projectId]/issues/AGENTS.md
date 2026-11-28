@@ -55,7 +55,7 @@ issues/[issueId]/page.tsx
 - 내가 만든(또는 ADMIN 이면 모든) 프로젝트 필드는 [수정]·[삭제] — 삭제는 확인 창, 모든 Task 값도 삭제.
 ### 작업 공간 · Feature (V650)
 - **통합 모드**(`?space=` 없음, `useCurrentSpace().isAll`): 모든 공간의 Task(`spaceId` 없이 조회), 고정 컬럼 + "공간" 열(`spaceNames`), ColumnPicker 숨김, 생성 모달은 공간을 고르게(기본 = 기본 공간). 사이드바 "Task (전체)" 가 여기로 옵니다.
-- 작업 공간 Select: "전체" → `setSpace(null)`(통합), 공간 → `setSpace(id)`, 바꿀 때 첫 페이지로.
+- 작업 공간 Select: "전체" → `setSpace(null)`(통합), 공간 → `setSpace(id)`. 공간이 바뀌면(사이드바 이동 포함 — 쿼리만 바뀌어 상태가 남음) 첫 페이지로, 정렬도 초기화.
 - **팀 모드**(`?space=<id>`, 사이드바 팀 아래 "Task"): 목록·필드·컬럼은 그 공간 기준: `useIssues(projectId, {...filters, spaceId})`, `useProjectFields`·`useColumnPref`·`useSaveColumnPref`·`useSaveProjectField`·`useImportToProject` 에 `spaceId`. Task 생성 모달에도 지금 공간을 넘깁니다.
 - 상세 상단에 `공통 Feature › 단위 Feature` 경로(`useFeatures` 트리에서 `featureId` 를 찾음, 각 항목은 그 Feature 상세로 링크).
 ### Task 생성

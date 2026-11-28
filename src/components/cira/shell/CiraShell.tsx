@@ -85,7 +85,7 @@ export default function CiraShell({user, initialCollapsed, children}: {
             </div>
 
             <Dialog open={drawerOpen} onOpenChange={setDrawerOpen} title="CIRA 메뉴" side="left">
-                <CiraSidebar/>
+                <CiraSidebar onNavigate={() => setDrawerOpen(false)}/>
             </Dialog>
         </div>
     );

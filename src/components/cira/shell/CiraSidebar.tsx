@@ -80,7 +80,8 @@ function SubLabel({label, collapsed}: { label: string; collapsed: boolean }) {
 }
 
 /** useSearchParams(현재 작업 공간 ?space=) 를 쓰므로 정적 경로 빌드를 위해 Suspense 로 감싼다 */
-export default function CiraSidebar(props: { collapsed?: boolean }) {
+/** onNavigate: 링크를 누르면 호출 — 모바일 서랍 닫기(쿼리만 바뀌는 팀 이동은 pathname 이 그대로라서) */
+export default function CiraSidebar(props: { collapsed?: boolean; onNavigate?: () => void }) {
     return (
         <Suspense fallback={null}>
             <SidebarInner {...props}/>
@@ -88,7 +89,7 @@ export default function CiraSidebar(props: { collapsed?: boolean }) {
     );
 }
 
-function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
+function SidebarInner({collapsed = false, onNavigate}: { collapsed?: boolean; onNavigate?: () => void }) {
     const pathname = usePathname();
     const {projectId, inSettings} = getNavContext(pathname);
     // 프로젝트 안은 전용 워크스페이스: 다른 프로젝트는 그리지 않고 허브(/cira/projects)를 거쳐 이동
@@ -124,7 +125,8 @@ function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
     const TEAM_ICONS: Record<string, LucideIcon> = {"/boards": SquareKanban, "/issues": Columns3, "/settings/space": Settings};
 
     return (
-        <nav className="flex flex-col p-2" aria-label="CIRA 메뉴">
+        <nav className="flex flex-col p-2" aria-label="CIRA 메뉴"
+             onClick={(e) => { if ((e.target as HTMLElement).closest("a")) onNavigate?.(); }}>
             <NavItem href="/cira/dashboard" label="내 작업" icon={LayoutDashboard} active={is("/cira/dashboard")} collapsed={collapsed}/>
             <NavItem href="/cira/notifications" label="알림" icon={Bell} active={is("/cira/notifications")} collapsed={collapsed}/>
 
@@ -205,6 +207,17 @@ function SidebarInner({collapsed = false}: { collapsed?: boolean }) {
                                     const path = `${base}/settings${s.suffix}`;
                                     return <NavItem key={path} href={withSpace(path)} label={s.label} icon={Settings} active={is(path)} collapsed={collapsed} indent/>;
                                 })}
+                                {/* 다른 팀의 같은 설정 화면으로 (드롭다운을 없앤 대신) */}
+                                {!collapsed && spaces.length > 1 && <SubLabel label="다른 작업 공간" collapsed={collapsed}/>}
+                                {!collapsed && spaces.length > 1 && spaces.filter((sp) => sp.id !== space?.id).map((sp) => (
+                                    <NavItem key={sp.id} href={withSpace(pathname, sp.id)} label={sp.name} icon={ChevronRight} active={false} collapsed={collapsed} indent/>
+                                ))}
+                                {isAdmin && !collapsed && (
+                                    <Button variant="unstyled" type="button" onClick={() => setAddingSpace(true)}
+                                            className="flex min-h-9 w-full items-center gap-1.5 rounded-md pl-7 pr-2 text-left text-sm text-cira-muted hover:bg-gray-100">
+                                        <Plus className="h-3.5 w-3.5 shrink-0"/> 작업 공간 추가
+                                    </Button>
+                                )}
                             </>
                         )}
                     </div>

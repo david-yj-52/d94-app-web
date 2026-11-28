@@ -22,7 +22,7 @@ export default function BoardDetailPage({
 
     const {data: project} = useProject(projectId);
     // 보드 탭·새 보드는 지금 작업 공간 기준 (V650)
-    const {spaceId} = useCurrentSpace(projectId);
+    const {spaceId, withSpace} = useCurrentSpace(projectId);
     const {data: boards} = useBoards(projectId, spaceId);
 
     const [showCreate, setShowCreate] = useState(false);
@@ -48,9 +48,7 @@ export default function BoardDetailPage({
                         <select
                             value={boardId}
                             onChange={(e) =>
-                                router.push(
-                                    `/cira/projects/${projectId}/boards/${e.target.value}`,
-                                )
+                                router.push(withSpace(`/cira/projects/${projectId}/boards/${e.target.value}`))
                             }
                             className="h-8 rounded-lg border border-slate-200 bg-white px-3 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-d94-brand"
                         >
@@ -80,7 +78,7 @@ export default function BoardDetailPage({
                     onClose={() => setShowCreate(false)}
                     onSuccess={(newBoardId) => {
                         show("보드가 생성되었습니다.");
-                        router.push(`/cira/projects/${projectId}/boards/${newBoardId}`);
+                        router.push(withSpace(`/cira/projects/${projectId}/boards/${newBoardId}`));
                     }}
                 />
             )}

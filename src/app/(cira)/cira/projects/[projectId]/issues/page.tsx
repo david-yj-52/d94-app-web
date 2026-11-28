@@ -27,7 +27,7 @@ import {useProjectMembers} from "@/hooks/useProjectSettings";
 import {useProject} from "@/hooks/useProjects";
 import {useSprints} from "@/hooks/useSprints";
 import type {IssueFilterParams} from "@/types/issue";
-import {use, useMemo, useState} from "react";
+import {use, useEffect, useMemo, useState} from "react";
 import Button from "@/components/ui/Button";
 import {Select} from "@/components/ui/Input";
 
@@ -48,6 +48,9 @@ export default function IssueListPage({
     const {show, ToastComponent} = useToast();
     // V650: Task 목록·필드·컬럼은 지금 작업 공간(?space=) 기준. ?space= 가 없으면 모든 공간 통합(isAll)
     const {spaceId, spaces, isAll, setSpace} = useCurrentSpace(projectId);
+    // 공간이 바뀌면(사이드바·Select 모두 쿼리만 바뀌어 상태가 남는다) 첫 페이지로, 정렬도 초기화 — 팀 사용자 정의 필드 정렬을 통합에 보내지 않게
+    const scopeKey = isAll ? "" : spaceId;
+    useEffect(() => setFilters((f) => ({...f, page: 0, sort: undefined})), [scopeKey]);
     const spaceNames = useMemo(() => Object.fromEntries(spaces.map((s) => [s.id, s.name])), [spaces]);
 
     const {data: project} = useProject(projectId);
@@ -89,7 +92,7 @@ export default function IssueListPage({
             <div className="mb-4 flex items-start gap-2">
                 <div className="min-w-0 flex-1"><IssueFilter filters={filters} onChange={setFilters}/></div>
                 {spaces.length > 1 && (
-                    <Select aria-label="작업 공간" value={isAll ? "" : spaceId ?? ""} onChange={(e) => { setFilters((f) => ({...f, page: 0})); setSpace(e.target.value || null); }} className="w-40">
+                    <Select aria-label="작업 공간" value={isAll ? "" : spaceId ?? ""} onChange={(e) => setSpace(e.target.value || null)} className="w-40">
                         <option value="">전체</option>
                         {spaces.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
                     </Select>

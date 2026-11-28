@@ -6,7 +6,7 @@ import {http, HttpResponse} from "msw";
 import {describe, expect, it, vi} from "vitest";
 import KanbanBoard from "./KanbanBoard";
 
-vi.mock("next/navigation", () => ({useRouter: () => ({push: vi.fn()})}));
+vi.mock("next/navigation", () => ({useRouter: () => ({push: vi.fn()}), useSearchParams: () => new URLSearchParams(), usePathname: () => "/cira/projects/p1/boards/b1"}));
 
 const MOVE = "*/api/proxy/v1/boards/:boardId/issues/:issueId/move";
 
