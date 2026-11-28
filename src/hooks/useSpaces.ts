@@ -22,16 +22,22 @@ export function useSpaces(projectId?: string) {
     return useQuery({queryKey: ["spaces", projectId], queryFn: () => getSpaces(projectId!), enabled: !!projectId});
 }
 
+/** 팀 링크: 기본 공간도 항상 `?space=<id>` — `?space=` 없음은 Task 목록에서 "전체(통합)" 라서 구분해야 한다 */
+export function spaceHref(href: string, spaceId?: string): string {
+    return spaceId ? `${href}${href.includes("?") ? "&" : "?"}space=${spaceId}` : href;
+}
+
 /**
- * 지금 보고 있는 작업 공간 = URL `?space=<id>`. 없으면 기본 공간.
+ * 지금 보고 있는 작업 공간 = URL `?space=<id>`. 없으면 기본 공간(isAll = true — Task 목록만 이걸 "전체"로 읽는다).
  * ponytail: URL 이 상태라 새로고침·링크 공유에 그대로 남는다(저장소 직접 접근 금지 규칙). 메뉴 링크는 withSpace 로 이어 붙인다.
  */
 export function useCurrentSpace(projectId?: string): {
     space: Space | undefined;
     spaces: Space[];
     spaceId: string | undefined;
-    setSpace: (id: string) => void;
-    withSpace: (href: string) => string;
+    isAll: boolean;
+    setSpace: (id: string | null) => void;
+    withSpace: (href: string, spaceId?: string) => string;
 } {
     const {data: spaces = []} = useSpaces(projectId);
     const params = useSearchParams();
@@ -39,17 +45,16 @@ export function useCurrentSpace(projectId?: string): {
     const pathname = usePathname();
     const requested = params.get("space");
     const space = spaces.find((s) => s.id === requested) ?? spaces.find((s) => s.isDefault);
-    const withSpace = (href: string) => (space && !space.isDefault ? `${href}${href.includes("?") ? "&" : "?"}space=${space.id}` : href);
-    const setSpace = (id: string) => {
+    const withSpace = (href: string, spaceId: string | undefined = space?.id) => spaceHref(href, spaceId);
+    /** null = 파라미터 삭제(Task 목록에서 전체) */
+    const setSpace = (id: string | null) => {
         const next = new URLSearchParams(params.toString());
-        const target = spaces.find((s) => s.id === id);
-        if (target?.isDefault) next.delete("space"); // 방금 만든 공간은 목록에 아직 없을 수 있다
-
-        else next.set("space", id);
+        if (id) next.set("space", id);
+        else next.delete("space");
         const q = next.toString();
         router.push(q ? `${pathname}?${q}` : pathname);
     };
-    return {space, spaces, spaceId: space?.id, setSpace, withSpace};
+    return {space, spaces, spaceId: space?.id, isAll: !requested, setSpace, withSpace};
 }
 
 const invalidateSpaces = (qc: ReturnType<typeof useQueryClient>, projectId: string) => {
