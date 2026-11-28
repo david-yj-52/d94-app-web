@@ -22,22 +22,24 @@ interface Props {
     /** "sys:dueDate,asc". onSort 가 있으면 sys: 헤더를 눌러 정렬 */
     sort?: string;
     onSort?: (sort: string) => void;
+    /** spaceId → 이름. 있으면 고정 컬럼에 "공간" 열 (프로젝트 통합 Task 목록) */
+    spaceNames?: Record<string, string>;
 }
 
 const FIXED_COLUMNS = ["sys:type", "sys:key", "sys:summary", "sys:status", "sys:priority", "sys:assignee", "sys:modifiedAt"];
 const WIDTH: Record<string, string> = {
     "sys:type": "w-8 pl-4", "sys:key": "w-28", "sys:status": "w-32", "sys:priority": "w-12 text-center",
-    "sys:assignee": "w-32", "sys:reporter": "w-32",
+    "sys:assignee": "w-32", "sys:reporter": "w-32", "sys:space": "w-28",
 };
 const fixedField = (key: string, name: string): FieldDef =>
     ({fieldKey: key, name, kind: "sys", fieldType: "TEXT", required: false, sortable: false, defaultVisible: true});
 const FIXED_FIELDS = new Map(
     [["sys:type", ""], ["sys:key", "키"], ["sys:summary", "요약"], ["sys:status", "상태"], ["sys:priority", "P"],
-        ["sys:assignee", "담당자"], ["sys:modifiedAt", "수정일"]].map(([k, n]) => [k, fixedField(k, n)]),
+        ["sys:assignee", "담당자"], ["sys:modifiedAt", "수정일"], ["sys:space", "공간"]].map(([k, n]) => [k, fixedField(k, n)]),
 );
 
 // md 이상은 표, 모바일은 카드 목록
-export default function IssueTable({issues, projectId, emptyText = "Task가 없습니다.", fields, columns, names, sort, onSort}: Props) {
+export default function IssueTable({issues, projectId, emptyText = "Task가 없습니다.", fields, columns, names, sort, onSort, spaceNames}: Props) {
     const router = useRouter();
     const href = (issue: IssueResponse) => `/cira/projects/${projectId ?? issue.projectId}/issues/${issue.id}`;
 
@@ -45,7 +47,8 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
     const dynamic = !!fields && !!columns;
     const cols: FieldDef[] = dynamic
         ? columns.map((k) => byKey.get(k)).filter((f): f is FieldDef => !!f)
-        : FIXED_COLUMNS.map((k) => FIXED_FIELDS.get(k)!);
+        : (spaceNames ? FIXED_COLUMNS.flatMap((k) => (k === "sys:key" ? [k, "sys:space"] : [k])) : FIXED_COLUMNS)
+            .map((k) => FIXED_FIELDS.get(k)!);
     const [sortKey, sortDir] = (sort ?? "").split(",");
     // 설계 3.2: 공통 Feature 에 연결된 Task 는 배지 + (정렬을 고르지 않았으면) 이 페이지 안에서 먼저
     const common = useCommonFeatures(projectId);
@@ -95,7 +98,9 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
                                 <td key={f.fieldKey}
                                     className={`${WIDTH[f.fieldKey] ?? ""} ${f.fieldKey === "sys:summary" || (f.kind === "cf" && f.fieldType === "TEXT") ? "max-w-xs truncate" : "whitespace-nowrap"} ${isNumeric(f) ? "text-right" : ""} ${i === cols.length - 1 ? "pr-4" : "pr-3"} text-xs text-slate-600`}>
                                     {f.fieldKey === "sys:summary" && commonOf(issue) && <span className="mr-1.5"><CommonFeatureBadge feature={commonOf(issue)!}/></span>}
-                                    <FieldValue field={f} issue={issue} names={names}/>
+                                    {f.fieldKey === "sys:space"
+                                        ? (spaceNames?.[issue.spaceId ?? ""] ?? "-")
+                                        : <FieldValue field={f} issue={issue} names={names}/>}
                                 </td>
                             ))}
                         </tr>
