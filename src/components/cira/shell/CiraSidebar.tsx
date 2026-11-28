@@ -22,14 +22,13 @@ import {
     Package,
     Search,
     Settings,
-    SquareKanban,
     type LucideIcon,
 } from "lucide-react";
 import {useSession} from "next-auth/react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
 import {Suspense, useState} from "react";
-import {getNavContext, teamActive, teamLinks} from "./navContext";
+import {getNavContext, onTeamRoute, teamActive, teamLinks} from "./navContext";
 
 /** 프로젝트 설정 (프로젝트 ADMIN) */
 const PROJECT_SETTINGS = [
@@ -103,12 +102,8 @@ function SidebarInner({collapsed = false, onNavigate}: { collapsed?: boolean; on
     const {space, spaces, isAll, setSpace, withSpace} = useCurrentSpace(projectId);
     const [addingSpace, setAddingSpace] = useState(false);
     // 펼친 팀. 지금 보고 있는 팀은 항상 펼침 (ponytail: 컴포넌트 상태 — 저장소 직접 접근 금지 규칙)
-    const [opened, setOpened] = useState<Set<string>>(new Set());
-    const toggleTeam = (id: string) => setOpened((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) next.delete(id); else next.add(id);
-        return next;
-    });
+    // 사용자가 직접 펴고 접은 팀(없으면 지금 그 팀 화면일 때만 펼침)
+    const [toggled, setToggled] = useState<Record<string, boolean>>({});
 
     const is = (href: string) => pathname === href || pathname.startsWith(href + "/");
     const base = projectId ? `/cira/projects/${projectId}` : "";
@@ -122,7 +117,6 @@ function SidebarInner({collapsed = false, onNavigate}: { collapsed?: boolean; on
         {href: `${base}/wiki`, label: "위키", icon: BookOpen, active: is(`${base}/wiki`)},
         ...(isAdmin ? [{href: `${base}/settings`, label: "프로젝트 설정", icon: Settings, active: false}] : []),
     ];
-    const TEAM_ICONS: Record<string, LucideIcon> = {"/boards": SquareKanban, "/issues": Columns3, "/settings/space": Settings};
 
     return (
         <nav className="flex flex-col p-2" aria-label="CIRA 메뉴"
@@ -161,15 +155,15 @@ function SidebarInner({collapsed = false, onNavigate}: { collapsed?: boolean; on
                                         return (
                                             <Link key={sp.id} href={withSpace(`${base}/boards`, sp.id)} title={sp.name}
                                                   className={`flex min-h-9 items-center justify-center rounded-md text-[10px] font-bold no-underline hover:bg-gray-100 ${
-                                                      space?.id === sp.id && !isAll ? "text-cira-brand" : "text-gray-600"}`}>
+                                                      onTeamRoute(pathname, base, sp.id, space?.id, isAll) ? "text-cira-brand" : "text-gray-600"}`}>
                                                 {sp.name.slice(0, 2)}
                                             </Link>
                                         );
                                     }
-                                    const expanded = opened.has(sp.id) || space?.id === sp.id;
+                                    const expanded = toggled[sp.id] ?? onTeamRoute(pathname, base, sp.id, space?.id, isAll);
                                     return (
                                         <div key={sp.id}>
-                                            <Button variant="unstyled" type="button" onClick={() => toggleTeam(sp.id)} aria-expanded={expanded}
+                                            <Button variant="unstyled" type="button" onClick={() => setToggled((t) => ({...t, [sp.id]: !expanded}))} aria-expanded={expanded}
                                                     className="flex min-h-9 w-full items-center gap-1.5 rounded-md pl-7 pr-2 text-left text-sm text-gray-700 hover:bg-gray-100">
                                                 {expanded ? <ChevronDown className="h-3.5 w-3.5 shrink-0"/> : <ChevronRight className="h-3.5 w-3.5 shrink-0"/>}
                                                 <span className="truncate">{sp.name}</span>
@@ -179,7 +173,7 @@ function SidebarInner({collapsed = false, onNavigate}: { collapsed?: boolean; on
                                                       className={`flex min-h-9 items-center gap-2.5 rounded-md pl-12 pr-2 text-sm no-underline transition-colors ${
                                                           teamActive(pathname, base, l.suffix, sp.id, space?.id, isAll)
                                                               ? "bg-cira-brand-soft font-semibold text-cira-brand" : "text-gray-700 hover:bg-gray-100"}`}>
-                                                    {(() => { const Icon = TEAM_ICONS[l.suffix]; return <Icon className="h-4 w-4 shrink-0"/>; })()}
+                                                    <l.icon className="h-4 w-4 shrink-0"/>
                                                     <span className="truncate">{l.label}</span>
                                                 </Link>
                                             ))}
