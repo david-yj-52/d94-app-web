@@ -121,6 +121,7 @@ export default function IssueTable({issues, projectId, emptyText = "Task가 없�
                             </div>
                             {commonOf(issue) && <div className="mb-1"><CommonFeatureBadge feature={commonOf(issue)!}/></div>}
                             <p className="mb-2 text-sm font-medium text-slate-900">{issue.title}</p>
+                            {spaceNames && <p className="mb-1 text-xs text-slate-500">공간: <span>{spaceNames[issue.spaceId ?? ""] ?? "-"}</span></p>}
                             {mobileExtras.length > 0 && (
                                 <p className="mb-2 flex gap-3 text-xs text-slate-500">
                                     {mobileExtras.map((f) => (

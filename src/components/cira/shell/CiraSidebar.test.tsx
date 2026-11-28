@@ -57,4 +57,28 @@ describe("CiraSidebar 팀 트리", () => {
         await userEvent.click(links[0]);
         expect(onNavigate).toHaveBeenCalled();
     });
+
+    it("통합 화면(Task (전체))에서는 기본 팀을 강제로 펼치지 않는다", () => {
+        nav.pathname = "/cira/projects/p1/issues";
+        nav.search = "";
+        render(<CiraSidebar/>);
+        expect(screen.getByRole("button", {name: "General"}).getAttribute("aria-expanded")).toBe("false");
+    });
+
+    it("지금 팀도 꺾쇠를 누르면 접힌다", async () => {
+        render(<CiraSidebar/>);
+        const general = screen.getByRole("button", {name: "General"});
+        expect(general.getAttribute("aria-expanded")).toBe("true");
+        await userEvent.click(general);
+        expect(general.getAttribute("aria-expanded")).toBe("false");
+    });
+
+    it("접힘 배지: ?space= 없는 옛 보드 링크면 기본 팀 배지를 강조", () => {
+        nav.pathname = "/cira/projects/p1/boards/b1";
+        nav.search = "";
+        render(<CiraSidebar collapsed/>);
+        expect(screen.getByTitle("General").className).toContain("text-cira-brand");
+        expect(screen.getByTitle("HW팀").className).not.toContain("text-cira-brand");
+    });
 });
+

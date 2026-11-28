@@ -55,9 +55,9 @@ CommonFeatureBadge({feature: {issueKey: string; title: string}})  // "공통 · 
 ```
 - 메뉴: 내 작업(`/cira/dashboard`) · 알림 / 프로젝트 — 프로젝트 밖은 "모든 프로젝트"(허브) 링크만, 프로젝트 안은 다른 프로젝트 목록 없이 "← 모든 프로젝트" · 현재 프로젝트(`useProject`)만 / 필터: 검색·고급 검색.
 - 프로젝트 **통합 메뉴**(모든 팀): Feature (전체 통합)(`/features`) · Task (전체)(`/issues`, `?space=` 없음 — 활성은 `isAll` 일 때만) · 백로그 · 리포트 · 릴리스 · 위키 · 프로젝트 설정(ADMIN만, `useProjectMembers`).
-- **작업 공간(팀) 트리**(V650, 드롭다운 대신): 공간마다 접고 펴는 버튼, 지금 공간(`useCurrentSpace().space`)은 항상 펼침, 나머지는 클릭으로(컴포넌트 상태). 펼치면 `teamLinks(sp.canManage)` = 보드 · Task · 공간 설정(`canManage`)이고 링크는 `withSpace(base + suffix, sp.id)` — 기본 공간도 항상 `?space=`. 활성은 `teamActive(...)`(경로 + 지금 공간이 그 팀, `?space=` 없는 Task 목록은 제외). ADMIN 이면 "+ 작업 공간 추가" → `CreateSpaceModal`. 사이드바 접힘(아이콘만)은 팀 이름 앞 두 글자 배지 → 그 팀 보드. `useSearchParams` 때문에 내부를 `Suspense` 로 감쌉니다.
+- **작업 공간(팀) 트리**(V650, 드롭다운 대신): 공간마다 접고 펴는 버튼. 기본은 지금 그 팀 화면(`onTeamRoute` — 보드·Task·공간 설정, 통합 화면은 해당 없음)일 때만 펼침, 사용자가 누르면 그 팀은 그 선택을 따름(지금 팀도 접힘, 컴포넌트 상태 `toggled`). 펼치면 `teamLinks(sp.canManage)` = 보드 · Task · 공간 설정(`canManage`, 항목마다 `icon`)이고 링크는 `withSpace(base + suffix, sp.id)` — 기본 공간도 항상 `?space=`. 활성은 `teamActive(...)`(경로 + 지금 공간이 그 팀, `?space=` 없는 Task 목록은 제외). ADMIN 이면 "+ 작업 공간 추가" → `CreateSpaceModal`. 사이드바 접힘(아이콘만)은 팀 이름 앞 두 글자 배지 → 그 팀 보드, 강조도 `onTeamRoute` 기준(`?space=` 없는 옛 보드 링크면 기본 팀). `useSearchParams` 때문에 내부를 `Suspense` 로 감쌉니다.
 - 설정 화면 안에서는 프로젝트 하위 메뉴 대신 설정 메뉴 두 묶음: `PROJECT_SETTINGS`(기본 정보·멤버·Git 연동·자동화, ADMIN) · `SPACE_SETTINGS`(공간 정보·워크플로·필드·보드 · 뷰·산출물 규칙, `canManage`, `?space=` 이음) — 묶음 제목 "프로젝트" / "작업 공간 · {이름}". 그 아래 "다른 작업 공간"(공간 2개 이상) = 다른 팀의 같은 설정 화면 링크(`withSpace(pathname, sp.id)`), ADMIN 이면 "+ 작업 공간 추가".
-- 현재 위치 판정은 `navContext.ts`의 `getNavContext(pathname)` → `{projectId?, inSettings}`, 팀 메뉴는 `teamLinks(canManage)`·`teamActive(pathname, base, suffix, teamId, currentSpaceId, isAll)` (`navContext.test.ts`).
+- 현재 위치 판정은 `navContext.ts`의 `getNavContext(pathname)` → `{projectId?, inSettings}`, 팀 메뉴는 `teamLinks(canManage)`·`teamActive(pathname, base, suffix, teamId, currentSpaceId, isAll)`·`onTeamRoute(pathname, base, teamId, currentSpaceId, isAll)` (`navContext.test.ts`, 사이드바 동작은 `CiraSidebar.test.tsx`).
 - **새 프로젝트 하위 화면을 추가하면 통합 메뉴는 `projectMenu`, 팀별 화면은 `teamLinks` 에 항목을 추가하세요.**
 
 ### CreateIssueButton — `@/components/cira/shell/CreateIssueButton`

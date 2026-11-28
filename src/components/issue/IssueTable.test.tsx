@@ -52,6 +52,12 @@ describe("IssueTable 공간 열 (통합 Task 목록)", () => {
         expect(screen.getAllByText("-").length).toBeGreaterThan(0);
     });
 
+    it("모바일 카드에도 공간 이름", () => {
+        renderWithClient(<IssueTable issues={[{...issue, spaceId: "s1"}]} projectId="p1" spaceNames={{s1: "HW팀"}}/>);
+        const cards = screen.getAllByRole("list").find((l) => l.tagName === "UL")!;
+        expect(within(cards).getByText("HW팀")).toBeInTheDocument();
+    });
+
     it("spaceNames 가 없으면 공간 열 없음", () => {
         renderWithClient(<IssueTable issues={[issue]} projectId="p1"/>);
         expect(screen.queryByRole("columnheader", {name: "공간"})).toBeNull();
